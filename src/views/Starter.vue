@@ -31,7 +31,19 @@
               </SVGGraph>
             </div>
             <div class="md-layout-item">
-              <md-button href="" class="md-simple md-success md-lg">****Form Area****</md-button>
+              <md-button v-on:click="form = 'BasicData'">Basicdata</md-button>
+              <md-button v-on:click="form = 'Outcomes'">Outcomes </md-button>
+              <md-button v-on:click="form = 'Methods'">Methods</md-button>
+              <md-button v-on:click="form = 'Dynamic'">DYN</md-button>
+
+                <br><br>
+                <keep-alive>
+
+                <component v-bind:is="form = this.form" :modBasis="modBasis"></component>
+                <!--<component v-bind:is="form = 'Dynamic'"></component>-->
+                
+                </keep-alive>  
+
             </div>
           </div>
         </div>
@@ -43,11 +55,23 @@
 <script>
 import Select from "./components/Select";
 import SVGGraph from "./components/SVGGraph";
+    import FormBasicData from "./components/FormBasicData";
+    import FormMethods from "./components/FormMethods";
+    import FormOutcomes from "./components/FormOutcomes";
+    import FormLiterature from "./components/FormLiterature";
+    import FormTeachers from "./components/FormTeachers";
+    import FormDynamic from "./components/FormDynamic";
 
 export default {
   components: {
     Select,
-    SVGGraph
+    SVGGraph,  
+    'BasicData':FormBasicData,
+    'Methods':FormMethods,
+    'Outcomes':FormOutcomes,
+    'Literature':FormLiterature,
+    'Teachers':FormTeachers,
+    'Dynamic':FormDynamic,
   },
   name: "index",
   bodyClass: "index-page",
