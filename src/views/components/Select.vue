@@ -92,7 +92,7 @@ export default {
 }
 
 .md-field.md-theme-default label {
-  color: #d9edf7 !important;
+  color: #2e2e2e !important;
 }
 
 .md-field.md-theme-default .md-menu.md-select input {

@@ -1,7 +1,9 @@
 <template>
-<div class="md-layout md-gutter">
+<div>
+<div style="text-align:left; font-size:26px;"><b>Rahmendaten zum Modul</b></div>
 
-<div class="md-layout-item">
+<div class="md-layout md-gutter">
+<div class="md-layout-item md-size-33">
       <md-field>
         <label>Modulkürzel</label>
         <md-input
@@ -13,7 +15,7 @@
       </md-field>
     </div>
 
-<div class="md-layout-item">
+<div class="md-layout-item md-size-100">
     <md-field>
       <label>Modulbezeichnung</label>
       <md-input v-model="initial"></md-input>
@@ -53,7 +55,7 @@
     </div>
     <div class="md-layout-item">
         <md-field>
-        <label>Notengewichtung!</label>
+        <label>Notengewichtung</label>
         <md-input v-model="type"></md-input>
         </md-field>
     </div>
@@ -83,11 +85,11 @@
     </div>
     <div class="md-layout-item">
         <md-field>
-        <label>Dauer Semester</label>
+        <label>Semester</label>
         <md-input v-model="type"></md-input>
         </md-field>
     </div>
-    <div class="md-layout-item">
+    <div class="md-layout-item md-size-33">
       <md-field class="xs">
         <label>Häufigkeit</label>
         <md-select
@@ -102,11 +104,8 @@
         </md-select>
       </md-field>
     </div>
-    <div>
-    <md-checkbox v-model="array" value="1">deutsch</md-checkbox>
-    <md-checkbox v-model="array" value="2">englisch</md-checkbox>
-    </div>
-    <div class="md-layout-item">
+        
+    <div class="md-layout-item md-size-66">
         <md-field>
         <label>Voraussetzungen</label>
         <md-input v-model="type"></md-input>
@@ -119,22 +118,35 @@
         </md-field>
     </div>
 
+
+
+    <div class="md-layout-item md-size-100">
         <md-field>
         <label>Beschreibung und Kommentare zum Modul</label>
         <md-textarea v-model="aboutme"></md-textarea>
         </md-field>
+        </div>
+
+<div class="md-layout-item md-size-100" style="text-align:left;">
+    <span style="font-size:14px; color:#2e2e2e; font-family:arial;"><br>Lehrsprachen: <br></span>
+    <md-checkbox v-model="array" value="deutsch" style="margin-left:10px;">deutsch</md-checkbox>
+    <md-checkbox v-model="array" value="englisch">englisch</md-checkbox>
+  </div>
 
         <div class="md-layout md-gutter">
 <div class="md-layout-item">
-    <div class="col-md-12">
+    <div>
     <md-button type="primary">Speichern</md-button>
     <md-button type="secondary">Download</md-button>   
     <p>Message is: {{ selected }}</p>
+    <span>Checked names: {{ array }}</span>
     </div>
         </div>
 
-</div>
+
    
+</div>
+</div>
 </div>
 </template>
 
