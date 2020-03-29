@@ -1,11 +1,14 @@
     <template>
     <div>
-    <div class="md-layout-item" v-for="(input,f) in this.inputs" v-bind:key="f">
-    <input type="text" v-model="input.name">
-    <span>
-        <i class="fas fa-minus-circle" @click="remove(f)" v-show="f || ( !f && inputs.length > 1)"></i>
-        <i class="fas fa-plus-circle" @click="add(f)" v-show="f == inputs.length-1"></i>
-    </span>
+        <div class="md-layout-item" v-for="(input,f) in this.inputs" v-bind:key="f">
+        <md-field>
+        <label>Hinzufügen</label>
+        <md-input v-model="input.name"></md-input>
+            <span>
+                <i class="fas fa-minus-circle" @click="remove(f)" v-show="f || ( !f && inputs.length > 1)"></i>
+                <i class="fas fa-plus-circle" @click="add(f)" v-show="f == inputs.length-1"></i>
+            </span>
+        </md-field>
     </div>
         <p>{{this.inputs}}</p>
     </div>
