@@ -22,7 +22,7 @@ Es wird ein Prototyp für digitale Modulkataloge entwickelt.
 
 <p>4. Führe im Terminal folgenden Befehl aus: <code> yarn install</code></p>
 
-<p>5. Führe im Termianl folgenden Befehl aus: <code> yarn serve</code></p>
+<p>5. Führe im Terminal folgenden Befehl aus: <code> yarn serve</code></p>
 
 <p>6. Das Terminal zeigt nun die Adresse an. In einem Browser kann das Projekt nun angesehen werden. In der Regel findet sich das Projekt unter: <code>http://localhost:8080/ </code></p>
 
@@ -36,7 +36,7 @@ Es wird ein Prototyp für digitale Modulkataloge entwickelt.
 <ul>
 <li>Änderungen speichern: <code>git add .</code></li>
 <li>Änderungen beschreiben: <code>git commit -m "ÄNDERUNGEN HIER BESCHREIBEN"</code></li>
-<li>Ännderungen auf Github laden: <code>git push</code></li>
+<li>Änderungen auf Github hochladen: <code>git push</code></li>
 </ul>
 </p>
 
