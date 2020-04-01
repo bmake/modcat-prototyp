@@ -27,15 +27,11 @@
         <md-textarea v-model="type"></md-textarea>
         </md-field>
     </div>
+</div>
+      <div class="md-layout md-gutter" style="border-color:orange; border-width: 3px; border-style: solid; border-radius: 25px; margin:3px;" >
 
-    <div class="md-layout-item md-size-50">
-        <md-field>
-        <label>Anzahl Workload-Komponenten</label>
-        <md-input v-model="type"></md-input>
-        </md-field>
-    </div>
 
-    <div class="md-layout-item md-size-50" v-for="(input,i) in inputs1" :key="i">
+    <div class="md-layout-item md-size-100" v-for="(input,i) in inputs1" :key="i">
         <md-field>
         <label>Workload-Komponente</label>
         <md-input v-model="input.name"></md-input>
@@ -45,7 +41,8 @@
             </span>
         </md-field>
     </div>
-</div>
+      </div>
+
 <div>
 <div class="md-layout md-gutter">
 <div class="md-layout-item">
