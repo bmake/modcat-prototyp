@@ -41,11 +41,6 @@
                 class="md-simple md-success md-lg"
                 >Download PDF</md-button
               >
-              <md-button v-on:click="form = 'BasicData'">Basicdata</md-button>
-              <md-button v-on:click="form = 'Outcomes'">Outcomes </md-button>
-              <md-button v-on:click="form = 'Methods'">Methods</md-button>
-              <md-button v-on:click="form = 'Dynamic'">DYN</md-button>
-              <br /><br />
               <keep-alive>
                 <component
                   v-bind:is="(form = this.form)"
