@@ -35,8 +35,8 @@ export default {
     };
   },
   created() {
-    this.width = window.innerWidth/2.5;
-    this.height = window.outerHeight/1.5;
+    this.width = window.innerWidth / 2.5;
+    this.height = window.outerHeight / 1.5;
   },
   mounted() {
     d3.xml(this.svgfile).then(xml => {
@@ -48,9 +48,9 @@ export default {
         });
 
       let w = d3.select("svg#svg887").style("width");
-      w = parseInt(w.substring( 0, w.length-2));
+      w = parseInt(w.substring(0, w.length - 2));
       let h = d3.select("svg#svg887").style("height");
-      h = parseInt(h.substring( 0, h.length-2));
+      h = parseInt(h.substring(0, h.length - 2));
       if (this.width < w) {
         d3.select("svg#svg887").style("width", this.width + "px");
       }
@@ -58,7 +58,7 @@ export default {
         d3.select("svg#svg887").style("height", this.height + "px");
       }
 
-      console.log("svg-width", d3.select("svg#svg887").style("width"))
+      console.log("svg-width", d3.select("svg#svg887").style("width"));
 
       var svg = d3.select("svg#svg887");
       var g = svg.append("g");
@@ -72,11 +72,17 @@ export default {
         })
       );
 
-      let relaCenSem = d3.select("#rectSoWiSeXY").node().getBBox().width / 2 - 3;
+      let relaCenSem =
+        d3
+          .select("#rectSoWiSeXY")
+          .node()
+          .getBBox().width /
+          2 -
+        3;
       console.log("relaCenSem", relaCenSem);
       d3.select("#textSoWiSeXY")
         .attr("text-anchor", "middle")
-        .attr("dx", relaCenSem)
+        .attr("dx", relaCenSem);
 
       this.styleImportedSVG();
     });
@@ -128,7 +134,8 @@ export default {
 
           if (
             /*id == "nodeModulKuerzel" || */ id == "nodeStudiengang" ||
-            id == "nodeOrdnung" || id =="nodePerson"
+            id == "nodeOrdnung" ||
+            id == "nodePerson"
           ) {
             _this.form = "BasicData";
             d3.select("#nodeModulKuerzel").classed("selected", true);
@@ -297,8 +304,7 @@ export default {
             d3.select("#pathLabels")
               .selectAll("g.groupL")
               .classed("faded", false);
-            d3.select("#nodePerson")
-              .classed("faded", false);
+            d3.select("#nodePerson").classed("faded", false);
             d3.select("#layer1")
               .selectAll("path.groupE")
               .transition()
@@ -361,12 +367,24 @@ export default {
       module.text(tModule);
       semester.text(tSemester);
 
-      let relaCenMod = d3.select("#rectModulkuerzel").node().getBBox().width / 2 - 3;
+      let relaCenMod =
+        d3
+          .select("#rectModulkuerzel")
+          .node()
+          .getBBox().width /
+          2 -
+        3;
       d3.select("#textModulKuerzel")
         .attr("text-anchor", "middle")
         .attr("dx", relaCenMod);
 
-      let relaCenSem = d3.select("#rectSoWiSeXY").node().getBBox().width / 2 - 3;
+      let relaCenSem =
+        d3
+          .select("#rectSoWiSeXY")
+          .node()
+          .getBBox().width /
+          2 -
+        3;
       d3.select("#textSoWiSeXY")
         .attr("text-anchor", "middle")
         .attr("dx", relaCenSem);
@@ -396,64 +414,65 @@ export default {
   watch: {
     moduleUri: {
       handler(uri) {
-        this.queryModuleInfo(
-          "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
-            "PREFIX schema: <https://schema.org/> " +
-            "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
-            "SELECT * " +
-            "WHERE { " +
-            "  { " +
-            "    SELECT DISTINCT ?code ?label ?curr_name ?curr_des ?modType_name ?grade_name ?grade_des ?sws_name ?ects ?semester ?durationSem ?courseMode ?eduUse ?url ?comment ?pre ?basedOns" +
-            "WHERE { " +
-            "<" +
-            uri +
-            "> schema:courseCode ?code ; " +
-            "        rdfs:label ?label; " +
-            "        module:eduAlignm_Curr ?curr ;  " +
-            "        module:eduAlignm_Grade ?grade ; " +
-            "        module:eduAlignm_ModuleType ?modType ;  " +
-            "        module:eduAlignm_SWS ?sws ; " +
-            "        schema:educationalCredentialAwarded ?ects ; " +
-            "        schema:hasCourseInstance ?semester ; " +
-            "        schema:educationalUse ?eduUse ; " +
-            "        schema:coursePrerequisites ?pre ; " +
-            "        schema:url ?url ; " +
-            "        schema:comment ?comment . " +
-            "        OPTIONAL { <" +
-            uri +
-            ">  schema:coursePrerequisites ?pre } " +
-            "        OPTIONAL {  " +
-            '           SELECT (GROUP_CONCAT(?basedOn; separator=" || ") as ?basedOns) ' +
-            "           WHERE { " +
-            "           <" +
-            uri +
-            ">  schema:isBasedOn ?basedOn . " +
-            "           } " +
-            "        } " +
-            "    ?semester schema:duration ?durationSem; " +
-            "             schema:courseMode ?courseMode. " +
-            "     ?curr schema:targetName ?curr_name ; " +
-            "           schema:targetDescription ?curr_des . " +
-            "    ?grade schema:targetName ?grade_name ; " +
-            "           schema:targetDescription ?grade_des . " +
-            "    ?modType schema:targetName ?modType_name . " +
-            "    ?sws schema:targetName ?sws_name .  " +
-            "} " +
-            "  } UNION { " +
-            '    SELECT (GROUP_CONCAT(?language; separator=" || ") as ?languages) ' +
-            "    WHERE { " +
-            "    module:WIB_AAIT a module:Module; " +
-            "    schema:inLanguage ?language . " +
-            "} " +
-            "  } UNION { " +
-            '     SELECT (GROUP_CONCAT(?learnType; separator=" || ") as ?learnTypes) ' +
-            "    WHERE { " +
-            "    module:WIB_AAIT a module:Module; " +
-            "    schema:learningResourceType ?learnType. " +
-            "}   " +
-            "  } " +
-            "}"
-        );
+        let queryBase =
+          "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  " +
+          "PREFIX module: <https://bmake.th-brandenburg.de/module/>  " +
+          "PREFIX schema: <https://schema.org/>  " +
+          "SELECT DISTINCT ?code ?label ?spo ?semester ?modType_name ?grade_name ?learnTypes ?eduUse ?swsSum ?ects ?duration ?courseMode ?pre ?url ?comment ?languages" +
+          " WHERE {  " +
+          "<" +
+          uri +
+          ">  schema:courseCode ?code ;  " +
+          "         rdfs:label ?label;  " +
+          "         module:eduAlignm_Curr ?curr ;   " +
+          "         module:eduAlignm_Grade ?grade ;  " +
+          "         module:eduAlignm_ModuleType ?modType ;   " +
+          "         schema:educationalCredentialAwarded ?ects ;  " +
+          "         schema:hasCourseInstance ?semester ;  " +
+          "         schema:educationalUse ?eduUse ;  " +
+          "         module:eduAlignm_SWS ?sws ; " +
+          "         schema:accountablePerson ?accPerson ;  " +
+          "         schema:coursePrerequisites ?pre ;  " +
+          "         schema:url ?url ;  " +
+          "         schema:comment ?comment .  " +
+          "            ?accPerson rdfs:label ?accPersonLabel . " +
+          "            ?semester schema:duration ?durationSem;  " +
+          "                      schema:courseMode ?courseMode ;  " +
+          "                      schema:instructor ?instrctor.  " +
+          '            BIND(REPLACE(?durationSem, "P0.5Y", "1 Semester", "i") AS ?durationSem1) ' +
+          '            BIND(REPLACE(?durationSem1, "P1Y", "2 Semester", "i") AS ?duration)' +
+          "            ?instrctor rdfs:label ?instructorLabel .  " +
+          "            ?curr schema:targetName ?curr_name ;  " +
+          "                  schema:targetDescription ?curr_des .  " +
+          "            ?grade schema:targetName ?grade_name ;  " +
+          "                   schema:targetDescription ?grade_des .  " +
+          "            ?modType schema:targetName ?modType_name ;" +
+          "               schema:educationalFramework ?spo.      " +
+          "            ?sws schema:targetName ?swsSum . " +
+          "            OPTIONAL {  " +
+          '              SELECT (GROUP_CONCAT(?language; separator=", ") as ?languages)  ' +
+          "              WHERE {  " +
+          "                  <" +
+          uri +
+          "> schema:inLanguage ?lan .  " +
+          "              }  " +
+          "            }  " +
+          "            OPTIONAL {  " +
+          '           SELECT (GROUP_CONCAT(?learnType; separator=" | ") as ?learnTypes)  ' +
+          "              WHERE {  " +
+          "                <" +
+          uri +
+          "> schema:learningResourceType ?learnType.  " +
+          "              }  " +
+          "            }  " +
+          "OPTIONAL { " +
+          '    SELECT (GROUP_CONCAT(?lan; separator=" | ") as ?languages) ' +
+          "    WHERE { " +
+          "    <" + uri + "> schema:inLanguage ?lan . " +
+          "  } " +
+          "  }" +
+          " }";
+        this.queryModuleInfo(queryBase);
         this.modOutcomes = [];
         this.modMethods = [];
         this.modLiterature = [];
@@ -475,6 +494,10 @@ export default {
     modBasicData: {
       handler(newData) {
         if (this.modBasicData.length > 0) {
+          let strArrLearn = newData[0].learnTypes.value.split(" | ");
+          newData[0].learnTypes.value = strArrLearn;
+          let strArrLan = newData[0].languages.value.split(" | ");
+          newData[0].languages.value = strArrLan;
           this.$emit("modBasicData", newData);
         }
       }

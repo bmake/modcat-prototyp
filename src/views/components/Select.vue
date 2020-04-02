@@ -53,6 +53,7 @@ export default {
       this.$emit("module", v);
     },
     studyProgram(v) {
+      this.course = ""
       this.queryModuleList(v)
     },
   },
@@ -91,11 +92,11 @@ export default {
   padding: 50px;
 }
 
-.md-field.md-theme-default label {
+.select .md-field.md-theme-default label {
   color: #2e2e2e !important;
 }
 
-.md-field.md-theme-default .md-menu.md-select input {
+.select .md-field.md-theme-default .md-menu.md-select input {
   -webkit-text-fill-color: white !important;
   font-weight: bold !important;
 }

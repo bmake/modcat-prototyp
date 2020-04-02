@@ -50,6 +50,7 @@
                 <component
                   v-bind:is="(form = this.form)"
                   :modBasis="modBasis"
+                  :moduleUri="selectedModule"
                 />
                 <!--<component v-bind:is="form = 'Dynamic'"></component>-->
               </keep-alive>
@@ -91,11 +92,11 @@ export default {
   data() {
     return {
       selectedModule: "",
-      modBasis: null,
-      modOutcome: null,
-      modMethod: null,
-      modLiter: null,
-      modTeacher: null,
+      modBasis: [],
+      modOutcome: [],
+      modMethod: [],
+      modLiter: [],
+      modTeacher: [],
       form: "BasicData",
       pdfHead: [],
       pdfBody: []
