@@ -20,16 +20,10 @@
         </div>
       </div>
 
-      <div class="md-layout md-gutter">
-        <div class="md-layout-item md-size-50">
-          <md-field>
-            <label>Anzahl Lernergebnisse</label>
-            <md-input v-model="type"></md-input>
-          </md-field>
-        </div>
+      <div class="md-layout md-gutter" style="border-color:orange; border-width: 3px; border-style: solid; border-radius: 25px; margin:3px;" >
 
         <div
-          class="md-layout-item md-size-50"
+          class="md-layout-item md-size-100"
           v-for="(input, i) in inputs1"
           :key="i"
         >
@@ -49,19 +43,29 @@
               ></i>
             </span>
           </md-field>
+          <md-field>
+            <label>Bloomsche Taxonomie</label>
+            <md-select
+              v-model="modType"
+              name="modulType"
+              id="modulType"
+              md-dense
+            >
+              <md-option>erschaffen</md-option>
+              <md-option>evaluieren</md-option>
+              <md-option>analysieren</md-option>
+              <md-option>anwenden</md-option>
+              <md-option>verstehen</md-option>
+              <md-option>erinnern</md-option>
+            </md-select>
+          </md-field>
         </div>
       </div>
 
-      <div class="md-layout md-gutter">
-        <div class="md-layout-item md-size-50">
-          <md-field>
-            <label>Anzahl Inhaltselemente</label>
-            <md-input v-model="type"></md-input>
-          </md-field>
-        </div>
+      <div class="md-layout md-gutter" style="border-color:orange; border-width: 3px; border-style: solid; border-radius: 25px; margin:3px;">
 
         <div
-          class="md-layout-item md-size-50"
+          class="md-layout-item md-size-100"
           v-for="(input, i) in inputs2"
           :key="i"
         >
@@ -84,16 +88,9 @@
         </div>
       </div>
 
-      <div class="md-layout md-gutter">
-        <div class="md-layout-item md-size-50">
-          <md-field>
-            <label>Anzahl Prüfungsvorleistungen</label>
-            <md-input v-model="type"></md-input>
-          </md-field>
-        </div>
-
+<div class="md-layout md-gutter" style="border-color:orange; border-width: 3px; border-style: solid; border-radius: 25px; margin:3px;">      
         <div
-          class="md-layout-item md-size-50"
+          class="md-layout-item md-size-100"
           v-for="(input, i) in inputs3"
           :key="i"
         >
@@ -116,16 +113,9 @@
         </div>
       </div>
 
-      <div class="md-layout md-gutter">
-        <div class="md-layout-item md-size-50">
-          <md-field>
-            <label>Anzahl Prüfungsleistungen</label>
-            <md-input v-model="type"></md-input>
-          </md-field>
-        </div>
-
+<div class="md-layout md-gutter" style="border-color:orange; border-width: 3px; border-style: solid; border-radius: 25px; margin:3px;">      
         <div
-          class="md-layout-item md-size-50"
+          class="md-layout-item md-size-100"
           v-for="(input, i) in inputs4"
           :key="i"
         >
@@ -148,26 +138,6 @@
         </div>
       </div>
 
-      <div class="md-layout md-gutter">
-        <div class="md-layout-item md-size-100">
-          <md-field>
-            <label>Bloomsche Taxonomie</label>
-            <md-select
-              v-model="modType"
-              name="modulType"
-              id="modulType"
-              md-dense
-            >
-              <md-option>erschaffen</md-option>
-              <md-option>evaluieren</md-option>
-              <md-option>analysieren</md-option>
-              <md-option>anwenden</md-option>
-              <md-option>verstehen</md-option>
-              <md-option>erinnern</md-option>
-            </md-select>
-          </md-field>
-        </div>
-      </div>
     </div>
     <div class="md-layout md-gutter">
       <div class="md-layout-item">
