@@ -16,7 +16,7 @@
 
     <div class="md-layout-item md-size-100">
         <md-field>
-        <label>Lehr und Lernmethoden</label>
+        <label>Lehr und Lernmethode</label>
         <md-input v-model="type"></md-input>
         </md-field>
     </div>
@@ -28,7 +28,7 @@
         </md-field>
     </div>
 </div>
-      <div class="md-layout md-gutter" style="border-color:orange; border-width: 3px; border-style: solid; border-radius: 25px; margin:3px;" >
+      <div class="md-layout md-gutter" style="border-color:#fcdd86; border-width: 3px; border-style: solid; border-radius: 10px; margin:3px;" >
 
 
     <div class="md-layout-item md-size-100" v-for="(input,i) in inputs1" :key="i">
