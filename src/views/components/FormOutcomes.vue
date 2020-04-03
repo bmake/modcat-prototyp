@@ -20,7 +20,7 @@
         </div>
       </div>
 
-      <div class="md-layout md-gutter" style="border-color:orange; border-width: 3px; border-style: solid; border-radius: 25px; margin:3px;" >
+      <div class="md-layout md-gutter" style="border-color:#fcdd86; border-width: 3px; border-style: solid; border-radius: 10px; margin:3px;" >
 
         <div
           class="md-layout-item md-size-100"
@@ -28,7 +28,7 @@
           :key="i"
         >
           <md-field>
-            <label>Art Lernergebnis</label>
+            <label>Lernergebnis</label>
             <md-input v-model="input.name"></md-input>
             <span>
               <i
@@ -62,7 +62,7 @@
         </div>
       </div>
 
-      <div class="md-layout md-gutter" style="border-color:orange; border-width: 3px; border-style: solid; border-radius: 25px; margin:3px;">
+      <div class="md-layout md-gutter" style="border-color:#fcdd86; border-width: 3px; border-style: solid; border-radius: 10px; margin:3px;">
 
         <div
           class="md-layout-item md-size-100"
@@ -70,7 +70,7 @@
           :key="i"
         >
           <md-field>
-            <label>Art Inhaltselement</label>
+            <label>Inhaltselement</label>
             <md-input v-model="input.name"></md-input>
             <span>
               <i
@@ -88,14 +88,15 @@
         </div>
       </div>
 
-<div class="md-layout md-gutter" style="border-color:orange; border-width: 3px; border-style: solid; border-radius: 25px; margin:3px;">      
+
+<!--<div class="md-layout md-gutter" style="border-color:#fcdd86; border-width: 3px; border-style: solid; border-radius: 10px; margin:3px;">      
         <div
           class="md-layout-item md-size-100"
           v-for="(input, i) in inputs3"
           :key="i"
         >
           <md-field>
-            <label>Art Prüfungsvorleistungen</label>
+            <label>Prüfungsvorleistung</label>
             <md-input v-model="input.name"></md-input>
             <span>
               <i
@@ -111,16 +112,16 @@
             </span>
           </md-field>
         </div>
-      </div>
+      </div>-->
 
-<div class="md-layout md-gutter" style="border-color:orange; border-width: 3px; border-style: solid; border-radius: 25px; margin:3px;">      
+<div class="md-layout md-gutter" style="border-color:#fcdd86; border-width: 3px; border-style: solid; border-radius: 10px; margin:3px;">      
         <div
           class="md-layout-item md-size-100"
           v-for="(input, i) in inputs4"
           :key="i"
         >
           <md-field>
-            <label>Art Prüfungsvorleistungen</label>
+            <label>Prüfungsleistung</label>
             <md-input v-model="input.name"></md-input>
             <span>
               <i
@@ -142,7 +143,7 @@
     <div class="md-layout md-gutter">
       <div class="md-layout-item">
         <div>
-          <md-button type="primary">Speichern</md-button>
+          <md-button type="primary">Speicheyrn</md-button>
           <md-button type="secondary">Download</md-button>
           <p>Message is: {{ selected }}</p>
         </div>
