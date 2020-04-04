@@ -72,18 +72,6 @@ export default {
         })
       );
 
-      let relaCenSem =
-        d3
-          .select("#rectSoWiSeXY")
-          .node()
-          .getBBox().width /
-          2 -
-        3;
-      console.log("relaCenSem", relaCenSem);
-      d3.select("#textSoWiSeXY")
-        .attr("text-anchor", "middle")
-        .attr("dx", relaCenSem);
-
       this.styleImportedSVG();
     });
   },
@@ -361,30 +349,25 @@ export default {
       let module = d3.select("#textModulkuerzel").select("tspan");
       let semester = d3.select("#textSoWiSeXY").select("tspan");
       console.log("updateInfo", this.moduleInfo);
-      let tModule = "Modul " + this.moduleInfo[0].code.value;
-      let tSemester = this.moduleInfo[0].semester.value.substring(39);
-
+      let tModule;
+      let tSemester;
+      if (this.moduleInfo.length > 0) {
+        tModule = "Modul " + this.moduleInfo[0].code.value;
+        tSemester = this.moduleInfo[0].semester.value.substring(39);
+      } else {
+        tModule = "Modul <Kürzel>";
+        tSemester = "So/WiSe XY";
+      }
       module.text(tModule);
       semester.text(tSemester);
 
-      let relaCenMod =
-        d3
-          .select("#rectModulkuerzel")
-          .node()
-          .getBBox().width /
-          2 -
-        3;
-      d3.select("#textModulKuerzel")
+      let relaCenMod = d3.select("#rectModulkuerzel").node().getBBox().width / 2 - 5;
+      console.log("relaCenMod", relaCenMod)
+      d3.select("#textModulkuerzel")
         .attr("text-anchor", "middle")
         .attr("dx", relaCenMod);
 
-      let relaCenSem =
-        d3
-          .select("#rectSoWiSeXY")
-          .node()
-          .getBBox().width /
-          2 -
-        3;
+      let relaCenSem = d3.select("#rectSoWiSeXY").node().getBBox().width / 2 - 8;
       d3.select("#textSoWiSeXY")
         .attr("text-anchor", "middle")
         .attr("dx", relaCenSem);
@@ -418,7 +401,7 @@ export default {
           "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  " +
           "PREFIX module: <https://bmake.th-brandenburg.de/module/>  " +
           "PREFIX schema: <https://schema.org/>  " +
-          "SELECT DISTINCT ?code ?label ?spo ?semester ?modType_name ?grade_name ?learnTypes ?eduUse ?swsSum ?ects ?duration ?courseMode ?pre ?url ?comment ?languages" +
+          "SELECT DISTINCT ?code ?label ?semester ?modType_name ?grade_name ?learnTypes ?eduUse ?swsSum ?ects ?duration ?courseMode ?pre ?url ?comment ?languages" +
           " WHERE {  " +
           "<" +
           uri +
@@ -446,17 +429,8 @@ export default {
           "                  schema:targetDescription ?curr_des .  " +
           "            ?grade schema:targetName ?grade_name ;  " +
           "                   schema:targetDescription ?grade_des .  " +
-          "            ?modType schema:targetName ?modType_name ;" +
-          "               schema:educationalFramework ?spo.      " +
+          "            ?modType schema:targetName ?modType_name ." +
           "            ?sws schema:targetName ?swsSum . " +
-          "            OPTIONAL {  " +
-          '              SELECT (GROUP_CONCAT(?language; separator=", ") as ?languages)  ' +
-          "              WHERE {  " +
-          "                  <" +
-          uri +
-          "> schema:inLanguage ?lan .  " +
-          "              }  " +
-          "            }  " +
           "            OPTIONAL {  " +
           '           SELECT (GROUP_CONCAT(?learnType; separator=" | ") as ?learnTypes)  ' +
           "              WHERE {  " +

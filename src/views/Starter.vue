@@ -34,13 +34,10 @@
               >
               </SVGGraph>
             </div>
-            <div class="md-layout-item">
-              <md-button
-                href=""
-                @click="generatePDF"
-                class="md-simple md-success md-lg"
-                >Download PDF</md-button
-              >
+            <div class="md-layout-item" style="padding-right: 3%">
+              <div style="text-align: right;">
+                <md-button @click="generatePDF" class="md-simple md-success md-lg">Modulkatalog herunterladen</md-button>
+              </div>
               <keep-alive>
                 <component
                   v-bind:is="(form = this.form)"
@@ -102,7 +99,9 @@ export default {
       this.selectedModule = value;
       this.pdfHead = [];
       this.pdfBody = [];
-      this.convertPDFArray();
+      if (value != "") {
+        this.convertPDFArray();
+      }
     },
     getModBasicData(value) {
       this.modBasis = value;
@@ -338,7 +337,7 @@ export default {
         });
     },
     generatePDF() {
-      var doc = new jsPDF();
+      const doc = new jsPDF();
       doc.autoTable({
         styles: { overflow: "linebreak" },
         columnStyles: {
