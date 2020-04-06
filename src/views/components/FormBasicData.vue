@@ -220,10 +220,10 @@
             Änderungen gespeichert!
           </div>
         </transition>
-        <p>{{ updateQuery }}</p>
+        <!--<p>{{ updateQuery }}</p>
         <p>changed Array: {{ changedArray }}</p>
         <p>deleteArray: {{ this.delete }}</p>
-        <p>insertArray: {{ this.insert }}</p>
+        <p>insertArray: {{ this.insert }}</p>-->
         <!-- <p>where: {{ this.where }}</p>-->
       </div>
     </div>
@@ -244,8 +244,6 @@ export default {
       changedArray: [],
       updateQuery: "",
       notification: false,
-      pdfHead: [],
-      pdfBody: [],
       prefixes:
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
         "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +

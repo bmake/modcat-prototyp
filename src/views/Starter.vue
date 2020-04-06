@@ -36,15 +36,16 @@
             </div>
             <div class="md-layout-item" style="padding-right: 3%">
               <div style="text-align: right;">
-                <md-button @click="generatePDF" class="md-simple md-success md-lg">Modulkatalog herunterladen</md-button>
+                <md-button id="download" @click="generatePDF" class="md-simple md-success md-lg">Modulkatalog herunterladen</md-button>
               </div>
               <keep-alive>
                 <component
                   v-bind:is="(form = this.form)"
                   :modBasis="modBasis"
                   :moduleUri="selectedModule"
+                  :modOutcome="modOutcome"
+                  :modMethod="modMethod"
                 />
-                <!--<component v-bind:is="form = 'Dynamic'"></component>-->
               </keep-alive>
             </div>
           </div>
@@ -369,6 +370,13 @@ export default {
 g.selected rect {
   stroke: #ffc107 !important;
   stroke-width: 2px !important;
+}
+
+#download {
+  background-color: #fff9c4 !important;
+}
+#download:hover {
+  background-color: #fcdd86 !important;
 }
 
 @media all and (min-width: 991px) {

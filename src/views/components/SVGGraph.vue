@@ -191,37 +191,35 @@ export default {
             if (_this.modMethods.length == 0) {
               q =
                 "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
-                "PREFIX schema: <https://schema.org/> " +
                 "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
-                "SELECT * " +
+                "PREFIX schema: <https://schema.org/> " +
+                "SELECT DISTINCT ?code ?interTypes ?workloadSum ?workloadDetails " +
                 "WHERE { " +
-                "  { " +
-                "    SELECT DISTINCT ?code ?label " +
-                " WHERE { " +
-                "<" +
+                "  <" +
                 _this.moduleUri +
-                "> schema:courseCode ?code ; " +
-                "   rdfs:label ?label. " +
-                " } " +
-                "  } UNION { " +
-                '     SELECT DISTINCT (GROUP_CONCAT(?interType ;separator="|| ") as ?interTypes) ' +
-                " WHERE { " +
-                "<" +
+                "> schema:courseCode ?code . " +
+                "  OPTIONAL { " +
+                ' SELECT (GROUP_CONCAT(?interType; separator=" | ") as ?interTypes) ' +
+                "    WHERE { " +
+                "      <" +
                 _this.moduleUri +
-                "> schema:interactivityType ?interType. " +
-                " } " +
-                "  } UNION { " +
-                "    SELECT DISTINCT (GROUP_CONCAT(CONCAT('[', ?wlname, ',', ?wlvalue,']');separator=\" || \") as ?wlnames) " +
-                " WHERE { " +
-                "<" +
-                _this.moduleUri +
-                "> module:addProp_CompWL ?workComp . " +
-                "       ?workComp schema:valueReference ?wlList . " +
-                "       ?wlList schema:name ?wlname; " +
-                "               schema:value ?wlvalue . " +
-                " } " +
+                "> schema:interactivityType ?interType . " +
+                "    } " +
+                "} " +
+                "  OPTIONAL { " +
+                'SELECT (SUM(?workloadValue) as ?workloadSum) (GROUP_CONCAT(?workloadDetail; separator=" | ") as ?workloadDetails) ' +
+                "WHERE { " +
+                "  SELECT DISTINCT * " +
+                "  WHERE { " +
+                "      <" + _this.moduleUri +"> module:addProp_CompWL ?addPropCompWL . " +
+                "      ?addPropCompWL schema:valueReference ?workload . " +
+                "      ?workload schema:name ?workloadName ; " +
+                "                schema:value ?workloadValue . " +
+                '      BIND(CONCAT(?workloadName, " @ ", STR(?workloadValue)) as ?workloadDetail) ' +
+                "    } ORDER BY ?workload " +
+                "}" +
                 "  } " +
-                " }";
+                "}";
               _this.queryModuleInfo(q);
             }
           } else if (id == "nodeBeschreibung") {
@@ -239,45 +237,57 @@ export default {
               .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
             if (_this.modOutcomes.length == 0) {
               q =
-                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  " +
-                "PREFIX schema: <https://schema.org/>  " +
-                "PREFIX module: <https://bmake.th-brandenburg.de/module/>  " +
-                "SELECT *  " +
-                "WHERE {  " +
-                "  {  " +
-                "    SELECT DISTINCT ?code ?label  " +
-                " WHERE {  " +
-                "<" +
+                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+                "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+                "PREFIX schema: <https://schema.org/> " +
+                "SELECT DISTINCT ?code ?learnBlooms ?contents ?exams " +
+                "WHERE { " +
+                "  <" +
                 _this.moduleUri +
-                "> schema:courseCode ?code ;  " +
-                "   rdfs:label ?label.  " +
-                " }  " +
-                "  } UNION {  " +
-                '     SELECT DISTINCT (GROUP_CONCAT(?resList;separator=" || ") as ?resLists)  ' +
-                "  WHERE {  " +
-                "<" +
+                "> schema:courseCode ?code . " +
+                "  OPTIONAL { " +
+                '   SELECT (GROUP_CONCAT(?learnBloom; separator=" | ") as ?learnBlooms)  ' +
+                "   WHERE {  " +
+                '   SELECT (CONCAT(?learnResult, " @ ", COALESCE(?bloom_name, "")) as ?learnBloom)  ' +
+                "      WHERE {  " +
+                "        <" +
                 _this.moduleUri +
-                "> module:about_LResults ?LResults .  " +
-                "       ?LResults schema:itemListElement ?resList .  " +
-                "  }  " +
-                "  } UNION {  " +
-                '      SELECT DISTINCT (GROUP_CONCAT(?conList;separator=" || ") as ?conLists)  ' +
-                "  WHERE {  " +
-                "<" +
+                "> module:about_LResults ?LResult.  " +
+                "        ?LResult schema:itemListElement ?resList .  " +
+                "        ?resList schema:description ?learnResult ;  " +
+                "                 schema:position ?position .  " +
+                "        OPTIONAL {  " +
+                "          ?resList schema:additionalType ?addList .  " +
+                '          FILTER regex(str(?addList), "BloomTax", "i")  ' +
+                "          ?addList schema:name ?bloom_name .  " +
+                '          FILTER (LANG(?bloom_name) = "en") .  ' +
+                "        }  " +
+                "      } ORDER BY ?position  " +
+                "    }" +
+                "    } " +
+                "  OPTIONAL { " +
+                '    SELECT (GROUP_CONCAT(?exam; separator=" | ") as ?exams) ' +
+                "    WHERE { " +
+                "      <" +
                 _this.moduleUri +
-                "> module:about_Content ?content.  " +
-                "       ?content schema:itemListElement ?conList .  " +
-                "  }   " +
-                "  } UNION {  " +
-                '      SELECT DISTINCT (GROUP_CONCAT(?examList;separator=" || ") as ?examLists)  ' +
-                "  WHERE {  " +
-                "<" +
+                "> module:about_Exam ?examCode. " +
+                "      ?examCode schema:itemListElement ?exam . " +
+                "    } " +
+                "  } " +
+                "  OPTIONAL { " +
+                '    SELECT (GROUP_CONCAT(?content; separator=" | ") as ?contents) ' +
+                "    WHERE { " +
+                "      SELECT ?content " +
+                "      WHERE { " +
+                "        <" +
                 _this.moduleUri +
-                "> module:about_Exam ?exam.  " +
-                "       ?exam schema:itemListElement ?examList .  " +
-                "  }   " +
-                "  }  " +
-                "}";
+                "> module:about_Content ?contentCode. " +
+                "        ?contentCode schema:itemListElement ?content . " +
+                "      } ORDER BY ?content " +
+                "    } " +
+                "  } " +
+                "   " +
+                "} ";
               _this.queryModuleInfo(q);
             }
           } else if (id == "nodeLiteratur") {
@@ -361,13 +371,25 @@ export default {
       module.text(tModule);
       semester.text(tSemester);
 
-      let relaCenMod = d3.select("#rectModulkuerzel").node().getBBox().width / 2 - 5;
-      console.log("relaCenMod", relaCenMod)
+      let relaCenMod =
+        d3
+          .select("#rectModulkuerzel")
+          .node()
+          .getBBox().width /
+          2 -
+        5;
+      console.log("relaCenMod", relaCenMod);
       d3.select("#textModulkuerzel")
         .attr("text-anchor", "middle")
         .attr("dx", relaCenMod);
 
-      let relaCenSem = d3.select("#rectSoWiSeXY").node().getBBox().width / 2 - 8;
+      let relaCenSem =
+        d3
+          .select("#rectSoWiSeXY")
+          .node()
+          .getBBox().width /
+          2 -
+        8;
       d3.select("#textSoWiSeXY")
         .attr("text-anchor", "middle")
         .attr("dx", relaCenSem);
@@ -397,6 +419,10 @@ export default {
   watch: {
     moduleUri: {
       handler(uri) {
+        d3.select("#nodes")
+          .selectAll("g")
+          .classed("selected", false);
+        this.form = "BasicData";
         let queryBase =
           "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  " +
           "PREFIX module: <https://bmake.th-brandenburg.de/module/>  " +
@@ -442,7 +468,9 @@ export default {
           "OPTIONAL { " +
           '    SELECT (GROUP_CONCAT(?lan; separator=" | ") as ?languages) ' +
           "    WHERE { " +
-          "    <" + uri + "> schema:inLanguage ?lan . " +
+          "    <" +
+          uri +
+          "> schema:inLanguage ?lan . " +
           "  } " +
           "  }" +
           " }";
@@ -451,7 +479,6 @@ export default {
         this.modMethods = [];
         this.modLiterature = [];
         this.modTeachers = [];
-        //this.updateGraphText()
       }
     },
     moduleInfo: {
@@ -477,19 +504,38 @@ export default {
       }
     },
     modOutcomes: {
-      handler(v) {
-        console.log("modOutcomes", v);
+      handler(newData) {
         if (this.modOutcomes.length > 0) {
-          this.$emit("modOutcomes", v);
+          let learnBlooms = newData[0].learnBlooms.value.split(" | ");
+          for (let i = 0; i < learnBlooms.length; i++) {
+            let itemArr = learnBlooms[i].split(" @ ");
+            learnBlooms[i] = itemArr;
+          }
+          newData[0].learnBlooms.value = learnBlooms;
+          let contents = newData[0].contents.value.split(" | ");
+          newData[0].contents.value = contents;
+          let exams = newData[0].exams.value.split(" | ");
+          newData[0].exams.value = exams;
         }
+        console.log("modOutcomes", newData);
+        this.$emit("modOutcomes", newData);
       }
     },
     modMethods: {
-      handler(v) {
-        console.log("modMethods", v);
+      handler(newData) {
         if (this.modMethods.length > 0) {
-          this.$emit("modMethods", v);
+          let interTypes = newData[0].interTypes.value.split(" | ");
+          newData[0].interTypes.value = interTypes;
+          let workloadDetails = newData[0].workloadDetails.value.split(" | ");
+          for (let i = 0; i < workloadDetails.length; i++) {
+            let itemArr = workloadDetails[i].split(" @ ");
+            itemArr[1] = parseInt(itemArr[1]);
+            workloadDetails[i] = itemArr;
+          }
+          newData[0].workloadDetails.value = workloadDetails;
         }
+        console.log("modMethods", newData);
+        this.$emit("modMethods", newData);
       }
     },
     modLiterature: {
