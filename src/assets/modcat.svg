@@ -576,7 +576,7 @@
          id="predicateCharakterisiertDurch"
          transform="translate(-34.188646,11.459565)"
          inkscape:label="#predicateCharakterisiertDurch"
-         class="group2">
+         class="">
         <rect
            ry="2.8920915"
            y="55.108742"
@@ -700,7 +700,7 @@
          transform="translate(27.927438,106.90821)"
          id="predicateReferenziertAuf"
          style="opacity:1"
-         class="group2">
+         class="group1 group2">
         <rect
            inkscape:label="#rectReferenziertAuf"
            style="fill:none;stroke-width:0.184768;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill"
@@ -859,7 +859,7 @@
          transform="translate(0.9999688,21.725883)"
          id="predicateGestaltetDurch"
          style="opacity:1"
-         class="group2">
+         class="">
         <rect
            inkscape:label="#rectGestaltetDurch"
            style="fill:none;stroke-width:0.184768;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill"
@@ -952,7 +952,7 @@
          inkscape:label="#nodeBeschreibung"
          id="nodeBeschreibung"
          style="opacity:1"
-         class="group2">
+         class="">
         <rect
            inkscape:label="#rectBeschreibung"
            style="opacity:1;fill:#83bb20;fill-opacity:0.65098;stroke:#838b20;stroke-width:0.374811;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.65098;filter:url(#filter2080)"
@@ -1037,7 +1037,7 @@
          transform="matrix(2.6156642,0,0,2.6156642,-103.97416,185.20346)"
          inkscape:label="#nodeLiteratur"
          id="nodeLiteratur"
-         class="group2">
+         class="group1 group2">
         <rect
            inkscape:label="#rectLiteratur"
            style="opacity:1;fill:#83bb20;fill-opacity:0.65098;stroke:#838b20;stroke-width:0.372786;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.65098"
@@ -1122,7 +1122,7 @@
          transform="matrix(2.6012607,0,0,2.6012607,-129.27017,24.9633)"
          inkscape:connector-avoid="true"
          style="opacity:1"
-         class="group2">
+         class="">
         <rect
            ry="5.0235958"
            y="4.2103472"
@@ -1225,7 +1225,7 @@
        id="pathCharakterisiertDurch-Beschreibung"
        d="M 75.972885,66.568307 73.3077,30.089282"
        style="display:inline;opacity:1;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.265;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker7533)"
-       class="group2 groupB" />
+       class="groupB" />
     <path
        inkscape:connection-start="#predicateAngebotenVon"
        inkscape:label="#pathAngebotenVon-Organisation"
@@ -1255,7 +1255,7 @@
        inkscape:connector-curvature="0"
        inkscape:connection-end="#nodeDidaktik"
        inkscape:connection-start="#predicateGestaltetDurch"
-       class="group2 groupC" />
+       class="groupC" />
     <path
        inkscape:connection-start="#predicateUmgesetztIn"
        inkscape:label="#pathUmgesetztIn-SoWiSeXY"
@@ -1295,7 +1295,7 @@
        d="m 148.96886,175.79414 16.94381,12.71976"
        style="display:inline;opacity:1;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker7391)"
        inkscape:connection-end="#nodeLiteratur"
-       class="group2 groupE" />
+       class="group1 group2 groupE" />
     <path
        inkscape:label="#pathLiteratur-HerausgegebenVon"
        inkscape:connector-curvature="0"
@@ -1345,7 +1345,7 @@
        d="m 77.34662,80.345492 4.821236,38.154448"
        style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        inkscape:connection-end="#nodeModulkuerzel"
-       class="group2 groupB" />
+       class="groupB" />
     <path
        inkscape:label="#pathModulkuerzel-GestaltetDurch"
        inkscape:connector-curvature="0"
@@ -1355,7 +1355,7 @@
        style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        inkscape:connection-start="#predicateGestaltetDurch"
        inkscape:connection-end="#nodeModulkuerzel"
-       class="group2 groupC" />
+       class="groupC" />
     <path
        inkscape:label="#pathModulkuerzel-UmgesetztIn"
        inkscape:connection-start="#predicateUmgesetztIn"
@@ -1385,7 +1385,7 @@
        d="m 129.5145,162.01695 -26.50966,-17.7672"
        style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        inkscape:connection-end="#nodeModulkuerzel"
-       class="group2 groupE" />
+       class="group1 group2 groupE" />
     <path
        inkscape:label="#pathModulkuerzel-DefiniertDurch"
        inkscape:connection-end="#predicateDefiniertDurchMkOrd"
