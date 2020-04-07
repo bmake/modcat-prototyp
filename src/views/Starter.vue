@@ -36,15 +36,15 @@
             </div>
             <div class="md-layout-item" style="padding-right: 3%">
               <div style="text-align: right;">
-                <md-button id="download" @click="generatePDF" class="md-simple md-success md-lg">Modulkatalog herunterladen</md-button>
+                <md-button id="download" @click="generatePDF" class="md-simple md-success md-lg">Modulbeschreibung herunterladen</md-button>
               </div>
               <keep-alive>
                 <component
                   v-bind:is="(form = this.form)"
-                  :modBasis="modBasis"
+                  :modBasisOrigin="modBasis"
                   :moduleUri="selectedModule"
-                  :modOutcome="modOutcome"
-                  :modMethod="modMethod"
+                  :modOutcomeOrigin="modOutcome"
+                  :modMethodOrigin="modMethod"
                 />
               </keep-alive>
             </div>

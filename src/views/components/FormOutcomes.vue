@@ -170,9 +170,12 @@
       <div class="md-layout-item">
         <div>
           <md-button v-if="modOutcome.length > 0" @click="updateData"
-            >Speichern</md-button
+            >Änderung speichern</md-button
           >
-          <md-button v-if="modOutcome.length > 0" @click="generatePDF">Download</md-button>
+          <md-button v-if="modOutcome.length > 0" @click="resetData"
+          >Änderung verwerfen</md-button
+          >
+          <!--<md-button v-if="modOutcome.length > 0" @click="generatePDF">Download</md-button>-->
           <transition name="fade">
             <div class="alert alert-success" v-if="notification">
               <div class="alert-icon">
@@ -197,9 +200,10 @@
 <script>
 import axios from "axios";
 import jsPDF from "jspdf";
+import lodash from 'lodash';
 
 export default {
-  props: ["modOutcome", "moduleUri"],
+  props: ["modOutcomeOrigin", "moduleUri"],
   name: "outcome",
   data() {
     return {
@@ -214,6 +218,7 @@ export default {
       delete: [],
       insert: [],
       countLearn: 0,
+      modOutcome: [],
       where:
         " module:about_LResults ?LResult ; " +
         " module:about_Exam ?examCode ; " +
@@ -450,6 +455,42 @@ export default {
           this.errors.push(e);
         });
     },
+    resetData() {
+      this.initialState();
+    },
+    initialState() {
+      this.inputs1 = [
+        {
+          name: []
+        }
+      ];
+      this.inputs2 = [
+        {
+          name: []
+        }
+      ];
+      this.inputs3 = [
+        {
+          name: []
+        }
+      ];
+      this.inputs4 = [
+        {
+          name: []
+        }
+      ];
+      this.changedArray = {
+        inputs1: [],
+        inputs2: [],
+        inputs3: [],
+        inputs4: []
+      };
+      this.modOutcome = [],
+      this.delete = [];
+      this.insert = [];
+      this.count = 0;
+      this.modOutcome = _.cloneDeep(this.modOutcomeOrigin);
+    },
     generatePDF() {
       const doc = new jsPDF();
       let pdfHead = [];
@@ -518,42 +559,10 @@ export default {
     }
   },
   watch: {
+    modOutcomeOrigin(v) {
+      this.initialState();
+    },
     modOutcome(v) {
-      this.inputs1 = [
-        {
-          name: []
-        }
-      ];
-      this.inputs2 = [
-        {
-          name: []
-        }
-      ];
-      this.inputs3 = [
-        {
-          name: []
-        }
-      ];
-      this.inputs4 = [
-        {
-          name: []
-        }
-      ];
-      this.changedArray = {
-        inputs1: [],
-        inputs2: [],
-        inputs3: [],
-        inputs4: []
-      };
-      this.delete = [];
-      this.insert = [];
-      this.count = 0;
-      this.where =
-        " module:about_LResults ?LResult ; " +
-        " module:about_Exam ?examCode ; " +
-        " module:about_Content ?contentCode. " +
-        " ?examCode schema:itemListElement ?exam . " +
-        " ?contentCode schema:itemListElement ?content . ";
       if (v.length > 0) {
         let learnblooms = v[0].learnBlooms.value;
         this.countLearn = learnblooms.length;

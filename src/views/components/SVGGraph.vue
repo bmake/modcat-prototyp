@@ -8,7 +8,6 @@
       'border-radius': '5px'
     }"
   >
-    <input type="text" v-model="role" />
   </div>
 </template>
 

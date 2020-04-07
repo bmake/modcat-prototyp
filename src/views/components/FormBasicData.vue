@@ -207,11 +207,14 @@
 
       <div class="md-layout-item" ref="notification">
         <md-button v-if="modBasis.length > 0" @click="updateData"
-          >Speichern</md-button
+          >Änderung speichern</md-button
         >
-        <md-button v-if="modBasis.length > 0" @click="generatePDF"
+        <md-button v-if="modBasis.length > 0" @click="resetData"
+          >Änderung verwerfen</md-button
+        >
+        <!--<md-button v-if="modBasis.length > 0" @click="generatePDF"
           >Download</md-button
-        >
+        >-->
         <transition name="fade">
           <div class="alert alert-success" v-if="notification">
             <div class="alert-icon">
@@ -223,8 +226,10 @@
         <!--<p>{{ updateQuery }}</p>
         <p>changed Array: {{ changedArray }}</p>
         <p>deleteArray: {{ this.delete }}</p>
-        <p>insertArray: {{ this.insert }}</p>-->
-        <!-- <p>where: {{ this.where }}</p>-->
+        <p>insertArray: {{ this.insert }}</p>
+        <p>where: {{ this.where }}</p>-->
+        <!--<p>modBasis: {{ modBasis[0] }}</p>
+        <p>original: {{ modBasisOrigin[0] }}</p>-->
       </div>
     </div>
   </div>
@@ -233,9 +238,10 @@
 <script>
 import axios from "axios";
 import jsPDF from "jspdf";
+import lodash from 'lodash';
 
 export default {
-  props: ["modBasis", "moduleUri"],
+  props: ["modBasisOrigin", "moduleUri"],
   name: "basisData",
   data() {
     return {
@@ -243,6 +249,7 @@ export default {
       countCourseMode: 0,
       changedArray: [],
       updateQuery: "",
+      modBasis: [],
       notification: false,
       prefixes:
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
@@ -388,6 +395,92 @@ export default {
           this.errors.push(e);
         });
     },
+    resetData() {
+      this.initialState();
+    },
+    initialState() {
+      this.countModType = 0;
+      this.countCourseMode = 0;
+      this.changedArray = [];
+      this.delete = [],
+      this.insert = [],
+      this.template = {
+                label: {
+                  s: " <" + this.moduleUri + "> ",
+                  p: " rdfs:label ",
+                  o: " ?label "
+                },
+                modType_name: {
+                  s: " ?modType ",
+                  p: [" schema:targetName ", " schema:targetDescription "],
+                  o: [" ?modType_name ", " ?modType_des "],
+                  Pflichtmodul: [
+                    "Pflichtmodul",
+                    "muss von allen Studierenden belegt und absolviert werden"
+                  ],
+                  Wahlpflichtmodul: [
+                    "Wahlpflichtmodul",
+                    "kann aus einer Reihe von Modulen ausgewählt werden, wird angeboten, wenn sich genügend Interessenten finden"
+                  ]
+                },
+                grade_name: {
+                  s: " ?grade ",
+                  p: " schema:targetName ",
+                  o: " ?grade_name "
+                },
+                learnTypes: {
+                  s: " <" + this.moduleUri + "> ",
+                  p: " schema:learningResourceType ",
+                  o: " ?learnTypes "
+                },
+                eduUse: {
+                  s: " <" + this.moduleUri + "> ",
+                  p: " schema:educationalUse ",
+                  o: " ?eduUse "
+                },
+                swsSum: {
+                  s: " ?sws ",
+                  p: " schema:targetName ",
+                  o: " ?swsSum "
+                },
+                ects: {
+                  s: " <" + this.moduleUri + "> ",
+                  p: " schema:educationalCredentialAwarded ",
+                  o: " ?ects "
+                },
+                duration: {
+                  s: " ?semester ",
+                  p: " schema:duration ",
+                  o: " ?duration "
+                },
+                courseMode: {
+                  s: " ?semester ",
+                  p: " schema:courseMode ",
+                  o: " ?courseMode "
+                },
+                pre: {
+                  s: " <" + this.moduleUri + "> ",
+                  p: " schema:coursePrerequisites ",
+                  o: " ?pre "
+                },
+                url: {
+                  s: " <" + this.moduleUri + "> ",
+                  p: " schema:url ",
+                  o: " ?url "
+                },
+                comment: {
+                  s: " <" + this.moduleUri + "> ",
+                  p: " schema:comment ",
+                  o: " ?comment "
+                },
+                languages: {
+                  s: " <" + this.moduleUri + "> ",
+                  p: " schema:inLanguage ",
+                  o: " ?languages "
+                }
+              };
+      this.modBasis = _.cloneDeep(this.modBasisOrigin);
+    },
     generatePDF() {
       const doc = new jsPDF();
       let pdfHead = [];
@@ -493,87 +586,8 @@ export default {
     },
   },
   watch: {
-    modBasis(v) {
-      if (v.length > 0) {
-        this.countModType = 0;
-        this.countCourseMode = 0;
-        this.changedArray = [];
-        this.template = {
-          label: {
-            s: " <" + this.moduleUri + "> ",
-            p: " rdfs:label ",
-            o: " ?label "
-          },
-          modType_name: {
-            s: " ?modType ",
-            p: [" schema:targetName ", " schema:targetDescription "],
-            o: [" ?modType_name ", " ?modType_des "],
-            Pflichtmodul: [
-              "Pflichtmodul",
-              "muss von allen Studierenden belegt und absolviert werden"
-            ],
-            Wahlpflichtmodul: [
-              "Wahlpflichtmodul",
-              "kann aus einer Reihe von Modulen ausgewählt werden, wird angeboten, wenn sich genügend Interessenten finden"
-            ]
-          },
-          grade_name: {
-            s: " ?grade ",
-            p: " schema:targetName ",
-            o: " ?grade_name "
-          },
-          learnTypes: {
-            s: " <" + this.moduleUri + "> ",
-            p: " schema:learningResourceType ",
-            o: " ?learnTypes "
-          },
-          eduUse: {
-            s: " <" + this.moduleUri + "> ",
-            p: " schema:educationalUse ",
-            o: " ?eduUse "
-          },
-          swsSum: {
-            s: " ?sws ",
-            p: " schema:targetName ",
-            o: " ?swsSum "
-          },
-          ects: {
-            s: " <" + this.moduleUri + "> ",
-            p: " schema:educationalCredentialAwarded ",
-            o: " ?ects "
-          },
-          duration: {
-            s: " ?semester ",
-            p: " schema:duration ",
-            o: " ?duration "
-          },
-          courseMode: {
-            s: " ?semester ",
-            p: " schema:courseMode ",
-            o: " ?courseMode "
-          },
-          pre: {
-            s: " <" + this.moduleUri + "> ",
-            p: " schema:coursePrerequisites ",
-            o: " ?pre "
-          },
-          url: {
-            s: " <" + this.moduleUri + "> ",
-            p: " schema:url ",
-            o: " ?url "
-          },
-          comment: {
-            s: " <" + this.moduleUri + "> ",
-            p: " schema:comment ",
-            o: " ?comment "
-          },
-          languages: {
-            s: " <" + this.moduleUri + "> ",
-            p: " schema:inLanguage ",
-            o: " ?languages "
-          }
-        };
-      }
+    modBasisOrigin(v) {
+      this.initialState();
     },
     countModType(v) {
       if (v == 2) {

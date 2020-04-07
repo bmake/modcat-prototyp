@@ -121,11 +121,14 @@
         <div class="md-layout-item">
           <div class="col-md-12">
             <md-button v-if="modMethod.length > 0" @click="updateData"
-              >Speichern</md-button
+              >Änderung speichern</md-button
             >
-            <md-button v-if="modMethod.length > 0" @click="generatePDF"
+            <md-button v-if="modMethod.length > 0" @click="resetData"
+            >Änderung verwerfen</md-button
+            >
+            <!--<md-button v-if="modMethod.length > 0" @click="generatePDF"
               >Download</md-button
-            >
+            >-->
             <transition name="fade">
               <div class="alert alert-success" v-if="notification">
                 <div class="alert-icon">
@@ -138,8 +141,8 @@
             <p>input2 is: {{ inputs2 }}</p>
             <p>changedArray: {{ changedArray }}</p>
             <p>delete: {{ this.delete }}</p>
-            <p>insert: {{ insert }}</p>
-            <p>where: {{ where }}</p>
+            <p>insert: {{ insert }}</p>-->
+            <!--<p>where: {{ where }}</p>
             <p>update: {{ updateQuery }}</p>-->
           </div>
         </div>
@@ -150,15 +153,17 @@
 <script>
 import axios from "axios";
 import jsPDF from "jspdf";
+import lodash from 'lodash';
 
 export default {
-  props: ["modMethod", "moduleUri"],
+  props: ["modMethodOrigin", "moduleUri"],
   name: "method",
   data() {
     return {
       changedArray: [],
       updateQuery: "",
       notification: false,
+      modMethod: [],
       prefixes:
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
         "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
@@ -166,7 +171,8 @@ export default {
       delete: [],
       insert: [],
       countWorkload: 0,
-      where: "",
+      where: " schema:interactivityType ?interType ;  " +
+        " module:addProp_CompWL ?addPropCompWL . ",
       inputs1: [
         {
           name: []
@@ -342,6 +348,29 @@ export default {
           this.errors.push(e);
         });
     },
+    resetData() {
+      this.initialState();
+    },
+    initialState() {
+      this.inputs1 = [
+        {
+          name: []
+        }
+      ];
+      this.inputs2 = [
+        {
+          name: []
+        }
+      ];
+      this.changedArray = {
+        inputs1: [],
+        inputs2: []
+      };
+      this.modMethod = [],
+      this.delete = [];
+      this.insert = [];
+      this.modMethod = _.cloneDeep(this.modMethodOrigin);
+    },
     generatePDF() {
       const doc = new jsPDF();
       let pdfHead = [];
@@ -414,26 +443,10 @@ export default {
     }
   },
   watch: {
+    modMethodOrigin(v) {
+      this.initialState();
+    },
     modMethod(v) {
-      this.inputs1 = [
-        {
-          name: []
-        }
-      ];
-      this.inputs2 = [
-        {
-          name: []
-        }
-      ];
-      this.changedArray = {
-        inputs1: [],
-        inputs2: []
-      };
-      this.delete = [];
-      this.insert = [];
-      this.where =
-        " schema:interactivityType ?interType ;  " +
-        " module:addProp_CompWL ?addPropCompWL . ";
       if (v.length > 0) {
         let intertypes = v[0].interTypes.value;
         let workloaddetails = v[0].workloadDetails.value;
