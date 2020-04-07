@@ -42,19 +42,30 @@
               </SVGGraph>
             </div>
             <div class="md-layout-item" style="padding-right: 3%">
-              <div style="text-align: right;">
-                <md-button id="download" @click="generatePDF" class="md-simple md-success md-lg">Modulbeschreibung herunterladen</md-button>
+
+              <div v-if="role == 1 || role == 2" style="text-align: right;">
+                <md-button id="download" @click="generatePDF" class="md-simple md-success md-lg" :disabled="pdfBody.length == 0">Modulbeschreibung herunterladen</md-button>
               </div>
-              <keep-alive>
-                <component
-                  v-bind:is="(form = this.form)"
-                  :role="role"
-                  :modBasisOrigin="modBasis"
-                  :moduleUri="selectedModule"
-                  :modOutcomeOrigin="modOutcome"
-                  :modMethodOrigin="modMethod"
-                />
-              </keep-alive>
+              <div v-else class="md-layout md-gutter md-alignment-center-center" style="width: 100%; height: 100%; ">
+                <div>
+                  <h2 style="padding: 50px;"><b>Willkommen zu Modulkatalog@THB</b></h2>
+                  <p>Sie können die Modulbeschreibung hier herunterladen</p>
+                  <p>Bitte wählen Sie zuerst ein Modul aus</p>
+                  <md-button @click="generatePDF" class="md-warning md-lg" :disabled="pdfBody.length == 0">Modulbeschreibung herunterladen</md-button>
+                </div>
+              </div>
+              <div v-show="role == 1 || role == 2">
+                <keep-alive>
+                  <component
+                          v-bind:is="(form = this.form)"
+                          :role="role"
+                          :modBasisOrigin="modBasis"
+                          :moduleUri="selectedModule"
+                          :modOutcomeOrigin="modOutcome"
+                          :modMethodOrigin="modMethod"
+                  />
+                </keep-alive>
+              </div>
             </div>
           </div>
         </div>
@@ -93,7 +104,7 @@ export default {
   data() {
     return {
       selectedModule: "",
-      role: "",
+      role: 0,
       modBasis: [],
       modOutcome: [],
       modMethod: [],
@@ -356,12 +367,7 @@ export default {
       });
       doc.save("module.pdf");
     }
-  },
-  computed: {},
-  mounted() {} /*
-  beforeDestroy() {
-    window.removeEventListener("resize", this.leafActive);
-  }*/
+  }
 };
 </script>
 <style lang="scss">

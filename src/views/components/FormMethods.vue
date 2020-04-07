@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="role == 1 || role == 2">
     <div style="text-align:left; font-size:26px;">
       <b>Didaktischer Ansatz</b>
     </div>

@@ -7,8 +7,7 @@
       border: '1px solid grey',
       'border-radius': '5px'
     }"
-  >
-  </div>
+  ></div>
 </template>
 
 <script>
@@ -99,227 +98,231 @@ export default {
           this.style.opacity = 1;
         })
         .on("click", function() {
-          _this.upG();
-          //const g = d3.select('#nodes').selectAll("g")
-          const g = d3.select("#nodes").selectAll("g");
-          g.classed("selected", false);
-          d3.select("#layer1")
-            .selectAll("path")
-            .style("stroke-width", 0.2);
-          d3.select("defs")
-            .selectAll("marker")
-            .selectAll("path")
-            .attr("transform", "scale(0.8) rotate(180) translate(12.5,0)");
-          //d3.select(this).classed('selected', true)
+          if (_this.role > 0) {
+            _this.upG();
+            //const g = d3.select('#nodes').selectAll("g")
+            const g = d3.select("#nodes").selectAll("g");
+            g.classed("selected", false);
+            d3.select("#layer1")
+              .selectAll("path")
+              .style("stroke-width", 0.2);
+            d3.select("defs")
+              .selectAll("marker")
+              .selectAll("path")
+              .attr("transform", "scale(0.8) rotate(180) translate(12.5,0)");
+            //d3.select(this).classed('selected', true)
 
-          let id = this.id;
-          console.log("id", id);
-          let q = "";
+            let id = this.id;
+            console.log("id", id);
+            let q = "";
 
-          if (
-            /*id == "nodeModulKuerzel" || */ id == "nodeStudiengang" ||
-            id == "nodeOrdnung" ||
-            id == "nodePerson"
-          ) {
-            _this.form = "BasicData";
-            d3.select("#nodeModulKuerzel").classed("selected", true);
-            d3.select("#nodeStudiengang").classed("selected", true);
-            d3.select("#nodeOrdnung").classed("selected", true);
-            d3.select("#nodePerson").classed("selected", true);
-            d3.select("#layer1")
-              .selectAll("path.groupA")
-              .transition()
-              .duration(300)
-              .style("stroke-width", "1px"); /*.style('stroke', 'red')*/
-            d3.select("defs")
-              .selectAll("marker")
-              .selectAll("path.groupA")
-              .attr(
-                "transform",
-                "scale(0.3) rotate(180) translate(12.5,0)"
-              ); /*.style('stroke', 'red')*/
-          } else if (id == "nodeSoWiSeXY") {
-            //_this.form = "Teachers";
-            d3.select("#nodeModulKuerzel").classed("selected", true);
-            d3.select("#nodeSoWiSeXY").classed("selected", true);
-            d3.select("#nodePerson").classed("selected", true);
-            d3.select("#nodeOrganisation").classed("selected", true);
-            d3.select("#nodes")
-              .selectAll("g.groupS")
-              .classed("faded", false);
-            d3.select("#pathLabels")
-              .selectAll("g.groupS")
-              .classed("faded", false);
-            d3.select("#layer1")
-              .selectAll("path.groupD")
-              .transition()
-              .duration(300)
-              .style("stroke-width", "1px");
-            d3.select("defs")
-              .selectAll("marker")
-              .selectAll("path.groupD")
-              .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
-            d3.select("#layer1")
-              .selectAll("path.groupS")
-              .classed("faded", false);
-            d3.select("#layer1")
-              .selectAll("path.groupS")
-              .transition()
-              .duration(300)
-              .style("stroke-width", "1px");
-            d3.select("defs")
-              .selectAll("marker")
-              .selectAll("path.groupS")
-              .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
-          } else if (id == "nodeDidaktik") {
-            _this.form = "Methods";
-            d3.select("#nodeModulKuerzel").classed("selected", true);
-            d3.select("#nodeDidaktik").classed("selected", true);
-            d3.select("#layer1")
-              .selectAll("path.groupC")
-              .transition()
-              .duration(300)
-              .style("stroke-width", "1px");
-            d3.select("defs")
-              .selectAll("marker")
-              .selectAll("path.groupC")
-              .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
-            if (_this.modMethods.length == 0) {
-              q =
-                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
-                "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
-                "PREFIX schema: <https://schema.org/> " +
-                "SELECT DISTINCT ?code ?interTypes ?workloadSum ?workloadDetails " +
-                "WHERE { " +
-                "  <" +
-                _this.moduleUri +
-                "> schema:courseCode ?code . " +
-                "  OPTIONAL { " +
-                ' SELECT (GROUP_CONCAT(?interType; separator=" | ") as ?interTypes) ' +
-                "    WHERE { " +
-                "      <" +
-                _this.moduleUri +
-                "> schema:interactivityType ?interType . " +
-                "    } " +
-                "} " +
-                "  OPTIONAL { " +
-                'SELECT (SUM(?workloadValue) as ?workloadSum) (GROUP_CONCAT(?workloadDetail; separator=" | ") as ?workloadDetails) ' +
-                "WHERE { " +
-                "  SELECT DISTINCT * " +
-                "  WHERE { " +
-                "      <" + _this.moduleUri +"> module:addProp_CompWL ?addPropCompWL . " +
-                "      ?addPropCompWL schema:valueReference ?workload . " +
-                "      ?workload schema:name ?workloadName ; " +
-                "                schema:value ?workloadValue . " +
-                '      BIND(CONCAT(?workloadName, " @ ", STR(?workloadValue)) as ?workloadDetail) ' +
-                "    } ORDER BY ?workload " +
-                "}" +
-                "  } " +
-                "}";
-              _this.queryModuleInfo(q);
+            if (
+              /*id == "nodeModulKuerzel" || */ id == "nodeStudiengang" ||
+              id == "nodeOrdnung" ||
+              id == "nodePerson"
+            ) {
+              _this.form = "BasicData";
+              d3.select("#nodeModulKuerzel").classed("selected", true);
+              d3.select("#nodeStudiengang").classed("selected", true);
+              d3.select("#nodeOrdnung").classed("selected", true);
+              d3.select("#nodePerson").classed("selected", true);
+              d3.select("#layer1")
+                .selectAll("path.groupA")
+                .transition()
+                .duration(300)
+                .style("stroke-width", "1px"); /*.style('stroke', 'red')*/
+              d3.select("defs")
+                .selectAll("marker")
+                .selectAll("path.groupA")
+                .attr(
+                  "transform",
+                  "scale(0.3) rotate(180) translate(12.5,0)"
+                ); /*.style('stroke', 'red')*/
+            } else if (id == "nodeSoWiSeXY") {
+              //_this.form = "Teachers";
+              d3.select("#nodeModulKuerzel").classed("selected", true);
+              d3.select("#nodeSoWiSeXY").classed("selected", true);
+              d3.select("#nodePerson").classed("selected", true);
+              d3.select("#nodeOrganisation").classed("selected", true);
+              d3.select("#nodes")
+                .selectAll("g.groupS")
+                .classed("faded", false);
+              d3.select("#pathLabels")
+                .selectAll("g.groupS")
+                .classed("faded", false);
+              d3.select("#layer1")
+                .selectAll("path.groupD")
+                .transition()
+                .duration(300)
+                .style("stroke-width", "1px");
+              d3.select("defs")
+                .selectAll("marker")
+                .selectAll("path.groupD")
+                .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
+              d3.select("#layer1")
+                .selectAll("path.groupS")
+                .classed("faded", false);
+              d3.select("#layer1")
+                .selectAll("path.groupS")
+                .transition()
+                .duration(300)
+                .style("stroke-width", "1px");
+              d3.select("defs")
+                .selectAll("marker")
+                .selectAll("path.groupS")
+                .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
+            } else if (id == "nodeDidaktik") {
+              _this.form = "Methods";
+              d3.select("#nodeModulKuerzel").classed("selected", true);
+              d3.select("#nodeDidaktik").classed("selected", true);
+              d3.select("#layer1")
+                .selectAll("path.groupC")
+                .transition()
+                .duration(300)
+                .style("stroke-width", "1px");
+              d3.select("defs")
+                .selectAll("marker")
+                .selectAll("path.groupC")
+                .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
+              if (_this.modMethods.length == 0) {
+                q =
+                  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+                  "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+                  "PREFIX schema: <https://schema.org/> " +
+                  "SELECT DISTINCT ?code ?interTypes ?workloadSum ?workloadDetails " +
+                  "WHERE { " +
+                  "  <" +
+                  _this.moduleUri +
+                  "> schema:courseCode ?code . " +
+                  "  OPTIONAL { " +
+                  ' SELECT (GROUP_CONCAT(?interType; separator=" | ") as ?interTypes) ' +
+                  "    WHERE { " +
+                  "      <" +
+                  _this.moduleUri +
+                  "> schema:interactivityType ?interType . " +
+                  "    } " +
+                  "} " +
+                  "  OPTIONAL { " +
+                  'SELECT (SUM(?workloadValue) as ?workloadSum) (GROUP_CONCAT(?workloadDetail; separator=" | ") as ?workloadDetails) ' +
+                  "WHERE { " +
+                  "  SELECT DISTINCT * " +
+                  "  WHERE { " +
+                  "      <" +
+                  _this.moduleUri +
+                  "> module:addProp_CompWL ?addPropCompWL . " +
+                  "      ?addPropCompWL schema:valueReference ?workload . " +
+                  "      ?workload schema:name ?workloadName ; " +
+                  "                schema:value ?workloadValue . " +
+                  '      BIND(CONCAT(?workloadName, " @ ", STR(?workloadValue)) as ?workloadDetail) ' +
+                  "    } ORDER BY ?workload " +
+                  "}" +
+                  "  } " +
+                  "}";
+                _this.queryModuleInfo(q);
+              }
+            } else if (id == "nodeBeschreibung") {
+              _this.form = "Outcomes";
+              d3.select("#nodeModulKuerzel").classed("selected", true);
+              d3.select("#nodeBeschreibung").classed("selected", true);
+              d3.select("#layer1")
+                .selectAll("path.groupB")
+                .transition()
+                .duration(300)
+                .style("stroke-width", "1px");
+              d3.select("defs")
+                .selectAll("marker")
+                .selectAll("path.groupB")
+                .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
+              if (_this.modOutcomes.length == 0) {
+                q =
+                  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+                  "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+                  "PREFIX schema: <https://schema.org/> " +
+                  "SELECT DISTINCT ?code ?learnBlooms ?contents ?exams " +
+                  "WHERE { " +
+                  "  <" +
+                  _this.moduleUri +
+                  "> schema:courseCode ?code . " +
+                  "  OPTIONAL { " +
+                  '   SELECT (GROUP_CONCAT(?learnBloom; separator=" | ") as ?learnBlooms)  ' +
+                  "   WHERE {  " +
+                  '   SELECT (CONCAT(?learnResult, " @ ", COALESCE(?bloom_name, "")) as ?learnBloom)  ' +
+                  "      WHERE {  " +
+                  "        <" +
+                  _this.moduleUri +
+                  "> module:about_LResults ?LResult.  " +
+                  "        ?LResult schema:itemListElement ?resList .  " +
+                  "        ?resList schema:description ?learnResult ;  " +
+                  "                 schema:position ?position .  " +
+                  "        OPTIONAL {  " +
+                  "          ?resList schema:additionalType ?addList .  " +
+                  '          FILTER regex(str(?addList), "BloomTax", "i")  ' +
+                  "          ?addList schema:name ?bloom_name .  " +
+                  '          FILTER (LANG(?bloom_name) = "en") .  ' +
+                  "        }  " +
+                  "      } ORDER BY ?position  " +
+                  "    }" +
+                  "    } " +
+                  "  OPTIONAL { " +
+                  '    SELECT (GROUP_CONCAT(?exam; separator=" | ") as ?exams) ' +
+                  "    WHERE { " +
+                  "      <" +
+                  _this.moduleUri +
+                  "> module:about_Exam ?examCode. " +
+                  "      ?examCode schema:itemListElement ?exam . " +
+                  "    } " +
+                  "  } " +
+                  "  OPTIONAL { " +
+                  '    SELECT (GROUP_CONCAT(?content; separator=" | ") as ?contents) ' +
+                  "    WHERE { " +
+                  "      SELECT ?content " +
+                  "      WHERE { " +
+                  "        <" +
+                  _this.moduleUri +
+                  "> module:about_Content ?contentCode. " +
+                  "        ?contentCode schema:itemListElement ?content . " +
+                  "      } ORDER BY ?content " +
+                  "    } " +
+                  "  } " +
+                  "   " +
+                  "} ";
+                _this.queryModuleInfo(q);
+              }
+            } else if (id == "nodeLiteratur") {
+              //_this.form = "Literature";
+              d3.select("#nodeModulKuerzel").classed("selected", true);
+              d3.select("#nodeLiteratur").classed("selected", true);
+              d3.select("#nodePerson").classed("selected", true);
+              d3.select("#nodeOrganisation").classed("selected", true);
+              d3.select("#nodes")
+                .selectAll("g.groupL")
+                .classed("faded", false);
+              d3.select("#pathLabels")
+                .selectAll("g.groupL")
+                .classed("faded", false);
+              d3.select("#nodePerson").classed("faded", false);
+              d3.select("#layer1")
+                .selectAll("path.groupE")
+                .transition()
+                .duration(300)
+                .style("stroke-width", "1px");
+              d3.select("defs")
+                .selectAll("marker")
+                .selectAll("path.groupE")
+                .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
+              d3.select("#layer1")
+                .selectAll("path.groupL")
+                .classed("faded", false);
+              d3.select("#layer1")
+                .selectAll("path.groupL")
+                .transition()
+                .duration(300)
+                .style("stroke-width", "1px");
+              d3.select("defs")
+                .selectAll("marker")
+                .selectAll("path.groupL")
+                .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
             }
-          } else if (id == "nodeBeschreibung") {
-            _this.form = "Outcomes";
-            d3.select("#nodeModulKuerzel").classed("selected", true);
-            d3.select("#nodeBeschreibung").classed("selected", true);
-            d3.select("#layer1")
-              .selectAll("path.groupB")
-              .transition()
-              .duration(300)
-              .style("stroke-width", "1px");
-            d3.select("defs")
-              .selectAll("marker")
-              .selectAll("path.groupB")
-              .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
-            if (_this.modOutcomes.length == 0) {
-              q =
-                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
-                "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
-                "PREFIX schema: <https://schema.org/> " +
-                "SELECT DISTINCT ?code ?learnBlooms ?contents ?exams " +
-                "WHERE { " +
-                "  <" +
-                _this.moduleUri +
-                "> schema:courseCode ?code . " +
-                "  OPTIONAL { " +
-                '   SELECT (GROUP_CONCAT(?learnBloom; separator=" | ") as ?learnBlooms)  ' +
-                "   WHERE {  " +
-                '   SELECT (CONCAT(?learnResult, " @ ", COALESCE(?bloom_name, "")) as ?learnBloom)  ' +
-                "      WHERE {  " +
-                "        <" +
-                _this.moduleUri +
-                "> module:about_LResults ?LResult.  " +
-                "        ?LResult schema:itemListElement ?resList .  " +
-                "        ?resList schema:description ?learnResult ;  " +
-                "                 schema:position ?position .  " +
-                "        OPTIONAL {  " +
-                "          ?resList schema:additionalType ?addList .  " +
-                '          FILTER regex(str(?addList), "BloomTax", "i")  ' +
-                "          ?addList schema:name ?bloom_name .  " +
-                '          FILTER (LANG(?bloom_name) = "en") .  ' +
-                "        }  " +
-                "      } ORDER BY ?position  " +
-                "    }" +
-                "    } " +
-                "  OPTIONAL { " +
-                '    SELECT (GROUP_CONCAT(?exam; separator=" | ") as ?exams) ' +
-                "    WHERE { " +
-                "      <" +
-                _this.moduleUri +
-                "> module:about_Exam ?examCode. " +
-                "      ?examCode schema:itemListElement ?exam . " +
-                "    } " +
-                "  } " +
-                "  OPTIONAL { " +
-                '    SELECT (GROUP_CONCAT(?content; separator=" | ") as ?contents) ' +
-                "    WHERE { " +
-                "      SELECT ?content " +
-                "      WHERE { " +
-                "        <" +
-                _this.moduleUri +
-                "> module:about_Content ?contentCode. " +
-                "        ?contentCode schema:itemListElement ?content . " +
-                "      } ORDER BY ?content " +
-                "    } " +
-                "  } " +
-                "   " +
-                "} ";
-              _this.queryModuleInfo(q);
-            }
-          } else if (id == "nodeLiteratur") {
-            //_this.form = "Literature";
-            d3.select("#nodeModulKuerzel").classed("selected", true);
-            d3.select("#nodeLiteratur").classed("selected", true);
-            d3.select("#nodePerson").classed("selected", true);
-            d3.select("#nodeOrganisation").classed("selected", true);
-            d3.select("#nodes")
-              .selectAll("g.groupL")
-              .classed("faded", false);
-            d3.select("#pathLabels")
-              .selectAll("g.groupL")
-              .classed("faded", false);
-            d3.select("#nodePerson").classed("faded", false);
-            d3.select("#layer1")
-              .selectAll("path.groupE")
-              .transition()
-              .duration(300)
-              .style("stroke-width", "1px");
-            d3.select("defs")
-              .selectAll("marker")
-              .selectAll("path.groupE")
-              .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
-            d3.select("#layer1")
-              .selectAll("path.groupL")
-              .classed("faded", false);
-            d3.select("#layer1")
-              .selectAll("path.groupL")
-              .transition()
-              .duration(300)
-              .style("stroke-width", "1px");
-            d3.select("defs")
-              .selectAll("marker")
-              .selectAll("path.groupL")
-              .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
           }
         });
     },
@@ -387,7 +390,7 @@ export default {
         .attr("dx", relaCenSem);
     },
     upG() {
-      if (this.role != "") {
+      if (this.role > 0) {
         d3.select("#layer1")
           .selectAll(".faded")
           .classed("faded", false);

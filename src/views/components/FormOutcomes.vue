@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="role == 1 || role == 2">
     <div style="text-align:left; font-size:26px;">
       <b>Inhalte und Leistungen</b>
     </div>
@@ -37,7 +37,7 @@
               v-if="modOutcome.length > 0"
               v-model="input.name[0]"
               @change="addChanged('inputs1', i + 1 + '0')"
-              :disabled="role == 1 || role == 2"
+              :disabled="role != 1 && role !=2"
               md-autogrow
             />
             <md-input v-else disabled />
@@ -98,13 +98,11 @@
               <i
                 class="fas fa-minus-circle"
                 @click="remove('2', i)"
-                :disabled="role != 1 && role !=2"
                 v-show="i || (!i && inputs2.length > 1)"
               />
               <i
                 class="fas fa-plus-circle"
                 @click="add('2', i)"
-                :disabled="role != 1 && role !=2"
                 v-show="i == inputs2.length - 1"
               />
             </span>
@@ -160,13 +158,11 @@
               <i
                 class="fas fa-minus-circle"
                 @click="remove('4', i)"
-                :disabled="role != 1 && role !=2"
                 v-show="i || (!i && inputs4.length > 1)"
               />
               <i
                 class="fas fa-plus-circle"
                 @click="add('4', i)"
-                :disabled="role != 1 && role !=2"
                 v-show="i == inputs4.length - 1"
               />
             </span>
