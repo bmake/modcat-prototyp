@@ -37,10 +37,11 @@
               v-if="modOutcome.length > 0"
               v-model="input.name[0]"
               @change="addChanged('inputs1', i + 1 + '0')"
+              :disabled="role == 1 || role == 2"
               md-autogrow
             />
             <md-input v-else disabled />
-            <span>
+            <span v-if="role == 1 || role == 2">
               <i
                 class="fas fa-minus-circle"
                 @click="remove('1', i)"
@@ -59,6 +60,7 @@
               v-if="modOutcome.length > 0"
               v-model="input.name[1]"
               @md-selected="addChanged('inputs1', i + 1 + '1')"
+              :disabled="role != 1 && role !=2"
               md-dense
             >
               <md-option value="Remember">Erinnern</md-option>
@@ -88,18 +90,21 @@
               v-if="modOutcome.length > 0"
               v-model="input.name"
               @change="addChanged('inputs2', i)"
+              :disabled="role != 1 && role !=2"
               md-autogrow
             />
             <md-input v-else disabled />
-            <span>
+            <span v-if="role == 1 || role == 2">
               <i
                 class="fas fa-minus-circle"
                 @click="remove('2', i)"
+                :disabled="role != 1 && role !=2"
                 v-show="i || (!i && inputs2.length > 1)"
               />
               <i
                 class="fas fa-plus-circle"
                 @click="add('2', i)"
+                :disabled="role != 1 && role !=2"
                 v-show="i == inputs2.length - 1"
               />
             </span>
@@ -147,18 +152,21 @@
               v-if="modOutcome.length > 0"
               v-model="input.name"
               @change="addChanged('inputs4', i)"
+              :disabled="role != 1 && role !=2"
               md-autogrow
             />
             <md-input v-else disabled />
-            <span>
+            <span v-if="role == 1 || role == 2">
               <i
                 class="fas fa-minus-circle"
                 @click="remove('4', i)"
+                :disabled="role != 1 && role !=2"
                 v-show="i || (!i && inputs4.length > 1)"
               />
               <i
                 class="fas fa-plus-circle"
                 @click="add('4', i)"
+                :disabled="role != 1 && role !=2"
                 v-show="i == inputs4.length - 1"
               />
             </span>
@@ -169,10 +177,10 @@
     <div class="md-layout md-gutter">
       <div class="md-layout-item">
         <div>
-          <md-button v-if="modOutcome.length > 0" @click="updateData"
+          <md-button v-if="modOutcome.length > 0" @click="updateData" :disabled="role != 1 && role !=2"
             >Änderung speichern</md-button
           >
-          <md-button v-if="modOutcome.length > 0" @click="resetData"
+          <md-button v-if="modOutcome.length > 0" @click="resetData" :disabled="role != 1 && role !=2"
           >Änderung verwerfen</md-button
           >
           <!--<md-button v-if="modOutcome.length > 0" @click="generatePDF">Download</md-button>-->
@@ -203,7 +211,7 @@ import jsPDF from "jspdf";
 import lodash from 'lodash';
 
 export default {
-  props: ["modOutcomeOrigin", "moduleUri"],
+  props: ["modOutcomeOrigin", "moduleUri", "role"],
   name: "outcome",
   data() {
     return {
@@ -257,33 +265,25 @@ export default {
         //if (index > this.countLearn - 1) {
         let removeLength = index + 1;
         let totalLength = this.inputs1.length + 1;
-        console.log("arr", this.changedArray, removeLength, totalLength);
         let i = this.changedArray.inputs1.indexOf(removeLength + "0");
         if (i > -1) {
           this.changedArray.inputs1.splice(i, 1);
         }
-        console.log("arr", this.changedArray);
         i = this.changedArray.inputs1.indexOf(removeLength + "1");
         if (i > -1) {
           this.changedArray.inputs1.splice(i, 1);
         }
-        console.log("arr", this.changedArray);
 
         if (totalLength > removeLength) {
           for (let i = removeLength + 1; i <= totalLength; i++) {
-            console.log("arr", this.changedArray);
             let a = this.changedArray.inputs1.indexOf(i + "0");
             if (a > -1) {
-              console.log("a", a, i + "0");
               this.changedArray.inputs1[a] = i - 1 + "0";
             }
-            console.log("arr", this.changedArray);
             let b = this.changedArray.inputs1.indexOf(i + "1");
             if (b > -1) {
-              console.log("b", b, i + "1");
               this.changedArray.inputs1[b] = i - 1 + "1";
             }
-            console.log("arr", this.changedArray);
           }
         }
         //}
@@ -295,10 +295,8 @@ export default {
       if (this.changedArray[item].indexOf(position) === -1) {
         if (this.count != 0) {
           if (item == "inputs1") {
-            console.log("add", item, position);
             let p = parseInt(position.substring(0, 1));
             let n = parseInt(position.substring(1));
-            console.log(p, n, this[item][p - 1].name[n]);
             if (this[item][p - 1].name[n] != null) {
               this.changedArray[item].push(position);
             }
@@ -350,7 +348,6 @@ export default {
             } else {
               if (this.inputs1[p - 1].name.length == 1) {
                 let des = this.inputs1[p - 1].name[0];
-                console.log("length 1 des", des);
                 let tripleIns =
                   sub +
                   " a schema:ListItem ;  " +
@@ -374,7 +371,6 @@ export default {
               ) {
                 let des = this.inputs1[p - 1].name[0];
                 let bloom = this.inputs1[p - 1].name[1];
-                console.log("length 1 des bloom", des, bloom);
                 let tripleIns =
                   sub +
                   " a schema:ListItem ;  " +

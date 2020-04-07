@@ -16,14 +16,13 @@ import axios from "axios";
 
 export default {
   name: "SvgGraph",
-  props: ["moduleUri"],
+  props: ["moduleUri", "role"],
   data() {
     return {
       svgfile: require("../../assets/modcat.svg"),
       width: 1024,
       height: 600,
       gridSize: 100,
-      role: "",
       moduleInfo: [],
       modBasicData: [],
       modOutcomes: [],
@@ -56,8 +55,6 @@ export default {
       if (this.height < h) {
         d3.select("svg#svg887").style("height", this.height + "px");
       }
-
-      console.log("svg-width", d3.select("svg#svg887").style("width"));
 
       var svg = d3.select("svg#svg887");
       var g = svg.append("g");
@@ -340,7 +337,6 @@ export default {
         "          schema:accountablePerson ?person. " +
         "}";
 
-      console.log(q);
       axios
         .post("http://fbw-sgmwi.th-brandenburg.de:3030/modcat/query", q, {
           headers: { "Content-Type": "application/sparql-query" }
@@ -348,7 +344,6 @@ export default {
         .then(response => {
           // JSON responses are automatically parsed.
           this.moduleInfo = response.data.results.bindings;
-          /*console.log("moduleInfo", this.moduleInfo)*/
         })
         .catch(e => {
           this.errors.push(e);
@@ -357,7 +352,6 @@ export default {
     updateGraphText() {
       let module = d3.select("#textModulkuerzel").select("tspan");
       let semester = d3.select("#textSoWiSeXY").select("tspan");
-      console.log("updateInfo", this.moduleInfo);
       let tModule;
       let tSemester;
       if (this.moduleInfo.length > 0) {
@@ -377,7 +371,6 @@ export default {
           .getBBox().width /
           2 -
         5;
-      console.log("relaCenMod", relaCenMod);
       d3.select("#textModulkuerzel")
         .attr("text-anchor", "middle")
         .attr("dx", relaCenMod);
@@ -516,7 +509,6 @@ export default {
           let exams = newData[0].exams.value.split(" | ");
           newData[0].exams.value = exams;
         }
-        console.log("modOutcomes", newData);
         this.$emit("modOutcomes", newData);
       }
     },

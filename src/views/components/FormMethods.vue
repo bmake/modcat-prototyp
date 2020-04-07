@@ -36,9 +36,10 @@
             v-if="modMethod.length > 0"
             v-model="input.name"
             @change="addChanged('inputs1', i)"
+            :disabled="role != 1 && role !=2"
           />
           <md-input v-else disabled />
-          <span>
+          <span v-if="role == 1 || role == 2">
             <i
               class="fas fa-minus-circle"
               @click="remove('1', i)"
@@ -64,6 +65,7 @@
           <md-input
             type="number"
             v-if="modMethod.length > 0"
+            :disabled="role != 1 && role !=2"
             v-model="modMethod[0].workloadSum.value"
           />
           <md-input v-else disabled />
@@ -82,6 +84,7 @@
               v-if="modMethod.length > 0"
               v-model="input.name[0]"
               @change="addChanged('inputs2', i)"
+              :disabled="role != 1 && role !=2"
             />
             <md-input v-else disabled />
           </md-field>
@@ -97,9 +100,10 @@
               v-if="modMethod.length > 0"
               v-model="input.name[1]"
               @change="addChanged('inputs2', i)"
+              :disabled="role != 1 && role !=2"
             />
             <md-input v-else disabled />
-            <span>
+            <span v-if="role == 1 || role == 2">
               <i
                 class="fas fa-minus-circle"
                 @click="remove('2', i)"
@@ -120,10 +124,10 @@
       <div class="md-layout md-gutter">
         <div class="md-layout-item">
           <div class="col-md-12">
-            <md-button v-if="modMethod.length > 0" @click="updateData"
+            <md-button v-if="modMethod.length > 0" @click="updateData" :disabled="role != 1 && role !=2"
               >Änderung speichern</md-button
             >
-            <md-button v-if="modMethod.length > 0" @click="resetData"
+            <md-button v-if="modMethod.length > 0" @click="resetData" :disabled="role != 1 && role !=2"
             >Änderung verwerfen</md-button
             >
             <!--<md-button v-if="modMethod.length > 0" @click="generatePDF"
@@ -156,7 +160,7 @@ import jsPDF from "jspdf";
 import lodash from 'lodash';
 
 export default {
-  props: ["modMethodOrigin", "moduleUri"],
+  props: ["modMethodOrigin", "moduleUri", "role"],
   name: "method",
   data() {
     return {

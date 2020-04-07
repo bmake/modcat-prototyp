@@ -21,10 +21,17 @@
     <div class="main main-raised">
       <div class="section section-examples">
         <div class="container-fluid text-center">
+          <div style="text-align: right; padding-right: 10%">
+            <h4>Bitte wählen Sie Ihre Rolle um die Modulkataloge zu bearbeiten</h4>
+            <md-button v-on:click="role=0" class="md-primary md-size-33" style="margin-bottom:30px;">Interessierte</md-button>
+            <md-button v-on:click="role=1" class="md-primary md-size-33" style="margin-bottom:30px;">Lehrende</md-button>
+            <md-button v-on:click="role=2" class="md-primary md-size-33" style="margin-bottom:30px;">Studiengangsleitung</md-button>
+          </div>
           <div class="md-layout">
             <div class="md-layout-item">
               <SVGGraph
                 :module-uri="selectedModule"
+                :role="role"
                 @modBasicData="getModBasicData"
                 @modOutcomes="getModOutcomes"
                 @modMethods="getModMethod"
@@ -41,6 +48,7 @@
               <keep-alive>
                 <component
                   v-bind:is="(form = this.form)"
+                  :role="role"
                   :modBasisOrigin="modBasis"
                   :moduleUri="selectedModule"
                   :modOutcomeOrigin="modOutcome"
@@ -85,6 +93,7 @@ export default {
   data() {
     return {
       selectedModule: "",
+      role: "",
       modBasis: [],
       modOutcome: [],
       modMethod: [],
@@ -273,9 +282,7 @@ export default {
           headers: { "Content-Type": "application/sparql-query" }
         })
         .then(response => {
-          console.log("here");
           const res = response.data.results.bindings;
-          console.log(res);
           this.pdfHead.push(["Modul-Kurzkennzeichen", res[0].code.value]);
           this.pdfBody.push(["Modulbezeichnung", res[0].label.value]);
           this.pdfBody.push([
@@ -331,7 +338,6 @@ export default {
           this.pdfBody.push(["Literatur", res[0].citations.value]);
           this.pdfBody.push(["Besonderes", res[0].comment.value]);
           this.pdfBody.push(["URL", res[0].url.value]);
-          console.log("pdf", this.pdfBody);
         })
         .catch(e => {
           this.errors.push(e);
