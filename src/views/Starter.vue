@@ -21,11 +21,11 @@
     <div class="main main-raised">
       <div class="section section-examples">
         <div class="container-fluid text-center">
-          <div style="text-align: right; padding-right: 10%">
+          <div style="text-align: right; padding-right: 10%; margin-bottom:15px;">
             <h4>Bitte wählen Sie Ihre Rolle um die Modulkataloge zu bearbeiten</h4>
-            <md-button v-on:click="role=0" class="md-primary md-size-33" style="margin-bottom:30px;">Interessierte</md-button>
-            <md-button v-on:click="role=1" class="md-primary md-size-33" style="margin-bottom:30px;">Lehrende</md-button>
-            <md-button v-on:click="role=2" class="md-primary md-size-33" style="margin-bottom:30px;">Studiengangsleitung</md-button>
+            <md-button v-on:click="role=0, style1=true, style2=false, style3=false" class="md-size-33" v-bind:class="{ 'md-primary': !style1, 'md-rose': style1 }">Interessierte</md-button>
+            <md-button v-on:click="role=1, style1=false, style2=true, style3=false" class="md-size-33" v-bind:class="{ 'md-primary': !style2, 'md-rose': style2 }">Lehrende</md-button>
+            <md-button v-on:click="role=2, style1=false, style2=false, style3=true" class="md-size-33" v-bind:class="{ 'md-primary': !style3, 'md-rose': style3 }">Studiengangsleitung</md-button>
           </div>
           <div class="md-layout">
             <div class="md-layout-item">
@@ -104,7 +104,7 @@ export default {
   data() {
     return {
       selectedModule: "",
-      role: 0,
+      role: null,
       modBasis: [],
       modOutcome: [],
       modMethod: [],
@@ -112,7 +112,10 @@ export default {
       modTeacher: [],
       form: "BasicData",
       pdfHead: [],
-      pdfBody: []
+      pdfBody: [],
+      style1: false,
+      style2: false,
+      style3: false
     };
   },
   methods: {
@@ -384,11 +387,16 @@ g.selected rect {
   stroke-width: 2px !important;
 }
 
+.md-button.choosed {
+  background-color: #ea80fc !important;
+}
+
 #download {
   background-color: #fff9c4 !important;
 }
 #download:hover {
   background-color: #fcdd86 !important;
+  background-color: #ea80fc;
 }
 
 @media all and (min-width: 991px) {
