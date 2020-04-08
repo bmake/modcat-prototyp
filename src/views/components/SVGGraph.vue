@@ -113,7 +113,6 @@ export default {
             //d3.select(this).classed('selected', true)
 
             let id = this.id;
-            console.log("id", id);
             let q = "";
 
             if (
@@ -528,13 +527,11 @@ export default {
           }
           newData[0].workloadDetails.value = workloadDetails;
         }
-        console.log("modMethods", newData);
         this.$emit("modMethods", newData);
       }
     },
     modLiterature: {
       handler(v) {
-        console.log("modLiterature", v);
         if (this.modLiterature.length > 0) {
           this.$emit("modLiterature", v);
         }
@@ -542,7 +539,6 @@ export default {
     },
     modTeachers: {
       handler(v) {
-        console.log("modTeachers", v);
         if (this.modTeachers.length > 0) {
           this.$emit("modTeachers", v);
         }
@@ -550,7 +546,6 @@ export default {
     },
     form: {
       handler(v) {
-        console.log("form", v);
         this.$emit("formType", v);
       }
     },

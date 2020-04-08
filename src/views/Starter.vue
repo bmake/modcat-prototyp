@@ -11,7 +11,9 @@
               <h1>Modulkatalog @THB</h1>
               <h3>Fachbereich Wirtschaft</h3>
               <div>
-                <Select @module="getModule" />
+                <label>
+                  <Select @module="getModule" />
+                </label>
               </div>
             </div>
           </div>
@@ -21,11 +23,36 @@
     <div class="main main-raised">
       <div class="section section-examples">
         <div class="container-fluid text-center">
-          <div style="text-align: right; padding-right: 10%; margin-bottom:15px;">
-            <h4>Bitte wählen Sie Ihre Rolle um die Modulkataloge zu bearbeiten</h4>
-            <md-button v-on:click="role=0, style1=true, style2=false, style3=false" class="md-size-33" v-bind:class="{ 'md-primary': !style1, 'md-rose': style1 }">Interessierte</md-button>
-            <md-button v-on:click="role=1, style1=false, style2=true, style3=false" class="md-size-33" v-bind:class="{ 'md-primary': !style2, 'md-rose': style2 }">Lehrende</md-button>
-            <md-button v-on:click="role=2, style1=false, style2=false, style3=true" class="md-size-33" v-bind:class="{ 'md-primary': !style3, 'md-rose': style3 }">Studiengangsleitung</md-button>
+          <div
+            style="text-align: right; padding-right: 10%; margin-bottom:15px;"
+          >
+            <h4>
+              Bitte wählen Sie Ihre Rolle um die Modulkataloge zu bearbeiten
+            </h4>
+            <md-button
+              v-on:click="
+                (role = 0), (style1 = true), (style2 = false), (style3 = false)
+              "
+              class="md-size-33"
+              v-bind:class="{ 'md-primary': !style1, 'md-rose': style1 }"
+              >Interessierte</md-button
+            >
+            <md-button
+              v-on:click="
+                (role = 1), (style1 = false), (style2 = true), (style3 = false)
+              "
+              class="md-size-33"
+              v-bind:class="{ 'md-primary': !style2, 'md-rose': style2 }"
+              >Lehrende</md-button
+            >
+            <md-button
+              v-on:click="
+                (role = 2), (style1 = false), (style2 = false), (style3 = true)
+              "
+              class="md-size-33"
+              v-bind:class="{ 'md-primary': !style3, 'md-rose': style3 }"
+              >Studiengangsleitung</md-button
+            >
           </div>
           <div class="md-layout">
             <div class="md-layout-item">
@@ -42,27 +69,43 @@
               </SVGGraph>
             </div>
             <div class="md-layout-item" style="padding-right: 3%">
-
               <div v-if="role == 1 || role == 2" style="text-align: right;">
-                <md-button id="download" @click="generatePDF" class="md-simple md-success md-lg" :disabled="pdfBody.length == 0">Modulbeschreibung herunterladen</md-button>
+                <md-button
+                  id="download"
+                  @click="generatePDF"
+                  class="md-simple md-success md-lg"
+                  :disabled="pdfBody.length == 0"
+                  >Modulbeschreibung herunterladen</md-button
+                >
               </div>
-              <div v-else class="md-layout md-gutter md-alignment-center-center" style="width: 100%; height: 100%; ">
+              <div
+                v-else
+                class="md-layout md-gutter md-alignment-center-center"
+                style="width: 100%; height: 100%; "
+              >
                 <div>
-                  <h2 style="padding: 50px;"><b>Willkommen zu Modulkatalog@THB</b></h2>
+                  <h2 style="padding: 50px;">
+                    <b>Willkommen zu Modulkatalog@THB</b>
+                  </h2>
                   <p>Sie können die Modulbeschreibung hier herunterladen</p>
                   <p>Bitte wählen Sie zuerst ein Modul aus</p>
-                  <md-button @click="generatePDF" class="md-warning md-lg" :disabled="pdfBody.length == 0">Modulbeschreibung herunterladen</md-button>
+                  <md-button
+                    @click="generatePDF"
+                    class="md-warning md-lg"
+                    :disabled="pdfBody.length == 0"
+                    >Modulbeschreibung herunterladen</md-button
+                  >
                 </div>
               </div>
               <div v-show="role == 1 || role == 2">
                 <keep-alive>
                   <component
-                          v-bind:is="(form = this.form)"
-                          :role="role"
-                          :modBasisOrigin="modBasis"
-                          :moduleUri="selectedModule"
-                          :modOutcomeOrigin="modOutcome"
-                          :modMethodOrigin="modMethod"
+                    v-bind:is="(form = this.form)"
+                    :role="role"
+                    :modBasisOrigin="modBasis"
+                    :moduleUri="selectedModule"
+                    :modOutcomeOrigin="modOutcome"
+                    :modMethodOrigin="modMethod"
                   />
                 </keep-alive>
               </div>
@@ -98,7 +141,7 @@ export default {
     Teachers: FormTeachers,
     Dynamic: FormDynamic
   },
-  name: "index",
+  name: "starter",
   bodyClass: "index-page",
   props: {},
   data() {
@@ -129,7 +172,6 @@ export default {
     },
     getModBasicData(value) {
       this.modBasis = value;
-      console.log("ModBasisValueStarter", this.modBasis);
     },
     getModOutcomes(value) {
       this.modOutcome = value;
@@ -147,7 +189,6 @@ export default {
       this.form = value;
     },
     convertPDFArray() {
-      console.log("convertSelectedModule", this.selectedModule);
       let query =
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  " +
         "PREFIX module: <https://bmake.th-brandenburg.de/module/>  " +

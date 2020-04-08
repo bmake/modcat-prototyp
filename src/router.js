@@ -11,11 +11,10 @@ import Starter from "./views/Starter";
 Vue.use(Router);
 
 export default new Router({
-  base: "/modcat/",
   routes: [
     {
       path: "/",
-      name: "index",
+      name: "starter",
       components: { default: Starter, header: '', footer: MainFooter },
       props: {
         header: { colorOnScroll: 400 },

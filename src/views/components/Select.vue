@@ -59,7 +59,6 @@ export default {
   },
   methods: {
     queryModuleList(sp) {
-      console.log("here")
       let query =
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
         "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
@@ -70,7 +69,6 @@ export default {
         "          schema:isPartOf module:" + sp + " ; " +
         "          rdfs:label ?label. " +
         "}";
-      console.log("query", query)
 
       axios
         .post("http://fbw-sgmwi.th-brandenburg.de:3030/modcat/query", query, {
