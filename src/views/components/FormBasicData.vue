@@ -20,6 +20,19 @@
         </md-field>
       </div>
 
+      <div class="md-layout-item md-size-33">
+        <md-field>
+          <label>Modulverantwortliche/n</label>
+          <md-input
+            v-if="modBasis.length > 0"
+            v-model="modBasis[0].accPersonLabel.value"
+            @change="addChanged('accPersonLabel')"
+            :disabled="role != 2"
+          />
+          <md-input v-else disabled />
+        </md-field>
+      </div>
+
       <div class="md-layout-item md-size-100">
         <md-field>
           <label>Modulbezeichnung</label>
@@ -220,10 +233,16 @@
       </div>
 
       <div class="md-layout-item" ref="notification">
-        <md-button v-if="modBasis.length > 0" @click="updateData" :disabled="role != 2"
+        <md-button
+          v-if="modBasis.length > 0"
+          @click="updateData"
+          :disabled="role != 2"
           >Änderung speichern</md-button
         >
-        <md-button v-if="modBasis.length > 0" @click="resetData" :disabled="role != 2"
+        <md-button
+          v-if="modBasis.length > 0"
+          @click="resetData"
+          :disabled="role != 2"
           >Änderung verwerfen</md-button
         >
         <!--<md-button v-if="modBasis.length > 0" @click="generatePDF"
@@ -241,8 +260,8 @@
         <p>changed Array: {{ changedArray }}</p>
         <p>deleteArray: {{ this.delete }}</p>
         <p>insertArray: {{ this.insert }}</p>
-        <p>where: {{ this.where }}</p>-->
-        <!--<p>modBasis: {{ modBasis[0] }}</p>
+        <p>where: {{ this.where }}</p>
+        <p>modBasis: {{ modBasis[0] }}</p>
         <p>original: {{ modBasisOrigin[0] }}</p>-->
       </div>
     </div>
@@ -252,7 +271,7 @@
 <script>
 import axios from "axios";
 import jsPDF from "jspdf";
-import lodash from 'lodash';
+import lodash from "lodash";
 
 export default {
   props: ["modBasisOrigin", "moduleUri", "role"],
@@ -288,6 +307,7 @@ export default {
         "    schema:inLanguage ?languages ; " +
         "    schema:url ?url ; " +
         "    schema:comment ?comment . " +
+        "  ?accPerson rdfs:label ?accPersonLabel ."+
         "  ?semester schema:duration ?duration; " +
         "            schema:courseMode ?courseMode ; " +
         "            schema:instructor ?instrctor. " +
@@ -397,7 +417,9 @@ export default {
           let status = response.status;
           if (status == 204) {
             this.notification = true;
-            setTimeout(() => { this.notification = false }, 2000);
+            setTimeout(() => {
+              this.notification = false;
+            }, 1500);
           }
         })
         .catch(e => {
@@ -411,83 +433,88 @@ export default {
       this.countModType = 0;
       this.countCourseMode = 0;
       this.changedArray = [];
-      this.delete = [],
-      this.insert = [],
-      this.template = {
-                label: {
-                  s: " <" + this.moduleUri + "> ",
-                  p: " rdfs:label ",
-                  o: " ?label "
-                },
-                modType_name: {
-                  s: " ?modType ",
-                  p: [" schema:targetName ", " schema:targetDescription "],
-                  o: [" ?modType_name ", " ?modType_des "],
-                  Pflichtmodul: [
-                    "Pflichtmodul",
-                    "muss von allen Studierenden belegt und absolviert werden"
-                  ],
-                  Wahlpflichtmodul: [
-                    "Wahlpflichtmodul",
-                    "kann aus einer Reihe von Modulen ausgewählt werden, wird angeboten, wenn sich genügend Interessenten finden"
-                  ]
-                },
-                grade_name: {
-                  s: " ?grade ",
-                  p: " schema:targetName ",
-                  o: " ?grade_name "
-                },
-                learnTypes: {
-                  s: " <" + this.moduleUri + "> ",
-                  p: " schema:learningResourceType ",
-                  o: " ?learnTypes "
-                },
-                eduUse: {
-                  s: " <" + this.moduleUri + "> ",
-                  p: " schema:educationalUse ",
-                  o: " ?eduUse "
-                },
-                swsSum: {
-                  s: " ?sws ",
-                  p: " schema:targetName ",
-                  o: " ?swsSum "
-                },
-                ects: {
-                  s: " <" + this.moduleUri + "> ",
-                  p: " schema:educationalCredentialAwarded ",
-                  o: " ?ects "
-                },
-                duration: {
-                  s: " ?semester ",
-                  p: " schema:duration ",
-                  o: " ?duration "
-                },
-                courseMode: {
-                  s: " ?semester ",
-                  p: " schema:courseMode ",
-                  o: " ?courseMode "
-                },
-                pre: {
-                  s: " <" + this.moduleUri + "> ",
-                  p: " schema:coursePrerequisites ",
-                  o: " ?pre "
-                },
-                url: {
-                  s: " <" + this.moduleUri + "> ",
-                  p: " schema:url ",
-                  o: " ?url "
-                },
-                comment: {
-                  s: " <" + this.moduleUri + "> ",
-                  p: " schema:comment ",
-                  o: " ?comment "
-                },
-                languages: {
-                  s: " <" + this.moduleUri + "> ",
-                  p: " schema:inLanguage ",
-                  o: " ?languages "
-                }
-              };
+      (this.delete = []),
+        (this.insert = []),
+        (this.template = {
+          label: {
+            s: " <" + this.moduleUri + "> ",
+            p: " rdfs:label ",
+            o: " ?label "
+          },
+          accPersonLabel: {
+            s: " ?accPerson ",
+            p: " rdfs:label ",
+            o: " ?accPersonLabel "
+          },
+          modType_name: {
+            s: " ?modType ",
+            p: [" schema:targetName ", " schema:targetDescription "],
+            o: [" ?modType_name ", " ?modType_des "],
+            Pflichtmodul: [
+              "Pflichtmodul",
+              "muss von allen Studierenden belegt und absolviert werden"
+            ],
+            Wahlpflichtmodul: [
+              "Wahlpflichtmodul",
+              "kann aus einer Reihe von Modulen ausgewählt werden, wird angeboten, wenn sich genügend Interessenten finden"
+            ]
+          },
+          grade_name: {
+            s: " ?grade ",
+            p: " schema:targetName ",
+            o: " ?grade_name "
+          },
+          learnTypes: {
+            s: " <" + this.moduleUri + "> ",
+            p: " schema:learningResourceType ",
+            o: " ?learnTypes "
+          },
+          eduUse: {
+            s: " <" + this.moduleUri + "> ",
+            p: " schema:educationalUse ",
+            o: " ?eduUse "
+          },
+          swsSum: {
+            s: " ?sws ",
+            p: " schema:targetName ",
+            o: " ?swsSum "
+          },
+          ects: {
+            s: " <" + this.moduleUri + "> ",
+            p: " schema:educationalCredentialAwarded ",
+            o: " ?ects "
+          },
+          duration: {
+            s: " ?semester ",
+            p: " schema:duration ",
+            o: " ?duration "
+          },
+          courseMode: {
+            s: " ?semester ",
+            p: " schema:courseMode ",
+            o: " ?courseMode "
+          },
+          pre: {
+            s: " <" + this.moduleUri + "> ",
+            p: " schema:coursePrerequisites ",
+            o: " ?pre "
+          },
+          url: {
+            s: " <" + this.moduleUri + "> ",
+            p: " schema:url ",
+            o: " ?url "
+          },
+          comment: {
+            s: " <" + this.moduleUri + "> ",
+            p: " schema:comment ",
+            o: " ?comment "
+          },
+          languages: {
+            s: " <" + this.moduleUri + "> ",
+            p: " schema:inLanguage ",
+            o: " ?languages "
+          }
+        });
       this.modBasis = _.cloneDeep(this.modBasisOrigin);
     },
     generatePDF() {
@@ -592,7 +619,7 @@ export default {
         .catch(e => {
           this.errors.push(e);
         });
-    },
+    }
   },
   watch: {
     modBasisOrigin(v) {
@@ -640,10 +667,11 @@ button.md-button {
   display: flex;
   align-items: center;
   background-color: #8bc34a !important;
-  transition: opacity .5s;
+  transition: opacity 0.5s;
 }
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;

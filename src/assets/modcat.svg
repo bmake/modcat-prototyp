@@ -826,7 +826,7 @@
          transform="translate(38.718036,24.682803)"
          inkscape:label="#predicateUmgesetztIn"
          style="opacity:1"
-         class="group1">
+         class="group1 group2">
         <rect
            ry="2.8920915"
            y="55.108742"
@@ -1093,7 +1093,7 @@
          inkscape:label="#nodeSoWiSeXY"
          id="nodeSoWiSeXY"
          style="opacity:1"
-         class="group1">
+         class="group1 group2">
         <rect
            inkscape:label="#rectSoWiSeXY"
            style="opacity:1;fill:#00bae5;fill-opacity:0.65098;stroke:#002de5;stroke-width:0.37485;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.65098"
@@ -1265,7 +1265,7 @@
        d="m 157.48621,79.791545 57.00742,-49.09663"
        style="display:inline;opacity:1;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker7195)"
        inkscape:connection-end="#nodeSoWiSeXY"
-       class="group1 groupD" />
+       class="group1 group2 groupD" />
     <path
        inkscape:connection-end="#predicateGehaltenVon"
        inkscape:label="#pathSoWiSeXY-GehaltenVon"
@@ -1365,7 +1365,7 @@
        d="m 139.36273,93.56873 -36.64426,24.93121"
        style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        inkscape:connection-end="#nodeModulkuerzel"
-       class="group1 groupD" />
+       class="group1 group2 groupD" />
     <path
        inkscape:label="#pathModulkuerzel-VerantwortetVon"
        inkscape:connector-curvature="0"

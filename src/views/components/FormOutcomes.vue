@@ -1,11 +1,11 @@
 <template>
   <div v-if="role == 1 || role == 2">
     <div style="text-align:left; font-size:26px;">
-      <b>Inhalte und Leistungen</b>
+      <b>Lernziele, Inhalte und Leistungen</b>
     </div>
     <div>
       <div class="md-layout md-gutter">
-        <div class="md-layout-item md-size-33">
+        <div class="md-layout-item md-size-20">
           <md-field>
             <label>Modulkürzel</label>
             <md-input
@@ -17,6 +17,17 @@
               disabled
             >
             </md-input>
+            <md-input v-else disabled />
+          </md-field>
+        </div>
+        <div class="md-layout-item md-size-80">
+          <md-field>
+            <label>Modulbezeichnung</label>
+            <md-input
+              v-if="modOutcome.length > 0"
+              v-model="modOutcome[0].label.value"
+              disabled
+            />
             <md-input v-else disabled />
           </md-field>
         </div>
@@ -37,7 +48,7 @@
               v-if="modOutcome.length > 0"
               v-model="input.name[0]"
               @change="addChanged('inputs1', i + 1 + '0')"
-              :disabled="role != 1 && role !=2"
+              :disabled="role != 1 && role != 2"
               md-autogrow
             />
             <md-input v-else disabled />
@@ -60,7 +71,7 @@
               v-if="modOutcome.length > 0"
               v-model="input.name[1]"
               @md-selected="addChanged('inputs1', i + 1 + '1')"
-              :disabled="role != 1 && role !=2"
+              :disabled="role != 1 && role != 2"
               md-dense
             >
               <md-option value="Remember">Erinnern</md-option>
@@ -90,7 +101,7 @@
               v-if="modOutcome.length > 0"
               v-model="input.name"
               @change="addChanged('inputs2', i)"
-              :disabled="role != 1 && role !=2"
+              :disabled="role != 1 && role != 2"
               md-autogrow
             />
             <md-input v-else disabled />
@@ -150,7 +161,7 @@
               v-if="modOutcome.length > 0"
               v-model="input.name"
               @change="addChanged('inputs4', i)"
-              :disabled="role != 1 && role !=2"
+              :disabled="role != 1 && role != 2"
               md-autogrow
             />
             <md-input v-else disabled />
@@ -173,11 +184,17 @@
     <div class="md-layout md-gutter">
       <div class="md-layout-item">
         <div>
-          <md-button v-if="modOutcome.length > 0" @click="updateData" :disabled="role != 1 && role !=2"
+          <md-button
+            v-if="modOutcome.length > 0"
+            @click="updateData"
+            :disabled="role != 1 && role != 2"
             >Änderung speichern</md-button
           >
-          <md-button v-if="modOutcome.length > 0" @click="resetData" :disabled="role != 1 && role !=2"
-          >Änderung verwerfen</md-button
+          <md-button
+            v-if="modOutcome.length > 0"
+            @click="resetData"
+            :disabled="role != 1 && role != 2"
+            >Änderung verwerfen</md-button
           >
           <!--<md-button v-if="modOutcome.length > 0" @click="generatePDF">Download</md-button>-->
           <transition name="fade">
@@ -204,7 +221,7 @@
 <script>
 import axios from "axios";
 import jsPDF from "jspdf";
-import lodash from 'lodash';
+import lodash from "lodash";
 
 export default {
   props: ["modOutcomeOrigin", "moduleUri", "role"],
@@ -477,8 +494,7 @@ export default {
         inputs3: [],
         inputs4: []
       };
-      this.modOutcome = [],
-      this.delete = [];
+      (this.modOutcome = []), (this.delete = []);
       this.insert = [];
       this.count = 0;
       this.modOutcome = _.cloneDeep(this.modOutcomeOrigin);
@@ -493,20 +509,26 @@ export default {
         "PREFIX schema: <https://schema.org/> " +
         "SELECT DISTINCT ?code ?exams ?learnResults ?contents " +
         "WHERE { " +
-        "    <" + this.moduleUri + "> " +
+        "    <" +
+        this.moduleUri +
+        "> " +
         "schema:courseCode ?code . " +
         " " +
         "            OPTIONAL { " +
         '    SELECT (GROUP_CONCAT(?exam; separator="\\n") as ?exams) ' +
         "                WHERE { " +
-        "                  <" + this.moduleUri + "> module:about_Exam ?examCode. " +
+        "                  <" +
+        this.moduleUri +
+        "> module:about_Exam ?examCode. " +
         "                  ?examCode schema:itemListElement ?exam . " +
         "                } " +
         "            } " +
         "            OPTIONAL { " +
         '    SELECT (GROUP_CONCAT(?learnResult; separator="\\n") as ?learnResults) ' +
         "                WHERE { " +
-        "                  <" + this.moduleUri + "> module:about_LResults ?LResult. " +
+        "                  <" +
+        this.moduleUri +
+        "> module:about_LResults ?LResult. " +
         "                  ?LResult schema:itemListElement ?resList . " +
         "                  ?resList schema:description ?learnResult " +
         "                } " +
@@ -516,7 +538,9 @@ export default {
         "                WHERE { " +
         "                  SELECT ?content " +
         "                  WHERE { " +
-        "                    <" + this.moduleUri + "> module:about_Content ?contentCode. " +
+        "                    <" +
+        this.moduleUri +
+        "> module:about_Content ?contentCode. " +
         "                    ?contentCode schema:itemListElement ?content . " +
         "                  } ORDER BY ?content " +
         "                } " +

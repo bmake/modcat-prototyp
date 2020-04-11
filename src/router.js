@@ -14,7 +14,7 @@ export default new Router({
   routes: [
     {
       path: "/",
-      name: "starter",
+      name: "index",
       components: { default: Starter, header: '', footer: MainFooter },
       props: {
         header: { colorOnScroll: 400 },

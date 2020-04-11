@@ -7,7 +7,8 @@
       border: '1px solid grey',
       'border-radius': '5px'
     }"
-  ></div>
+  >
+  </div>
 </template>
 
 <script>
@@ -44,16 +45,8 @@ export default {
           this.appendChild(importedNode);
         });
 
-      let w = d3.select("svg#svg887").style("width");
-      w = parseInt(w.substring(0, w.length - 2));
-      let h = d3.select("svg#svg887").style("height");
-      h = parseInt(h.substring(0, h.length - 2));
-      if (this.width < w) {
-        d3.select("svg#svg887").style("width", this.width + "px");
-      }
-      if (this.height < h) {
-        d3.select("svg#svg887").style("height", this.height + "px");
-      }
+      d3.select("svg#svg887").style("width", "100%");
+      d3.select("svg#svg887").style("height", "100%");
 
       var svg = d3.select("svg#svg887");
       var g = svg.append("g");
@@ -91,8 +84,13 @@ export default {
       d3.select("#nodes")
         .selectAll("g:not(.faded)")
         .on("mouseover", function() {
-          this.style.opacity = 0.5;
-          this.style.transition = "0.3s opacity";
+          if (_this.role > 0) {
+            this.style.cursor = "pointer";
+            this.style.opacity = 0.5;
+            this.style.transition = "0.3s opacity";
+          } else {
+            this.style.cursor = "default";
+          }
         })
         .on("mouseout", function() {
           this.style.opacity = 1;
@@ -188,11 +186,12 @@ export default {
                   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
                   "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
                   "PREFIX schema: <https://schema.org/> " +
-                  "SELECT DISTINCT ?code ?interTypes ?workloadSum ?workloadDetails " +
+                  "SELECT DISTINCT ?code ?label ?interTypes ?workloadSum ?workloadDetails " +
                   "WHERE { " +
                   "  <" +
                   _this.moduleUri +
-                  "> schema:courseCode ?code . " +
+                  "> schema:courseCode ?code ; " +
+                  "         rdfs:label ?label .  " +
                   "  OPTIONAL { " +
                   ' SELECT (GROUP_CONCAT(?interType; separator=" | ") as ?interTypes) ' +
                   "    WHERE { " +
@@ -237,11 +236,12 @@ export default {
                   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
                   "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
                   "PREFIX schema: <https://schema.org/> " +
-                  "SELECT DISTINCT ?code ?learnBlooms ?contents ?exams " +
+                  "SELECT DISTINCT ?code ?label ?learnBlooms ?contents ?exams " +
                   "WHERE { " +
                   "  <" +
                   _this.moduleUri +
-                  "> schema:courseCode ?code . " +
+                  "> schema:courseCode ?code ; " +
+                  "         rdfs:label ?label .  " +
                   "  OPTIONAL { " +
                   '   SELECT (GROUP_CONCAT(?learnBloom; separator=" | ") as ?learnBlooms)  ' +
                   "   WHERE {  " +
@@ -421,7 +421,7 @@ export default {
           "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  " +
           "PREFIX module: <https://bmake.th-brandenburg.de/module/>  " +
           "PREFIX schema: <https://schema.org/>  " +
-          "SELECT DISTINCT ?code ?label ?semester ?modType_name ?grade_name ?learnTypes ?eduUse ?swsSum ?ects ?duration ?courseMode ?pre ?url ?comment ?languages" +
+          "SELECT DISTINCT ?code ?label ?accPersonLabel ?semester ?modType_name ?grade_name ?learnTypes ?eduUse ?swsSum ?ects ?duration ?courseMode ?pre ?url ?comment ?languages" +
           " WHERE {  " +
           "<" +
           uri +

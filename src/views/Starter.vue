@@ -11,9 +11,7 @@
               <h1>Modulkatalog @THB</h1>
               <h3>Fachbereich Wirtschaft</h3>
               <div>
-                <label>
-                  <Select @module="getModule" />
-                </label>
+                <Select @module="getModule" />
               </div>
             </div>
           </div>
@@ -74,7 +72,7 @@
                   id="download"
                   @click="generatePDF"
                   class="md-simple md-success md-lg"
-                  :disabled="pdfBody.length == 0"
+                  :disabled="selectedModule == ''"
                   >Modulbeschreibung herunterladen</md-button
                 >
               </div>
@@ -88,11 +86,11 @@
                     <b>Willkommen zu Modulkatalog@THB</b>
                   </h2>
                   <p>Sie können die Modulbeschreibung hier herunterladen</p>
-                  <p>Bitte wählen Sie zuerst ein Modul aus</p>
+                  <p v-if="selectedModule == ''">Bitte wählen Sie zuerst ein Modul aus</p>
                   <md-button
                     @click="generatePDF"
                     class="md-warning md-lg"
-                    :disabled="pdfBody.length == 0"
+                    :disabled="selectedModule == ''"
                     >Modulbeschreibung herunterladen</md-button
                   >
                 </div>
@@ -141,12 +139,13 @@ export default {
     Teachers: FormTeachers,
     Dynamic: FormDynamic
   },
-  name: "starter",
+  name: "index",
   bodyClass: "index-page",
   props: {},
   data() {
     return {
       selectedModule: "",
+      code: "",
       role: null,
       modBasis: [],
       modOutcome: [],
@@ -166,9 +165,6 @@ export default {
       this.selectedModule = value;
       this.pdfHead = [];
       this.pdfBody = [];
-      if (value != "") {
-        this.convertPDFArray();
-      }
     },
     getModBasicData(value) {
       this.modBasis = value;
@@ -188,7 +184,7 @@ export default {
     getFormType(value) {
       this.form = value;
     },
-    convertPDFArray() {
+    generatePDF() {
       let query =
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  " +
         "PREFIX module: <https://bmake.th-brandenburg.de/module/>  " +
@@ -205,8 +201,7 @@ export default {
         "         schema:educationalCredentialAwarded ?ects ;  " +
         "         schema:hasCourseInstance ?semester ;  " +
         "         schema:educationalUse ?eduUse ;  " +
-        "            schema:accountablePerson ?accPerson ;  " +
-        "         schema:coursePrerequisites ?pre ;  " +
+        "         schema:accountablePerson ?accPerson ;  " +
         "         schema:url ?url ;  " +
         "         schema:comment ?comment .  " +
         "            ?accPerson rdfs:label ?accPersonLabel . " +
@@ -338,7 +333,8 @@ export default {
         })
         .then(response => {
           const res = response.data.results.bindings;
-          this.pdfHead.push(["Modul-Kurzkennzeichen", res[0].code.value]);
+          let code = res[0].code.value;
+          this.pdfHead.push(["Modul-Kurzkennzeichen", code]);
           this.pdfBody.push(["Modulbezeichnung", res[0].label.value]);
           this.pdfBody.push([
             "Aufteilung in Lehrveranstaltungen",
@@ -360,12 +356,7 @@ export default {
           ]);
           this.pdfBody.push(["Dozent/in", res[0].instructorLabel.value]);
           this.pdfBody.push(["Lehrsprache", res[0].languages.value]);
-          this.pdfBody.push([
-            "Voraussetzungen",
-            res[0].pre.value +
-              "basiert auf folgende Module: " +
-              res[0].basedOns.value
-          ]);
+          this.pdfBody.push(["Voraussetzungen", res[0].pre.value /*+ "basiert auf folgende Module: " + res[0].basedOns.value*/ ]);
           this.pdfBody.push(["ECTS-Credits", res[0].ects.value]);
           this.pdfBody.push([
             "Gesamtworkload und ihre Zusammensetzung",
@@ -393,23 +384,23 @@ export default {
           this.pdfBody.push(["Literatur", res[0].citations.value]);
           this.pdfBody.push(["Besonderes", res[0].comment.value]);
           this.pdfBody.push(["URL", res[0].url.value]);
+
+          const doc = new jsPDF();
+          doc.autoTable({
+            styles: { overflow: "linebreak" },
+            columnStyles: {
+              0: { cellWidth: 50 },
+              1: { cellWidth: 130 }
+            },
+            head: this.pdfHead,
+            body: this.pdfBody
+          });
+          doc.save(code + ".pdf");
+
         })
         .catch(e => {
           this.errors.push(e);
         });
-    },
-    generatePDF() {
-      const doc = new jsPDF();
-      doc.autoTable({
-        styles: { overflow: "linebreak" },
-        columnStyles: {
-          0: { cellWidth: 50 },
-          1: { cellWidth: 130 }
-        },
-        head: this.pdfHead,
-        body: this.pdfBody
-      });
-      doc.save("module.pdf");
     }
   }
 };

@@ -4,7 +4,7 @@
       <b>Didaktischer Ansatz</b>
     </div>
     <div class="md-layout md-gutter">
-      <div class="md-layout-item md-size-33">
+      <div class="md-layout-item md-size-20">
         <md-field>
           <label>Modulkürzel</label>
           <md-input
@@ -16,6 +16,17 @@
             disabled
           >
           </md-input>
+          <md-input v-else disabled />
+        </md-field>
+      </div>
+      <div class="md-layout-item md-size-80">
+        <md-field>
+          <label>Modulbezeichnung</label>
+          <md-input
+            v-if="modMethod.length > 0"
+            v-model="modMethod[0].label.value"
+            disabled
+          />
           <md-input v-else disabled />
         </md-field>
       </div>
@@ -31,12 +42,12 @@
         :key="i"
       >
         <md-field>
-          <label>Lehr und Lernmethode</label>
+          <label>Lehr- und Lernmethode</label>
           <md-input
             v-if="modMethod.length > 0"
             v-model="input.name"
             @change="addChanged('inputs1', i)"
-            :disabled="role != 1 && role !=2"
+            :disabled="role != 1 && role != 2"
           />
           <md-input v-else disabled />
           <span v-if="role == 1 || role == 2">
@@ -65,7 +76,7 @@
           <md-input
             type="number"
             v-if="modMethod.length > 0"
-            :disabled="role != 1 && role !=2"
+            :disabled="role != 1 && role != 2"
             v-model="modMethod[0].workloadSum.value"
           />
           <md-input v-else disabled />
@@ -84,7 +95,7 @@
               v-if="modMethod.length > 0"
               v-model="input.name[0]"
               @change="addChanged('inputs2', i)"
-              :disabled="role != 1 && role !=2"
+              :disabled="role != 1 && role != 2"
             />
             <md-input v-else disabled />
           </md-field>
@@ -100,7 +111,7 @@
               v-if="modMethod.length > 0"
               v-model="input.name[1]"
               @change="addChanged('inputs2', i)"
-              :disabled="role != 1 && role !=2"
+              :disabled="role != 1 && role != 2"
             />
             <md-input v-else disabled />
             <span v-if="role == 1 || role == 2">
@@ -124,11 +135,17 @@
       <div class="md-layout md-gutter">
         <div class="md-layout-item">
           <div class="col-md-12">
-            <md-button v-if="modMethod.length > 0" @click="updateData" :disabled="role != 1 && role !=2"
+            <md-button
+              v-if="modMethod.length > 0"
+              @click="updateData"
+              :disabled="role != 1 && role != 2"
               >Änderung speichern</md-button
             >
-            <md-button v-if="modMethod.length > 0" @click="resetData" :disabled="role != 1 && role !=2"
-            >Änderung verwerfen</md-button
+            <md-button
+              v-if="modMethod.length > 0"
+              @click="resetData"
+              :disabled="role != 1 && role != 2"
+              >Änderung verwerfen</md-button
             >
             <!--<md-button v-if="modMethod.length > 0" @click="generatePDF"
               >Download</md-button
@@ -157,7 +174,7 @@
 <script>
 import axios from "axios";
 import jsPDF from "jspdf";
-import lodash from 'lodash';
+import lodash from "lodash";
 
 export default {
   props: ["modMethodOrigin", "moduleUri", "role"],
@@ -175,7 +192,8 @@ export default {
       delete: [],
       insert: [],
       countWorkload: 0,
-      where: " schema:interactivityType ?interType ;  " +
+      where:
+        " schema:interactivityType ?interType ;  " +
         " module:addProp_CompWL ?addPropCompWL . ",
       inputs1: [
         {
@@ -370,8 +388,7 @@ export default {
         inputs1: [],
         inputs2: []
       };
-      this.modMethod = [],
-      this.delete = [];
+      (this.modMethod = []), (this.delete = []);
       this.insert = [];
       this.modMethod = _.cloneDeep(this.modMethodOrigin);
     },
@@ -392,8 +409,9 @@ export default {
         '    SELECT (SUM(?workloadValue) as ?workloadSum) (GROUP_CONCAT(?workloadDetail; separator="\\n") as ?workloadDetails) ' +
         "                WHERE { " +
         "                 <" +
-        this.moduleUri + ">" +
-         "  module:addProp_CompWL ?addPropCompWL . " +
+        this.moduleUri +
+        ">" +
+        "  module:addProp_CompWL ?addPropCompWL . " +
         "                  ?addPropCompWL schema:valueReference ?workload . " +
         "                  ?workload schema:name ?workloadName ; " +
         "                            schema:value ?workloadValue . " +
@@ -417,10 +435,7 @@ export default {
         .then(response => {
           let res = response.data.results.bindings;
           pdfHead.push(["Modul-Kurzkennzeichen", res[0].code.value]);
-          pdfBody.push([
-            "Lehr- und Lernmethoden",
-            res[0].interTypes.value
-          ]);
+          pdfBody.push(["Lehr- und Lernmethoden", res[0].interTypes.value]);
           pdfBody.push([
             "Gesamtworkload und ihre Zusammensetzung",
             "Gesamt: " +
