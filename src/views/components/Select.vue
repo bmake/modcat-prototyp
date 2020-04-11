@@ -1,26 +1,26 @@
 <template>
   <div class="md-layout md-gutter select">
-
-    <div class="md-layout-item">
+<div class="md-layout-item md-size-25"></div>
+    <div class="md-layout-item md-size-25" style="padding-bottom:40px;padding-top:20px;">
       <md-field>
-        <label>Studiengang</label>
+        <label style="font-size:18px;">Studiengang</label>
         <md-select
           v-model="studyProgram"
           name="studyProgram"
           id="studyProgram"
           md-dense
         >
-          <md-option value="WIB">WI Bachelor</md-option>
-          <md-option value="WIM">WI Master</md-option>
-          <md-option value="BWLB">BWL Bachelor</md-option>
-          <md-option value="BWLM">BWL Master</md-option>
+          <md-option style="font-size:18px;" value="WIB">WI Bachelor</md-option>
+          <md-option style="font-size:18px;" value="WIM">WI Master</md-option>
+          <md-option style="font-size:18px;" value="BWLB">BWL Bachelor</md-option>
+          <md-option style="font-size:18px;" value="BWLM">BWL Master</md-option>
         </md-select>
       </md-field>
     </div>
 
-    <div class="md-layout-item">
+    <div class="md-layout-item md-size-25" style="padding-bottom:40px;padding-top:20px;">
       <md-field>
-        <label>Modul</label>
+        <label style="font-size:18px;">Modul</label>
         <md-select v-model="course" name="course" id="course" md-dense>
           <md-option
             v-if="Object.keys(moduleList).length > 0"
@@ -32,6 +32,7 @@
           </md-option>
         </md-select>
       </md-field>
+      <div class="md-layout-item md-size-25"></div>
     </div>
   </div>
 </template>

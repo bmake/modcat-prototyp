@@ -1,13 +1,14 @@
 <template>
   <div class="wrapper">
-    <parallax
-      class="page-header header-filter"
+    <div
+      class="header-filter"
       style="background-color: #FF8F00;"
     >
       <div class="md-layout">
         <div class="md-layout-item">
           <div class="image-wrapper">
             <div class="brand">
+              <img src="../../img/logo.svg" width="10%" height="auto">
               <h1>Modulkatalog @THB</h1>
               <h3>Fachbereich Wirtschaft</h3>
               <div>
@@ -17,41 +18,38 @@
           </div>
         </div>
       </div>
-    </parallax>
+    </div>
     <div class="main main-raised">
-      <div class="section section-examples">
-        <div class="container-fluid text-center">
-          <div
-            style="text-align: right; padding-right: 10%; margin-bottom:15px;"
+
+<div
+            style="text-align: center; margin-bottom:10px; padding-top:40px"
           >
-            <h4>
-              Bitte wählen Sie Ihre Rolle um die Modulkataloge zu bearbeiten
+            <h4 style="font-size:28px;">
+              <b>Bitte wählen Sie Ihre Rolle um die Modulbeschreibung zu bearbeiten</b>
             </h4>
-            <md-button
-              v-on:click="
-                (role = 0), (style1 = true), (style2 = false), (style3 = false)
-              "
-              class="md-size-33"
-              v-bind:class="{ 'md-primary': !style1, 'md-rose': style1 }"
-              >Interessierte</md-button
-            >
-            <md-button
+
+            <md-button :disabled='!this.selectedModule'
               v-on:click="
                 (role = 1), (style1 = false), (style2 = true), (style3 = false)
               "
-              class="md-size-33"
+              class="md-size-33" style="font-size:20px;"
               v-bind:class="{ 'md-primary': !style2, 'md-rose': style2 }"
               >Lehrende</md-button
             >
-            <md-button
+            <md-button :disabled='!this.selectedModule'
               v-on:click="
                 (role = 2), (style1 = false), (style2 = false), (style3 = true)
               "
-              class="md-size-33"
+              class="md-size-33" style="font-size:20px;"
               v-bind:class="{ 'md-primary': !style3, 'md-rose': style3 }"
-              >Studiengangsleitung</md-button
+              >Studiengangleitung</md-button
             >
           </div>
+
+      <div class="section section-examples">
+
+        <div class="container-fluid text-center">
+          
           <div class="md-layout">
             <div class="md-layout-item">
               <SVGGraph
@@ -79,7 +77,6 @@
               <div
                 v-else
                 class="md-layout md-gutter md-alignment-center-center"
-                style="width: 100%; height: 100%; "
               >
                 <div>
                   <h2 style="padding: 50px;">
