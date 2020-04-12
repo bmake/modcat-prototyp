@@ -38,11 +38,11 @@
         style="border-color:#fcdd86; border-width: 3px; border-style: solid; border-radius: 10px; margin:3px;"
       >
         <div
-          class="md-layout-item md-size-100"
+          class="md-layout-item md-size-100 md-layout md-gutter md-alignment-bottom-center"
           v-for="(input, i) in inputs1"
           :key="i"
         >
-          <md-field>
+          <md-field class="md-layout-item md-size-70">
             <label>Lernergebnis</label>
             <md-textarea
               v-if="modOutcome.length > 0"
@@ -52,20 +52,8 @@
               md-autogrow
             />
             <md-input v-else disabled />
-            <span v-if="role == 1 || role == 2">
-              <i
-                class="fas fa-minus-circle"
-                @click="remove('1', i)"
-                v-show="i >= countLearn && i > 0"
-              />
-              <i
-                class="fas fa-plus-circle"
-                @click="add('1', i)"
-                v-show="i == inputs1.length - 1"
-              />
-            </span>
           </md-field>
-          <md-field>
+          <md-field class="md-layout-item md-size-30">
             <label>Bloomsche Taxonomie</label>
             <md-select
               v-if="modOutcome.length > 0"
@@ -82,6 +70,18 @@
               <md-option value="Create">Erschaffen</md-option>
             </md-select>
             <md-select v-else md-dense disabled />
+            <span v-if="role == 1 || role == 2">
+              <i
+                class="fas fa-minus-circle"
+                @click="remove('1', i)"
+                v-show="i >= countLearn && i > 0"
+              />
+              <i
+                class="fas fa-plus-circle"
+                @click="add('1', i)"
+                v-show="i == inputs1.length - 1"
+              />
+            </span>
           </md-field>
         </div>
       </div>
@@ -598,3 +598,6 @@ export default {
   }
 };
 </script>
+<style scoped>
+
+</style>

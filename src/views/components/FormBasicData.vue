@@ -22,7 +22,7 @@
 
       <div class="md-layout-item md-size-33">
         <md-field>
-          <label>Modulverantwortliche/n</label>
+          <label>Modulverantwortliche/r</label>
           <md-input
             v-if="modBasis.length > 0"
             v-model="modBasis[0].accPersonLabel.value"

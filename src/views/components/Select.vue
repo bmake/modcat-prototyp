@@ -1,27 +1,26 @@
 <template>
   <div class="md-layout md-gutter select">
 <div class="md-layout-item md-size-25"></div>
-    <div class="md-layout-item md-size-25" style="padding-bottom:40px;padding-top:20px;">
+    <div class="md-layout-item md-size-25">
       <md-field>
-        <label style="font-size:18px;">Studiengang</label>
+        <label>Studiengang</label>
         <md-select
           v-model="studyProgram"
           name="studyProgram"
           id="studyProgram"
-          md-dense
         >
-          <md-option style="font-size:18px;" value="WIB">WI Bachelor</md-option>
-          <md-option style="font-size:18px;" value="WIM">WI Master</md-option>
-          <md-option style="font-size:18px;" value="BWLB">BWL Bachelor</md-option>
-          <md-option style="font-size:18px;" value="BWLM">BWL Master</md-option>
+          <md-option value="WIB">WI Bachelor</md-option>
+          <md-option value="WIM">WI Master</md-option>
+          <md-option value="BWLB">BWL Bachelor</md-option>
+          <md-option value="BWLM">BWL Master</md-option>
         </md-select>
       </md-field>
     </div>
 
-    <div class="md-layout-item md-size-25" style="padding-bottom:40px;padding-top:20px;">
+    <div class="md-layout-item md-size-25">
       <md-field>
         <label style="font-size:18px;">Modul</label>
-        <md-select v-model="course" name="course" id="course" md-dense>
+        <md-select v-model="course" name="course" id="course">
           <md-option
             v-if="Object.keys(moduleList).length > 0"
             v-for="(modulejson, index) in moduleList"
@@ -88,16 +87,19 @@ export default {
 
 <style>
 .select {
-  padding: 50px;
+  padding: 5em;
 }
 
 .select .md-field.md-theme-default label {
   color: #2e2e2e !important;
+  font-size: large;
 }
 
 .select .md-field.md-theme-default .md-menu.md-select input {
   -webkit-text-fill-color: white !important;
   font-weight: bold !important;
+  font-size: large !important;
+  margin-top: 5px;
 }
 
 .md-menu-content {
@@ -105,9 +107,15 @@ export default {
 }
 
 span.md-list-item-text {
-  white-space: normal;
-  max-height: max-content;
-  padding: 5px;
+  white-space: normal !important;
+  max-height: max-content !important;
+  padding: 5px !important;
+  font-size: medium !important;
+}
+
+.md-list.md-dense .md-list-item-text {
+  margin-left: 20px !important;
+  font-size: small !important;
 }
 
 @media all and (max-width: 500px) {

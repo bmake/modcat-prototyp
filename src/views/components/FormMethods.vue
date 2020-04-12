@@ -219,6 +219,17 @@ export default {
       if (this.changedArray[item].indexOf(position) === -1) {
         this.changedArray[item].push(position);
       }
+      if (item == "inputs2") {
+        let sum = 0;
+        for (let i = 0; i < this.inputs2.length; i++) {
+          console.log("sum", sum)
+          console.log(this.inputs2[i].name[1])
+          if (this.inputs2[i].name[1] != null) {
+            sum = sum + parseInt(this.inputs2[i].name[1]);
+          }
+        }
+        this.modMethod[0].workloadSum.value = sum;
+      }
     },
     updateData() {
       if (this.changedArray.inputs1.length > 0) {

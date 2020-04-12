@@ -115,8 +115,7 @@ export default {
 
             if (
               /*id == "nodeModulKuerzel" || */ id == "nodeStudiengang" ||
-              id == "nodeOrdnung" ||
-              id == "nodePerson"
+              id == "nodeOrdnung" || id == "nodePerson" || id == "nodeModulkuerzel"
             ) {
               _this.form = "BasicData";
               d3.select("#nodeModulKuerzel").classed("selected", true);

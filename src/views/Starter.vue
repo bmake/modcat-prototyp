@@ -1,14 +1,11 @@
 <template>
   <div class="wrapper">
-    <div
-      class="header-filter"
-      style="background-color: #FF8F00;"
-    >
+    <div class="header-filter" style="background-color: #FF8F00;">
       <div class="md-layout">
         <div class="md-layout-item">
           <div class="image-wrapper">
             <div class="brand">
-              <img src="../../img/logo.svg" width="10%" height="auto">
+              <img src="../../img/logo.svg" class="img" width="10%" height="auto" />
               <h1>Modulkatalog @THB</h1>
               <h3>Fachbereich Wirtschaft</h3>
               <div>
@@ -20,36 +17,38 @@
       </div>
     </div>
     <div class="main main-raised">
-
-<div
-            style="text-align: center; margin-bottom:10px; padding-top:40px"
+      <div style="text-align: center; margin-bottom:10px; padding-top:40px">
+        <h4 style="font-size:28px;">
+          <b
+            >Bitte wählen Sie Ihre Rolle um die Modulbeschreibung zu
+            bearbeiten</b
           >
-            <h4 style="font-size:28px;">
-              <b>Bitte wählen Sie Ihre Rolle um die Modulbeschreibung zu bearbeiten</b>
-            </h4>
+        </h4>
 
-            <md-button :disabled='!this.selectedModule'
-              v-on:click="
-                (role = 1), (style1 = false), (style2 = true), (style3 = false)
-              "
-              class="md-size-33" style="font-size:20px;"
-              v-bind:class="{ 'md-primary': !style2, 'md-rose': style2 }"
-              >Lehrende</md-button
-            >
-            <md-button :disabled='!this.selectedModule'
-              v-on:click="
-                (role = 2), (style1 = false), (style2 = false), (style3 = true)
-              "
-              class="md-size-33" style="font-size:20px;"
-              v-bind:class="{ 'md-primary': !style3, 'md-rose': style3 }"
-              >Studiengangleitung</md-button
-            >
-          </div>
+        <md-button
+          :disabled="!this.selectedModule"
+          v-on:click="
+            (role = 1), (style1 = false), (style2 = true), (style3 = false)
+          "
+          class="md-size-33"
+          style="font-size:20px;"
+          v-bind:class="{ 'md-primary': !style2, 'md-rose': style2 }"
+          >Lehrende</md-button
+        >
+        <md-button
+          :disabled="!this.selectedModule"
+          v-on:click="
+            (role = 2), (style1 = false), (style2 = false), (style3 = true)
+          "
+          class="md-size-33"
+          style="font-size:20px;"
+          v-bind:class="{ 'md-primary': !style3, 'md-rose': style3 }"
+          >Studiengangleitung</md-button
+        >
+      </div>
 
       <div class="section section-examples">
-
         <div class="container-fluid text-center">
-          
           <div class="md-layout">
             <div class="md-layout-item">
               <SVGGraph
@@ -83,7 +82,9 @@
                     <b>Willkommen zu Modulkatalog@THB</b>
                   </h2>
                   <p>Sie können die Modulbeschreibung hier herunterladen</p>
-                  <p v-if="selectedModule == ''">Bitte wählen Sie zuerst ein Modul aus</p>
+                  <p v-if="selectedModule == ''">
+                    Bitte wählen Sie zuerst ein Modul aus
+                  </p>
                   <md-button
                     @click="generatePDF"
                     class="md-warning md-lg"
@@ -150,8 +151,6 @@ export default {
       modLiter: [],
       modTeacher: [],
       form: "BasicData",
-      pdfHead: [],
-      pdfBody: [],
       style1: false,
       style2: false,
       style3: false
@@ -160,8 +159,6 @@ export default {
   methods: {
     getModule(value) {
       this.selectedModule = value;
-      this.pdfHead = [];
-      this.pdfBody = [];
     },
     getModBasicData(value) {
       this.modBasis = value;
@@ -330,32 +327,38 @@ export default {
         })
         .then(response => {
           const res = response.data.results.bindings;
+          let pdfHead = [];
+          let pdfBody = [];
           let code = res[0].code.value;
-          this.pdfHead.push(["Modul-Kurzkennzeichen", code]);
-          this.pdfBody.push(["Modulbezeichnung", res[0].label.value]);
-          this.pdfBody.push([
+          pdfHead.push(["Modul-Kurzkennzeichen", code]);
+          pdfBody.push(["Modulbezeichnung", res[0].label.value]);
+          pdfBody.push([
             "Aufteilung in Lehrveranstaltungen",
             res[0].learnTypes.value
           ]);
-          this.pdfBody.push(["Dauer des Moduls", res[0].duration.value]);
-          this.pdfBody.push([
+          pdfBody.push(["Dauer des Moduls", res[0].duration.value]);
+          pdfBody.push([
             "Zuordnung zum Curriculum",
             res[0].curr_des.value + ", " + res[0].modType_name.value
           ]);
-          this.pdfBody.push(["Verwendbarkeit des Moduls", res[0].eduUse.value]);
-          this.pdfBody.push([
+          pdfBody.push(["Verwendbarkeit des Moduls", res[0].eduUse.value]);
+          pdfBody.push([
             "Häufigkeit des Angebots von Modulen",
             res[0].courseMode.value
           ]);
-          this.pdfBody.push([
+          pdfBody.push([
             "Modulverantwortlicher",
             res[0].accPersonLabel.value
           ]);
-          this.pdfBody.push(["Dozent/in", res[0].instructorLabel.value]);
-          this.pdfBody.push(["Lehrsprache", res[0].languages.value]);
-          this.pdfBody.push(["Voraussetzungen", res[0].pre.value /*+ "basiert auf folgende Module: " + res[0].basedOns.value*/ ]);
-          this.pdfBody.push(["ECTS-Credits", res[0].ects.value]);
-          this.pdfBody.push([
+          pdfBody.push(["Dozent/in", res[0].instructorLabel.value]);
+          pdfBody.push(["Lehrsprache", res[0].languages.value]);
+          pdfBody.push([
+            "Voraussetzungen",
+            res[0].pre
+              .value /*+ "basiert auf folgende Module: " + res[0].basedOns.value*/
+          ]);
+          pdfBody.push(["ECTS-Credits", res[0].ects.value]);
+          pdfBody.push([
             "Gesamtworkload und ihre Zusammensetzung",
             "Gesamt: " +
               res[0].workloadSum.value +
@@ -363,37 +366,44 @@ export default {
               "\n" +
               res[0].workloadDetails.value
           ]);
-          this.pdfBody.push(["Lehrform/SWS", res[0].swsSum.value]);
-          this.pdfBody.push([
+          pdfBody.push(["Lehrform/SWS", res[0].swsSum.value]);
+          pdfBody.push([
             "Studien-/Prüfungsleistungen",
             res[0].exams.value
           ]);
-          this.pdfBody.push([
+          pdfBody.push([
             "Gewichtung der Note in der Gesamtnote",
             res[0].grade_name.value
           ]);
-          this.pdfBody.push(["Lernergebnisse", res[0].learnResults.value]);
-          this.pdfBody.push(["Inhalte", res[0].contents.value]);
-          this.pdfBody.push([
+          pdfBody.push(["Lernergebnisse", res[0].learnResults.value]);
+          pdfBody.push(["Inhalte", res[0].contents.value]);
+          pdfBody.push([
             "Lehr- und Lernmethoden",
             res[0].interTypes.value
           ]);
-          this.pdfBody.push(["Literatur", res[0].citations.value]);
-          this.pdfBody.push(["Besonderes", res[0].comment.value]);
-          this.pdfBody.push(["URL", res[0].url.value]);
+          pdfBody.push(["Literatur", res[0].citations.value]);
+          pdfBody.push(["Besonderes", res[0].comment.value]);
+          pdfBody.push(["URL", res[0].url.value]);
 
           const doc = new jsPDF();
+
+          //this.pdfBody.push(["URL", pdf.textWithLink(res[0].url.value, {url: 'https://www.google.com/'})]);
+
           doc.autoTable({
             styles: { overflow: "linebreak" },
             columnStyles: {
               0: { cellWidth: 50 },
               1: { cellWidth: 130 }
             },
-            head: this.pdfHead,
-            body: this.pdfBody
+            head: pdfHead,
+            body: pdfBody,
+            didDrawCell: data => {
+              if (data.section === 'body' && data.column.index === 1 && data.row.index === 20) {
+                doc.link(data.cell.x + 2, data.cell.y + 2, data.cell.width - 3, data.cell.height - 4, {url: res[0].url.value});
+              }
+            }
           });
           doc.save(code + ".pdf");
-
         })
         .catch(e => {
           this.errors.push(e);
@@ -426,6 +436,14 @@ g.selected rect {
 #download:hover {
   background-color: #fcdd86 !important;
   background-color: #ea80fc;
+}
+
+.header-filter {
+  padding: 5%;
+}
+
+.brand h3 {
+  margin-top: 0 !important;
 }
 
 @media all and (min-width: 991px) {
