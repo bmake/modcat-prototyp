@@ -20,8 +20,28 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item md-size-33">
-        <md-field>
+      <div class="md-layout-item md-size-50">
+        <md-field class="xs">
+          <label>Modulverantwortliche/r</label>
+          <md-select
+            v-if="modBasis.length > 0"
+            v-model="modBasis[0].accPerson.value"
+            @md-selected="countLecturer++"
+            :disabled="role != 2"
+            md-dense
+          >
+            <md-option
+              v-if="lecturers.length > 0"
+              v-for="(lecturer, index) in lecturers"
+              v-bind:value="lecturer.lecturer.value"
+              v-bind:key="index"
+            >
+              {{ lecturer.lecturerLabel.value }}
+            </md-option>
+          </md-select>
+          <md-select v-else md-dense disabled />
+        </md-field>
+        <!--<md-field>
           <label>Modulverantwortliche/r</label>
           <md-input
             v-if="modBasis.length > 0"
@@ -30,7 +50,7 @@
             :disabled="role != 2"
           />
           <md-input v-else disabled />
-        </md-field>
+        </md-field>-->
       </div>
 
       <div class="md-layout-item md-size-100">
@@ -102,7 +122,7 @@
       </div>
       <div class="md-layout-item md-size-50">
         <md-field>
-          <label>Lehrveranstaltungen</label>
+          <label>Lehrform</label>
           <md-input
             v-if="modBasis.length > 0"
             v-model="modBasis[0].learnTypes.value"
@@ -262,7 +282,7 @@
         <p>insertArray: {{ this.insert }}</p>
         <p>where: {{ this.where }}</p>
         <p>modBasis: {{ modBasis[0] }}</p>
-        <p>original: {{ modBasisOrigin[0] }}</p>-->
+        <p>update: {{ updateQuery }}</p>-->
       </div>
     </div>
   </div>
@@ -280,6 +300,8 @@ export default {
     return {
       countModType: 0,
       countCourseMode: 0,
+      countLecturer: 0,
+      lecturers: [],
       changedArray: [],
       updateQuery: "",
       modBasis: [],
@@ -307,7 +329,6 @@ export default {
         "    schema:inLanguage ?languages ; " +
         "    schema:url ?url ; " +
         "    schema:comment ?comment . " +
-        "  ?accPerson rdfs:label ?accPersonLabel ."+
         "  ?semester schema:duration ?duration; " +
         "            schema:courseMode ?courseMode ; " +
         "            schema:instructor ?instrctor. " +
@@ -320,6 +341,24 @@ export default {
         "           schema:educationalFramework ?spo . " +
         "  ?sws schema:targetName ?swsSum . "
     };
+  },
+  mounted() {
+    let query =
+      "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+      "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+      "PREFIX thbfbwm: <https://www.th-brandenburg.de/mitarbeiterseiten/fbw/> " +
+      "SELECT DISTINCT ?lecturer ?lecturerLabel " +
+      "WHERE {?lecturer a module:Lecturer; rdfs:label ?lecturerLabel.}";
+    axios
+      .post("http://fbw-sgmwi.th-brandenburg.de:3030/modcat/query", query, {
+        headers: { "Content-Type": "application/sparql-query" }
+      })
+      .then(response => {
+        this.lecturers = response.data.results.bindings;
+      })
+      .catch(e => {
+        this.errors.push(e);
+      });
   },
   methods: {
     addChanged(item) {
@@ -363,6 +402,20 @@ export default {
           '"',
           this.template.modType_name[this.modBasis[0].modType_name.value][1],
           '". '
+        );
+      } else if (i == "accPerson") {
+        delArray.push(
+          this.template[i].s,
+          this.template[i].p,
+          this.template[i].o,
+          ". "
+        );
+        insArray.push(
+          this.template[i].s,
+          this.template[i].p,
+          ' <',
+          this.modBasis[0][i].value,
+          '>. '
         );
       } else {
         delArray.push(
@@ -421,10 +474,19 @@ export default {
               this.notification = false;
             }, 1500);
           }
+          this.clearCache();
         })
         .catch(e => {
           this.errors.push(e);
         });
+    },
+    clearCache() {
+      this.countModType = 0;
+      this.countCourseMode = 0;
+      this.countLecturer = 0;
+      this.changedArray = [];
+      this.delete = [];
+      this.insert = [];
     },
     resetData() {
       this.initialState();
@@ -432,90 +494,94 @@ export default {
     initialState() {
       this.countModType = 0;
       this.countCourseMode = 0;
+      this.countLecturer = 0;
       this.changedArray = [];
-      (this.delete = []),
-        (this.insert = []),
-        (this.template = {
-          label: {
-            s: " <" + this.moduleUri + "> ",
-            p: " rdfs:label ",
-            o: " ?label "
-          },
-          accPersonLabel: {
-            s: " ?accPerson ",
-            p: " rdfs:label ",
-            o: " ?accPersonLabel "
-          },
-          modType_name: {
-            s: " ?modType ",
-            p: [" schema:targetName ", " schema:targetDescription "],
-            o: [" ?modType_name ", " ?modType_des "],
-            Pflichtmodul: [
-              "Pflichtmodul",
-              "muss von allen Studierenden belegt und absolviert werden"
-            ],
-            Wahlpflichtmodul: [
-              "Wahlpflichtmodul",
-              "kann aus einer Reihe von Modulen ausgewählt werden, wird angeboten, wenn sich genügend Interessenten finden"
-            ]
-          },
-          grade_name: {
-            s: " ?grade ",
-            p: " schema:targetName ",
-            o: " ?grade_name "
-          },
-          learnTypes: {
-            s: " <" + this.moduleUri + "> ",
-            p: " schema:learningResourceType ",
-            o: " ?learnTypes "
-          },
-          eduUse: {
-            s: " <" + this.moduleUri + "> ",
-            p: " schema:educationalUse ",
-            o: " ?eduUse "
-          },
-          swsSum: {
-            s: " ?sws ",
-            p: " schema:targetName ",
-            o: " ?swsSum "
-          },
-          ects: {
-            s: " <" + this.moduleUri + "> ",
-            p: " schema:educationalCredentialAwarded ",
-            o: " ?ects "
-          },
-          duration: {
-            s: " ?semester ",
-            p: " schema:duration ",
-            o: " ?duration "
-          },
-          courseMode: {
-            s: " ?semester ",
-            p: " schema:courseMode ",
-            o: " ?courseMode "
-          },
-          pre: {
-            s: " <" + this.moduleUri + "> ",
-            p: " schema:coursePrerequisites ",
-            o: " ?pre "
-          },
-          url: {
-            s: " <" + this.moduleUri + "> ",
-            p: " schema:url ",
-            o: " ?url "
-          },
-          comment: {
-            s: " <" + this.moduleUri + "> ",
-            p: " schema:comment ",
-            o: " ?comment "
-          },
-          languages: {
-            s: " <" + this.moduleUri + "> ",
-            p: " schema:inLanguage ",
-            o: " ?languages "
-          }
-        });
+      this.delete = [];
+      this.insert = [];
+      this.template = {
+        label: {
+          s: " <" + this.moduleUri + "> ",
+          p: " rdfs:label ",
+          o: " ?label "
+        },
+        accPerson: {
+          s: " <" + this.moduleUri + "> ",
+          p: " schema:accountablePerson ",
+          o: " ?accPerson "
+        },
+        modType_name: {
+          s: " ?modType ",
+          p: [" schema:targetName ", " schema:targetDescription "],
+          o: [" ?modType_name ", " ?modType_des "],
+          Pflichtmodul: [
+            "Pflichtmodul",
+            "muss von allen Studierenden belegt und absolviert werden"
+          ],
+          Wahlpflichtmodul: [
+            "Wahlpflichtmodul",
+            "kann aus einer Reihe von Modulen ausgewählt werden, wird angeboten, wenn sich genügend Interessenten finden"
+          ]
+        },
+        grade_name: {
+          s: " ?grade ",
+          p: " schema:targetName ",
+          o: " ?grade_name "
+        },
+        learnTypes: {
+          s: " <" + this.moduleUri + "> ",
+          p: " schema:learningResourceType ",
+          o: " ?learnTypes "
+        },
+        eduUse: {
+          s: " <" + this.moduleUri + "> ",
+          p: " schema:educationalUse ",
+          o: " ?eduUse "
+        },
+        swsSum: {
+          s: " ?sws ",
+          p: " schema:targetName ",
+          o: " ?swsSum "
+        },
+        ects: {
+          s: " <" + this.moduleUri + "> ",
+          p: " schema:educationalCredentialAwarded ",
+          o: " ?ects "
+        },
+        duration: {
+          s: " ?semester ",
+          p: " schema:duration ",
+          o: " ?duration "
+        },
+        courseMode: {
+          s: " ?semester ",
+          p: " schema:courseMode ",
+          o: " ?courseMode "
+        },
+        pre: {
+          s: " <" + this.moduleUri + "> ",
+          p: " schema:coursePrerequisites ",
+          o: " ?pre "
+        },
+        url: {
+          s: " <" + this.moduleUri + "> ",
+          p: " schema:url ",
+          o: " ?url "
+        },
+        comment: {
+          s: " <" + this.moduleUri + "> ",
+          p: " schema:comment ",
+          o: " ?comment "
+        },
+        languages: {
+          s: " <" + this.moduleUri + "> ",
+          p: " schema:inLanguage ",
+          o: " ?languages "
+        }
+      };
       this.modBasis = _.cloneDeep(this.modBasisOrigin);
+      if (!Object.keys(this.modBasisOrigin[0]).includes("pre")) {
+        this.modBasis[0]["pre"] = { value: "" };
+      }
     },
     generatePDF() {
       const doc = new jsPDF();
@@ -624,10 +690,21 @@ export default {
   watch: {
     modBasisOrigin(v) {
       this.initialState();
+      this.countLecturer = 0;
     },
     countModType(v) {
-      if (v == 2) {
-        this.changedArray.push("modType_name");
+      if (v <= 2) {
+        if (
+          this.modBasis[0].modType_name.value !=
+          this.modBasisOrigin[0].modType_name.value
+        ) {
+          if (this.changedArray.indexOf("modType_name") === -1) {
+            this.changedArray.push("modType_name");
+            if (this.countModType == 1) {
+              this.countModType++;
+            }
+          }
+        }
       } else if (v > 2) {
         let i = this.changedArray.indexOf("modType_name");
         let arr = this.insert[i];
@@ -638,12 +715,42 @@ export default {
       }
     },
     countCourseMode(v) {
-      if (v == 2) {
-        this.changedArray.push("courseMode");
+      if (v <= 2) {
+        if (
+          this.modBasis[0].courseMode.value !=
+          this.modBasisOrigin[0].courseMode.value
+        ) {
+          if (this.changedArray.indexOf("courseMode") === -1) {
+            this.changedArray.push("courseMode");
+            if (this.countCourseMode == 1) {
+              this.countCourseMode++;
+            }
+          }
+        }
       } else if (v > 2) {
         let i = this.changedArray.indexOf("courseMode");
         let arr = this.insert[i];
         arr.splice(3, 1, this.modBasis[0].courseMode.value);
+        this.insert.splice(i, 1, arr);
+      }
+    },
+    countLecturer(v) {
+      if (v <= 2) {
+        if (
+          this.modBasis[0].accPerson.value !=
+          this.modBasisOrigin[0].accPerson.value
+        ) {
+          if (this.changedArray.indexOf("accPerson") === -1) {
+            this.changedArray.push("accPerson");
+            if (this.countLecturer == 1) {
+              this.countLecturer++;
+            }
+          }
+        }
+      } else if (v > 2) {
+        let i = this.changedArray.indexOf("accPerson");
+        let arr = this.insert[i];
+        arr.splice(3, 1, this.modBasis[0].accPerson.value);
         this.insert.splice(i, 1, arr);
       }
     },

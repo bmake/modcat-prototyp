@@ -2,13 +2,10 @@
   <div
     id="svgfield"
     :style="{
-      width: width + 'px',
-      height: height + 'px',
       border: '1px solid grey',
       'border-radius': '5px'
     }"
-  >
-  </div>
+  ></div>
 </template>
 
 <script>
@@ -20,8 +17,6 @@ export default {
   data() {
     return {
       svgfile: require("../../assets/modcat.svg"),
-      width: 1024,
-      height: 600,
       gridSize: 100,
       moduleInfo: [],
       modBasicData: [],
@@ -33,8 +28,7 @@ export default {
     };
   },
   created() {
-    this.width = window.innerWidth / 2.5;
-    this.height = window.outerHeight / 1.5;
+
   },
   mounted() {
     d3.xml(this.svgfile).then(xml => {
@@ -115,7 +109,9 @@ export default {
 
             if (
               /*id == "nodeModulKuerzel" || */ id == "nodeStudiengang" ||
-              id == "nodeOrdnung" || id == "nodePerson" || id == "nodeModulkuerzel"
+              id == "nodeOrdnung" ||
+              id == "nodePerson" ||
+              id == "nodeModulkuerzel"
             ) {
               _this.form = "BasicData";
               d3.select("#nodeModulKuerzel").classed("selected", true);
@@ -325,19 +321,6 @@ export default {
         });
     },
     queryModuleInfo(q) {
-      let query =
-        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
-        "PREFIX schema: <https://schema.org/> " +
-        "SELECT DISTINCT * " +
-        "WHERE { " +
-        "<" +
-        this.moduleUri +
-        "> rdfs:label ?label; " +
-        "          schema:courseCode ?code; " +
-        "          schema:hasCourseInstance ?instance; " +
-        "          schema:accountablePerson ?person. " +
-        "}";
-
       axios
         .post("http://fbw-sgmwi.th-brandenburg.de:3030/modcat/query", q, {
           headers: { "Content-Type": "application/sparql-query" }
@@ -420,7 +403,7 @@ export default {
           "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  " +
           "PREFIX module: <https://bmake.th-brandenburg.de/module/>  " +
           "PREFIX schema: <https://schema.org/>  " +
-          "SELECT DISTINCT ?code ?label ?accPersonLabel ?semester ?modType_name ?grade_name ?learnTypes ?eduUse ?swsSum ?ects ?duration ?courseMode ?pre ?url ?comment ?languages" +
+          "SELECT DISTINCT ?code ?label ?accPerson ?semester ?modType_name ?grade_name ?learnTypes ?eduUse ?swsSum ?ects ?duration ?courseMode ?pre ?url ?comment ?languages" +
           " WHERE {  " +
           "<" +
           uri +
@@ -434,10 +417,8 @@ export default {
           "         schema:educationalUse ?eduUse ;  " +
           "         module:eduAlignm_SWS ?sws ; " +
           "         schema:accountablePerson ?accPerson ;  " +
-          "         schema:coursePrerequisites ?pre ;  " +
           "         schema:url ?url ;  " +
           "         schema:comment ?comment .  " +
-          "            ?accPerson rdfs:label ?accPersonLabel . " +
           "            ?semester schema:duration ?durationSem;  " +
           "                      schema:courseMode ?courseMode ;  " +
           "                      schema:instructor ?instrctor.  " +
@@ -450,6 +431,9 @@ export default {
           "                   schema:targetDescription ?grade_des .  " +
           "            ?modType schema:targetName ?modType_name ." +
           "            ?sws schema:targetName ?swsSum . " +
+          "   OPTIONAL { <" +
+          uri +
+          ">  schema:coursePrerequisites ?pre. }  " +
           "            OPTIONAL {  " +
           '           SELECT (GROUP_CONCAT(?learnType; separator=" | ") as ?learnTypes)  ' +
           "              WHERE {  " +

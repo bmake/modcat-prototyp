@@ -208,6 +208,7 @@
           <!--<p>input1 is: {{ inputs1 }}</p>
           <p>input2 is: {{ inputs2 }}</p>
           <p>input4 is: {{ inputs4 }}</p>
+          <p>count: {{ count }}</p>
           <p>changedArray: {{ changedArray }}</p>
           <p>delete: {{ this.delete }}</p>
           <p>insert: {{ insert }}</p>
@@ -281,6 +282,8 @@ export default {
         let i = this.changedArray.inputs1.indexOf(removeLength + "0");
         if (i > -1) {
           this.changedArray.inputs1.splice(i, 1);
+        } else {
+          //todo: remove actions
         }
         i = this.changedArray.inputs1.indexOf(removeLength + "1");
         if (i > -1) {
@@ -350,59 +353,74 @@ export default {
                   " module:BloomTax_" +
                   this.inputs1[p - 1].name[1] +
                   " . ";
-                this.delete.push(triple);
                 this.insert.push(tripleIns);
-                this.where +=
-                  triple +
-                  " FILTER regex(str(?addList" +
-                  p +
-                  '), "BloomTax", "i") . ';
+                if (
+                  this.modOutcomeOrigin[0].learnBlooms.value.length ==
+                    this.countLearn &&
+                  this.modOutcomeOrigin[0].learnBlooms.value[p - 1][1] != ""
+                ) {
+                  this.delete.push(triple);
+                  this.where +=
+                    triple +
+                    " FILTER regex(str(?addList" +
+                    p +
+                    '), "BloomTax", "i") . ';
+                }
               }
             } else {
-              if (this.inputs1[p - 1].name.length == 1) {
-                let des = this.inputs1[p - 1].name[0];
-                let tripleIns =
-                  sub +
-                  " a schema:ListItem ;  " +
-                  '        schema:description     "' +
-                  des +
-                  '" ;  ' +
-                  '        schema:name            "Learning result AAIT 0' +
-                  p +
-                  '" ;  ' +
-                  "        schema:position        " +
-                  p +
-                  " . " +
-                  "?LResult schema:itemListElement " +
-                  sub +
-                  " . ";
-                this.insert.push(tripleIns);
-              } else if (
-                this.inputs1[p - 1].name.length == 2 &&
-                this.inputs1[p - 1].name[0] != null &&
-                this.inputs1[p - 1].name[0] != ""
-              ) {
-                let des = this.inputs1[p - 1].name[0];
-                let bloom = this.inputs1[p - 1].name[1];
-                let tripleIns =
-                  sub +
-                  " a schema:ListItem ;  " +
-                  "        schema:additionalType module:BloomTax_" +
-                  bloom +
-                  " ;  " +
-                  '        schema:description     "' +
-                  des +
-                  '" ;  ' +
-                  '        schema:name            "Learning result AAIT 0' +
-                  p +
-                  '" ;  ' +
-                  "        schema:position        " +
-                  p +
-                  " . " +
-                  "?LResult schema:itemListElement " +
-                  sub +
-                  " . ";
-                this.insert.push(tripleIns);
+              if (n == "0") {
+                if (this.inputs1[p - 1].name.length == 1) {
+                  let des = this.inputs1[p - 1].name[0];
+                  let tripleIns =
+                    sub +
+                    " a schema:ListItem ;  " +
+                    '        schema:description     "' +
+                    des +
+                    '" ;  ' +
+                    '        schema:name            "Learning result ' +
+                    code +
+                    " 0" +
+                    p +
+                    '" ;  ' +
+                    "        schema:position        " +
+                    p +
+                    " . " +
+                    "module:LResults_" +
+                    code +
+                    " schema:itemListElement " +
+                    sub +
+                    " . ";
+                  this.insert.push(tripleIns);
+                } else if (
+                  this.inputs1[p - 1].name.length == 2 &&
+                  this.inputs1[p - 1].name[0] != null &&
+                  this.inputs1[p - 1].name[0] != ""
+                ) {
+                  let des = this.inputs1[p - 1].name[0];
+                  let bloom = this.inputs1[p - 1].name[1];
+                  let tripleIns = sub + " a schema:ListItem ;  ";
+
+                  if (bloom != null) {
+                    tripleIns +=
+                      "        schema:additionalType module:BloomTax_" +
+                      bloom +
+                      " ;  ";
+                  }
+                  tripleIns +=
+                    '        schema:description     "' +
+                    des +
+                    '" ;  ' +
+                    '        schema:name            "Learning result AAIT 0' +
+                    p +
+                    '" ;  ' +
+                    "        schema:position        " +
+                    p +
+                    " . " +
+                    "?LResult schema:itemListElement " +
+                    sub +
+                    " . ";
+                  this.insert.push(tripleIns);
+                }
               }
             }
           }
@@ -459,10 +477,25 @@ export default {
               this.notification = false;
             }, 2000);
           }
+          /*setTimeout(() => {
+            this.clearCache();
+          }, 20000);*/
+          this.clearCache();
         })
         .catch(e => {
           this.errors.push(e);
         });
+    },
+    clearCache() {
+      this.changedArray = {
+        inputs1: [],
+        inputs2: [],
+        inputs3: [],
+        inputs4: []
+      };
+      this.delete = [];
+      this.insert = [];
+      this.countLearn = this.inputs1.length;
     },
     resetData() {
       this.initialState();
@@ -494,7 +527,8 @@ export default {
         inputs3: [],
         inputs4: []
       };
-      (this.modOutcome = []), (this.delete = []);
+      this.modOutcome = [];
+      this.delete = [];
       this.insert = [];
       this.count = 0;
       this.modOutcome = _.cloneDeep(this.modOutcomeOrigin);
@@ -598,6 +632,4 @@ export default {
   }
 };
 </script>
-<style scoped>
-
-</style>
+<style scoped></style>

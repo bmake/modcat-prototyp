@@ -1,6 +1,5 @@
 <template>
-  <div class="md-layout md-gutter select">
-<div class="md-layout-item md-size-25"></div>
+  <div class="md-layout md-gutter select md-alignment-center-center">
     <div class="md-layout-item md-size-25">
       <md-field>
         <label>Studiengang</label>
@@ -31,7 +30,6 @@
           </md-option>
         </md-select>
       </md-field>
-      <div class="md-layout-item md-size-25"></div>
     </div>
   </div>
 </template>
@@ -118,9 +116,21 @@ span.md-list-item-text {
   font-size: small !important;
 }
 
-@media all and (max-width: 500px) {
+@media all and (max-width: 700px) {
   .md-menu-content {
-    max-width: 250px !important;
+    max-width: 200px !important;
+  }
+  .md-list.md-dense .md-list-item-text {
+    margin-left: 5px !important;
+    font-size: small !important;
+  }
+  .select {
+    padding: 3em;
+    margin-bottom: 3em;
+  }
+  .select .md-layout-item.md-size-25 {
+    min-width: 100%;
+    max-width: 100%;
   }
 }
 

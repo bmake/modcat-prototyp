@@ -3,7 +3,7 @@
     <div class="header-filter" style="background-color: #FF8F00;">
       <div class="md-layout">
         <div class="md-layout-item">
-          <div class="image-wrapper">
+          <div>
             <div class="brand">
               <img src="../../img/logo.svg" class="img" width="10%" height="auto" />
               <h1>Modulkatalog @THB</h1>
@@ -17,21 +17,20 @@
       </div>
     </div>
     <div class="main main-raised">
-      <div style="text-align: center; margin-bottom:10px; padding-top:40px">
-        <h4 style="font-size:28px;">
+      <div style="text-align: center; margin-bottom:10px; padding-top: 3em">
+        <h3>
           <b
             >Bitte wählen Sie Ihre Rolle um die Modulbeschreibung zu
             bearbeiten</b
           >
-        </h4>
+        </h3>
 
         <md-button
           :disabled="!this.selectedModule"
           v-on:click="
             (role = 1), (style1 = false), (style2 = true), (style3 = false)
           "
-          class="md-size-33"
-          style="font-size:20px;"
+          class="md-lg"
           v-bind:class="{ 'md-primary': !style2, 'md-rose': style2 }"
           >Lehrende</md-button
         >
@@ -40,8 +39,7 @@
           v-on:click="
             (role = 2), (style1 = false), (style2 = false), (style3 = true)
           "
-          class="md-size-33"
-          style="font-size:20px;"
+          class="md-lg"
           v-bind:class="{ 'md-primary': !style3, 'md-rose': style3 }"
           >Studiengangleitung</md-button
         >
@@ -50,7 +48,7 @@
       <div class="section section-examples">
         <div class="container-fluid text-center">
           <div class="md-layout">
-            <div class="md-layout-item">
+            <div class="svg md-layout-item">
               <SVGGraph
                 :module-uri="selectedModule"
                 :role="role"
@@ -63,8 +61,8 @@
               >
               </SVGGraph>
             </div>
-            <div class="md-layout-item" style="padding-right: 3%">
-              <div v-if="role == 1 || role == 2" style="text-align: right;">
+            <div class="form md-layout-item">
+              <div v-if="role == 1 || role == 2" style="text-align: right; padding: 1em">
                 <md-button
                   id="download"
                   @click="generatePDF"
@@ -77,8 +75,8 @@
                 v-else
                 class="md-layout md-gutter md-alignment-center-center"
               >
-                <div>
-                  <h2 style="padding: 50px;">
+                <div class="brand2">
+                  <h2>
                     <b>Willkommen zu Modulkatalog@THB</b>
                   </h2>
                   <p>Sie können die Modulbeschreibung hier herunterladen</p>
@@ -450,10 +448,34 @@ g.selected rect {
   .btn-container {
     display: flex;
   }
+  .brand2 h2 {
+    padding: 50px;
+  }
+  .svg.md-layout-item {
+    min-width: 40%;
+    max-width: 40%;
+    margin-left: 5%;
+    margin-right: 3%;
+  }
+}
+
+@media all and (max-width: 700px) {
+  .svg.md-layout-item {
+    min-width: 100%;
+    max-width: 100%;
+  }
 }
 
 @media all and (max-width: 500px) {
+  .brand {
+    margin-top: 3em;
+    max-width: max-content !important;
+    width: 100% !important;
+  }
   .brand h1 {
+    font-size: 2.2em !important;
+  }
+  .brand2 h2 {
     font-size: xx-large !important;
   }
 }

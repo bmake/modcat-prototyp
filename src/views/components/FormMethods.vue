@@ -43,11 +43,12 @@
       >
         <md-field>
           <label>Lehr- und Lernmethode</label>
-          <md-input
+          <md-textarea
             v-if="modMethod.length > 0"
             v-model="input.name"
             @change="addChanged('inputs1', i)"
             :disabled="role != 1 && role != 2"
+            md-autogrow
           />
           <md-input v-else disabled />
           <span v-if="role == 1 || role == 2">
@@ -162,8 +163,8 @@
             <p>input2 is: {{ inputs2 }}</p>
             <p>changedArray: {{ changedArray }}</p>
             <p>delete: {{ this.delete }}</p>
-            <p>insert: {{ insert }}</p>-->
-            <!--<p>where: {{ where }}</p>
+            <p>insert: {{ insert }}</p>
+            <p>where: {{ where }}</p>
             <p>update: {{ updateQuery }}</p>-->
           </div>
         </div>
@@ -214,22 +215,24 @@ export default {
     remove(input, index) {
       this["inputs" + input].splice(index, 1);
       this.changedArray["inputs" + input].push(index);
+      this.caculateSum();
     },
     addChanged(item, position) {
       if (this.changedArray[item].indexOf(position) === -1) {
         this.changedArray[item].push(position);
       }
       if (item == "inputs2") {
-        let sum = 0;
-        for (let i = 0; i < this.inputs2.length; i++) {
-          console.log("sum", sum)
-          console.log(this.inputs2[i].name[1])
-          if (this.inputs2[i].name[1] != null) {
-            sum = sum + parseInt(this.inputs2[i].name[1]);
-          }
-        }
-        this.modMethod[0].workloadSum.value = sum;
+        this.caculateSum();
       }
+    },
+    caculateSum() {
+      let sum = 0;
+      for (let i = 0; i < this.inputs2.length; i++) {
+        if (this.inputs2[i].name[1] != null) {
+          sum = sum + parseInt(this.inputs2[i].name[1]);
+        }
+      }
+      this.modMethod[0].workloadSum.value = sum;
     },
     updateData() {
       if (this.changedArray.inputs1.length > 0) {
@@ -293,7 +296,7 @@ export default {
                 sub +
                 " . ";
               this.delete.push(triple);
-              /*this.where += triple;*/
+              this.where += triple;
             }
           }
         } else {
@@ -376,10 +379,24 @@ export default {
               this.notification = false;
             }, 2000);
           }
+          this.clearCache();
+
         })
         .catch(e => {
           this.errors.push(e);
         });
+    },
+    clearCache() {
+      this.countWorkload = this.inputs2.length
+      this.changedArray = {
+        inputs1: [],
+        inputs2: []
+      };
+      this.delete = [];
+      this.insert = [];
+      this.where =
+        " schema:interactivityType ?interType ;  " +
+        " module:addProp_CompWL ?addPropCompWL . ";
     },
     resetData() {
       this.initialState();
@@ -399,8 +416,12 @@ export default {
         inputs1: [],
         inputs2: []
       };
-      (this.modMethod = []), (this.delete = []);
+      this.modMethod = [];
+      this.delete = [];
       this.insert = [];
+      this.where =
+        " schema:interactivityType ?interType ;  " +
+        " module:addProp_CompWL ?addPropCompWL . ";
       this.modMethod = _.cloneDeep(this.modMethodOrigin);
     },
     generatePDF() {
