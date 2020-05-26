@@ -5,7 +5,12 @@
         <div class="md-layout-item">
           <div>
             <div class="brand">
-              <img src="../../img/logo.svg" class="img" width="10%" height="auto" />
+              <img
+                src="../../img/logo.svg"
+                class="img"
+                width="10%"
+                height="auto"
+              />
               <h1>Modulkatalog @THB</h1>
               <h3>Fachbereich Wirtschaft</h3>
               <div>
@@ -43,6 +48,15 @@
           v-bind:class="{ 'md-primary': !style3, 'md-rose': style3 }"
           >Studiengangleitung</md-button
         >
+        <md-button
+          class="md-lg"
+          @click="showPopUp = true"
+          v-bind:class="{ 'md-primary': !style3, 'md-rose': style3 }"
+          >Neues Modul</md-button
+        >
+        <NewModulePopUp v-if="showPopUp" @close="showPopUp = false">
+          <h3 slot="header">Neues Modul anlegen</h3>
+        </NewModulePopUp>
       </div>
 
       <div class="section section-examples">
@@ -62,7 +76,10 @@
               </SVGGraph>
             </div>
             <div class="form md-layout-item">
-              <div v-if="role == 1 || role == 2" style="text-align: right; padding: 1em">
+              <div
+                v-if="role == 1 || role == 2"
+                style="text-align: right; padding: 1em"
+              >
                 <md-button
                   id="download"
                   @click="generatePDF"
@@ -123,6 +140,7 @@ import FormOutcomes from "./components/FormOutcomes";
 import FormLiterature from "./components/FormLiterature";
 import FormTeachers from "./components/FormTeachers";
 import FormDynamic from "./components/FormDynamic";
+import NewModulePopUp from "./components/NewModulePopUp";
 
 export default {
   components: {
@@ -133,7 +151,8 @@ export default {
     Outcomes: FormOutcomes,
     Literature: FormLiterature,
     Teachers: FormTeachers,
-    Dynamic: FormDynamic
+    Dynamic: FormDynamic,
+    NewModulePopUp
   },
   name: "index",
   bodyClass: "index-page",
@@ -151,7 +170,8 @@ export default {
       form: "BasicData",
       style1: false,
       style2: false,
-      style3: false
+      style3: false,
+      showPopUp: false
     };
   },
   methods: {
@@ -344,10 +364,7 @@ export default {
             "Häufigkeit des Angebots von Modulen",
             res[0].courseMode.value
           ]);
-          pdfBody.push([
-            "Modulverantwortlicher",
-            res[0].accPersonLabel.value
-          ]);
+          pdfBody.push(["Modulverantwortlicher", res[0].accPersonLabel.value]);
           pdfBody.push(["Dozent/in", res[0].instructorLabel.value]);
           pdfBody.push(["Lehrsprache", res[0].languages.value]);
           pdfBody.push([
@@ -365,20 +382,14 @@ export default {
               res[0].workloadDetails.value
           ]);
           pdfBody.push(["Lehrform/SWS", res[0].swsSum.value]);
-          pdfBody.push([
-            "Studien-/Prüfungsleistungen",
-            res[0].exams.value
-          ]);
+          pdfBody.push(["Studien-/Prüfungsleistungen", res[0].exams.value]);
           pdfBody.push([
             "Gewichtung der Note in der Gesamtnote",
             res[0].grade_name.value
           ]);
           pdfBody.push(["Lernergebnisse", res[0].learnResults.value]);
           pdfBody.push(["Inhalte", res[0].contents.value]);
-          pdfBody.push([
-            "Lehr- und Lernmethoden",
-            res[0].interTypes.value
-          ]);
+          pdfBody.push(["Lehr- und Lernmethoden", res[0].interTypes.value]);
           pdfBody.push(["Literatur", res[0].citations.value]);
           pdfBody.push(["Besonderes", res[0].comment.value]);
           pdfBody.push(["URL", res[0].url.value]);
@@ -396,8 +407,18 @@ export default {
             head: pdfHead,
             body: pdfBody,
             didDrawCell: data => {
-              if (data.section === 'body' && data.column.index === 1 && data.row.index === 20) {
-                doc.link(data.cell.x + 2, data.cell.y + 2, data.cell.width - 3, data.cell.height - 4, {url: res[0].url.value});
+              if (
+                data.section === "body" &&
+                data.column.index === 1 &&
+                data.row.index === 20
+              ) {
+                doc.link(
+                  data.cell.x + 2,
+                  data.cell.y + 2,
+                  data.cell.width - 3,
+                  data.cell.height - 4,
+                  { url: res[0].url.value }
+                );
               }
             }
           });
