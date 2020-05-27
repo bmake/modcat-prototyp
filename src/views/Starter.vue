@@ -55,7 +55,6 @@
           >Neues Modul</md-button
         >
         <NewModulePopUp v-if="showPopUp" @close="showPopUp = false">
-          <h3 slot="header">Neues Modul anlegen</h3>
         </NewModulePopUp>
       </div>
 

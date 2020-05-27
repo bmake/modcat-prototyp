@@ -5,11 +5,17 @@
         <div class="modal-container">
           <div class="modal-header">
             <slot name="header">
-              default header
+              <h3>Neues Modul anlegen</h3>
             </slot>
           </div>
 
           <div class="modal-body">
+            <md-button
+              class="md-simple md-just-icon md-round modal-default-button"
+              @click="$emit('close')"
+            >
+              <md-icon>clear</md-icon>
+            </md-button>
             <form novalidate class="md-layout" @submit.prevent="validateInput">
               <div class="md-layout-item md-size-100">
                 <md-field :class="getValidationClass('studyProgram')">
@@ -36,17 +42,27 @@
                   <span class="md-prefix" style="font-size: x-small"
                     >https://bmake.th-brandenburg.de/module/</span
                   >
-                  <md-input v-model="course"
-                            name="course"
-                            id="course" />
-                  <span style="margin-bottom: 20px" class="md-error" v-if="!$v.course.required"
+                  <md-input v-model.trim="course" name="course" id="course" />
+                  <span
+                    style="margin-bottom: 20px"
+                    class="md-error"
+                    v-if="!$v.course.required"
                     >Sie müssen einen Modulkürzel eingeben</span
                   >
-                  <!--<span class="md-error" v-else-if="!$v.course.minlength">Invalid first name</span>-->
+                  <span
+                    style="margin-bottom: 20px"
+                    class="md-error"
+                    v-if="!$v.course.isUnique"
+                    >Der eingegebene Kürzel ist schon vorhanden!</span
+                  >
                 </md-field>
               </div>
 
-              <md-button style="margin-top: 30px" type="submit" class="md-primary">
+              <md-button
+                style="margin-top: 30px"
+                type="submit"
+                class="md-primary"
+              >
                 OK
               </md-button>
             </form>
@@ -59,44 +75,14 @@
       </div>
     </div>
   </transition>
-  <!--<div>
-  <div slot="header">
-    <h4 class="modal-title">Modal Title</h4>
-    <md-button
-            class="md-simple md-just-icon md-round modal-default-button"
-            @click="$emit('close')"
-    >
-      <md-icon>clear</md-icon>
-    </md-button>
-  </div>
-
-  <div slot="body">
-    <p>
-      Far far away, behind the word mountains, far from the countries Vokalia and
-      Consonantia, there live the blind texts. Separated they live in
-      Bookmarksgrove right at the coast of the Semantics, a large language ocean.
-      A small river named Duden flows by their place and supplies it with the
-      necessary regelialia. It is a paradisematic country, in which roasted parts
-      of sentences fly into your mouth. Even the all-powerful Pointing has no
-      control about the blind texts it is an almost unorthographic life One day
-      however a small line of blind text by the name of Lorem Ipsum decided to
-      leave for the far World of Grammar.
-    </p>
-  </div>
-
-  <div slot="footer">
-    <md-button class="md-simple">Nice Button</md-button>
-    <md-button class="md-danger md-simple" @click="$emit('close')"
-    >Close</md-button
-    >
-  </div>
-</div>-->
 </template>
 
 <script>
 import axios from "axios";
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
+
+//const touchMap = new WeakMap()
 
 export default {
   name: "NewModulePopUp",
@@ -112,7 +98,30 @@ export default {
       required
     },
     course: {
-      required
+      required,
+      async isUnique(value) {
+        if (value === "" || value == null) return true;
+
+        let query =
+          " PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+          " ASK  { module:" +
+          value +
+          " a module:Module .}";
+
+        let boo = true
+        await axios
+          .post("http://fbw-sgmwi.th-brandenburg.de:3030/modcat/query", query, {
+            headers: { "Content-Type": "application/sparql-query" }
+          })
+          .then(response => {
+            boo = !response.data.boolean;
+            console.log(boo);
+          })
+          .catch(e => {
+            this.errors.push(e);
+          });
+        return Boolean(await boo)
+      }
     }
   },
   methods: {

@@ -4,7 +4,7 @@
       <b>Didaktischer Ansatz</b>
     </div>
     <div class="md-layout md-gutter">
-      <div class="md-layout-item md-size-20">
+      <!--<div class="md-layout-item md-size-20">
         <md-field>
           <label>Modulkürzel</label>
           <md-input
@@ -18,7 +18,7 @@
           </md-input>
           <md-input v-else disabled />
         </md-field>
-      </div>
+      </div>-->
       <div class="md-layout-item md-size-80">
         <md-field>
           <label>Modulbezeichnung</label>

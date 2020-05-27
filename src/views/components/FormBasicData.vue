@@ -1,11 +1,11 @@
 <template>
   <div v-if="role == 1 || role == 2">
     <div style="text-align:left; font-size:26px;">
-      <b>Rahmendaten zum Modul</b>
+      <b v-if="modBasis.length > 0">Rahmendaten zum Modul {{ modBasis[0].code.value }}</b>
     </div>
 
     <div class="md-layout md-gutter">
-      <div class="md-layout-item md-size-33">
+      <!--<div class="md-layout-item md-size-33">
         <md-field>
           <label>Modulkürzel</label>
           <md-input
@@ -18,9 +18,22 @@
           />
           <md-input v-else disabled />
         </md-field>
+      </div>-->
+
+      <div class="md-layout-item md-size-70">
+        <md-field>
+          <label>Modulbezeichnung</label>
+          <md-input
+            v-if="modBasis.length > 0"
+            v-model="modBasis[0].label.value"
+            @change="addChanged('label')"
+            :disabled="role != 2"
+          />
+          <md-input v-else disabled />
+        </md-field>
       </div>
 
-      <div class="md-layout-item md-size-50">
+      <div class="md-layout-item md-size-30">
         <md-field class="xs">
           <label>Modulverantwortliche/r</label>
           <md-select
@@ -51,19 +64,6 @@
           />
           <md-input v-else disabled />
         </md-field>-->
-      </div>
-
-      <div class="md-layout-item md-size-100">
-        <md-field>
-          <label>Modulbezeichnung</label>
-          <md-input
-            v-if="modBasis.length > 0"
-            v-model="modBasis[0].label.value"
-            @change="addChanged('label')"
-            :disabled="role != 2"
-          />
-          <md-input v-else disabled />
-        </md-field>
       </div>
 
       <div class="md-layout-item md-size-25">
@@ -413,9 +413,9 @@ export default {
         insArray.push(
           this.template[i].s,
           this.template[i].p,
-          ' <',
+          " <",
           this.modBasis[0][i].value,
-          '>. '
+          ">. "
         );
       } else {
         delArray.push(
