@@ -48,13 +48,21 @@
           v-bind:class="{ 'md-primary': !style3, 'md-rose': style3 }"
           >Studiengangleitung</md-button
         >
-        <md-button
+        <!--<md-button
           class="md-lg"
           @click="showPopUp = true"
           v-bind:class="{ 'md-primary': !style3, 'md-rose': style3 }"
           >Neues Modul</md-button
+        >-->
+        <NewModulePopUp
+          v-if="showPopUp"
+          @close="showPopUp = false"
+          @module="getModule"
+          @modBasicData="getModBasicData"
+          @studyProgram="getStudyProgram"
+          @modOutcomes="getModOutcomes"
+          @modMethods="getModMethod"
         >
-        <NewModulePopUp v-if="showPopUp" @close="showPopUp = false">
         </NewModulePopUp>
       </div>
 
@@ -113,6 +121,7 @@
                     v-bind:is="(form = this.form)"
                     :role="role"
                     :modBasisOrigin="modBasis"
+                    :studyProgram="studyProgram"
                     :moduleUri="selectedModule"
                     :modOutcomeOrigin="modOutcome"
                     :modMethodOrigin="modMethod"
@@ -159,6 +168,7 @@ export default {
   data() {
     return {
       selectedModule: "",
+      studyProgram: "",
       code: "",
       role: null,
       modBasis: [],
@@ -176,9 +186,15 @@ export default {
   methods: {
     getModule(value) {
       this.selectedModule = value;
+      console.log("selectedModule", value)
+    },
+    getStudyProgram(value) {
+      this.studyProgram = value;
+      console.log("studyProgram", value)
     },
     getModBasicData(value) {
       this.modBasis = value;
+      console.log("modBasisStarter", value)
     },
     getModOutcomes(value) {
       this.modOutcome = value;

@@ -205,7 +205,7 @@
               Änderungen gespeichert!
             </div>
           </transition>
-          <!--<p>input1 is: {{ inputs1 }}</p>
+         <!-- <p>input1 is: {{ inputs1 }}</p>
           <p>input2 is: {{ inputs2 }}</p>
           <p>input4 is: {{ inputs4 }}</p>
           <p>count: {{ count }}</p>
@@ -214,6 +214,7 @@
           <p>insert: {{ insert }}</p>
           <p>where: {{ where }}</p>
           <p>update: {{ updateQuery }}</p>-->
+          <!--<p>modOutcome: {{ modOutcome[0] }}</p>-->
         </div>
       </div>
     </div>
@@ -311,8 +312,8 @@ export default {
       if (this.changedArray[item].indexOf(position) === -1) {
         if (this.count != 0) {
           if (item == "inputs1") {
-            let p = parseInt(position.substring(0, 1));
-            let n = parseInt(position.substring(1));
+            let p = parseInt(position.substring(0, position.length - 1));
+            let n = parseInt(position.substring(position.length - 1));
             if (this[item][p - 1].name[n] != null) {
               this.changedArray[item].push(position);
             }
@@ -329,8 +330,9 @@ export default {
           this.changedArray.inputs1.sort();
           let code = this.modOutcome[0].code.value;
           for (let i = 0; i < this.changedArray.inputs1.length; i++) {
-            let p = parseInt(this.changedArray.inputs1[i].substring(0, 1));
-            let n = this.changedArray.inputs1[i].substring(1);
+            let item = this.changedArray.inputs1[i];
+            let p = parseInt(item.substring(0, item.length - 1));
+            let n = item.substring(item.length - 1);
             let sub = "module:LResult0" + p + "_" + code;
             if (p <= this.countLearn) {
               if (n == "0") {
@@ -410,7 +412,9 @@ export default {
                     '        schema:description     "' +
                     des +
                     '" ;  ' +
-                    '        schema:name            "Learning result AAIT 0' +
+                    '        schema:name            "Learning result ' +
+                    code +
+                    " 0" +
                     p +
                     '" ;  ' +
                     "        schema:position        " +

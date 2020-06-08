@@ -52,8 +52,14 @@
                   <span
                     style="margin-bottom: 20px"
                     class="md-error"
-                    v-if="!$v.course.isUnique"
-                    >Der eingegebene Kürzel ist schon vorhanden!</span
+                    v-if="this.space && $v.course.required"
+                    >Leerzeichen sind nicht erlaubt</span
+                  >
+                  <span
+                    style="margin-bottom: 20px"
+                    class="md-error"
+                    v-if="!this.unique && $v.course.required && !this.space"
+                    >Das eingegebene Kürzel ist schon vorhanden!</span
                   >
                 </md-field>
               </div>
@@ -82,7 +88,7 @@ import axios from "axios";
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
 
-//const touchMap = new WeakMap()
+//const touchMap = new WeakMap();
 
 export default {
   name: "NewModulePopUp",
@@ -90,7 +96,13 @@ export default {
   data() {
     return {
       studyProgram: null,
-      course: null
+      course: null,
+      unique: true,
+      space: false,
+      newModule: null,
+      modBasic: null,
+      modOutcome: null,
+      modMethod: null
     };
   },
   validations: {
@@ -99,33 +111,76 @@ export default {
     },
     course: {
       required,
+      hasSpace(value) {
+        if (value === "" || value == null) {
+          return true;
+        } else {
+          if (value.includes(" ")) {
+            this.space = true;
+            return false;
+          } else {
+            this.space = false;
+            return true;
+          }
+        }
+      },
       async isUnique(value) {
-        if (value === "" || value == null) return true;
+        if ((value === "" || value == null) && this.space) {
+          return true;
+        } else {
+          let query =
+            " PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+            " ASK  { module:" +
+            value +
+            " a module:Module .}";
 
-        let query =
-          " PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
-          " ASK  { module:" +
-          value +
-          " a module:Module .}";
-
-        let boo = true
-        await axios
-          .post("http://fbw-sgmwi.th-brandenburg.de:3030/modcat/query", query, {
-            headers: { "Content-Type": "application/sparql-query" }
-          })
-          .then(response => {
-            boo = !response.data.boolean;
-            console.log(boo);
-          })
-          .catch(e => {
-            this.errors.push(e);
-          });
-        return Boolean(await boo)
+          let boo = true;
+          await axios
+            .post(
+              "http://fbw-sgmwi.th-brandenburg.de:3030/modcat/query",
+              query,
+              {
+                headers: { "Content-Type": "application/sparql-query" }
+              }
+            )
+            .then(response => {
+              boo = !response.data.boolean;
+              this.unique = boo;
+            })
+            .catch(e => {
+              this.errors.push(e);
+            });
+          return Boolean(boo);
+        }
+        /*return this.checkExistence(value);*/
       }
     }
   },
   methods: {
+    /*checkExistence(code) {
+      let query =
+        " PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+        " ASK  { module:" +
+        code +
+        " a module:Module .}";
+
+      let boo = true;
+      axios
+        .post("http://fbw-sgmwi.th-brandenburg.de:3030/modcat/query", query, {
+          headers: { "Content-Type": "application/sparql-query" }
+        })
+        .then(response => {
+          boo = !response.data.boolean;
+          this.unique = boo;
+        })
+        .catch(e => {
+          this.errors.push(e);
+        });
+
+      return Boolean(boo);
+    },*/
     getValidationClass(fieldName) {
+      //console.log("fieldName", this.$v[fieldName])
       const field = this.$v[fieldName];
 
       if (field) {
@@ -134,13 +189,89 @@ export default {
         };
       }
     },
+    generateEmptyArray() {
+      this.newModule = this.course;
+      this.modBasic = [
+        {
+          code: { type: "literal", value: this.course },
+          label: { type: "literal", value: "" },
+          accPerson: { type: "uri", value: "" },
+          semester: { type: "uri", value: "" },
+          modType_name: { type: "literal", value: "" },
+          grade_name: { type: "literal", value: "" },
+          learnTypes: { type: "literal", value: [] },
+          eduUse: { type: "literal", value: "" },
+          swsSum: { type: "literal", value: "" },
+          ects: { type: "literal", value: "" },
+          duration: { type: "literal", value: "" },
+          courseMode: { type: "literal", value: "" },
+          pre: { type: "literal", value: "" },
+          url: { type: "literal", value: "" },
+          comment: { type: "literal", value: "" },
+          languages: { type: "literal", value: [] }
+        }
+      ];
+      this.modOutcome = [
+        {
+          code: { type: "literal", value: this.course },
+          label: { type: "literal", value: "" },
+          learnBlooms: { type: "literal", value: [] },
+          contents: { type: "literal", value: [] }, //Array in Array ["Sie beherrschen...", "Apply"]
+          exams: { type: "literal", value: [] }
+        }
+      ];
+      this.modMethod = [
+        {
+          code: { type: "literal", value: this.course },
+          label: { type: "literal", value: "" },
+          interTypes: { type: "literal", value: [] }, //String array
+          workloadSum: {
+            type: "literal",
+            datatype: "http://www.w3.org/2001/XMLSchema#integer",
+            value: ""
+          },
+          workloadDetails: { type: "literal", value: [] }
+        } //array in array ["xxx", 40]
+      ];
+    },
     validateInput() {
-      this.$v.$touch();
+      /*this.$v.$reset()
+      if (touchMap.has(this.$v)) {
+        clearTimeout(touchMap.get(this.$v))
+      }
+      touchMap.set(this.$v, setTimeout(this.$v.$touch, 1000))*/
 
+      this.$v.$touch();
       if (!this.$v.$invalid) {
-        this.$emit("close");
+        this.generateEmptyArray();
+
+        //this.$emit('close');
       }
     }
+  },
+  watch: {
+    newModule: {
+      handler(v) {
+        //console.log("module", v);
+        this.$emit("module", v);
+      }
+    },
+    modBasic: {
+      handler(v) {
+        if (this.modBasic.length > 0) {
+          //console.log("modBasicData", v);
+          this.$emit("modBasicData", v);
+          this.$emit("studyProgram", this.studyProgram);
+          this.$emit("close");
+        }
+      }
+    }
+    /*modOutcome(v) {
+      //this.$emit("modOutcomes", v);
+    },
+    modMethod(v) {
+      //this.$emit("modMethods", v);
+    }*/
   }
 };
 </script>

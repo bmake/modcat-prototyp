@@ -1,7 +1,9 @@
 <template>
-  <div v-if="role == 1 || role == 2">
+  <form v-if="role == 1 || role == 2" @submit.prevent="validateInput">
     <div style="text-align:left; font-size:26px;">
-      <b v-if="modBasis.length > 0">Rahmendaten zum Modul {{ modBasis[0].code.value }}</b>
+      <b v-if="modBasis.length > 0"
+        >Rahmendaten zum Modul {{ modBasis[0].code.value }}</b
+      >
     </div>
 
     <div class="md-layout md-gutter">
@@ -21,15 +23,22 @@
       </div>-->
 
       <div class="md-layout-item md-size-70">
-        <md-field>
+        <md-field :class="getValidationClass('label')">
           <label>Modulbezeichnung</label>
           <md-input
             v-if="modBasis.length > 0"
-            v-model="modBasis[0].label.value"
+            v-model.trim="modBasis[0].label.value"
             @change="addChanged('label')"
             :disabled="role != 2"
           />
+          <!--remove v-if & v-else; change modBasis[0] to modBasis-->
           <md-input v-else disabled />
+          <!--<span
+            style="margin-bottom: 20px"
+            class="md-error"
+            v-if="!$v.modBasis[0].label.value.required"
+            >Pflichtfeld</span
+          >-->
         </md-field>
       </div>
 
@@ -53,6 +62,12 @@
             </md-option>
           </md-select>
           <md-select v-else md-dense disabled />
+          <!--<span
+            style="margin-bottom: 20px"
+            class="md-error"
+            v-if="!$v.accPerson.required"
+            >Pflichtfeld</span
+          >-->
         </md-field>
         <!--<md-field>
           <label>Modulverantwortliche/r</label>
@@ -259,6 +274,7 @@
           :disabled="role != 2"
           >Änderung speichern</md-button
         >
+        <!--@click="updateData"-->
         <md-button
           v-if="modBasis.length > 0"
           @click="resetData"
@@ -280,22 +296,25 @@
         <p>changed Array: {{ changedArray }}</p>
         <p>deleteArray: {{ this.delete }}</p>
         <p>insertArray: {{ this.insert }}</p>
-        <p>where: {{ this.where }}</p>
-        <p>modBasis: {{ modBasis[0] }}</p>
-        <p>update: {{ updateQuery }}</p>-->
+        <p>where: {{ this.where }}</p>-->
+        <!--<p>modBasis: {{ modBasis[0] }}</p>-->
+        <!--<p>update: {{ updateQuery }}</p>-->
       </div>
     </div>
-  </div>
+  </form>
 </template>
 
 <script>
 import axios from "axios";
 import jsPDF from "jspdf";
 import lodash from "lodash";
+import { validationMixin } from "vuelidate";
+import { required } from "vuelidate/lib/validators";
 
 export default {
-  props: ["modBasisOrigin", "moduleUri", "role"],
+  props: ["modBasisOrigin", "moduleUri", "role", "studyProgram"],
   name: "basisData",
+  mixins: [validationMixin],
   data() {
     return {
       countModType: 0,
@@ -304,7 +323,10 @@ export default {
       lecturers: [],
       changedArray: [],
       updateQuery: "",
-      modBasis: [],
+      modBasis:
+      {
+        label: null
+      },
       notification: false,
       prefixes:
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
@@ -360,7 +382,32 @@ export default {
         this.errors.push(e);
       });
   },
+  validations: {
+    modBasis:
+      {
+        label: {
+            required
+        },
+      }
+  },
   methods: {
+    validateInput() {
+      this.$v.$touch();
+      if (!this.$v.$invalid) {
+        //console.log("validation success")
+        //this.updateData()
+      }
+    },
+    getValidationClass(fieldName) {
+      //console.log("fieldName", this.$v.modBasis[fieldName])
+      const field = this.$v.modBasis[fieldName];
+
+      if (field) {
+        return {
+          "md-invalid": field.$invalid && field.$dirty
+        };
+      }
+    },
     addChanged(item) {
       if (item == "learnTypes") {
         let learnTypes = this.modBasis[0].learnTypes.value;
@@ -582,6 +629,7 @@ export default {
       if (!Object.keys(this.modBasisOrigin[0]).includes("pre")) {
         this.modBasis[0]["pre"] = { value: "" };
       }
+      //this.modBasis = this.modBasis[0]
     },
     generatePDF() {
       const doc = new jsPDF();
