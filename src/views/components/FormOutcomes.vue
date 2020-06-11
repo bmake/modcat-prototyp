@@ -205,12 +205,12 @@
               Änderungen gespeichert!
             </div>
           </transition>
-         <!-- <p>input1 is: {{ inputs1 }}</p>
+          <!--<p>input1 is: {{ inputs1 }}</p>
           <p>input2 is: {{ inputs2 }}</p>
           <p>input4 is: {{ inputs4 }}</p>
-          <p>count: {{ count }}</p>
-          <p>changedArray: {{ changedArray }}</p>
-          <p>delete: {{ this.delete }}</p>
+          <p>count: {{ count }}</p>-->
+          <!--<p>changedArray: {{ changedArray }}</p>-->
+          <!--<p>delete: {{ this.delete }}</p>
           <p>insert: {{ insert }}</p>
           <p>where: {{ where }}</p>
           <p>update: {{ updateQuery }}</p>-->
