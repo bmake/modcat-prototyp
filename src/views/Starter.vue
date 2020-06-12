@@ -186,15 +186,15 @@ export default {
   methods: {
     getModule(value) {
       this.selectedModule = value;
-      console.log("selectedModule", value)
+      //console.log("selectedModule", value)
     },
     getStudyProgram(value) {
       this.studyProgram = value;
-      console.log("studyProgram", value)
+      //console.log("studyProgram", value)
     },
     getModBasicData(value) {
       this.modBasis = value;
-      console.log("modBasisStarter", value)
+      //console.log("modBasisStarter", value)
     },
     getModOutcomes(value) {
       this.modOutcome = value;

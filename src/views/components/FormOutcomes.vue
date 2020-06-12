@@ -209,12 +209,12 @@
           <p>input2 is: {{ inputs2 }}</p>
           <p>input4 is: {{ inputs4 }}</p>
           <p>count: {{ count }}</p>-->
-          <!--<p>changedArray: {{ changedArray }}</p>-->
-          <!--<p>delete: {{ this.delete }}</p>
+          <p>changedArray: {{ changedArray }}</p>
+          <!--<p>delete: {{ this.delete }}</p>-->
           <p>insert: {{ insert }}</p>
           <p>where: {{ where }}</p>
-          <p>update: {{ updateQuery }}</p>-->
-          <!--<p>modOutcome: {{ modOutcome[0] }}</p>-->
+          <!--<p>update: {{ updateQuery }}</p>
+          <p>modOutcome: {{ modOutcome[0] }}</p>-->
         </div>
       </div>
     </div>
@@ -333,7 +333,13 @@ export default {
             let item = this.changedArray.inputs1[i];
             let p = parseInt(item.substring(0, item.length - 1));
             let n = item.substring(item.length - 1);
-            let sub = "module:LResult0" + p + "_" + code;
+            let sub = ""
+            if (p < 10) {
+              sub = "module:LResult0" + p + "_" + code;
+            } else {
+              sub = "module:LResult" + p + "_" + code;
+            }
+
             if (p <= this.countLearn) {
               if (n == "0") {
                 let triple =
