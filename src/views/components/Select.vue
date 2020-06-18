@@ -17,7 +17,7 @@
     </div>
 
     <div class="md-layout-item md-size-25">
-      <md-field>
+      <!--- <md-field>
         <label style="font-size:18px;">Modul</label>
         <md-select v-model="course" name="course" id="course">
           <md-option
@@ -29,7 +29,26 @@
             {{ modulejson.label.value }}
           </md-option>
         </md-select>
-      </md-field>
+      </md-field> --->
+
+     <md-autocomplete v-model="course" name="course" id="course" :md-options="Module">
+      <label>Modul</label>
+
+      <template slot="md-autocomplete-item" slot-scope="{ item, term }">
+        <md-highlight-text :md-term="term">{{ item }}</md-highlight-text>
+      </template>
+
+      <template slot="md-autocomplete-empty" slot-scope="{ term }">
+        <a>Nichts unter "{{ term }}" gefunden.</a> <a @click="noop()">Legen Sie ein neues Modul an</a>
+      </template>
+    </md-autocomplete> 
+
+     <!--- <md-autocomplete v-model="value" :md-options="modules" @md-changed="getModules" @md-opened="getModules">
+      <label>Country</label>
+
+      <template slot="md-autocomplete-item" slot-scope="{ item }">{{ item.name }}</template>
+    </md-autocomplete> --->
+
     </div>
   </div>
 </template>
@@ -43,7 +62,17 @@ export default {
     return {
       moduleList: [],
       studyProgram: "",
-      course: ""
+      course: "",
+      selectedModule: null,
+      Module: [
+        'Modul1',
+        'Modul2',
+        'Modul3',
+        'Software Auswahl',
+        'Enterprise Knowledge Graph Implementation'
+      ],
+      value: null,
+      modules: []
     };
   },
   watch: {
@@ -78,7 +107,23 @@ export default {
         .catch(e => {
           this.errors.push(e);
         });
-    }
+    },
+    noop () {
+        window.alert('noop')
+      },
+    getModules (searchTerm) {
+        this.modules = new Promise(resolve => {
+          window.setTimeout(() => {
+            if (!searchTerm) {
+              resolve(this.moduleList)
+            } else {
+              const term = searchTerm.toLowerCase()
+
+              resolve(this.moduleList.filter(({ name }) => name.toLowerCase().includes(term)))
+            }
+          }, 500)
+        })
+      }
   }
 };
 </script>
@@ -131,6 +176,10 @@ span.md-list-item-text {
   .select .md-layout-item.md-size-25 {
     min-width: 100%;
     max-width: 100%;
+  }
+  .md-autocomplete + strong {
+    margin-top: 36px;
+    display: block;
   }
 }
 
