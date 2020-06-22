@@ -42,23 +42,33 @@
                   <span class="md-prefix" style="font-size: x-small"
                     >https://bmake.th-brandenburg.de/module/</span
                   >
-                  <md-input v-model.trim="course" name="course" id="course" />
+                  <md-input
+                    v-model.trim="course"
+                    name="course"
+                    id="course"
+                  ></md-input>
                   <span
                     style="margin-bottom: 20px"
                     class="md-error"
                     v-if="!$v.course.required"
                     >Sie müssen einen Modulkürzel eingeben</span
                   >
-                  <span
+                  <!--<span
                     style="margin-bottom: 20px"
                     class="md-error"
                     v-if="this.space && $v.course.required"
                     >Leerzeichen sind nicht erlaubt</span
+                  >-->
+                  <span
+                    style="margin-bottom: 20px"
+                    class="md-error"
+                    v-if="!$v.course.url && $v.course.required"
+                    >Ungültige URL</span
                   >
                   <span
                     style="margin-bottom: 20px"
                     class="md-error"
-                    v-if="!this.unique && $v.course.required && !this.space"
+                    v-if="!this.unique && $v.course.required && $v.course.url"
                     >Das eingegebene Kürzel ist schon vorhanden!</span
                   >
                 </md-field>
@@ -86,7 +96,7 @@
 <script>
 import axios from "axios";
 import { validationMixin } from "vuelidate";
-import { required } from "vuelidate/lib/validators";
+import { required, url, helpers } from "vuelidate/lib/validators";
 
 //const touchMap = new WeakMap();
 
@@ -102,7 +112,8 @@ export default {
       newModule: null,
       modBasic: null,
       modOutcome: null,
-      modMethod: null
+      modMethod: null,
+      prefix: "https://bmake.th-brandenburg.de/module/"
     };
   },
   validations: {
@@ -111,7 +122,15 @@ export default {
     },
     course: {
       required,
-      hasSpace(value) {
+      //url: url('https://bmake.th-brandenburg.de/module/' + value),
+      url(value) {
+        if (value === "" || value == null) {
+          return true;
+        } else {
+          return url("https://bmake.th-brandenburg.de/module/" + value);
+        }
+      },
+      /*hasSpace(value) {
         if (value === "" || value == null) {
           return true;
         } else {
@@ -123,16 +142,16 @@ export default {
             return true;
           }
         }
-      },
+      },*/
       async isUnique(value) {
         if ((value === "" || value == null) && this.space) {
           return true;
         } else {
           let query =
             " PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
-            " ASK  { module:" +
+            " ASK  { <https://bmake.th-brandenburg.de/module/" +
             value +
-            " a module:Module .}";
+            "> a module:Module .}";
 
           let boo = true;
           await axios
@@ -253,7 +272,10 @@ export default {
     newModule: {
       handler(v) {
         //console.log("module", v);
-        this.$emit("module", v);
+        let m = "https://bmake.th-brandenburg.de/module/" + v;
+        this.$emit("module", m);
+        this.$emit("code", v);
+        this.$emit("newBoolean", true);
       }
     },
     modBasic: {

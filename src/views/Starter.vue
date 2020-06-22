@@ -14,7 +14,7 @@
               <h1>Modulkatalog @THB</h1>
               <h3>Fachbereich Wirtschaft</h3>
               <div>
-                <Select @module="getModule" />
+                <Select @module="getModule" @newBoolean="getNewBoolean" />
               </div>
             </div>
           </div>
@@ -48,16 +48,18 @@
           v-bind:class="{ 'md-primary': !style3, 'md-rose': style3 }"
           >Studiengangleitung</md-button
         >
-        <!--<md-button
+        <md-button
           class="md-lg"
           @click="showPopUp = true"
-          v-bind:class="{ 'md-primary': !style3, 'md-rose': style3 }"
+          v-bind:class="{ 'md-primary': !newBoolean, 'md-rose': newBoolean }"
           >Neues Modul</md-button
-        >-->
+        >
         <NewModulePopUp
           v-if="showPopUp"
           @close="showPopUp = false"
           @module="getModule"
+          @code="getCode"
+          @newBoolean="getNewBoolean"
           @modBasicData="getModBasicData"
           @studyProgram="getStudyProgram"
           @modOutcomes="getModOutcomes"
@@ -73,6 +75,7 @@
               <SVGGraph
                 :module-uri="selectedModule"
                 :role="role"
+                :code="code"
                 @modBasicData="getModBasicData"
                 @modOutcomes="getModOutcomes"
                 @modMethods="getModMethod"
@@ -122,6 +125,7 @@
                     :role="role"
                     :modBasisOrigin="modBasis"
                     :studyProgram="studyProgram"
+                    :newBoolean="newBoolean"
                     :moduleUri="selectedModule"
                     :modOutcomeOrigin="modOutcome"
                     :modMethodOrigin="modMethod"
@@ -171,6 +175,7 @@ export default {
       studyProgram: "",
       code: "",
       role: null,
+      newBoolean: false,
       modBasis: [],
       modOutcome: [],
       modMethod: [],
@@ -186,15 +191,23 @@ export default {
   methods: {
     getModule(value) {
       this.selectedModule = value;
-      //console.log("selectedModule", value)
+      console.log("selectedModule", value)
     },
     getStudyProgram(value) {
       this.studyProgram = value;
-      //console.log("studyProgram", value)
+      console.log("studyProgram", value)
+    },
+    getCode(value) {
+      this.code = value;
+      console.log("code", value)
+    },
+    getNewBoolean(value) {
+      this.newBoolean = value;
+      console.log("newBoolean", value)
     },
     getModBasicData(value) {
       this.modBasis = value;
-      //console.log("modBasisStarter", value)
+      console.log("modBasisStarter", value)
     },
     getModOutcomes(value) {
       this.modOutcome = value;

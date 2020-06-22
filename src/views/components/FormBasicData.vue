@@ -1,12 +1,12 @@
 <template>
   <form v-if="role == 1 || role == 2" @submit.prevent="validateInput">
     <div style="text-align:left; font-size:26px;">
-      <b v-if="modBasis.length > 0"
-        >Rahmendaten zum Modul {{ modBasis[0].code.value }}</b
+      <b v-if="modBasisOrigin.length > 0"
+        >Rahmendaten zum Modul {{ modBasis.code.value }}</b
       >
     </div>
 
-    <div class="md-layout md-gutter">
+    <form class="md-layout md-gutter" @submit.prevent="validateInput">
       <!--<div class="md-layout-item md-size-33">
         <md-field>
           <label>Modulkürzel</label>
@@ -26,28 +26,28 @@
         <md-field :class="getValidationClass('label')">
           <label>Modulbezeichnung</label>
           <md-input
-            v-if="modBasis.length > 0"
-            v-model.trim="modBasis[0].label.value"
+            v-if="modBasisOrigin.length > 0"
+            v-model.trim="modBasis.label.value"
             @change="addChanged('label')"
             :disabled="role != 2"
           />
           <!--remove v-if & v-else; change modBasis[0] to modBasis-->
           <md-input v-else disabled />
-          <!--<span
+          <span
             style="margin-bottom: 20px"
             class="md-error"
-            v-if="!$v.modBasis[0].label.value.required"
+            v-if="!$v.modBasis.label.value.required"
             >Pflichtfeld</span
-          >-->
+          >
         </md-field>
       </div>
 
       <div class="md-layout-item md-size-30">
-        <md-field class="xs">
+        <md-field class="xs" :class="getValidationClass('accPerson')">
           <label>Modulverantwortliche/r</label>
           <md-select
-            v-if="modBasis.length > 0"
-            v-model="modBasis[0].accPerson.value"
+            v-if="modBasisOrigin.length > 0"
+            v-model="modBasis.accPerson.value"
             @md-selected="countLecturer++"
             :disabled="role != 2"
             md-dense
@@ -62,12 +62,12 @@
             </md-option>
           </md-select>
           <md-select v-else md-dense disabled />
-          <!--<span
+          <span
             style="margin-bottom: 20px"
             class="md-error"
-            v-if="!$v.accPerson.required"
+            v-if="!$v.modBasis.accPerson.value.required"
             >Pflichtfeld</span
-          >-->
+          >
         </md-field>
         <!--<md-field>
           <label>Modulverantwortliche/r</label>
@@ -85,8 +85,8 @@
         <md-field class="xs">
           <label>Modultyp</label>
           <md-select
-            v-if="modBasis.length > 0"
-            v-model="modBasis[0].modType_name.value"
+            v-if="modBasisOrigin.length > 0"
+            v-model="modBasis.modType_name.value"
             @md-selected="countModType++"
             name="modulType"
             id="modulType"
@@ -103,8 +103,8 @@
         <md-field>
           <label>Semesterdauer</label>
           <md-input
-            v-if="modBasis.length > 0"
-            v-model="modBasis[0].duration.value"
+            v-if="modBasisOrigin.length > 0"
+            v-model="modBasis.duration.value"
             @change="addChanged('duration')"
             :disabled="role != 2"
           />
@@ -115,8 +115,8 @@
         <md-field>
           <label>SWS</label>
           <md-input
-            v-if="modBasis.length > 0"
-            v-model="modBasis[0].swsSum.value"
+            v-if="modBasisOrigin.length > 0"
+            v-model="modBasis.swsSum.value"
             @change="addChanged('swsSum')"
             :disabled="role != 2"
           />
@@ -127,8 +127,8 @@
         <md-field>
           <label>ECTS</label>
           <md-input
-            v-if="modBasis.length > 0"
-            v-model="modBasis[0].ects.value"
+            v-if="modBasisOrigin.length > 0"
+            v-model="modBasis.ects.value"
             @change="addChanged('ects')"
             :disabled="role != 2"
           />
@@ -139,8 +139,8 @@
         <md-field>
           <label>Lehrform</label>
           <md-input
-            v-if="modBasis.length > 0"
-            v-model="modBasis[0].learnTypes.value"
+            v-if="modBasisOrigin.length > 0"
+            v-model="modBasis.learnTypes.value"
             @change="addChanged('learnTypes')"
             :disabled="role != 2"
           />
@@ -150,13 +150,13 @@
       <div
         class="md-layout-item md-size-50"
         style="text-align:left;"
-        v-if="modBasis.length > 0"
+        v-if="modBasisOrigin.length > 0"
       >
         <span style="font-size:14px; color:#2e2e2e; font-family:arial;"
           >Lehrsprachen:
         </span>
         <md-checkbox
-          v-model="modBasis[0].languages.value"
+          v-model="modBasis.languages.value"
           value="de"
           style="margin-left:10px;"
           @change="addChanged('languages')"
@@ -164,8 +164,8 @@
           >Deutsch</md-checkbox
         >
         <md-checkbox
-          v-if="modBasis.length > 0"
-          v-model="modBasis[0].languages.value"
+          v-if="modBasisOrigin.length > 0"
+          v-model="modBasis.languages.value"
           value="en"
           @change="addChanged('languages')"
           :disabled="role != 2"
@@ -177,8 +177,8 @@
         <md-field>
           <label>Notengewichtung</label>
           <md-input
-            v-if="modBasis.length > 0"
-            v-model="modBasis[0].grade_name.value"
+            v-if="modBasisOrigin.length > 0"
+            v-model="modBasis.grade_name.value"
             @change="addChanged('grade_name')"
             :disabled="role != 2"
           />
@@ -190,8 +190,8 @@
         <md-field class="xs">
           <label>Häufigkeit</label>
           <md-select
-            v-if="modBasis.length > 0"
-            v-model="modBasis[0].courseMode.value"
+            v-if="modBasisOrigin.length > 0"
+            v-model="modBasis.courseMode.value"
             @md-selected="countCourseMode++"
             :disabled="role != 2"
             name="frequency"
@@ -216,8 +216,8 @@
         <md-field>
           <label>Verwendbarkeit</label>
           <md-textarea
-            v-if="modBasis.length > 0"
-            v-model="modBasis[0].eduUse.value"
+            v-if="modBasisOrigin.length > 0"
+            v-model="modBasis.eduUse.value"
             @change="addChanged('eduUse')"
             :disabled="role != 2"
             md-autogrow
@@ -230,8 +230,8 @@
         <md-field>
           <label>Voraussetzungen</label>
           <md-textarea
-            v-if="modBasis.length > 0"
-            v-model="modBasis[0].pre.value"
+            v-if="modBasisOrigin.length > 0"
+            v-model="modBasis.pre.value"
             @change="addChanged('pre')"
             :disabled="role != 2"
             md-autogrow
@@ -243,8 +243,8 @@
         <md-field>
           <label>Website</label>
           <md-textarea
-            v-if="modBasis.length > 0"
-            v-model="modBasis[0].url.value"
+            v-if="modBasisOrigin.length > 0"
+            v-model="modBasis.url.value"
             @change="addChanged('url')"
             :disabled="role != 2"
             md-autogrow
@@ -257,8 +257,8 @@
         <md-field>
           <label>Beschreibung und Kommentare zum Modul</label>
           <md-textarea
-            v-if="modBasis.length > 0"
-            v-model="modBasis[0].comment.value"
+            v-if="modBasisOrigin.length > 0"
+            v-model="modBasis.comment.value"
             @change="addChanged('comment')"
             :disabled="role != 2"
             md-autogrow
@@ -269,14 +269,14 @@
 
       <div class="md-layout-item" ref="notification">
         <md-button
-          v-if="modBasis.length > 0"
-          @click="updateData"
+          v-if="modBasisOrigin.length > 0"
+          type="submit"
           :disabled="role != 2"
           >Änderung speichern</md-button
         >
         <!--@click="updateData"-->
         <md-button
-          v-if="modBasis.length > 0"
+          v-if="modBasisOrigin.length > 0"
           @click="resetData"
           :disabled="role != 2"
           >Änderung verwerfen</md-button
@@ -292,15 +292,15 @@
             Änderungen gespeichert!
           </div>
         </transition>
-        <!--<p>{{ updateQuery }}</p>
+        <p>{{ updateQuery }}</p>
         <p>changed Array: {{ changedArray }}</p>
         <p>deleteArray: {{ this.delete }}</p>
         <p>insertArray: {{ this.insert }}</p>
-        <p>where: {{ this.where }}</p>-->
-        <!--<p>modBasis: {{ modBasis[0] }}</p>-->
-        <!--<p>update: {{ updateQuery }}</p>-->
+        <p>where: {{ this.where }}</p>
+        <p>modBasis: {{ modBasis }}</p>
+        <p>update: {{ updateQuery }}</p>
       </div>
-    </div>
+    </form>
   </form>
 </template>
 
@@ -312,7 +312,7 @@ import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
 
 export default {
-  props: ["modBasisOrigin", "moduleUri", "role", "studyProgram"],
+  props: ["modBasisOrigin", "moduleUri", "role", "studyProgram", "newBoolean"],
   name: "basisData",
   mixins: [validationMixin],
   data() {
@@ -321,12 +321,12 @@ export default {
       countCourseMode: 0,
       countLecturer: 0,
       lecturers: [],
+      modBasis: {
+        label: null,
+        accPerson: null
+      },
       changedArray: [],
       updateQuery: "",
-      modBasis:
-      {
-        label: null
-      },
       notification: false,
       prefixes:
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
@@ -383,23 +383,29 @@ export default {
       });
   },
   validations: {
-    modBasis:
-      {
-        label: {
-            required
-        },
+    modBasis: {
+      label: {
+        value: {
+          required
+        }
+      },
+      accPerson: {
+        value: {
+          required
+        }
       }
+    }
   },
   methods: {
     validateInput() {
       this.$v.$touch();
       if (!this.$v.$invalid) {
-        //console.log("validation success")
-        //this.updateData()
+        console.log("validation success");
+        console.log(this.moduleUri);
+        this.updateData();
       }
     },
     getValidationClass(fieldName) {
-      //console.log("fieldName", this.$v.modBasis[fieldName])
       const field = this.$v.modBasis[fieldName];
 
       if (field) {
@@ -410,15 +416,15 @@ export default {
     },
     addChanged(item) {
       if (item == "learnTypes") {
-        let learnTypes = this.modBasis[0].learnTypes.value;
-        this.modBasis[0].learnTypes.value = learnTypes.split(",");
+        let learnTypes = this.modBasis.learnTypes.value;
+        this.modBasis.learnTypes.value = learnTypes.split(",");
       }
       if (this.changedArray.indexOf(item) === -1) {
         this.changedArray.push(item);
       } else {
         let i = this.changedArray.indexOf(item);
         let arr = this.insert[i];
-        arr.splice(3, 1, this.modBasis[0][item].value);
+        arr.splice(3, 1, this.modBasis[item].value);
         this.insert.splice(i, 1, arr);
       }
     },
@@ -426,60 +432,68 @@ export default {
       let delArray = [];
       let insArray = [];
       if (i == "modType_name") {
-        delArray.push(
-          this.template.modType_name.s,
-          this.template.modType_name.p[0],
-          this.template.modType_name.o[0],
-          "; "
-        );
-        delArray.push(
-          this.template.modType_name.p[1],
-          this.template.modType_name.o[1],
-          ". "
-        );
+        if (!this.newBoolean) {
+          delArray.push(
+            this.template.modType_name.s,
+            this.template.modType_name.p[0],
+            this.template.modType_name.o[0],
+            "; "
+          );
+          delArray.push(
+            this.template.modType_name.p[1],
+            this.template.modType_name.o[1],
+            ". "
+          );
+        }
         insArray.push(
           this.template.modType_name.s,
           this.template.modType_name.p[0],
           '"',
-          this.template.modType_name[this.modBasis[0].modType_name.value][0],
+          this.template.modType_name[this.modBasis.modType_name.value][0],
           '"; '
         );
         insArray.push(
           this.template.modType_name.p[1],
           '"',
-          this.template.modType_name[this.modBasis[0].modType_name.value][1],
+          this.template.modType_name[this.modBasis.modType_name.value][1],
           '". '
         );
       } else if (i == "accPerson") {
-        delArray.push(
-          this.template[i].s,
-          this.template[i].p,
-          this.template[i].o,
-          ". "
-        );
+        if (!this.newBoolean) {
+          delArray.push(
+            this.template[i].s,
+            this.template[i].p,
+            this.template[i].o,
+            ". "
+          );
+        }
         insArray.push(
           this.template[i].s,
           this.template[i].p,
           " <",
-          this.modBasis[0][i].value,
+          this.modBasis[i].value,
           ">. "
         );
       } else {
-        delArray.push(
-          this.template[i].s,
-          this.template[i].p,
-          this.template[i].o,
-          ". "
-        );
+        if (!this.newBoolean) {
+          delArray.push(
+            this.template[i].s,
+            this.template[i].p,
+            this.template[i].o,
+            ". "
+          );
+        }
         insArray.push(
           this.template[i].s,
           this.template[i].p,
           '"',
-          this.modBasis[0][i].value,
+          this.modBasis[i].value,
           '". '
         );
       }
-      this.delete.push(delArray);
+      if (!this.newBoolean) {
+        this.delete.push(delArray);
+      }
       this.insert.push(insArray);
     },
     updateData() {
@@ -490,13 +504,16 @@ export default {
         this.insert[i][3] = d;
       }
       let query = this.prefixes;
-      query += " DELETE { ";
-      this.delete.forEach(function(itemArr) {
-        for (let a = 0; a < itemArr.length; a++) {
-          query += itemArr[a];
-        }
-      });
-      query += " } INSERT { ";
+      if (this.delete.length > 0) {
+        query += " DELETE { ";
+        this.delete.forEach(function(itemArr) {
+          for (let a = 0; a < itemArr.length; a++) {
+            query += itemArr[a];
+          }
+        });
+        query += " } ";
+      }
+      query += " INSERT { ";
       this.insert.forEach(function(itemArr) {
         if (Array.isArray(itemArr[3])) {
           let str = itemArr[3].join('", "');
@@ -509,7 +526,7 @@ export default {
       query += "} WHERE { <" + this.moduleUri + "> " + this.where + " }";
       this.updateQuery = query;
 
-      axios
+      /*axios
         .post("http://fbw-sgmwi.th-brandenburg.de:3030/modcat/update", query, {
           headers: { "Content-Type": "application/sparql-update" }
         })
@@ -525,7 +542,7 @@ export default {
         })
         .catch(e => {
           this.errors.push(e);
-        });
+        });*/
     },
     clearCache() {
       this.countModType = 0;
@@ -537,6 +554,7 @@ export default {
     },
     resetData() {
       this.initialState();
+      this.$v.$reset();
     },
     initialState() {
       this.countModType = 0;
@@ -629,7 +647,7 @@ export default {
       if (!Object.keys(this.modBasisOrigin[0]).includes("pre")) {
         this.modBasis[0]["pre"] = { value: "" };
       }
-      //this.modBasis = this.modBasis[0]
+      this.modBasis = this.modBasis[0];
     },
     generatePDF() {
       const doc = new jsPDF();
@@ -743,7 +761,7 @@ export default {
     countModType(v) {
       if (v <= 2) {
         if (
-          this.modBasis[0].modType_name.value !=
+          this.modBasis.modType_name.value !=
           this.modBasisOrigin[0].modType_name.value
         ) {
           if (this.changedArray.indexOf("modType_name") === -1) {
@@ -756,7 +774,7 @@ export default {
       } else if (v > 2) {
         let i = this.changedArray.indexOf("modType_name");
         let arr = this.insert[i];
-        let v = this.modBasis[0].modType_name.value;
+        let v = this.modBasis.modType_name.value;
         arr.splice(3, 1, this.template.modType_name[v][0]);
         arr.splice(7, 1, this.template.modType_name[v][1]);
         this.insert.splice(i, 1, arr);
@@ -765,7 +783,7 @@ export default {
     countCourseMode(v) {
       if (v <= 2) {
         if (
-          this.modBasis[0].courseMode.value !=
+          this.modBasis.courseMode.value !=
           this.modBasisOrigin[0].courseMode.value
         ) {
           if (this.changedArray.indexOf("courseMode") === -1) {
@@ -785,7 +803,7 @@ export default {
     countLecturer(v) {
       if (v <= 2) {
         if (
-          this.modBasis[0].accPerson.value !=
+          this.modBasis.accPerson.value !=
           this.modBasisOrigin[0].accPerson.value
         ) {
           if (this.changedArray.indexOf("accPerson") === -1) {
@@ -798,7 +816,7 @@ export default {
       } else if (v > 2) {
         let i = this.changedArray.indexOf("accPerson");
         let arr = this.insert[i];
-        arr.splice(3, 1, this.modBasis[0].accPerson.value);
+        arr.splice(3, 1, this.modBasis.accPerson.value);
         this.insert.splice(i, 1, arr);
       }
     },
@@ -812,7 +830,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 button.md-button {
   margin-right: 10px;
   margin-top: 10px;
@@ -830,5 +848,8 @@ button.md-button {
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
+}
+span {
+  top: 31px;
 }
 </style>

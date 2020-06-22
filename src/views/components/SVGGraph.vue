@@ -13,7 +13,7 @@ import axios from "axios";
 
 export default {
   name: "SvgGraph",
-  props: ["moduleUri", "role"],
+  props: ["moduleUri", "role", "code"],
   data() {
     return {
       svgfile: require("../../assets/modcat.svg"),
@@ -341,6 +341,9 @@ export default {
       if (this.moduleInfo.length > 0) {
         tModule = "Modul " + this.moduleInfo[0].code.value;
         tSemester = this.moduleInfo[0].semester.value.substring(39);
+      } else if (this.code != "") {
+        tModule = "Modul " + this.code;
+        tSemester = "So/WiSe XY";
       } else {
         tModule = "Modul <Kürzel>";
         tSemester = "So/WiSe XY";

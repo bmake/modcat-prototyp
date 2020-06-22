@@ -49,6 +49,7 @@ export default {
   watch: {
     course(v) {
       this.$emit("module", v);
+      this.$emit("newBoolean", false);
     },
     studyProgram(v) {
       this.course = ""
