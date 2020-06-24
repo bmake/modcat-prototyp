@@ -138,57 +138,5 @@ export default {
 </script>
 
 <style>
-.select {
-  padding: 5em;
-}
 
-.select .md-field.md-theme-default label {
-  color: #2e2e2e !important;
-  font-size: large;
-}
-
-.select .md-field.md-theme-default .md-menu.md-select input {
-  -webkit-text-fill-color: white !important;
-  font-weight: bold !important;
-  font-size: large !important;
-  margin-top: 5px;
-}
-
-.md-menu-content {
-  max-width: 330px !important;
-}
-
-span.md-list-item-text {
-  white-space: normal !important;
-  max-height: max-content !important;
-  padding: 5px !important;
-  font-size: medium !important;
-}
-
-.md-list.md-dense .md-list-item-text {
-  margin-left: 20px !important;
-  font-size: small !important;
-}
-
-@media all and (max-width: 700px) {
-  .md-menu-content {
-    max-width: 200px !important;
-  }
-  .md-list.md-dense .md-list-item-text {
-    margin-left: 5px !important;
-    font-size: small !important;
-  }
-  .select {
-    padding: 3em;
-    margin-bottom: 3em;
-  }
-  .select .md-layout-item.md-size-25 {
-    min-width: 100%;
-    max-width: 100%;
-  }
-  .md-autocomplete + strong {
-    margin-top: 36px;
-    display: block;
-  }
-}
 </style>

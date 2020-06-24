@@ -62,13 +62,13 @@
                   <span
                     style="margin-bottom: 20px"
                     class="md-error"
-                    v-if="!$v.course.url && $v.course.required"
-                    >Ungültige URL</span
+                    v-if="!$v.course.alphaNum && $v.course.required"
+                    >Nur Buchstaben und Zahlen sind erlaubt!</span
                   >
                   <span
                     style="margin-bottom: 20px"
                     class="md-error"
-                    v-if="!this.unique && $v.course.required && $v.course.url"
+                    v-if="!this.unique && $v.course.required && $v.course.alphaNum"
                     >Das eingegebene Kürzel ist schon vorhanden!</span
                   >
                 </md-field>
@@ -96,7 +96,7 @@
 <script>
 import axios from "axios";
 import { validationMixin } from "vuelidate";
-import { required, url, helpers } from "vuelidate/lib/validators";
+import { required, url, alphaNum, helpers } from "vuelidate/lib/validators";
 
 //const touchMap = new WeakMap();
 
@@ -122,14 +122,15 @@ export default {
     },
     course: {
       required,
+      alphaNum,
       //url: url('https://bmake.th-brandenburg.de/module/' + value),
-      url(value) {
+      /*url(value) {
         if (value === "" || value == null) {
           return true;
         } else {
           return url("https://bmake.th-brandenburg.de/module/" + value);
         }
-      },
+      },*/
       /*hasSpace(value) {
         if (value === "" || value == null) {
           return true;
