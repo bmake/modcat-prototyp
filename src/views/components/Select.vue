@@ -3,11 +3,7 @@
     <div class="md-layout-item md-size-25">
       <md-field>
         <label>Studiengang</label>
-        <md-select
-          v-model="studyProgram"
-          name="studyProgram"
-          id="studyProgram"
-        >
+        <md-select v-model="studyProgram" name="studyProgram" id="studyProgram">
           <md-option value="WIB">WI Bachelor</md-option>
           <md-option value="WIM">WI Master</md-option>
           <md-option value="BWLB">BWL Bachelor</md-option>
@@ -31,24 +27,29 @@
         </md-select>
       </md-field> --->
 
-     <md-autocomplete v-model="course" name="course" id="course" :md-options="Module">
-      <label>Modul</label>
+      <md-autocomplete
+        v-model="course"
+        name="course"
+        id="course"
+        :md-options="labels"
+      >
+        <label>Modul</label>
 
-      <template slot="md-autocomplete-item" slot-scope="{ item, term }">
-        <md-highlight-text :md-term="term">{{ item }}</md-highlight-text>
-      </template>
+        <template slot="md-autocomplete-item" slot-scope="{ item, term }">
+          <md-highlight-text :md-term="term">{{ item }}</md-highlight-text>
+        </template>
 
-      <template slot="md-autocomplete-empty" slot-scope="{ term }">
-        <a>Nichts unter "{{ term }}" gefunden.</a> <a @click="noop()">Legen Sie ein neues Modul an</a>
-      </template>
-    </md-autocomplete> 
+        <template slot="md-autocomplete-empty" slot-scope="{ term }">
+          <a>Nichts unter "{{ term }}" gefunden.</a>
+          <a @click="noop()">Legen Sie ein neues Modul an</a>
+        </template>
+      </md-autocomplete>
 
-     <!--- <md-autocomplete v-model="value" :md-options="modules" @md-changed="getModules" @md-opened="getModules">
+      <!--- <md-autocomplete v-model="value" :md-options="modules" @md-changed="getModules" @md-opened="getModules">
       <label>Country</label>
 
       <template slot="md-autocomplete-item" slot-scope="{ item }">{{ item.name }}</template>
     </md-autocomplete> --->
-
     </div>
   </div>
 </template>
@@ -63,27 +64,24 @@ export default {
       moduleList: [],
       studyProgram: "",
       course: "",
-      selectedModule: null,
-      Module: [
-        'Modul1',
-        'Modul2',
-        'Modul3',
-        'Software Auswahl',
-        'Enterprise Knowledge Graph Implementation'
-      ],
-      value: null,
-      modules: []
+      modules: [],
+      labels: []
     };
   },
   watch: {
     course(v) {
-      this.$emit("module", v);
+      console.log("course", this.course);
+      let i = this.labels.indexOf(v);
+      let value = this.modules[i];
+      this.$emit("module", value);
       this.$emit("newBoolean", false);
     },
     studyProgram(v) {
-      this.course = ""
-      this.queryModuleList(v)
-    },
+      this.course = "";
+      this.modules = [];
+      this.labels = [];
+      this.queryModuleList(v);
+    }
   },
   methods: {
     queryModuleList(sp) {
@@ -94,7 +92,9 @@ export default {
         "SELECT DISTINCT ?module ?label " +
         "WHERE { " +
         "  ?module a module:Module ; " +
-        "          schema:isPartOf module:" + sp + " ; " +
+        "          schema:isPartOf module:" +
+        sp +
+        " ; " +
         "          rdfs:label ?label. " +
         "}";
 
@@ -104,27 +104,35 @@ export default {
         })
         .then(response => {
           this.moduleList = response.data.results.bindings;
+          for (let a = 0; a < this.moduleList.length; a++) {
+            this.modules.push(this.moduleList[a].module.value)
+            this.labels.push(this.moduleList[a].label.value)
+          }
         })
         .catch(e => {
           this.errors.push(e);
         });
     },
-    noop () {
-        window.alert('noop')
-      },
-    getModules (searchTerm) {
-        this.modules = new Promise(resolve => {
-          window.setTimeout(() => {
-            if (!searchTerm) {
-              resolve(this.moduleList)
-            } else {
-              const term = searchTerm.toLowerCase()
+    noop() {
+      window.alert("noop");
+    },
+    /*getModules(searchTerm) {
+      this.modules = new Promise(resolve => {
+        window.setTimeout(() => {
+          if (!searchTerm) {
+            resolve(this.moduleList);
+          } else {
+            const term = searchTerm.toLowerCase();
 
-              resolve(this.moduleList.filter(({ name }) => name.toLowerCase().includes(term)))
-            }
-          }, 500)
-        })
-      }
+            resolve(
+              this.moduleList.filter(({ name }) =>
+                name.toLowerCase().includes(term)
+              )
+            );
+          }
+        }, 500);
+      });
+    }*/
   }
 };
 </script>
@@ -183,5 +191,4 @@ span.md-list-item-text {
     display: block;
   }
 }
-
 </style>
