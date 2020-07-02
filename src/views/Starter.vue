@@ -14,7 +14,7 @@
               <h1>Modulkatalog @THB</h1>
               <h3>Fachbereich Wirtschaft</h3>
               <div>
-                <Select @module="getModule" @newBoolean="getNewBoolean" />
+                <Select @module="getModule" @newBoolean="getNewBoolean" @showPopUp="showPopUp = true" />
               </div>
             </div>
           </div>
@@ -127,6 +127,7 @@
                     :studyProgram="studyProgram"
                     :newBoolean="newBoolean"
                     :moduleUri="selectedModule"
+                    :code="code"
                     :modOutcomeOrigin="modOutcome"
                     :modMethodOrigin="modMethod"
                   />
@@ -189,6 +190,9 @@ export default {
     };
   },
   methods: {
+    changeShowPopUp(value) {
+      this.showPopUp = value;
+    },
     getModule(value) {
       this.selectedModule = value;
       console.log("selectedModule", value)

@@ -39,15 +39,13 @@
           <md-highlight-text :md-term="term">{{ item }}</md-highlight-text>
         </template>
 
-        <template slot="md-autocomplete-empty" slot-scope="{ term }">
-          <a>Nichts unter "{{ term }}" gefunden.</a>
-          <a @click="noop()">Legen Sie ein neues Modul an</a>
+        <template slot="md-autocomplete-empty" slot-scope="{ term }" v-if="showList">
+          <a @click="$emit('showPopUp'), showList = false">Nichts unter "{{ term }}" gefunden. <br> Legen Sie ein neues Modul an</a>
         </template>
       </md-autocomplete>
 
       <!--- <md-autocomplete v-model="value" :md-options="modules" @md-changed="getModules" @md-opened="getModules">
       <label>Country</label>
-
       <template slot="md-autocomplete-item" slot-scope="{ item }">{{ item.name }}</template>
     </md-autocomplete> --->
     </div>
@@ -65,11 +63,13 @@ export default {
       studyProgram: "",
       course: "",
       modules: [],
-      labels: []
+      labels: [],
+      showList: true
     };
   },
   watch: {
     course(v) {
+      this.showList = true;
       console.log("course", this.course);
       let i = this.labels.indexOf(v);
       let value = this.modules[i];
@@ -80,6 +80,7 @@ export default {
       this.course = "";
       this.modules = [];
       this.labels = [];
+      this.showList = true;
       this.queryModuleList(v);
     }
   },
@@ -112,27 +113,7 @@ export default {
         .catch(e => {
           this.errors.push(e);
         });
-    },
-    noop() {
-      window.alert("noop");
-    },
-    /*getModules(searchTerm) {
-      this.modules = new Promise(resolve => {
-        window.setTimeout(() => {
-          if (!searchTerm) {
-            resolve(this.moduleList);
-          } else {
-            const term = searchTerm.toLowerCase();
-
-            resolve(
-              this.moduleList.filter(({ name }) =>
-                name.toLowerCase().includes(term)
-              )
-            );
-          }
-        }, 500);
-      });
-    }*/
+    }
   }
 };
 </script>

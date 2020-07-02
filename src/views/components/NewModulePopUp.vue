@@ -39,9 +39,9 @@
               <div style="margin-top: 15px" class="md-layout-item  md-size-100">
                 <md-field :class="getValidationClass('course')">
                   <label>Modulkürzel</label>
-                  <span class="md-prefix" style="font-size: x-small"
+                  <!--<span class="md-prefix" style="font-size: x-small"
                     >https://bmake.th-brandenburg.de/module/</span
-                  >
+                  >-->
                   <md-input
                     v-model.trim="course"
                     name="course"
@@ -68,7 +68,9 @@
                   <span
                     style="margin-bottom: 20px"
                     class="md-error"
-                    v-if="!this.unique && $v.course.required && $v.course.alphaNum"
+                    v-if="
+                      !this.unique && $v.course.required && $v.course.alphaNum
+                    "
                     >Das eingegebene Kürzel ist schon vorhanden!</span
                   >
                 </md-field>

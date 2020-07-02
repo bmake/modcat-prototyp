@@ -24,7 +24,7 @@
 
       <div class="md-layout-item md-size-70">
         <md-field :class="getValidationClass('label')">
-          <label>Modulbezeichnung</label>
+          <label>Modulbezeichnung*</label>
           <md-input
             v-if="modBasisOrigin.length > 0"
             v-model.trim="modBasis.label.value"
@@ -33,10 +33,7 @@
           />
           <!--remove v-if & v-else; change modBasis[0] to modBasis-->
           <md-input v-else disabled />
-          <span
-            style="margin-bottom: 20px"
-            class="md-error"
-            v-if="!$v.modBasis.label.value.required"
+          <span class="md-error" v-if="!$v.modBasis.label.value.required"
             >Pflichtfeld</span
           >
         </md-field>
@@ -44,7 +41,7 @@
 
       <div class="md-layout-item md-size-30">
         <md-field class="xs" :class="getValidationClass('accPerson')">
-          <label>Modulverantwortliche/r</label>
+          <label>Modulverantwortliche/r*</label>
           <md-select
             v-if="modBasisOrigin.length > 0"
             v-model="modBasis.accPerson.value"
@@ -69,21 +66,11 @@
             >Pflichtfeld</span
           >
         </md-field>
-        <!--<md-field>
-          <label>Modulverantwortliche/r</label>
-          <md-input
-            v-if="modBasis.length > 0"
-            v-model="modBasis[0].accPersonLabel.value"
-            @change="addChanged('accPersonLabel')"
-            :disabled="role != 2"
-          />
-          <md-input v-else disabled />
-        </md-field>-->
       </div>
 
       <div class="md-layout-item md-size-25">
-        <md-field class="xs">
-          <label>Modultyp</label>
+        <md-field class="xs" :class="getValidationClass('modType_name')">
+          <label>Modultyp*</label>
           <md-select
             v-if="modBasisOrigin.length > 0"
             v-model="modBasis.modType_name.value"
@@ -97,47 +84,76 @@
             <md-option value="Wahlpflichtmodul">Wahlpflichtmodul</md-option>
           </md-select>
           <md-select v-else md-dense disabled />
+          <span class="md-error" v-if="!$v.modBasis.modType_name.value.required"
+            >Pflichtfeld</span
+          >
         </md-field>
       </div>
       <div class="md-layout-item md-size-25">
-        <md-field>
-          <label>Semesterdauer</label>
-          <md-input
-            v-if="modBasisOrigin.length > 0"
-            v-model="modBasis.duration.value"
-            @change="addChanged('duration')"
-            :disabled="role != 2"
-          />
+        <md-field :class="getValidationClass('duration')">
+          <label>Semesterdauer*</label>
+          <div v-if="modBasisOrigin.length > 0">
+            <md-input
+              v-if="!newBoolean"
+              v-model="modBasis.duration.value"
+              @change="addChanged('duration')"
+              :disabled="role != 2"
+            />
+            <md-select
+              v-else
+              v-model="modBasis.duration.value"
+              @md-selected="addChanged('duration')"
+              :disabled="role != 2"
+              md-dense
+            >
+              <md-option value="P0.5Y">1 Semester</md-option>
+              <md-option value="P1Y">2 Semester</md-option>
+            </md-select>
+          </div>
           <md-input v-else disabled />
+          <span class="md-error" v-if="!$v.modBasis.duration.value.required"
+            >Pflichtfeld</span
+          >
         </md-field>
       </div>
       <div class="md-layout-item md-size-25">
-        <md-field>
-          <label>SWS</label>
+        <md-field :class="getValidationClass('swsSum')">
+          <label>SWS*</label>
           <md-input
             v-if="modBasisOrigin.length > 0"
             v-model="modBasis.swsSum.value"
             @change="addChanged('swsSum')"
             :disabled="role != 2"
+            :type="newBoolean ? 'number' : 'text'"
           />
           <md-input v-else disabled />
+          <span
+            style="margin-bottom: 20px"
+            class="md-error"
+            v-if="!$v.modBasis.swsSum.value.required"
+            >Pflichtfeld</span
+          >
         </md-field>
       </div>
       <div class="md-layout-item md-size-25">
-        <md-field>
-          <label>ECTS</label>
+        <md-field :class="getValidationClass('ects')">
+          <label>ECTS*</label>
           <md-input
             v-if="modBasisOrigin.length > 0"
             v-model="modBasis.ects.value"
             @change="addChanged('ects')"
             :disabled="role != 2"
+            type="number"
           />
           <md-input v-else disabled />
+          <span class="md-error" v-if="!$v.modBasis.ects.value.required"
+            >Pflichtfeld</span
+          >
         </md-field>
       </div>
       <div class="md-layout-item md-size-50">
-        <md-field>
-          <label>Lehrform</label>
+        <md-field :class="getValidationClass('learnTypes')">
+          <label>Lehrform* (mit , getrennt)</label>
           <md-input
             v-if="modBasisOrigin.length > 0"
             v-model="modBasis.learnTypes.value"
@@ -145,37 +161,52 @@
             :disabled="role != 2"
           />
           <md-input v-else disabled />
+          <span class="md-error" v-if="!$v.modBasis.learnTypes.value.required"
+            >Pflichtfeld</span
+          >
         </md-field>
       </div>
-      <div
-        class="md-layout-item md-size-50"
-        style="text-align:left;"
-        v-if="modBasisOrigin.length > 0"
-      >
-        <span style="font-size:14px; color:#2e2e2e; font-family:arial;"
-          >Lehrsprachen:
-        </span>
-        <md-checkbox
-          v-model="modBasis.languages.value"
-          value="de"
-          style="margin-left:10px;"
-          @change="addChanged('languages')"
-          :disabled="role != 2"
-          >Deutsch</md-checkbox
-        >
-        <md-checkbox
+      <div class="md-layout-item md-size-50">
+        <div
+          style="text-align:left;"
           v-if="modBasisOrigin.length > 0"
-          v-model="modBasis.languages.value"
-          value="en"
-          @change="addChanged('languages')"
-          :disabled="role != 2"
-          >Englisch</md-checkbox
+          :class="getValidationClass('languages')"
         >
+          <span style="font-size:14px; color:#2e2e2e; font-family:arial;"
+            >Lehrsprachen*:
+          </span>
+          <md-checkbox
+            v-model="modBasis.languages.value"
+            value="de"
+            style="margin-left:10px;"
+            @change="addChanged('languages')"
+            :disabled="role != 2"
+            >Deutsch</md-checkbox
+          >
+          <md-checkbox
+            v-if="modBasisOrigin.length > 0"
+            v-model="modBasis.languages.value"
+            value="en"
+            @change="addChanged('languages')"
+            :disabled="role != 2"
+            >Englisch</md-checkbox
+          >
+          <span
+            style="color: red; font-size: 12px"
+            class="md-error"
+            v-if="
+              (countCheckboxValidation > 1 &&
+                !$v.modBasis.languages.value.lanLength) ||
+                !this.checkboxChanged
+            "
+            >Pflichtfeld</span
+          ><!--$v.modBasis.languages.value.lanLength-->
+        </div>
       </div>
 
       <div class="md-layout-item md-size-70">
-        <md-field>
-          <label>Notengewichtung</label>
+        <md-field :class="getValidationClass('grade_name')">
+          <label>Notengewichtung*</label>
           <md-input
             v-if="modBasisOrigin.length > 0"
             v-model="modBasis.grade_name.value"
@@ -183,12 +214,15 @@
             :disabled="role != 2"
           />
           <md-input v-else disabled />
+          <span class="md-error" v-if="!$v.modBasis.grade_name.value.required"
+            >Pflichtfeld</span
+          >
         </md-field>
       </div>
 
       <div class="md-layout-item md-size-30">
-        <md-field class="xs">
-          <label>Häufigkeit</label>
+        <md-field class="xs" :class="getValidationClass('courseMode')">
+          <label>Häufigkeit*</label>
           <md-select
             v-if="modBasisOrigin.length > 0"
             v-model="modBasis.courseMode.value"
@@ -209,6 +243,9 @@
             >
           </md-select>
           <md-select v-else md-dense disabled />
+          <span class="md-error" v-if="!$v.modBasis.courseMode.value.required"
+            >Pflichtfeld</span
+          >
         </md-field>
       </div>
 
@@ -312,7 +349,14 @@ import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
 
 export default {
-  props: ["modBasisOrigin", "moduleUri", "role", "studyProgram", "newBoolean"],
+  props: [
+    "modBasisOrigin",
+    "moduleUri",
+    "role",
+    "studyProgram",
+    "newBoolean",
+    "code"
+  ],
   name: "basisData",
   mixins: [validationMixin],
   data() {
@@ -320,10 +364,20 @@ export default {
       countModType: 0,
       countCourseMode: 0,
       countLecturer: 0,
+      countCheckboxValidation: 0,
+      checkboxChanged: true,
       lecturers: [],
       modBasis: {
         label: null,
-        accPerson: null
+        accPerson: null,
+        modType_name: null,
+        grade_name: null,
+        learnTypes: null,
+        swsSum: null,
+        ects: null,
+        duration: null,
+        courseMode: null,
+        languages: []
       },
       changedArray: [],
       updateQuery: "",
@@ -331,7 +385,7 @@ export default {
       prefixes:
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
         "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
-        "PREFIX schema: <https://schema.org/>  ",
+        "PREFIX schema: <https://schema.org/> ",
       template: [],
       delete: [],
       insert: [],
@@ -393,12 +447,70 @@ export default {
         value: {
           required
         }
+      },
+      modType_name: {
+        value: {
+          required
+        }
+      },
+      grade_name: {
+        value: {
+          required
+        }
+      },
+      learnTypes: {
+        value: {
+          required
+        }
+      },
+      swsSum: {
+        value: {
+          required
+        }
+      },
+      ects: {
+        value: {
+          required
+        }
+      },
+      duration: {
+        value: {
+          required
+        }
+      },
+      courseMode: {
+        value: {
+          required
+        }
+      },
+      languages: {
+        value: {
+          lanLength(value) {
+            this.countCheckboxValidation++;
+            this.checkboxChanged = true;
+            if (value.length > 0) {
+              this.checkboxBoolean = true;
+              return true;
+            } else {
+              this.checkboxBoolean = false;
+              return false;
+            }
+          }
+        }
       }
     }
   },
   methods: {
     validateInput() {
       this.$v.$touch();
+      if (
+        !this.changedArray.includes("languages") &&
+        this.modBasis.languages.value.length == 0
+      ) {
+        this.checkboxChanged = false;
+      } else {
+        this.checkboxChanged = true;
+      }
       if (!this.$v.$invalid) {
         console.log("validation success");
         console.log(this.moduleUri);
@@ -423,28 +535,28 @@ export default {
         this.changedArray.push(item);
       } else {
         let i = this.changedArray.indexOf(item);
-        let arr = this.insert[i];
-        arr.splice(3, 1, this.modBasis[item].value);
-        this.insert.splice(i, 1, arr);
+        if (!this.newBoolean) {
+          let arr = this.insert[i];
+          arr.splice(3, 1, this.modBasis[item].value);
+          this.insert.splice(i, 1, arr);
+        }
       }
     },
     generateTriples(i) {
       let delArray = [];
       let insArray = [];
       if (i == "modType_name") {
-        if (!this.newBoolean) {
-          delArray.push(
-            this.template.modType_name.s,
-            this.template.modType_name.p[0],
-            this.template.modType_name.o[0],
-            "; "
-          );
-          delArray.push(
-            this.template.modType_name.p[1],
-            this.template.modType_name.o[1],
-            ". "
-          );
-        }
+        delArray.push(
+          this.template.modType_name.s,
+          this.template.modType_name.p[0],
+          this.template.modType_name.o[0],
+          "; "
+        );
+        delArray.push(
+          this.template.modType_name.p[1],
+          this.template.modType_name.o[1],
+          ". "
+        );
         insArray.push(
           this.template.modType_name.s,
           this.template.modType_name.p[0],
@@ -459,14 +571,12 @@ export default {
           '". '
         );
       } else if (i == "accPerson") {
-        if (!this.newBoolean) {
-          delArray.push(
-            this.template[i].s,
-            this.template[i].p,
-            this.template[i].o,
-            ". "
-          );
-        }
+        delArray.push(
+          this.template[i].s,
+          this.template[i].p,
+          this.template[i].o,
+          ". "
+        );
         insArray.push(
           this.template[i].s,
           this.template[i].p,
@@ -475,14 +585,12 @@ export default {
           ">. "
         );
       } else {
-        if (!this.newBoolean) {
-          delArray.push(
-            this.template[i].s,
-            this.template[i].p,
-            this.template[i].o,
-            ". "
-          );
-        }
+        delArray.push(
+          this.template[i].s,
+          this.template[i].p,
+          this.template[i].o,
+          ". "
+        );
         insArray.push(
           this.template[i].s,
           this.template[i].p,
@@ -491,39 +599,149 @@ export default {
           '". '
         );
       }
-      if (!this.newBoolean) {
-        this.delete.push(delArray);
-      }
+
+      this.delete.push(delArray);
       this.insert.push(insArray);
     },
     updateData() {
-      if (this.changedArray.includes("duration")) {
-        let i = this.changedArray.indexOf("duration");
-        let d = this.insert[i][3];
-        d = d.replace("1 Semester", "P0.5Y").replace("2 Semester", "P1Y");
-        this.insert[i][3] = d;
-      }
       let query = this.prefixes;
-      if (this.delete.length > 0) {
-        query += " DELETE { ";
-        this.delete.forEach(function(itemArr) {
+      if (!this.newBoolean) {
+        if (this.changedArray.includes("duration")) {
+          let i = this.changedArray.indexOf("duration");
+          let d = this.insert[i][3];
+          d = d.replace("1 Semester", "P0.5Y").replace("2 Semester", "P1Y");
+          this.insert[i][3] = d;
+        }
+        if (this.delete.length > 0) {
+          query += " DELETE { ";
+          this.delete.forEach(function(itemArr) {
+            for (let a = 0; a < itemArr.length; a++) {
+              query += itemArr[a];
+            }
+          });
+          query += " } ";
+        }
+        query += " INSERT { ";
+        this.insert.forEach(function(itemArr) {
+          if (Array.isArray(itemArr[3])) {
+            let str = itemArr[3].join('", "');
+            itemArr[3] = str;
+          }
           for (let a = 0; a < itemArr.length; a++) {
             query += itemArr[a];
           }
         });
-        query += " } ";
+        query += "} WHERE { <" + this.moduleUri + "> " + this.where + " }";
+      } else {
+        let subject = " <" + this.moduleUri + "> ";
+        query += " INSERT DATA { ";
+        //label and courde code and name
+        query +=
+          subject +
+          ' a module:Module; rdfs:label  "' +
+          this.modBasis.label.value +
+          '" ; schema:courseCode "' +
+          this.code +
+          '" ; ';
+        query += ' schema:name "' + this.modBasis.label.value + '" ;';
+        //accountable person
+        query +=
+          " schema:accountablePerson  <" +
+          this.modBasis.accPerson.value +
+          "> ; ";
+        //module type
+        let moduleType =
+          "module:ModuleType_" + this.studyProgram + "_" + this.code;
+        query += " module:eduAlignm_ModuleType  " + moduleType + " ; ";
+        //course instance
+        let today = new Date();
+        let year = today
+          .getFullYear()
+          .toLocaleString()
+          .substring(2, 4);
+        let sem = this.modBasis.courseMode.value.substring(6, 8);
+        let semYear = sem + year;
+        let courseInstance = "module:" + semYear + "_" + this.code;
+        query += " schema:hasCourseInstance  " + courseInstance + " ; ";
+        //SWS
+        let sws = "module:SWS_" + this.studyProgram + "_" + this.code;
+        query += " module:eduAlignm_SWS  " + sws + " ; ";
+        //ECTS
+        query +=
+          ' schema:educationalCredentialAwarded  "' +
+          this.modBasis.ects.value +
+          '"; ';
+        //Lehrform
+        let learnTypes = this.modBasis.learnTypes.value.join('" , "');
+        query += ' schema:learningResourceType  "' + learnTypes + '"; ';
+        //languages
+        let lan = this.modBasis.languages.value.join('" , "');
+        query += ' schema:inLanguage  "' + lan + '" ; ';
+        //Notengewichtung
+        let grade = "module:Grade_" + this.studyProgram + "_" + this.code;
+        query += " module:eduAlignm_Grade  " + grade + " ; ";
+        //Verwendbarkeit
+        if (this.modBasis.eduUse.value != "") {
+          query +=
+            ' schema:educationalUse  "' + this.modBasis.eduUse.value + '" ; ';
+        }
+        //Voraussetzung
+        if (this.modBasis.pre.value != "") {
+          query +=
+            ' schema:coursePrerequisites  "' + this.modBasis.pre.value + '" ; ';
+        }
+        //Website
+        if (this.modBasis.url.value != "") {
+          query += ' schema:url  "' + this.modBasis.url.value + '" ; ';
+        }
+        //comment
+        if (this.modBasis.comment.value != "") {
+          query += ' schema:comment  "' + this.modBasis.comment.value + '" ; ';
+        }
+        query +=
+          ' schema:timeRequired  "PT' + this.modBasis.ects.value * 30 + 'H" ; ';
+        query += " schema:isPartOf  module:" + this.studyProgram + " . ";
+
+        //module Type
+        query +=
+          moduleType +
+          ' a  schema:AlignmentObject ; schema:alignmentType "Modultyp" ; schema:targetName  "' +
+          this.template.modType_name[this.modBasis.modType_name.value][0] +
+          '" ; schema:targetDescription  "' +
+          this.template.modType_name[this.modBasis.modType_name.value][1] +
+          '" . '; //!!!!!!!!!!!!!!!!!!!!!!!!!!!----------------------------------SPO
+
+        //course instance
+        query +=
+          courseInstance +
+          ' a  schema:CourseInstance ; schema:courseMode  "' +
+          this.modBasis.courseMode.value +
+          '" ; ' +
+          ' schema:duration  "' +
+          this.modBasis.duration.value +
+          '" ; schema:instructor  <' +
+          this.modBasis.accPerson.value +
+          "> . "; //!!!!!!!!!!!!!!!!!!!!!!!!!!!----------------------------------Dozenten
+
+        //SWS
+        query +=
+          sws +
+          ' a  schema:AlignmentObject ; schema:alignmentType "SWS" ; schema:targetDescription  "Umfang des Moduls in Semesterwochenstunden" ; ' +
+          ' schema:targetName  "' +
+          this.modBasis.swsSum.value +
+          ' SWS" . '; //!!!!!!!!!!!!!!!!!!!!!!!!!!!----------------------------------SPO
+
+        //Notengewichtung
+        query +=
+          grade +
+          ' a  schema:AlignmentObject ; schema:alignmentType  "Gewichtung der Note" ;  ' +
+          ' schema:targetName  "' +
+          this.modBasis.grade_name.value +
+          '" . '; //!!!!!!!!!!!!!!!!!!!!!!!!!!!----------------------------------SPO, Beschreibung
+
+        query += ' }';
       }
-      query += " INSERT { ";
-      this.insert.forEach(function(itemArr) {
-        if (Array.isArray(itemArr[3])) {
-          let str = itemArr[3].join('", "');
-          itemArr[3] = str;
-        }
-        for (let a = 0; a < itemArr.length; a++) {
-          query += itemArr[a];
-        }
-      });
-      query += "} WHERE { <" + this.moduleUri + "> " + this.where + " }";
+
       this.updateQuery = query;
 
       /*axios
@@ -548,6 +766,8 @@ export default {
       this.countModType = 0;
       this.countCourseMode = 0;
       this.countLecturer = 0;
+      this.countCheckboxValidation = 0;
+      this.checkboxChanged = true;
       this.changedArray = [];
       this.delete = [];
       this.insert = [];
@@ -560,6 +780,8 @@ export default {
       this.countModType = 0;
       this.countCourseMode = 0;
       this.countLecturer = 0;
+      this.countCheckboxValidation = 0;
+      this.checkboxChanged = true;
       this.changedArray = [];
       this.delete = [];
       this.insert = [];
@@ -773,11 +995,13 @@ export default {
         }
       } else if (v > 2) {
         let i = this.changedArray.indexOf("modType_name");
-        let arr = this.insert[i];
-        let v = this.modBasis.modType_name.value;
-        arr.splice(3, 1, this.template.modType_name[v][0]);
-        arr.splice(7, 1, this.template.modType_name[v][1]);
-        this.insert.splice(i, 1, arr);
+        if (!this.newBoolean) {
+          let arr = this.insert[i];
+          let v = this.modBasis.modType_name.value;
+          arr.splice(3, 1, this.template.modType_name[v][0]);
+          arr.splice(7, 1, this.template.modType_name[v][1]);
+          this.insert.splice(i, 1, arr);
+        }
       }
     },
     countCourseMode(v) {
@@ -795,9 +1019,11 @@ export default {
         }
       } else if (v > 2) {
         let i = this.changedArray.indexOf("courseMode");
-        let arr = this.insert[i];
-        arr.splice(3, 1, this.modBasis[0].courseMode.value);
-        this.insert.splice(i, 1, arr);
+        if (!this.newBoolean) {
+          let arr = this.insert[i];
+          arr.splice(3, 1, this.modBasis[0].courseMode.value);
+          this.insert.splice(i, 1, arr);
+        }
       }
     },
     countLecturer(v) {
@@ -815,13 +1041,15 @@ export default {
         }
       } else if (v > 2) {
         let i = this.changedArray.indexOf("accPerson");
-        let arr = this.insert[i];
-        arr.splice(3, 1, this.modBasis.accPerson.value);
-        this.insert.splice(i, 1, arr);
+        if (!this.newBoolean) {
+          let arr = this.insert[i];
+          arr.splice(3, 1, this.modBasis.accPerson.value);
+          this.insert.splice(i, 1, arr);
+        }
       }
     },
     changedArray(v) {
-      if (v.length > 0) {
+      if (v.length > 0 && !this.newBoolean) {
         let item = v[v.length - 1];
         this.generateTriples(item);
       }
