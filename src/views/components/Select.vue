@@ -1,9 +1,9 @@
 <template>
   <div class="md-layout md-gutter select md-alignment-center-center">
-    <div class="md-layout-item md-size-20">
+    <div class="md-layout-item md-size-25">
       <md-field>
         <label>Studiengang</label>
-        <md-select v-model="studyProgram" name="studyProgram" id="studyProgram" disableOptionCentering panelClass="myPanelClass">
+        <md-select v-model="studyProgram" name="studyProgram" id="studyProgram">
           <md-option value="WIB">WI Bachelor</md-option>
           <md-option value="WIM">WI Master</md-option>
           <md-option value="BWLB">BWL Bachelor</md-option>
@@ -12,7 +12,21 @@
       </md-field>
     </div>
 
-    <div class="md-layout-item md-size-60">
+    <div class="md-layout-item md-size-25">
+      <!--- <md-field>
+        <label style="font-size:18px;">Modul</label>
+        <md-select v-model="course" name="course" id="course">
+          <md-option
+            v-if="Object.keys(moduleList).length > 0"
+            v-for="(modulejson, index) in moduleList"
+            v-bind:value="modulejson.module.value"
+            v-bind:key="index"
+          >
+            {{ modulejson.label.value }}
+          </md-option>
+        </md-select>
+      </md-field> --->
+
       <md-autocomplete
         v-model="course"
         name="course"
@@ -26,9 +40,17 @@
         </div>
 
         <div slot="md-autocomplete-empty" slot-scope="{ term }" v-if="showList">
-          <a @click="$emit('showPopUp'), showList = false">Nichts unter "{{ term }}" gefunden. <br> Legen Sie ein neues Modul an</a>
+          <a @click="$emit('showPopUp'), (showList = false)"
+            >Nichts unter "{{ term }}" gefunden. <br />
+            Legen Sie ein neues Modul an</a
+          >
         </div>
       </md-autocomplete>
+
+      <!--- <md-autocomplete v-model="value" :md-options="modules" @md-changed="getModules" @md-opened="getModules">
+      <label>Country</label>
+      <template slot="md-autocomplete-item" slot-scope="{ item }">{{ item.name }}</template>
+    </md-autocomplete> --->
     </div>
   </div>
 </template>
@@ -51,7 +73,6 @@ export default {
   watch: {
     course(v) {
       this.showList = true;
-      console.log("course", this.course);
       let i = this.labels.indexOf(v);
       let value = this.modules[i];
       this.$emit("module", value);
@@ -87,8 +108,8 @@ export default {
         .then(response => {
           this.moduleList = response.data.results.bindings;
           for (let a = 0; a < this.moduleList.length; a++) {
-            this.modules.push(this.moduleList[a].module.value)
-            this.labels.push(this.moduleList[a].label.value)
+            this.modules.push(this.moduleList[a].module.value);
+            this.labels.push(this.moduleList[a].label.value);
           }
         })
         .catch(e => {
@@ -99,14 +120,9 @@ export default {
 };
 </script>
 
-<style>
-.md-input, .md-field .md-textarea {
-  font-size: 18px !important;
-  font-weight: bold;
-  -webkit-text-fill-color: #ffffff !important;
-}
-
-.md-virtual-repeat-container.md-autocomplete-suggestions-container {
-     width:700px !important;
+<style scoped>
+.md-menu-content:not(.md-select-menu) .md-menu-content-container .md-list {
+  width: 600px;
+  font-size: 16px !important;
 }
 </style>
