@@ -560,10 +560,17 @@ g.selected rect {
 }
 
 .md-menu-content {
-  max-width: 400px !important;
+  max-width: 360px !important;
 }
 
 span.md-list-item-text {
+  white-space: normal !important;
+  max-height: max-content !important;
+  padding: 10px !important;
+  font-size: medium !important;
+}
+
+.md-highlight-text.md-theme-default {
   white-space: normal !important;
   max-height: max-content !important;
   padding: 5px !important;
