@@ -570,11 +570,8 @@ span.md-list-item-text {
   font-size: medium !important;
 }
 
-.md-highlight-text.md-theme-default {
-  white-space: normal !important;
-  max-height: max-content !important;
-  padding: 5px !important;
-  font-size: medium !important;
+span.md-highlight-text-match {
+  color: #2e2e2e !important;
 }
 
 .md-list.md-dense .md-list-item-text {
