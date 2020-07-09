@@ -566,13 +566,6 @@ g.selected rect {
 span.md-list-item-text {
   white-space: normal !important;
   max-height: max-content !important;
-  padding: 10px !important;
-  font-size: medium !important;
-}
-
-.md-highlight-text.md-theme-default {
-  white-space: normal !important;
-  max-height: max-content !important;
   padding: 5px !important;
   font-size: medium !important;
 }

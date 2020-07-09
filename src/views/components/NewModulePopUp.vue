@@ -300,6 +300,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 span {
   top: 35px;
 }
