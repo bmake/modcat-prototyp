@@ -1,5 +1,5 @@
 <template>
-  <form v-if="role == 1 || role == 2" @submit.prevent="validateInput">
+  <div v-if="role == 1 || role == 2">
     <div style="text-align:left; font-size:26px;">
       <b v-if="modBasisOrigin.length > 0"
         >Rahmendaten zum Modul {{ modBasis.code.value }}</b
@@ -329,16 +329,16 @@
             Änderungen gespeichert!
           </div>
         </transition>
-        <p>{{ updateQuery }}</p>
+        <!--<p>{{ updateQuery }}</p>
         <p>changed Array: {{ changedArray }}</p>
         <p>deleteArray: {{ this.delete }}</p>
         <p>insertArray: {{ this.insert }}</p>
         <p>where: {{ this.where }}</p>
         <p>modBasis: {{ modBasis }}</p>
-        <p>update: {{ updateQuery }}</p>
+        <p>update: {{ updateQuery }}</p>-->
       </div>
     </form>
-  </form>
+  </div>
 </template>
 
 <script>
@@ -378,6 +378,34 @@ export default {
         duration: null,
         courseMode: null,
         languages: []
+      },
+      spo: {
+        WIB: [
+          "Studien- und Prüfungsordnung für den Bachelor-Studiengang Wirtschaftsinformatik [Business & Information Systems Engineering B.Sc.] (SPO-BSc-WI-THB-2017) im Fachbereich Wirtschaft vom 15.02.2017, Anlage 1",
+          "https://www.th-brandenburg.de/fileadmin/user_upload/hochschule/Dateien/Amtliche-Mitteilungen/2017/2017-11-SPO-BSc-WI.pdf",
+          "Gewichtungsanteile der Note im Hinblick auf die spezifische Fachnote (1/3), den Mittelwert aller Fachnoten (3,33 %) sowie die Abschlussnote (2,67 %)"
+        ],
+        WIM: [
+          "Studien- und Prüfungsordnung für den Master-Studiengang Wirtschaftsinformatik [Business & Information Systems Engineering M.Sc] (SPO-MSc-WI-THB-2017) im Fachbereich Wirtschaft vom 21.12.2016, Anlage 1",
+          "https://www.th-brandenburg.de/fileadmin/user_upload/hochschule/Dateien/Amtliche-Mitteilungen/2017/2017-12-SPO-MSc-WI.pdf",
+          "Gewichtungsanteile der Note im Hinblick auf die spezifische Fachnote (1/3), den Mittelwert aller Fachnoten (6,67 %) sowie die Abschlussnote (4,67 %)"
+        ],
+        BWLB: [
+          "Studien- und Prüfungsordnung für den Bachelor-Studiengang „Betriebswirtschaftslehre (B.Sc.)“„Gründen – Führen – Steuern“ (SPO-BSc-BWL-2016) im Fachbereich Wirtschaft vom 20.01.2016, § 13",
+          "https://wirtschaft.th-brandenburg.de/fileadmin/user_upload/fb-wirtschaft/Studiengaenge/BWL/Dokumente/2016-14-SPO-BSc-BWL-2016_1_.pdf",
+          "Gewichtungsanteile der Note im Hinblick auf den Mittelwert aller Fachnoten (4 %) sowie die Abschlussnote (3,2 %)"
+        ],
+        BWLM: [
+          "Studien- und Prüfungsordnung für den Master-Studiengang „Betriebswirtschaftslehre (M.Sc.)“ [Business Administration M.Sc.] „Innovativ – Integrativ – International“ (SPO MSc-BWL-THB-2017) im Fachbereich Wirtschaft vom 18.01.2017, Anlage 1",
+          "https://www.th-brandenburg.de/fileadmin/user_upload/hochschule/Dateien/Amtliche-Mitteilungen/2017/2017-06-SPO-MSc-BWL.pdf",
+          "Gewichtungsanteile der Note im Hinblick auf die Gesamtfachnote (6,25 %) sowie auf die Abschlussnote (5 %)"
+        ]
+      },
+      curriculum: {
+        WIB: ["WI Ba", "Wirtschaftsinformatik Bachelor"],
+        WIM: ["WI Ma", "Wirtschaftsinformatik Master"],
+        BWLB: ["BWL BA", "Betriebswirtschaftslehre Bachelor"],
+        BWLM: ["BWL MA", "Betriebswirtschaftslehre Master"]
       },
       changedArray: [],
       updateQuery: "",
@@ -512,8 +540,6 @@ export default {
         this.checkboxChanged = true;
       }
       if (!this.$v.$invalid) {
-        console.log("validation success");
-        console.log(this.moduleUri);
         this.updateData();
       }
     },
@@ -657,7 +683,7 @@ export default {
         let today = new Date();
         let year = today
           .getFullYear()
-          .toLocaleString()
+          .toString()
           .substring(2, 4);
         let sem = this.modBasis.courseMode.value.substring(6, 8);
         let semYear = sem + year;
@@ -680,6 +706,9 @@ export default {
         //Notengewichtung
         let grade = "module:Grade_" + this.studyProgram + "_" + this.code;
         query += " module:eduAlignm_Grade  " + grade + " ; ";
+        //Curr Zuordnung
+        let curr = "module:Curr_" + this.studyProgram + "_" + this.code;
+        query += " module:eduAlignm_Curr  " + curr + " ; ";
         //Verwendbarkeit
         if (this.modBasis.eduUse.value != "") {
           query +=
@@ -702,6 +731,19 @@ export default {
           ' schema:timeRequired  "PT' + this.modBasis.ects.value * 30 + 'H" ; ';
         query += " schema:isPartOf  module:" + this.studyProgram + " . ";
 
+        //Curr Zuordnung
+        query +=
+          curr +
+          ' a  schema:AlignmentObject ;  schema:alignmentType  "Zuordnung zum Curriculum" ; schema:targetName  "' +
+          this.curriculum[this.studyProgram][0] +
+          '" ; schema:targetDescription  "' +
+          this.curriculum[this.studyProgram][1] +
+          '" ; schema:educationalFramework  "' +
+          this.spo[this.studyProgram][0] +
+          '" ; schema:targetURL  "' +
+          this.spo[this.studyProgram][1] +
+          '" . ';
+
         //module Type
         query +=
           moduleType +
@@ -709,7 +751,11 @@ export default {
           this.template.modType_name[this.modBasis.modType_name.value][0] +
           '" ; schema:targetDescription  "' +
           this.template.modType_name[this.modBasis.modType_name.value][1] +
-          '" . '; //!!!!!!!!!!!!!!!!!!!!!!!!!!!----------------------------------SPO
+          '" ; schema:educationalFramework  "' +
+          this.spo[this.studyProgram][0] +
+          '" ; schema:targetURL  "' +
+          this.spo[this.studyProgram][1] +
+          '" . ';
 
         //course instance
         query +=
@@ -721,7 +767,7 @@ export default {
           this.modBasis.duration.value +
           '" ; schema:instructor  <' +
           this.modBasis.accPerson.value +
-          "> . "; //!!!!!!!!!!!!!!!!!!!!!!!!!!!----------------------------------Dozenten
+          "> . ";
 
         //SWS
         query +=
@@ -729,7 +775,11 @@ export default {
           ' a  schema:AlignmentObject ; schema:alignmentType "SWS" ; schema:targetDescription  "Umfang des Moduls in Semesterwochenstunden" ; ' +
           ' schema:targetName  "' +
           this.modBasis.swsSum.value +
-          ' SWS" . '; //!!!!!!!!!!!!!!!!!!!!!!!!!!!----------------------------------SPO
+          ' SWS" ; schema:educationalFramework  "' +
+          this.spo[this.studyProgram][0] +
+          '" ; schema:targetURL  "' +
+          this.spo[this.studyProgram][1] +
+          '" . ';
 
         //Notengewichtung
         query +=
@@ -737,14 +787,20 @@ export default {
           ' a  schema:AlignmentObject ; schema:alignmentType  "Gewichtung der Note" ;  ' +
           ' schema:targetName  "' +
           this.modBasis.grade_name.value +
-          '" . '; //!!!!!!!!!!!!!!!!!!!!!!!!!!!----------------------------------SPO, Beschreibung
+          '" ; schema:educationalFramework  "' +
+          this.spo[this.studyProgram][0] +
+          '" ; schema:targetURL  "' +
+          this.spo[this.studyProgram][1] +
+          '" ; schema:targetDescription  "' +
+          this.spo[this.studyProgram][2] +
+          '" . ';
 
-        query += ' }';
+        query += " }";
       }
 
       this.updateQuery = query;
 
-      /*axios
+      axios
         .post("http://fbw-sgmwi.th-brandenburg.de:3030/modcat/update", query, {
           headers: { "Content-Type": "application/sparql-update" }
         })
@@ -755,12 +811,15 @@ export default {
             setTimeout(() => {
               this.notification = false;
             }, 1500);
+            if (this.newBoolean) {
+              this.$emit("basicFill", true);
+            }
           }
           this.clearCache();
         })
         .catch(e => {
           this.errors.push(e);
-        });*/
+        });
     },
     clearCache() {
       this.countModType = 0;
@@ -978,6 +1037,7 @@ export default {
   watch: {
     modBasisOrigin(v) {
       this.initialState();
+      this.$v.$reset();
       this.countLecturer = 0;
     },
     countModType(v) {

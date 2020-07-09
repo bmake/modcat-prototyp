@@ -1,0 +1,54 @@
+new module function
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch master
+# Your branch is ahead of 'origin/master' by 1 commit.
+#   (use "git push" to publish your local commits)
+#
+# Changes to be committed:
+#	renamed:    modcat/css/app.f40e61c4.css -> modcat/css/app.557c040a.css
+#	deleted:    modcat/img/avatar.cc93a967.jpg
+#	deleted:    modcat/img/bg.13322baf.jpg
+#	deleted:    modcat/img/bg7.2be2ff95.jpg
+#	deleted:    modcat/img/christian.8c64339c.jpg
+#	deleted:    modcat/img/city-profile.3b3fb65f.jpg
+#	deleted:    modcat/img/city.54f2f092.jpg
+#	deleted:    modcat/img/clem-onojegaw.8f92b88b.jpg
+#	deleted:    modcat/img/clem-onojeghuo.23321ebf.jpg
+#	deleted:    modcat/img/cynthia-del-rio.f7c4b2dd.jpg
+#	deleted:    modcat/img/kendall.5a0e395b.jpg
+#	deleted:    modcat/img/landing.6e91ac7f.jpg
+#	deleted:    modcat/img/leaf1.2a5da8d8.png
+#	deleted:    modcat/img/leaf2.3b1af9de.png
+#	deleted:    modcat/img/leaf3.2c91d484.png
+#	deleted:    modcat/img/leaf4.676d9333.png
+#	deleted:    modcat/img/mariya-georgieva.66c8b404.jpg
+#	deleted:    modcat/img/nature-2.8ce2625e.jpg
+#	deleted:    modcat/img/nature-3.ffd55f37.jpg
+#	deleted:    modcat/img/nature.92760707.jpg
+#	deleted:    modcat/img/olu-eletu.15d2ebb3.jpg
+#	deleted:    modcat/img/profile.52e4b9ba.jpg
+#	deleted:    modcat/img/profile_city.435c148e.jpg
+#	deleted:    modcat/img/studio-1.bd90b5d1.jpg
+#	deleted:    modcat/img/studio-2.927b288c.jpg
+#	deleted:    modcat/img/studio-3.3f242763.jpg
+#	deleted:    modcat/img/studio-4.5bea741d.jpg
+#	deleted:    modcat/img/studio-5.5505c23b.jpg
+#	deleted:    modcat/img/vue-mk-header.98fb6ce8.jpg
+#	modified:   modcat/index.html
+#	new file:   modcat/js/app.1fd9ee96.js
+#	new file:   modcat/js/app.1fd9ee96.js.map
+#	deleted:    modcat/js/app.85c8fc1d.js
+#	deleted:    modcat/js/app.85c8fc1d.js.map
+#	deleted:    modcat/js/chunk-vendors.40ed0a1d.js.map
+#	renamed:    modcat/js/chunk-vendors.40ed0a1d.js -> modcat/js/chunk-vendors.6ebb6831.js
+#	new file:   modcat/js/chunk-vendors.6ebb6831.js.map
+#	modified:   src/views/Starter.vue
+#	modified:   src/views/components/FormBasicData.vue
+#	modified:   src/views/components/FormMethods.vue
+#	modified:   src/views/components/FormOutcomes.vue
+#	modified:   src/views/components/NewModulePopUp.vue
+#	modified:   src/views/components/SVGGraph.vue
+#	modified:   src/views/components/Select.vue
+#

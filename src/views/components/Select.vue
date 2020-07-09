@@ -35,13 +35,16 @@
       >
         <label>Modul</label>
 
-        <template slot="md-autocomplete-item" slot-scope="{ item, term }">
-          <md-highlight-text :md-term="term">{{ item }}</md-highlight-text>
-        </template>
+        <div slot="md-autocomplete-item" slot-scope="{ item, term }">
+          <div :md-term="term">{{ item }}</div>
+        </div>
 
-        <template slot="md-autocomplete-empty" slot-scope="{ term }" v-if="showList">
-          <a @click="$emit('showPopUp'), showList = false">Nichts unter "{{ term }}" gefunden. <br> Legen Sie ein neues Modul an</a>
-        </template>
+        <div slot="md-autocomplete-empty" slot-scope="{ term }" v-if="showList">
+          <a @click="$emit('showPopUp'), (showList = false)"
+            >Nichts unter "{{ term }}" gefunden. <br />
+            Legen Sie ein neues Modul an</a
+          >
+        </div>
       </md-autocomplete>
 
       <!--- <md-autocomplete v-model="value" :md-options="modules" @md-changed="getModules" @md-opened="getModules">
@@ -70,7 +73,6 @@ export default {
   watch: {
     course(v) {
       this.showList = true;
-      console.log("course", this.course);
       let i = this.labels.indexOf(v);
       let value = this.modules[i];
       this.$emit("module", value);
@@ -106,8 +108,8 @@ export default {
         .then(response => {
           this.moduleList = response.data.results.bindings;
           for (let a = 0; a < this.moduleList.length; a++) {
-            this.modules.push(this.moduleList[a].module.value)
-            this.labels.push(this.moduleList[a].label.value)
+            this.modules.push(this.moduleList[a].module.value);
+            this.labels.push(this.moduleList[a].label.value);
           }
         })
         .catch(e => {
@@ -118,6 +120,9 @@ export default {
 };
 </script>
 
-<style>
-
+<style scoped>
+.md-menu-content:not(.md-select-menu) .md-menu-content-container .md-list {
+  width: 600px;
+  font-size: 16px !important;
+}
 </style>
