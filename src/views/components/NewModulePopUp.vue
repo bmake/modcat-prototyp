@@ -202,6 +202,7 @@ export default {
       return Boolean(boo);
     },*/
     getValidationClass(fieldName) {
+      //console.log("fieldName", this.$v[fieldName])
       const field = this.$v[fieldName];
 
       if (field) {
@@ -237,7 +238,7 @@ export default {
           code: { type: "literal", value: this.course },
           label: { type: "literal", value: "" },
           learnBlooms: { type: "literal", value: [] },
-          contents: { type: "literal", value: [] },
+          contents: { type: "literal", value: [] }, //Array in Array ["Sie beherrschen...", "Apply"]
           exams: { type: "literal", value: [] }
         }
       ];
@@ -256,9 +257,16 @@ export default {
       ];
     },
     validateInput() {
+      /*this.$v.$reset()
+      if (touchMap.has(this.$v)) {
+        clearTimeout(touchMap.get(this.$v))
+      }
+      touchMap.set(this.$v, setTimeout(this.$v.$touch, 1000))*/
+
       this.$v.$touch();
       if (!this.$v.$invalid) {
         this.generateEmptyArray();
+
         //this.$emit('close');
       }
     }
@@ -266,6 +274,7 @@ export default {
   watch: {
     newModule: {
       handler(v) {
+        //console.log("module", v);
         let m = "https://bmake.th-brandenburg.de/module/" + v;
         this.$emit("module", m);
         this.$emit("code", v);
@@ -275,26 +284,19 @@ export default {
     modBasic: {
       handler(v) {
         if (this.modBasic.length > 0) {
+          //console.log("modBasicData", v);
           this.$emit("modBasicData", v);
           this.$emit("studyProgram", this.studyProgram);
-        }
-      }
-    },
-    modOutcome: {
-      handler(v) {
-        if (this.modOutcome.length > 0) {
-          this.$emit("modOutcomes", v);
-        }
-      }
-    },
-    modMethod: {
-      handler(v) {
-        if (this.modMethod.length > 0) {
-          this.$emit("modMethods", v);
           this.$emit("close");
         }
       }
     }
+    /*modOutcome(v) {
+      //this.$emit("modOutcomes", v);
+    },
+    modMethod(v) {
+      //this.$emit("modMethods", v);
+    }*/
   }
 };
 </script>

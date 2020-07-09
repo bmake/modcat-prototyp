@@ -76,7 +76,6 @@
                 :module-uri="selectedModule"
                 :role="role"
                 :code="code"
-                :newBoolean="newBoolean"
                 @modBasicData="getModBasicData"
                 @modOutcomes="getModOutcomes"
                 @modMethods="getModMethod"
@@ -123,14 +122,12 @@
                 <keep-alive>
                   <component
                     v-bind:is="(form = this.form)"
-                    @basicFill="changeBasicFill"
                     :role="role"
                     :modBasisOrigin="modBasis"
                     :studyProgram="studyProgram"
                     :newBoolean="newBoolean"
                     :moduleUri="selectedModule"
                     :code="code"
-                    :basicFilled="basicFilled"
                     :modOutcomeOrigin="modOutcome"
                     :modMethodOrigin="modMethod"
                   />
@@ -178,7 +175,6 @@ export default {
       selectedModule: "",
       studyProgram: "",
       code: "",
-      basicFilled: false,
       role: null,
       newBoolean: false,
       modBasis: [],
@@ -199,22 +195,23 @@ export default {
     },
     getModule(value) {
       this.selectedModule = value;
-      this.basicFilled = false;
+      console.log("selectedModule", value)
     },
     getStudyProgram(value) {
       this.studyProgram = value;
+      console.log("studyProgram", value)
     },
     getCode(value) {
       this.code = value;
+      console.log("code", value)
     },
     getNewBoolean(value) {
       this.newBoolean = value;
-    },
-    changeBasicFill(value) {
-      this.basicFilled= value;
+      console.log("newBoolean", value)
     },
     getModBasicData(value) {
       this.modBasis = value;
+      console.log("modBasisStarter", value)
     },
     getModOutcomes(value) {
       this.modOutcome = value;
@@ -307,18 +304,18 @@ export default {
         "                }  " +
         "            }  " +
         "     OPTIONAL {  " +
-        '       SELECT ?swsSum  ' +
+        '       SELECT ?swsSum (GROUP_CONCAT(?swsDetail; separator="\\n") as ?swsDetails)  ' +
         "                WHERE {  " +
         "                  <" +
         this.selectedModule +
-        "> module:eduAlignm_SWS ?sws .  " +
-        //"                                  module:addProp_TeachingForms ?teachingform .  " +
+        "> module:eduAlignm_SWS ?sws ;  " +
+        "                                  module:addProp_TeachingForms ?teachingform .  " +
         "                  ?sws schema:targetName ?swsSum .  " +
-        //"                  ?teachingform schema:valueReference ?value .  " +
-        //"                  ?value schema:name ?swsName ;  " +
-        //"                         schema:value ?swsValue .  " +
-        //'                  BIND(CONCAT(?swsName, ": ", STR(?swsValue)) as ?swsDetail)  ' +
-        "                }  " +
+        "                  ?teachingform schema:valueReference ?value .  " +
+        "                  ?value schema:name ?swsName ;  " +
+        "                         schema:value ?swsValue .  " +
+        '                  BIND(CONCAT(?swsName, ": ", STR(?swsValue)) as ?swsDetail)  ' +
+        "                } GROUP BY ?swsSum  " +
         "     }  " +
         "            OPTIONAL {  " +
         '       SELECT (GROUP_CONCAT(?exam; separator="\\n") as ?exams)  ' +
@@ -405,8 +402,8 @@ export default {
           pdfBody.push([
             "Voraussetzungen",
             res[0].pre
-              .value
-          ]);/*+ "basiert auf folgende Module: " + res[0].basedOns.value*/
+              .value /*+ "basiert auf folgende Module: " + res[0].basedOns.value*/
+          ]);
           pdfBody.push(["ECTS-Credits", res[0].ects.value]);
           pdfBody.push([
             "Gesamtworkload und ihre Zusammensetzung",
@@ -552,15 +549,8 @@ g.selected rect {
   margin-top: 5px;
 }
 
-.select .md-field.md-autocomplete.md-theme-default .md-menu input {
-  -webkit-text-fill-color: white !important;
-  font-weight: bold !important;
-  font-size: large !important;
-  margin-top: 5px;
-}
-
 .md-menu-content {
-  max-width: 360px !important;
+  max-width: 600px !important;
 }
 
 span.md-list-item-text {
@@ -568,10 +558,6 @@ span.md-list-item-text {
   max-height: max-content !important;
   padding: 5px !important;
   font-size: medium !important;
-}
-
-span.md-highlight-text-match {
-  color: #2e2e2e !important;
 }
 
 .md-list.md-dense .md-list-item-text {

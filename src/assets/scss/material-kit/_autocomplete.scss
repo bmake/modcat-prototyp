@@ -1,31 +1,29 @@
 .md-menu-content:not(.md-select-menu) .md-menu-content-container .md-list {
-  .md-list-item {
+  width: 600px;
 
-    /*&:not(:last-child) {
-      padding: 5px;
-    }*/
+  .md-list-item {
+    margin: 5px .3125rem;
+
+    &:not(:last-child) {
+      margin-bottom: 5px;
+    }
 
     .md-list-item-button {
       background-color: transparent;
       color: $gray-dark !important;
-
-      /*&:hover {
-        background-color: $brand-primary !important;
-        @include shadow-big-color($brand-primary);
-        color: #FFF !important;
-      }*/
+     
 
       .md-list-item-content {
-        /*min-height: 38px;
-        font-size: 13px;*/
+        min-height: 38px;
+        font-size: 16px;
 
-        /*span {
+        span {
           top: auto;
           left: auto;
           right: 0;
-          padding-left: 5px;
-          padding-right: 5px;
-        }*/
+          padding-left: 15px;
+          padding-right: 15px;
+        }
       }
     }
   }

@@ -13,7 +13,7 @@ import axios from "axios";
 
 export default {
   name: "SvgGraph",
-  props: ["moduleUri", "role", "newBoolean", "code"],
+  props: ["moduleUri", "role", "code"],
   data() {
     return {
       svgfile: require("../../assets/modcat.svg"),
@@ -108,7 +108,7 @@ export default {
             let q = "";
 
             if (
-              id == "nodeModulKuerzel" ||  id == "nodeStudiengang" ||
+              /*id == "nodeModulKuerzel" || */ id == "nodeStudiengang" ||
               id == "nodeOrdnung" ||
               id == "nodePerson" ||
               id == "nodeModulkuerzel"
@@ -176,7 +176,7 @@ export default {
                 .selectAll("marker")
                 .selectAll("path.groupC")
                 .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
-              if (_this.modMethods.length == 0 && !_this.newBoolean) {
+              if (_this.modMethods.length == 0) {
                 q =
                   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
                   "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
@@ -226,7 +226,7 @@ export default {
                 .selectAll("marker")
                 .selectAll("path.groupB")
                 .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
-              if (_this.modOutcomes.length == 0 && !_this.newBoolean) {
+              if (_this.modOutcomes.length == 0) {
                 q =
                   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
                   "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
@@ -412,7 +412,7 @@ export default {
           uri +
           ">  schema:courseCode ?code ;  " +
           "         rdfs:label ?label;  " +
-          //"         module:eduAlignm_Curr ?curr ;   " +
+          "         module:eduAlignm_Curr ?curr ;   " +
           "         module:eduAlignm_Grade ?grade ;  " +
           "         module:eduAlignm_ModuleType ?modType ;   " +
           "         schema:educationalCredentialAwarded ?ects ;  " +
@@ -428,8 +428,8 @@ export default {
           '            BIND(REPLACE(?durationSem, "P0.5Y", "1 Semester", "i") AS ?durationSem1) ' +
           '            BIND(REPLACE(?durationSem1, "P1Y", "2 Semester", "i") AS ?duration)' +
           "            ?instrctor rdfs:label ?instructorLabel .  " +
-         // "            ?curr schema:targetName ?curr_name ;  " +
-          //"                  schema:targetDescription ?curr_des .  " +
+          "            ?curr schema:targetName ?curr_name ;  " +
+          "                  schema:targetDescription ?curr_des .  " +
           "            ?grade schema:targetName ?grade_name ;  " +
           "                   schema:targetDescription ?grade_des .  " +
           "            ?modType schema:targetName ?modType_name ." +

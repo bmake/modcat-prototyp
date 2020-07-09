@@ -26,10 +26,7 @@
         </div>
 
         <div slot="md-autocomplete-empty" slot-scope="{ term }" v-if="showList">
-          <a @click="$emit('showPopUp'), (showList = false)"
-            >Nichts unter "{{ term }}" gefunden. <br />
-            Legen Sie ein neues Modul an</a
-          >
+          <a @click="$emit('showPopUp'), showList = false">Nichts unter "{{ term }}" gefunden. <br> Legen Sie ein neues Modul an</a>
         </div>
       </md-autocomplete>
     </div>
@@ -54,6 +51,7 @@ export default {
   watch: {
     course(v) {
       this.showList = true;
+      console.log("course", this.course);
       let i = this.labels.indexOf(v);
       let value = this.modules[i];
       this.$emit("module", value);
@@ -89,8 +87,8 @@ export default {
         .then(response => {
           this.moduleList = response.data.results.bindings;
           for (let a = 0; a < this.moduleList.length; a++) {
-            this.modules.push(this.moduleList[a].module.value);
-            this.labels.push(this.moduleList[a].label.value);
+            this.modules.push(this.moduleList[a].module.value)
+            this.labels.push(this.moduleList[a].label.value)
           }
         })
         .catch(e => {
@@ -101,12 +99,6 @@ export default {
 };
 </script>
 
-<<<<<<< HEAD
-<style scoped>
-.md-menu-content:not(.md-select-menu) .md-menu-content-container .md-list {
-  width: 600px;
-  font-size: 16px !important;
-=======
 <style>
 .md-input, .md-field .md-textarea {
   font-size: 18px !important;
@@ -116,6 +108,5 @@ export default {
 
 .md-virtual-repeat-container.md-autocomplete-suggestions-container {
      width:700px !important;
->>>>>>> c5525655e4c97eb509953537bf654c7f9de73045
 }
 </style>
