@@ -1,6 +1,6 @@
 <template>
   <div class="md-layout md-gutter select md-alignment-center-center">
-    <div class="md-layout-item md-size-25">
+    <div class="md-layout-item md-size-30">
       <md-field>
         <label>Studiengang</label>
         <md-select v-model="studyProgram" name="studyProgram" id="studyProgram">
@@ -12,7 +12,7 @@
       </md-field>
     </div>
 
-    <div class="md-layout-item md-size-25">
+    <div class="md-layout-item md-size-30">
       <!--- <md-field>
         <label style="font-size:18px;">Modul</label>
         <md-select v-model="course" name="course" id="course">
@@ -36,7 +36,7 @@
         <label>Modul</label>
 
         <div slot="md-autocomplete-item" slot-scope="{ item, term }">
-          <div :md-term="term">{{ item }}</div>
+          <md-highlight-text :md-term="term">{{ item }}</md-highlight-text>
         </div>
 
         <div slot="md-autocomplete-empty" slot-scope="{ term }" v-if="showList">
