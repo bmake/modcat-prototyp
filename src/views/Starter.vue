@@ -550,7 +550,7 @@ g.selected rect {
 }
 
 .md-menu-content {
-  max-width: 330px !important;
+  max-width: 600px !important;
 }
 
 span.md-list-item-text {

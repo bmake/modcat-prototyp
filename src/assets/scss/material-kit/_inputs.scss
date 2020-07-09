@@ -4,11 +4,12 @@
 
   .md-input,
   .md-textarea{
-    height: 36px;
+    height: 40px;
     padding: 7px 0;
-    font-size: 14px !important;
-    -webkit-text-fill-color: $black-color !important;
+    font-size: 18px !important;
+    -webkit-text-fill-color: #ffffff !important;
     appearance: none;
+    width: 100%;
   }
 
   & > .fas ~ .md-input,

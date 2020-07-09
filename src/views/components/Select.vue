@@ -1,9 +1,9 @@
 <template>
   <div class="md-layout md-gutter select md-alignment-center-center">
-    <div class="md-layout-item md-size-25">
+    <div class="md-layout-item md-size-20">
       <md-field>
         <label>Studiengang</label>
-        <md-select v-model="studyProgram" name="studyProgram" id="studyProgram">
+        <md-select v-model="studyProgram" name="studyProgram" id="studyProgram" disableOptionCentering panelClass="myPanelClass">
           <md-option value="WIB">WI Bachelor</md-option>
           <md-option value="WIM">WI Master</md-option>
           <md-option value="BWLB">BWL Bachelor</md-option>
@@ -12,21 +12,7 @@
       </md-field>
     </div>
 
-    <div class="md-layout-item md-size-25">
-      <!--- <md-field>
-        <label style="font-size:18px;">Modul</label>
-        <md-select v-model="course" name="course" id="course">
-          <md-option
-            v-if="Object.keys(moduleList).length > 0"
-            v-for="(modulejson, index) in moduleList"
-            v-bind:value="modulejson.module.value"
-            v-bind:key="index"
-          >
-            {{ modulejson.label.value }}
-          </md-option>
-        </md-select>
-      </md-field> --->
-
+    <div class="md-layout-item md-size-60">
       <md-autocomplete
         v-model="course"
         name="course"
@@ -35,19 +21,14 @@
       >
         <label>Modul</label>
 
-        <template slot="md-autocomplete-item" slot-scope="{ item, term }">
-          <md-highlight-text :md-term="term">{{ item }}</md-highlight-text>
-        </template>
+        <div slot="md-autocomplete-item" slot-scope="{ item, term }">
+          <div :md-term="term">{{ item }}</div>
+        </div>
 
-        <template slot="md-autocomplete-empty" slot-scope="{ term }" v-if="showList">
+        <div slot="md-autocomplete-empty" slot-scope="{ term }" v-if="showList">
           <a @click="$emit('showPopUp'), showList = false">Nichts unter "{{ term }}" gefunden. <br> Legen Sie ein neues Modul an</a>
-        </template>
+        </div>
       </md-autocomplete>
-
-      <!--- <md-autocomplete v-model="value" :md-options="modules" @md-changed="getModules" @md-opened="getModules">
-      <label>Country</label>
-      <template slot="md-autocomplete-item" slot-scope="{ item }">{{ item.name }}</template>
-    </md-autocomplete> --->
     </div>
   </div>
 </template>
@@ -119,5 +100,13 @@ export default {
 </script>
 
 <style>
+.md-input, .md-field .md-textarea {
+  font-size: 18px !important;
+  font-weight: bold;
+  -webkit-text-fill-color: #ffffff !important;
+}
 
+.md-virtual-repeat-container.md-autocomplete-suggestions-container {
+     width:700px !important;
+}
 </style>
