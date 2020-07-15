@@ -1,7 +1,7 @@
 <template>
   <div v-if="role == 1 || role == 2">
     <div style="text-align:left; font-size:26px;">
-      <b>Didaktischer Ansatz</b>
+      <b>Lehr-/Lernformen und Aufteilung der Workload</b>
     </div>
     <form @submit.prevent="validateInput">
       <div>

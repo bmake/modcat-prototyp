@@ -163,10 +163,10 @@ export default {
                 .selectAll("marker")
                 .selectAll("path.groupS")
                 .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
-            } else if (id == "nodeDidaktik") {
+            } else if (id == "nodeMethodik") {
               _this.form = "Methods";
               d3.select("#nodeModulKuerzel").classed("selected", true);
-              d3.select("#nodeDidaktik").classed("selected", true);
+              d3.select("#nodeMethodik").classed("selected", true);
               d3.select("#layer1")
                 .selectAll("path.groupC")
                 .transition()
@@ -213,10 +213,10 @@ export default {
                   "}";
                 _this.queryModuleInfo(q);
               }
-            } else if (id == "nodeBeschreibung") {
+            } else if (id == "nodeDidaktik") {
               _this.form = "Outcomes";
               d3.select("#nodeModulKuerzel").classed("selected", true);
-              d3.select("#nodeBeschreibung").classed("selected", true);
+              d3.select("#nodeDidaktik").classed("selected", true);
               d3.select("#layer1")
                 .selectAll("path.groupB")
                 .transition()
