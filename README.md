@@ -41,4 +41,5 @@ Es wird ein Prototyp für digitale Modulkataloge entwickelt.
 </p>
 
 # Vorschau
+check out [modcat.svg](src/assets/modcat.svg)
 ![alt text](https://github.com/bmake/modcat-prototyp/blob/master/img/modcat.png?raw=true "Modulkatalog")
