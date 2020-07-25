@@ -1,0 +1,503 @@
+@prefix schema: <https://schema.org/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix voaf: <http://purl.org/vocommons/voaf#> .
+@prefix wd: <http://www.wikidata.org/entity/> .
+@prefix module: <https://bmake.th-brandenburg.de/module/> .
+
+### Vocabulary Definition ###
+<https://bmake.th-brandenburg.de/module/> a owl:Ontology , voaf:Vocabulary ;
+	dc:creator <http://orcid.org/0000-0002-2780-0222> ;
+	dc:rights "Copyright © 2018 BMaKE, THB" ;
+	dc:publisher  wd:Q1391182 ; 
+	dc:title "Basic Schema for University Module Catalogs at BUAS" ;
+	rdfs:label "Modulkatalog"@de ;
+	dc:description <https://bmake.th-brandenburg.de/downloads/ModuleCatalogBaseSchema.svg> , "This vocabulary is defined under the reuse of schema.org classes, relations and attributes. It is primarily aimed at supporting the documentation, maintenance and deployment of module catalogs at the Department of Economics at Brandenburg University of Applied Sciences."@en ;
+	dcterms:issued "2018-06-04"^^xsd:date ;
+	dcterms:modified "2018-07-03"^^xsd:date ;
+	rdfs:comment "This vocabulary is defined under the reuse of schema.org classes, relations and attributes. It is primarily aimed at supporting the documentation, maintenance and deployment of module catalogs at the Department of Economics at Brandenburg University of Applied Sciences. "@en ;
+	owl:versionInfo "v 0.3 - PoC; additional proprietary namespace (module), two proprietary subclasses for Person: lecturer, author"@en ;
+	schema:license <http://creativecommons.org/licenses/by/3.0/> ;
+	skos:prefLabel "modcat vocabulary"@en . 
+
+voaf:Vocabulary a owl:Class;
+	rdfs:label "Vocabulary";
+	rdfs:subClassOf schema:CreativeWork .
+
+<http://orcid.org/0000-0002-2780-0222> a schema:Person ;
+			schema:name "Vera G. Meister" ;
+			schema:givenName "Vera G." ;
+			schema:familyName "Meister" ;
+			schema:honorificPrefix "Prof. Dr." ;
+			schema:email "vera.meister@th-brandenburg.de" ;
+			schema:affiliation wd:Q1391182 ;
+			schema:url "https://www.th-brandenburg.de/mitarbeiterseiten/fbw/vera-meister/" .
+			
+wd:Q1391182 a schema:Organization ;
+			rdfs:legalName "THB - Technische Hochschule Brandenburg"@de ; 
+			schema:name	"BUAS - Brandenburg University of Applied Sciences"@en ;
+			schema:url "http://th-brandenburg.de" .
+
+### Definition of Re-Used Classes ### 
+schema:CreativeWork a owl:Class ;
+			rdfs:label "Creative Work"@en, "Werk, Schöpfung"@de ;
+			rdfs:comment "Main class for courses, their parts and related literature."@en, "Oberklasse für die Module, ihre Teile sowie die Literatur zum Kurs"@de ;
+			rdfs:isDefinedBy <https://schema.org/> .
+			
+schema:Book a owl:Class ;
+			rdfs:label "Book"@en, "Buch"@de ;
+			rdfs:subClassOf schema:CreativeWork ;
+			rdfs:comment "The class of books used as literature used in a course."@en, "Klasse für die Bücher, die als Literatur zu Modulen empfohlen werden"@de ;
+			rdfs:isDefinedBy <https://schema.org/> .
+			
+schema:Article a owl:Class ;
+			rdfs:label "Article"@en, "Artikel"@de ;
+			rdfs:subClassOf schema:CreativeWork ;
+			rdfs:comment "the class of scholarly article, reports etc. used as literature in a course."@en, "Klasse für die Artikel und Berichte, die als Literatur zu Modulen empfohlen werden"@de ;
+			rdfs:isDefinedBy <https://schema.org/> .
+			
+schema:DigitalDocument a owl:Class ;
+			rdfs:label "Digital Document"@en, "Digitales Dokument"@de ;
+			rdfs:subClassOf schema:CreativeWork ;
+			rdfs:comment "the class of digital documents used as literature in a course."@en, "Klasse für digitale Dokumente, die als Literatur zu Modulen empfohlen werden"@de ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+schema:Course a owl:Class ;
+			rdfs:label "Course"@en, "Modul"@de ;
+			rdfs:subClassOf schema:CreativeWork ;
+			rdfs:comment "The class of educational courses at a university which shall be described in the module catalog."@en, "zentrle Klasse für die Module eines universitären Studiengangs, die in einem Modulkatalog beschrieben werden"@de ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+schema:Event a owl:Class ;
+			rdfs:label "Event"@en, "Veranstaltung"@de ;
+			rdfs:comment "Mainly used for identifying course instances."@en, "Oberklasse für die konkreten Modulinstanzen, die als Veranstaltungen mit zeitlichen Restriktionen anzusehen sind"@de ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+schema:CourseInstance a owl:Class ;
+			rdfs:label "Course Instance"@en, "Lehrveranstaltung"@de ;
+			rdfs:subClassOf schema:Event ;
+			rdfs:comment "An instance of a Course which is distinct from other instances because it is offered at a different time or location or through different media or modes of study or to a specific section of students."@en, "die konkrete Durchführung eines Moduls in einer bestimmten Form, zu einer bestimmten Zeit, an einem bestimmten Ort"@de ;
+			rdfs:isDefinedBy <https://schema.org/> .
+								
+schema:Person a owl:Class ;
+			rdfs:label "Person"@en, "Person"@de ;
+			rdfs:comment "Mainly used for identifying lecturers and accountable persons for courses."@en, "Oberklasse aller Personen - wird hier verwendet, um Verantwortliche und DozentInnen von Kursen sowie Autoren von Modulliteratur zu referenzieren"@de ;
+			rdfs:isDefinedBy <https://schema.org/> .
+	
+schema:Organization a owl:Class ;
+			rdfs:label "Organization"@en, "Organisation/Einrichtung"@de ;
+			rdfs:comment "general class for organizations - here mainly used for referring the affiliation of persons to organizations"@en, "Oberklasse aller Organisationen oder Einrichtungen - wird hier verwendet um die Mitgliedschaft oder Zugehörigkeit einer/s Verantwortlichen oder einer/s Dozent/in zu einer Organisation darzustellen"@de ;
+			rdfs:isDefinedBy <https://schema.org/> .
+			
+schema:Intangible a owl:Class ;
+			rdfs:label "Intangible"@en, "Immaterielles"@de ;
+			rdfs:comment "General class for intangible entities. "@en, "Oberklasse für alle immatieriellen bzw. nicht greifbaren Ressourcen"@de ;
+			rdfs:isDefinedBy <https://schema.org/> .
+			
+schema:AlignmentObject a owl:Class ;
+			rdfs:label "Alignment Object"@en, "Ausrichtungsobjekt"@de ;
+			rdfs:comment "An intangible item that describes an alignment between a learning resource and a node in an educational framework."@en, "ein immaterielles Objekt, an dem sich ein Modul ausrichtet, was zugleich ein Knoten (ein Paragraph, ein Absatz) in einem Bildungs- oder Qualifikationsrahmen ist"@de ;
+			rdfs:subClassOf schema:Intangible ;
+			rdfs:isDefinedBy <https://schema.org/> .		
+
+schema:ItemList a owl:Class ;
+			rdfs:label "Item List"@en, "Auflistung"@de ;
+			rdfs:comment "A list of items of any sort."@en, "eine Liste von Positionen beliebigen Typs, hier primär verwendet für die Auflistung von Lernergebnissen, Lehrinhalten und Prüfungsformen"@de ;
+			rdfs:subClassOf schema:Intangible ;
+			rdfs:isDefinedBy <https://schema.org/> .		
+
+schema:PropertyValue a owl:Class ;
+			rdfs:label "Property Value"@en, "Merkmalswert"@de ;
+			rdfs:subClassOf schema:Intangible ;
+			rdfs:comment "Class for compound didactic aspects of a course, mainly teaching forms and workload components."@en, "Klasse für komplexe didaktische Aspekte eines Modules, insbesondere Lehrformen und die Zusammensetzung der Workload"@de ;
+			rdfs:isDefinedBy <https://schema.org/> .
+			
+schema:Language a owl:Class ;
+			rdfs:label "Language"@en, "Sprache"@de ;
+			rdfs:comment "Natural languages such as Spanish, German, Hindi, English, etc. encoded with standard code"@en, "Natürliche Sprachen, wie Deutsch, Englisch, Spanisch, Hindi etc."@de ;
+			rdfs:subClassOf schema:Intangible ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+schema:Duration a owl:Class ;
+			rdfs:label "Duration"@en, "Dauer"@de ;
+			rdfs:comment "Here used for specifying the duration of an educational video, follows the ISO 8601 duration format."@en, "Hier für die Angabe der Workload für unterschiedliche Lehr-Lernaktivitäten sowie die Gesamtdauer einer Lehrveranstaltung. Die Angabe folgt dem ISO 8601 Format für Zeiträume."@de ;
+			rdfs:subClassOf schema:Intangible ;
+			rdfs:isDefinedBy <https://schema.org/> .
+			
+schema:DataType a rdfs:Class ;
+			rdfs:label "Data Type"@en, "Datentyp"@de ;
+			rdfs:comment "Encompasses basic data types for typing literals."@en, "Oberklasse für grundlegende Datentypen für Literale"@de ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+schema:Text a rdfs:Class ;
+			rdfs:label "Text"@en, "Text"@de ;
+			rdfs:comment "General class for all literals being of any textual Datatype."@en, "Allgemeine Klasse für alle Literale eines beliebigen textuellen Datentyps."@de ;
+			rdfs:subClassOf schema:DataType ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+schema:Integer a rdfs:Class ;
+			rdfs:label "Integer"@en, "Ganze Zahl"@de ;
+			rdfs:comment "Class for all integer literals."@en, "Klasse für alle ganzzahligen Literale."@de ;
+			rdfs:subClassOf schema:DataType ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+schema:URL a rdfs:Class ;
+			rdfs:label "URL"@en, "URL"@de ;
+			rdfs:comment "General class for all literals being an URL."@en, "Allgemeine Klasse für alle Literale die eine URL darstellen."@de ;
+			rdfs:subClassOf schema:Text ;
+			rdfs:isDefinedBy <https://schema.org/> .
+			
+schema:Date a rdfs:Class ;
+			rdfs:label "Date"@en, "Datum"@de ;
+			rdfs:comment "General class for all literals indicating a data."@en, "Allgemeine Klasse für alle Literale die ein Datum angeben."@de ;
+			rdfs:subClassOf schema:DataType ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+
+### Definition of specific Classes ### 
+module:Lecturer a owl:Class ;
+			rdfs:label "Lecturer"@en, "Lehrende"@de ;
+			rdfs:comment "Class for person accountable for courses and instructors."@en, "Klasse für Personen, die für Module verantwortlich zeichnen und für Lehrende in konkreten Veranstaltungen"@de ;
+			rdfs:subClassOf schema:Person ;
+			rdfs:isDefinedBy <https://bmake.th-brandenburg.de/module/> .
+
+module:Author a owl:Class ;
+			rdfs:label "Author"@en, "Autor"@de ;
+			rdfs:comment "Class for person beeing author of cited creative work."@en, "Klasse für Personen, die Autoren der zitierten Werke sind"@de ;
+			rdfs:subClassOf schema:Person ;
+			rdfs:isDefinedBy <https://bmake.th-brandenburg.de/module/> .
+
+
+### Object properties ###
+schema:isPartOf a owl:ObjectProperty ;
+			rdfs:label "has part"@en, "In"@de ;
+			rdfs:comment "Is used to relate creative works (articles) to a more comprehensive creative works (a collection)."@en, "wird verwendet, um eine Quelle als Teil eines Sammelwerkes zu kennzeichnen"@de ;
+			rdfs:domain schema:CreativeWork ;
+			rdfs:range schema:CreativeWork ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+schema:about a owl:ObjectProperty ;
+			rdfs:label "about"@en, "über"@de ;
+			rdfs:comment "Is used to relate an educational coures to its lists of learning outcomes, contents and examinations."@en, "verweist auf wesentliche Inhalte eines Werks mit Bezug zu seinem Inhalt, den Lehrzielen etc."@de ;
+			rdfs:domain schema:CreativeWork ;
+			rdfs:range schema:ItemList ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+schema:additionalProperty a owl:ObjectProperty ;
+			rdfs:label "additional property"@en, "weitere Eigenschaft"@de ;
+			rdfs:comment "is used to represent the capacity-related division of a module into teaching forms or various teaching arrangements"@en, "wird verwendet, um die kapazitätsbezogene Aufteilung eines Moduls in Lehrformen oder verschiedene Lehrarrangements darzustellen"@de ;
+			rdfs:domain schema:Thing ;
+			rdfs:range schema:PropertyValue ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+schema:valueReference a owl:ObjectProperty ;
+			rdfs:label "value reference"@en, "Wertreferenz"@de ;
+			rdfs:comment "is used to refer a complex property value to detailed simple ones (name value pairs)"@en, "wird verwendet, um einen komplexen Eigenschaftswert auf detaillierte einfache Werte (Namenswertpaare) zu verweisen"@de ;
+			rdfs:domain schema:PropertyValue ;
+			rdfs:range schema:PropertyValue ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+schema:hasCourseInstance a owl:ObjectProperty ;
+			rdfs:label "has course instance"@en, "hat Kursinstanz"@de ;
+			rdfs:comment "Is used to relate an educational course to its instances."@en, "wird verwendet, um auf eine konkrete Durchführung eines Moduls zu einem bestimmten Zeitpunkt, in einer bestimmten Form bzw. an einem Ort zu referenzieren"@de ;
+			rdfs:domain schema:CreativeWork ;
+			rdfs:range schema:CourseInstance ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+schema:educationalAlignment a owl:ObjectProperty ;
+			rdfs:label "educational alignment"@en, "edukative Ausrichtung"@de ;
+			rdfs:comment "Is used to relate an educational course to its alignment objects with respect to educational frameworks."@en,"wird verwendet, um diverse Ausrichtungsobjekte für ein Modul zu referenzieren. Ausrichtungsobjekte können z. B. Prüfungsordnungen sein."@de ;
+			rdfs:domain schema:Course ;
+			rdfs:range schema:AlignmentObject ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+schema:coursePrerequisites a owl:ObjectProperty ;
+			rdfs:label "general course prerequisites"@en, "allgemeine Voraussetzungen"@de ;
+			rdfs:comment "Is used to relate an educational course to general prerequisites of the course in textual form."@en, "Wird verwendet, um allgemeine Voraussetzungen für ein Modul textuell zu definieren."@de ;
+			rdfs:domain schema:Course ;
+			rdfs:range schema:Text ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+schema:isBasedOn a owl:ObjectProperty ;
+			rdfs:label "is based on"@en, "basiert auf"@de ;
+			rdfs:comment "Is used to show on which other modules a module is based."@en, "Wird verwendet, um anzuzeigen, auf welchen anderen Modulen ein Modul basiert."@de ;
+			rdfs:domain schema:Course ;
+			rdfs:range schema:Course ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+schema:citation a owl:ObjectProperty ;
+			rdfs:label "citation"@en, "Literatur"@de ;
+			rdfs:comment "Is used to relate an educational course to literature used in the course."@en, "wird verwendet, um die Literatur zu einem Modul darzustellen"@de ;
+			rdfs:domain schema:Course ;
+			rdfs:range schema:CreativeWork ;
+			rdfs:isDefinedBy <https://schema.org/> .
+			
+schema:instructor a owl:ObjectProperty ;
+			rdfs:label "instructor"@en, "Dozent/in"@de ;
+			rdfs:comment "Is used to relate an educational course instance to a lecturer or instructor providing it."@en, "wird verwendet, um den oder die DozentInnen einer konkreten Kursinstanz zu referenzieren"@de ;
+			rdfs:domain schema:CourseInstance ;
+			rdfs:range schema:Person ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+schema:accountablePerson a owl:ObjectProperty ;
+			rdfs:label "accountable person"@en, "Verantwortlich/e"@de ;
+			rdfs:comment "Is used to relate a course to a person accountable for it."@en, "wird verwendet, um den oder die Verantwortliche/n zu einem Modul zu referenzieren"@de ;
+			rdfs:domain schema:Course ;
+			rdfs:range schema:Person ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+schema:author a owl:ObjectProperty ;
+			rdfs:label "author"@en, "Autor/in"@de ;
+			rdfs:comment "Is used to idicate a person as author of a creative work."@en, "wird verwendet, um auf den oder die Autor/in eines Werks zu verweisen"@de ;
+			rdfs:domain schema:CreativeWork ;
+			rdfs:range [ owl:unionOf ( schema:Person schema:Organization) ] ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+schema:publisher a owl:ObjectProperty ;
+			rdfs:label "publisher"@en, "Herausgeber"@de ;
+			rdfs:comment "Is used to idicate an organization as publisher of a creative work."@en, "wird verwendet, um auf eine Organisation als Herausgeber eines Werks zu verweisen"@de ;
+			rdfs:domain schema:CreativeWork ;
+			rdfs:range schema:Organization ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+schema:affiliation a owl:ObjectProperty ;
+			rdfs:label "affiliation"@en, "Zugehörigkeit/Mitgliedschaft"@de ;
+			rdfs:comment "Is used to relate a person to an organization."@en, "wird verwendet, um die Mitgliedschaft oder Zugehörigkeit einer Person zu einer Organisation darzustellen"@de ;
+			rdfs:domain schema:Person ;
+			rdfs:range schema:Organization ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+ 
+### Datatype Properties ###
+schema:name a owl:DatatypeProperty ;
+			rdfs:label "name"@en, "Bezeichnung"@de ;
+			rdfs:comment "General datatype property, potentially usable for names of all resources."@en, "Wird hauptsächlich für die Modulbezeichnung verwendet; in zweiter Linie für die Bezeichnungen von kapazitätsrelevanten Lehrformen und deren Anteile an den Semesterwochenstunden (SWS)"@de ;
+			rdfs:range schema:Text ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+schema:value a owl:DatatypeProperty ;
+			rdfs:label "value"@en, "Wert"@de ;
+			rdfs:comment "Used in the context of complex properties to specify values for name value pairs"@en, "wird im Kontext komplexer Eigenschaften zur Spezifikation von Werten für Namenswertpaare verwendet"@de ;
+			rdfs:domain schema:PropertyValue ;
+			rdfs:range schema:Integer ;
+			rdfs:isDefinedBy <https://schema.org/> .			
+
+schema:headline a owl:DatatypeProperty ;
+			rdfs:label "headline"@en, "Titel eines Werkes"@de ;
+			rdfs:comment "indicates a title or headline fo a creative work."@en, "Wird primär für die Titel der Literatur zu einem Modul verwendet"@de ;
+			rdfs:domain schema:CreativeWork ;
+			rdfs:range schema:Text ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+schema:courseCode a owl:DatatypeProperty ;
+			rdfs:label "course code"@en, "Modul-Kurzkennzeichen"@de ;
+			rdfs:comment "A short (formal) abbreviation for a course."@en, "Kurzkennzeichen für ein Modul"@de ;
+			rdfs:domain schema:Course ;
+			rdfs:range schema:Text ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+schema:comment a owl:DatatypeProperty ;
+			rdfs:label "comment"@en, "Bemerkung"@de ;
+			rdfs:comment "General datatype property for (additional) comments regarding a resource."@en, "wird verwendet, um ergänzende, besondere Bemerkungen zu einem Modul zu hinterlegen"@de ;
+			rdfs:range schema:Text ;
+			rdfs:isDefinedBy <https://schema.org/> .
+			
+schema:learningResourceType a owl:DatatypeProperty ;
+			rdfs:label "learning resource type"@en, "Aufteilung in Lehrveranstaltungen"@de ;
+			rdfs:comment "different kinds of learning arrangements applied in an educational course"@en, "wird verwendet, um darzustellen, wie sich ein Modul in methodisch oder inhaltlich unterschiedliche Lehrveranstaltungen aufteilt"@de ;
+			rdfs:domain schema:Course ;
+			rdfs:range schema:Text ;
+			rdfs:isDefinedBy <https://schema.org/> .
+	
+schema:interactivityType a owl:DatatypeProperty ;
+			rdfs:label "interactivity type"@en, "Lehr- und Lernmethoden"@de ;
+			rdfs:comment "refers to teaching and learning methods used in the course"@en, "gibt eine Liste der im Modul eingesetzten Lehr- und Lernmethoden"@de ;
+			rdfs:domain schema:CreativeWork ;
+			rdfs:range schema:Text ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+schema:educationalUse a owl:DatatypeProperty ;
+			rdfs:label "educational use"@en, "Verwendbarkeit des Moduls"@de ;
+			rdfs:comment "possible usage of an educational coures, e. g. beeing a prerequisite for another course"@en , "gibt die Verwendbarkeit des Moduls im Kontext des gesamten Curriculums an"@de;
+			rdfs:domain schema:Course ;
+			rdfs:range schema:Text ;
+			rdfs:isDefinedBy <https://schema.org/> .			
+
+schema:educationalCredentialAwarded a owl:DatatypeProperty ;
+			rdfs:label "educational credential awarded"@en, "ECTS-Credits"@de ;
+			rdfs:comment "educational credentials beeing assigned to a participant after completing successfully the course, e. g. ECTS points"@en, "Anzahl der ECTS-Kreditpunkte, die ein Studierender in diesem Modul erwerben kann"@de ;
+			rdfs:domain schema:Course ;
+			rdfs:range schema:Integer ;
+			rdfs:isDefinedBy <https://schema.org/> .			
+
+schema:timeRequired a owl:DatatypeProperty ;
+			rdfs:label "time required"@en, "Gesamtworkload und ihre Zusammensetzung"@de ;
+			rdfs:comment "time required for accomplishing a learning activity as part of the course."@en, "gibt die Gesamtworkload bzw. die Workload verschiedener Arten von Lehr-Lernaktivitäten in Stunden an"@de ;
+			rdfs:domain schema:CreativeWork ;
+			rdfs:range schema:Duration ;
+			rdfs:isDefinedBy <https://schema.org/> .			
+			
+schema:duration a owl:DatatypeProperty ;
+			rdfs:label "duration"@en, "Dauer des Moduls"@de;
+			rdfs:comment "Duration of a course instance, here measured in semesters."@en, "gibt an, ob sich ein Modul über ein Semester (Regelfall) oder einen davon abweichenden Zeitraum erstreckt"@de ;
+			rdfs:domain schema:CourseInstance ;
+			rdfs:range schema:Duration ;
+			rdfs:isDefinedBy <https://schema.org/> .			
+			
+schema:courseMode a owl:DatatypeProperty ;
+			rdfs:label "course mode"@en, "Art und Häufigkeit des Angebots"@de ;
+			rdfs:comment "mode of performing a course instance, e. g. blended learning, full time, part time."@en, "gibt an, in welcher Modalität ein Modul angeboten wird, z. B. jedes Sommersemester, Vollzeit"@de ;
+			rdfs:domain schema:CourseInstance ;
+			rdfs:range schema:Text ;
+			rdfs:isDefinedBy <https://schema.org/> .			
+		
+schema:inLanguage a owl:DatatypeProperty ;
+			rdfs:label "in language"@en, "Lehrsprache"@de;
+			rdfs:comment "The language of an educational course."@en, "Lehrsprache(n) eines Moduls"@de ;
+			rdfs:domain schema:Course ;
+			rdfs:range schema:Language .
+					
+schema:url a owl:DatatypeProperty ;
+			rdfs:label "url"@en, "URL"@de ;
+			rdfs:comment "General datatype property, potentially usable for specifying the URL of a resource. "@en, "allgemeines Attribut zur eindeutigen Referenz bzw. zur Bereitstellung weiterführender Informationen zu einer Ressource"@de ;
+			rdfs:range schema:URL ;
+			rdfs:isDefinedBy <https://schema.org/> .
+
+schema:alignmentType a owl:DatatypeProperty ;
+			rdfs:label "aligmentType"@en, "Ausrichtungstyp"@de ;
+			rdfs:comment "type of alignment between an alignment object and a course"@en, "wird verwendet, um die Ausrichtung eines Moduls an Rahmenvorgaben darzustellen, insbesonder Prüfungsordnungen, Bewertungsrahmen, Modultypen (Pflicht, Wahlpflicht), Kapazitätsrahmen (SWS)"@de ;
+			rdfs:domain schema:AlignmentObject ;
+			rdfs:range schema:Text ;
+			rdfs:isDefinedBy <https://schema.org/> .	
+
+schema:targetName a owl:DatatypeProperty ;
+			rdfs:label "target name"@en, "Bezeichnung der Vorgabe"@de ;
+			rdfs:comment "The name of a node in an established educational framework."@en, "referenziert auf die Bezeichnung der hier verwendeten Vorgabe aus dem Ausrichtungsrahmen, z. B. Bezeichnung eines Studiengangs zu dem das Modul gehört"@de ;
+			rdfs:domain schema:AlignmentObject ;
+			rdfs:range schema:Text ;
+			rdfs:isDefinedBy <https://schema.org/> .	
+
+schema:targetDescription a owl:DatatypeProperty ;
+			rdfs:label "target description"@en, "Beschreibung der Vorgabe"@de ;
+			rdfs:comment "The description of a node in an established educational framework."@en, "gibt eine Kurzbeschreibung  der hier verwendeten Vorgabe aus dem Ausrichtungsrahmen, z. B. Kurzbeschreibung eines Studiengangs, zu dem das Modul gehört"@de ;
+			rdfs:domain schema:AlignmentObject ;
+			rdfs:range schema:Text ;
+			rdfs:isDefinedBy <https://schema.org/> .	
+
+schema:targetURL a owl:DatatypeProperty ;
+			rdfs:label "target URL"@en, "verweist auf eine Webseite, die nähere Informationen zum Ausrichtungsrahmen enthält, z. B. auf ein Prüfungsordnungsdokument"@de ;
+			rdfs:comment "The URL of a node in an established educational framework."@en ;
+			rdfs:domain schema:AlignmentObject ;
+			rdfs:range schema:URL ;
+			rdfs:isDefinedBy <https://schema.org/> .	
+
+schema:educationalFramework a owl:DatatypeProperty ;
+			rdfs:label "educational framework"@en, "Bildungs-/Qualifikationsrahmen"@de ;
+			rdfs:comment "educational framework to which an alignment object of a course is aligned to, e. g. study regulation"@en, "Bildungs- bzw. Qualifikationsrahmen auf den sich ein Ausrichtungsobjekt bezieht"@de ;
+			rdfs:domain schema:AlignmentObject ;
+			rdfs:range schema:Text ;
+			rdfs:isDefinedBy <https://schema.org/> .	
+	
+schema:license a owl:DatatypeProperty ;
+			rdfs:label "license"@en, "Lizenz"@de ;
+			rdfs:comment "Relates to a license document that applies to a creative work, typically indicated by URL."@en, "referenziert ein Lizensierungsdokument, das auf ein Werk anwendbar ist, meist eine URL"@de ;
+			rdfs:domain schema:CreativeWork ;
+			rdfs:range schema:URL ;
+			rdfs:isDefinedBy <https://schema.org/> .			
+			
+schema:familyName a owl:DatatypeProperty ;
+			rdfs:label "family name"@en, "Nachname"@de ;
+			rdfs:comment "the family name of a person"@en, "Nach- oder Familienname einer Person"@de ;
+			rdfs:domain schema:Person ;
+			rdfs:range schema:Text ;
+			rdfs:isDefinedBy <https://schema.org/> .	
+
+schema:givenName a owl:DatatypeProperty ;
+			rdfs:label "given name"@en, "Vorname"@de ;
+			rdfs:comment "the given name of a person"@en, "Vorname(n) einer Person"@de ;
+			rdfs:domain schema:Person ;
+			rdfs:range schema:Text ;
+			rdfs:isDefinedBy <https://schema.org/> .	
+	
+schema:email a owl:DatatypeProperty ;
+			rdfs:label "email"@en, "E-Mail"@de ;
+			rdfs:comment "the email of a person"@en, "E-Mail-Adresse einer Person"@de ;
+			rdfs:domain schema:Person ;
+			rdfs:range schema:Text ;
+			rdfs:isDefinedBy <https://schema.org/> .	
+
+schema:honorificPrefix a owl:DatatypeProperty ;
+			rdfs:label "honorific prefix"@en, "vorangestellter Ehrentitel"@de ;
+			rdfs:comment "the honorific prefix of a person, e. g. Prof., Dr."@en, "voranzustellender Ehrentitel einer Person, z. B. Prof. Dr."@de ;
+			rdfs:domain schema:Person ;
+			rdfs:range schema:Text ;
+			rdfs:isDefinedBy <https://schema.org/> .	
+
+schema:honorificSuffix a owl:DatatypeProperty ;
+			rdfs:label "honorific suffix"@en, "dem Namen nachfolgender Ehrentitel"@de ;
+			rdfs:comment "the honorific suffix of a person, e. g. BSc., MBA"@en, "dem Namen nachfolgender Ehrentitel einer Person, z. B. BSc., MBA"@de ;
+			rdfs:domain schema:Person ;
+			rdfs:range schema:Text ;
+			rdfs:isDefinedBy <https://schema.org/> .	
+			
+schema:itemListElement a owl:DatatypeProperty ;
+			rdfs:label "item list element"@en, "Element einer Auflistung"@de ;
+			rdfs:comment "used for referencing lists of learning outcomes, contents and examinations to an educational course", "wird verwendet um die Auflistung von Lernergebnissen, Lerninhalten und Prüfungsformen für ein Modul bereitzustellen"@de ;
+			rdfs:domain schema:ItemList ;
+			rdfs:range schema:Text ;
+			rdfs:isDefinedBy <https://schema.org/> .
+			
+schema:identifier a owl:DatatypeProperty ;
+			rdfs:label "item list identifier"@en, "ID einer Auflistung"@de ;
+			rdfs:comment "is used to specify an item list, e. g. outcome, content, examination", "wird verwendet um eine Auflistung eindeutig zu identifizieren, z. B. als Lernergebnisse, Lerninhalte, Prüfungsformen"@de ;
+			rdfs:domain schema:Thing ;
+			rdfs:range schema:Text ;
+			rdfs:isDefinedBy <https://schema.org/> .
+			
+schema:sameAs a owl:DatatypeProperty ;
+			rdfs:label "same as"@en, "dasselbe"@de ;
+			rdfs:comment "specifies an identifying URL to a resource"@en, "wird verwendet, um eine Ressource mit einer eindeutigen URL zu verknüpfen, z. B. einer Wikidata-Id."@de ;
+			rdfs:domain schema:Thing ;
+			rdfs:range schema:URL ;
+			rdfs:isDefinedBy <https://schema.org/> .
+			
+schema:legalName a owl:DatatypeProperty ;
+			rdfs:label "legal name"@en, "offizielle Bezeichnung"@de ;
+			rdfs:comment "is used to specify an official name of an organization"@en, "wird verwendet, um die offizielle Bezeichnung einer Organisation zu erklären"@de ;
+			rdfs:domain schema:Organization ;
+			rdfs:range schema:Text ;
+			rdfs:isDefinedBy <https://schema.org/> .
+			
+schema:datePublished a owl:DatatypeProperty ;
+			rdfs:label "date published"@en, "Veröffentlichungsdatum"@de ;
+			rdfs:comment "is used to specify a publishing date for a creative work"@en, "verweist auf das Datum der Veröffentlichung eines Werks"@de ;
+			rdfs:domain schema:CreativeWork ;
+			rdfs:range schema:Date ;
+			rdfs:isDefinedBy <https://schema.org/> .
+			
+schema:bookEdition a owl:DatatypeProperty ;
+			rdfs:label "book edition"@en, "Auflage eines Buches"@de ;
+			rdfs:comment "is used to specify the edition of a book"@en, "wird verwendet, um die Auflage eines Buches zu definieren"@de ;
+			rdfs:domain schema:Book ;
+			rdfs:range schema:Text ;
+			rdfs:isDefinedBy <https://schema.org/> .
+	
+schema:pageStart a owl:DatatypeProperty ;
+			rdfs:label "page start"@en, "erste Seite"@de ;
+			rdfs:comment "is used to specify the first page of an article in a journal or volume"@en, "wird verwendet, um die erste Seite eines Artikels in einem Journal oder einem Sammelband zu definieren"@de ;
+			rdfs:domain schema:Article ;
+			rdfs:range schema:Text ;
+			rdfs:isDefinedBy <https://schema.org/> .
+	
+schema:pageEnd a owl:DatatypeProperty ;
+			rdfs:label "page end"@en, "letzte Seite"@de ;
+			rdfs:comment "is used to specify the last page of an article in a journal or volume"@en, "wird verwendet, um die letzte Seite eines Artikels in einem Journal oder einem Sammelband zu definieren"@de ;
+			rdfs:domain schema:Article ;
+			rdfs:range schema:Text ;
+			rdfs:isDefinedBy <https://schema.org/> .
+	

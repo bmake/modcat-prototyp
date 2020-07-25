@@ -1,0 +1,252 @@
+@prefix schema: <https://schema.org/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix module: <https://bmake.th-brandenburg.de/module/> .
+@prefix wd: <http://www.wikidata.org/entity/> .
+@prefix thbfbwm: <https://www.th-brandenburg.de/mitarbeiterseiten/fbw/> .
+@prefix xing: <https://www.xing.com/profile/> .
+@prefix linkedIn: <https://www.linkedin.com/in/> .
+@prefix resGate: <https://www.researchgate.net/profile/> .
+
+## main Template
+module:CourseCode a module:Module ; # Modul wird als Entität definiert
+	schema:name ""@de , ""@en ;     # Modultitel in DE und EN
+	schema:isPartOf module:ProgramCode ; # Referenz auf den/die Studiengang/-gänge in dem/denen das Modul eingesetzt wird
+#	schema:datePublished "2020-06-01" ; # Datum der Erstellung bzw. der letzten Änderung
+	schema:courseCode "CourseCode" ;    # Modulkürzel - 4-Letter-Abbreviation
+	schema:url "" ;						# Hochschulwebseite für das Modul
+#	schema:learningResourceType "- " ;  # durch interactivityType ersetzen
+	schema:accountablePerson thbfbwm:xxx ; # Modulverantwortliche(r)
+	schema:comment "" ;					# Kommentar, weitere Beschreibung
+#	schema:inLanguage "de" ;			# für STG spezifisch anlegen
+	schema:interactivityType "- " ;		# Lehrveranstaltungen, z. B.: "Vorlesung", "Übung"
+	schema:educationalUse "" ;			# Verwendbarkeit
+	schema:citation <http://doi.org/zzBook> , # Literaturreferenz auf Buch
+					<http://doi.org/zzArticle> , # Literaturreferenz auf Paper
+					<http://doi.org/zzDigitalDocument> ;	# Literaturreferenz auf Digitales Dokument	
+	schema:timeRequired "1 Semester" ; 		# Dauer des Moduls in Semestern
+	schema:coursePrerequisites  "" ; 	# SPO-relevante Voraussetzungen als Referenz auf Module oder als Text
+	schema:isBasedOn module:STG_Module ;  # empfohlene vorab zu absolvierende Module
+	schema:educationalLevel "" ;   # empfohlene Voraussetzungen als Text
+	schema:numberOfCredits "5" ;		# Anzahl der CP in ECTS
+	schema:hasCourseInstance module:Sem_CourseCode ; # Referenz auf die Kursinstanz
+	module:about_LResults module:LResults_CourseCode ; # Referenz auf Liste der Lernziele
+	module:about_Content module:Content_CourseCode ;  # Referenz auf Liste der Inhaltselemente
+	module:about_Exam module:Exam_CourseCode ;  # Referenz auf Liste der Prüfungsleistungen
+	module:addProp_TeachingForms module:TeachingForms_CourseCode ;  # Referenz auf Liste der Lehr-Lernmethoden (vorher in interactivityType)
+	module:addProp_CompWL module:CompWL_CourseCode ; 	# Referenz auf Liste der Workloadkomponenten
+	module:progrSpecProp_StudySem module:StudySem_CourseCode ; # Referenz auf Liste studiengangspezifischer Eigenschaften: Studiensemester
+	module:progrSpecProp_Language module:Language_CourseCode ; # Referenz auf Liste studiengangspezifischer Eigenschaften: Lehrsprache(n)
+	module:progrSpecProp_ModuleType module:ModuleType_CourseCode ; # Referenz auf Liste studiengangspezifischer Eigenschaften: Modultyp
+	module:progrSpecProp_GradingRatio module:GradingRatio_CourseCode ; # Referenz auf Liste studiengangspezifischer Eigenschaften: Notengewichtung
+	module:progrSpecProp_SWS module:SWS_CourseCode . # Referenz auf Liste studiengangspezifischer Eigenschaften: SWS
+				
+## for accountable Persons & instructors (identification via Web-Site and/or ORCID)
+thbfbwm:xxx a module:Lecturer ;
+			rdfs:label "" ;
+			schema:sameAs "http://orcid.org/xxx" ;
+			schema:givenName "" ;
+			schema:familyName "" ;
+			schema:honorificPrefix "" ;
+			schema:honorificSuffix "" ;
+			schema:email "" ;
+			schema:affiliation wd:Qyyy .
+			
+## for methodic aspects of a course
+module:TeachingForms_CourseCode a schema:ItemList ;
+			schema:identifier "TeachingForms" ;
+			schema:name "Lehr-Lernmethoden CourseCode" ;
+			schema:itemListElement module:TF1_CourseCode , module:TF2_CourseCode .
+
+module:TF1_CourseCode a schema:ListItem ;
+			schema:name "" ;
+			schema:position 1 .
+			
+module:TF2_CourseCode a schema:ListItem ;
+			schema:name "" ;
+			schema:position 2 .
+			
+module:CompWL_CourseCode a schema:PropertyValue ;
+			schema:identifier "Workload" ;
+			schema:name "Aufteilung der Workload in Stunden CourseCode" ;
+			schema:valueReference module:WL1_CourseCode , module:WL2_CourseCode .
+			
+module:WL1_CourseCode a schema:PropertyValue ;
+			schema:name "" ;
+			schema:value 60 .
+			
+module:WL2_CourseCode a schema:PropertyValue ;
+			schema:name "" ;
+			schema:value 90 .
+					
+## for didactic aspects of a course (about): Learning Results, Content, Examination Forms
+module:LResults_CourseCode a schema:ItemList ;
+			schema:identifier "Results" ;
+			schema:name "Lernergebnisse CourseCode" ;
+			schema:itemListElement module:LResult01_CourseCode , module:LResult02_CourseCode , module:LResult03_CourseCode . 
+
+module:LResult01_CourseCode a schema:ListItem ;
+			schema:position	1 ;
+			schema:name "Learning result CourseCode 01" ;
+			schema:additionalType module:SubjectMatterCompetence , module:BloomTax_Remember ;
+			schema:description "" .
+
+module:LResult02_CourseCode a schema:ListItem ;
+			schema:position	2 ;
+			schema:name "Learning result CourseCode 02" ;
+			schema:additionalType module:SocialCompetence ;
+			schema:description "" .
+
+module:LResult03_CourseCode a schema:ListItem ;
+			schema:position	3 ;
+			schema:name "Learning result CourseCode 03" ;
+			schema:additionalType module:SelfCompetence ;
+			schema:description "" .
+			
+module:Content_CourseCode a schema:ItemList ;  
+			schema:identifier "Content" ;
+			schema:name "Inhalt CourseCode" ;
+			schema:itemListElement module:Content01_CourseCode , module:Content02_CourseCode . # Referenz auf Inhaltselemente als Entitäten (vorher Auflistung von Literalen)
+
+module:Content01_CourseCode a schema:ListItem ; # Spezifikation der Inhaltselemente mit Position
+			schema:posititon 1 ;
+			schema:name "" .
+
+module:Content02_CourseCode a schema:ListItem ;
+			schema:posititon 2 ;
+			schema:name "" .
+
+module:Exam_CourseCode a schema:ItemList ; 
+			schema:identifier "Exam" ;
+			schema:name "Studien-/Prüfungsleistungen CourseCode" ;
+			schema:itemListElement module:Exam01_CourseCode , module:Exam02_CourseCode . # Referenz auf Prüfungsleitungen als Entitäten (vorher Auflistung von Literalen)
+
+module:Exam01_CourseCode a schema:ListItem ; # Spezifikation der Prüfungsleistungen mit Position
+			schema:posititon 1 ;
+			schema:name "" .
+
+module:Exam02_CourseCode a schema:ListItem ;
+			schema:posititon 2 ;
+			schema:name "" .
+
+			
+## for CourseInstances
+module:SoWi18_CourseCode a schema:CourseInstance ;
+			schema:courseMode "jedes Winter/Sommersemester" ;
+			schema:duration "P0.5Y" ;
+			schema:identifier "CourseCode WiSoSe18/19" ;
+			schema:instructor thbfbwm:vorname-nachname .
+			
+## for ProgramSpecific Properties 
+module:StudySem_CourseCode a schema:PropertyValue ;
+			schema:identifier "StudySemester" ;
+			schema:name "Studiensemester CourseCode" ;
+			schema:valueReference module:StudySem_ProgramCode_CourseCode .
+
+module:StudySem_ProgramCode_CourseCode a schema:PropertyValue ;
+			schema:name "Studiensemester CourseCode im Studiengang ProgramCode" ;
+			schema:value 2 .
+
+module:SWS_CourseCode a schema:PropertyValue ;
+			schema:identifier "SWS" ;
+			schema:name "SWS CourseCode" ;
+			schema:valueReference module:SWS_ProgramCode_CourseCode .
+
+module:SWS_ProgramCode_CourseCode a schema:PropertyValue ;
+			schema:name "SWS CourseCode im Studiengang ProgramCode" ;
+			schema:value 2 .
+
+module:Language_CourseCode a schema:PropertyValue ;
+			schema:identifier "Language" ;
+			schema:name "Lehrsprache CourseCode" ;
+			schema:valueReference module:Language_ProgramCode_CourseCode .
+
+module:Language_ProgramCode_CourseCode a schema:PropertyValue ;
+			schema:name "Lehrsprache CourseCode im Studiengang ProgramCode" ;
+			schema:value "de" .
+
+module:ModuleType_CourseCode a schema:PropertyValue ;
+			schema:identifier "ModuleType" ;
+			schema:name "Modultyp CourseCode" ;
+			schema:valueReference module:ModuleType_ProgramCode_CourseCode .
+
+module:ModuleType_ProgramCode_CourseCode a schema:PropertyValue ;
+			schema:name "Modultyp CourseCode im Studiengang ProgramCode" ;
+			schema:value "Pflichtmodul" .
+
+module:GradingRatio_CourseCode a schema:PropertyValue ;
+			schema:identifier "GradingRatio" ;
+			schema:name "Notengewichtung CourseCode" ;
+			schema:valueReference module:GradingRatio_ProgramCode_CourseCode .
+
+module:GradingRatio_ProgramCode_CourseCode a schema:PropertyValue ;
+			schema:name "Notengewichtung CourseCode im Studiengang ProgramCode" ;
+			schema:value "laut SPO" .
+
+## Studien- und Prüfungsordnung
+module:ProgramCode a module:StudyProgram ;
+			schema:url "Studiengangswebseite" ;
+ 			schema:name "Titel des Studiengangs"@de , "Title of the StudyProgram"@en ;
+			schema:educationalAlignment module:EQFLevel_ProgramCode ; 			
+			schema:subjectOf module:SPO_ProgramCode_YYYY .
+			
+module:EQFLevel_ProgramCode a schema:AlignmentObject ;
+			schema:alignmentType "Qualifikationsniveau" ;
+			schema:educationalFramework "Europäischer Qualifikationsrahmen (EQR)"@de , "European Qualification Framework (EQF)"@en ;
+			schema:targetName "Niveau 6/7" ;
+			schema:targetDescription "Bachelor/Master of Science" ;
+			schema:targetURL "https://eur-lex.europa.eu/legal-content/DE/TXT/HTML/?uri=CELEX:32017H0615(01)&from=DE" .
+
+module:SPO_ProgramCode_YYYY a schema:Legislation ;
+			schema:name "Titel der SPO" ;
+			schema:legislationDate "YYYY-MM-DD" ;
+			schema:legislationResponsible wd:Q1391182 ;
+			schema:url "Link auf amtliches PDF" .
+		
+## for authors (identification via XING, ORCID, Researchgate) 
+<https://www.xing.com/profile/xxx> a schema:Author ;
+			schema:givenName "" ;
+			schema:familyName "" ;
+			schema:honorificPrefix "" .
+			
+## for affiliations of persons (identification via WikiData)
+wd:Qyyy a schema:Organization ;
+			schema:legalName "" ;
+			schema:url "" .
+			
+## for citations: Books, Articles (resp. CWS) & Digital Documents (identification via DOI, ISBN or URL)		
+<http://doi.org/zzBook> a schema:Book ;
+			schema:author <http://orcid.org/xxAuthor> ;
+			schema:headline "" ;
+			schema:bookEdition "" ;
+			schema:datePublished "" ;
+			schema:url "" . 
+			
+<http://doi.org/zzArticle> a schema:Article ;
+			schema:author <http://orcid.org/xxAuthor> ;
+			schema:headline "" ;
+			schema:datePublished "" ;
+			schema:url "" ;
+			schema:isPartOf <http://doi.org/zzJournalOrProceeding> ;
+			schema:pageStart "" ;
+			schema:pageEnd "" . 
+			
+<http://doi.org/zzJournalOrProceeding> a schema:CreativeWork ;
+			schema:headline "" ;
+			schema:url "" .
+
+<http://doi.org/zzDigitalDocument> a schema:DigitalDocument ; 			
+			schema:publisher wd:Qxxx ;
+			schema:headline "" ;
+			schema:datePublished "" ;
+			schema:url "" .
+			
+## for publishers of Books, Articles, Journals & Digital Documents
+wd:Qxxx a 	schema:Organization ;
+			schema:legalName "" ;
+			schema:url "" .
