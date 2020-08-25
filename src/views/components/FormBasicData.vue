@@ -411,7 +411,7 @@ export default {
         courseMode: null,
         languages: []
       },
-      spo: {
+      /*spo: {
         WIB: [
           "Studien- und Prüfungsordnung für den Bachelor-Studiengang Wirtschaftsinformatik [Business & Information Systems Engineering B.Sc.] (SPO-BSc-WI-THB-2017) im Fachbereich Wirtschaft vom 15.02.2017, Anlage 1",
           "https://www.th-brandenburg.de/fileadmin/user_upload/hochschule/Dateien/Amtliche-Mitteilungen/2017/2017-11-SPO-BSc-WI.pdf",
@@ -432,13 +432,13 @@ export default {
           "https://www.th-brandenburg.de/fileadmin/user_upload/hochschule/Dateien/Amtliche-Mitteilungen/2017/2017-06-SPO-MSc-BWL.pdf",
           "Gewichtungsanteile der Note im Hinblick auf die Gesamtfachnote (6,25 %) sowie auf die Abschlussnote (5 %)"
         ]
-      },
-      curriculum: {
+      },*/
+      /*curriculum: {
         WIB: ["WI Ba", "Wirtschaftsinformatik Bachelor"],
         WIM: ["WI Ma", "Wirtschaftsinformatik Master"],
         BWLB: ["BWL BA", "Betriebswirtschaftslehre Bachelor"],
         BWLM: ["BWL MA", "Betriebswirtschaftslehre Master"]
-      },
+      },*/
       changedArray: [],
       updateQuery: "",
       notification: false,

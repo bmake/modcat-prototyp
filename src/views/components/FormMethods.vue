@@ -278,14 +278,14 @@
                   Änderungen gespeichert!
                 </div>
               </transition>
-              <!--<p>input1 is: {{ inputs1 }}</p>
+              <p>input1 is: {{ inputs1 }}</p>
               <p>input2 is: {{ inputs2 }}</p>
               <p>changedArray: {{ changedArray }}</p>
               <p>delete: {{ this.delete }}</p>
               <p>insert: {{ insert }}</p>
               <p>where: {{ where }}</p>
               <p>update: {{ updateQuery }}</p>
-              <p>modOutcome: {{ modMethod[0] }}</p>-->
+              <p>modOutcome: {{ modMethod[0] }}</p>
             </div>
           </div>
         </div>
@@ -317,8 +317,9 @@ export default {
         "PREFIX schema: <https://schema.org/>  ",
       delete: [],
       insert: [],
+      where: [],
       countWorkload: 0,
-      where:
+      whereStr:
         " schema:interactivityType ?interType ;  " +
         " module:addProp_CompWL ?addPropCompWL . ",
       inputs1: [
@@ -413,21 +414,44 @@ export default {
       let query = this.prefixes;
       if (!this.newBoolean) {
         if (this.changedArray.inputs1.length > 0) {
-          let sub = " <" + this.moduleUri + "> ";
-          this.delete.push(sub + " schema:interactivityType ?interType . ");
-          let tripleIns = sub + ' schema:interactivityType "';
+          let teachingformsSub = " module:TeachingForms_" + this.code;
+          let tripleDelWhe = teachingformsSub + " schema:itemListElement ?interType . ?interType ?pTeach ?oTeach . ";
+          this.delete.push(tripleDelWhe);
+          this.where.push(tripleDelWhe);
+          let tripleIns = teachingformsSub + ' schema:itemListElement ';
+          let tripleInsDetail = "";
           for (let i = 0; i < this.inputs1.length; i++) {
+            let sub = "module:TF" + (i+1) + "_" + this.code;
             if (i == this.inputs1.length - 1) {
-              tripleIns += this.inputs1[i].name + '" . ';
+              tripleIns += sub + ' . ';
             } else {
-              tripleIns += this.inputs1[i].name + '", "';
+              tripleIns += sub + ', ';
             }
+            tripleInsDetail += sub + ' a schema:ListItem ; schema:name  "' + this.inputs1[i].name + '" ; schema:position ' + (i+1) + ' .  ';
           }
           this.insert.push(tripleIns);
+          this.insert.push(tripleInsDetail);
         }
 
         if (this.changedArray.inputs2.length > 0) {
-          let code = this.modMethod[0].code.value;
+          let workloadsSub = " module:CompWL_" + this.code;
+          let tripleDelWhe = workloadsSub + " schema:valueReference ?workloads . ?workloads ?pWork ?oWork . ";
+          this.delete.push(tripleDelWhe);
+          this.where.push(tripleDelWhe);
+          let tripleIns = workloadsSub + ' schema:valueReference ';
+          let tripleInsDetail = "";
+          for (let i = 0; i < this.inputs2.length; i++) {
+            let sub = "module:WL" + (i+1) + "_" + this.code;
+            if (i == this.inputs2.length - 1) {
+              tripleIns += sub + ' . ';
+            } else {
+              tripleIns += sub + ', ';
+            }
+            tripleInsDetail += sub + ' a schema:PropertyValue ; schema:name  "' + this.inputs2[i].name[0] + '" ; schema:value ' + this.inputs2[i].name[1] + ' .  ';
+          }
+          this.insert.push(tripleIns);
+          this.insert.push(tripleInsDetail);
+ /*         let code = this.modMethod[0].code.value;
           if (this.inputs2.length <= this.countWorkload) {
             for (let i = 0; i < this.inputs2.length; i++) {
               if (
@@ -528,7 +552,7 @@ export default {
                 this.insert.push(tripleIns);
               }
             }
-          }
+          }*/
         }
 
         query += " DELETE { ";
@@ -539,40 +563,57 @@ export default {
         this.insert.forEach(function(item) {
           query += item;
         });
-        query += " } WHERE { <" + this.moduleUri + "> " + this.where + " }";
+        query += " } WHERE { " ;
+        this.where.forEach(function(item) {
+          query += item;
+        });
+        query += " }";
 
       } else {
         let subject = " <" + this.moduleUri + "> " ;
-        let workload = "module:CompWL_" + this.code ;
+        let teachingformSub = "module:TeachingForms_" + this.code;
+        let workloadsSub = "module:CompWL_" + this.code ;
 
         query += ' INSERT DATA { ';
-        //interactivity types
-        let interTypes = "";
-        for (let i = 0; i < this.inputs1.length - 1; i++) {
-          interTypes += '"' + this.inputs1[i].name + '" , ';
-        }
-        interTypes += '"' + this.inputs1[this.inputs1.length - 1].name + '"';
 
-        query += subject + ' schema:interactivityType ' + interTypes + ' ;  module:addProp_CompWL ' + workload + ' . ';
-        query += workload + ' a  schema:PropertyValue ; schema:identifier  "Workload" ; schema:name  "Aufteilung der Workload in Stunden" ; schema:valueReference  '
+        query += subject + ' module:addProp_TeachingForms ' + teachingformSub + ' ;  module:addProp_CompWL ' + workloadsSub + ' . ';
+
+        //interactivity types
+        let teachingformCourse = teachingformSub + ' a schema:ItemList ; schema:identifier "TeachingForms" ; schema:name "Lehr-Lernmethoden ' + this.code + '" ; schema:itemListElement ';
+        let teachingformCourseDetail = "";
+        for (let i = 0; i < this.inputs1.length; i++) {
+          let sub = "module:TF" + (i+1) + "_" + this.code;
+          if (i == this.inputs1.length - 1) {
+            teachingformCourse += sub + ' . ';
+          } else {
+            teachingformCourse += sub + ', ';
+          }
+          teachingformCourseDetail += sub + ' a schema:ListItem ; schema:name  "' + this.inputs1[i].name + '" ; schema:position ' + (i+1) + ' .  ';
+        }
+        query += teachingformCourse
+        query += teachingformCourseDetail
 
         //workloads
-        let values = [];
+        let workloadsCourse = workloadsSub + + ' a schema:PropertyValue ; schema:identifier "Workload" ; schema:name "Aufteilung der Workload in Stunden ' + this.code + '" ; schema:valueReference ';
+        let workloadsCourseDetail = "";
         for (let i = 0; i < this.inputs2.length; i++) {
-          values.push('module:WL' + (i+1) + '_' + this.code);
+          let sub = "module:WL" + (i+1) + "_" + this.code;
+          if (i == this.inputs2.length - 1) {
+            workloadsCourse += sub + ' . ';
+          } else {
+            workloadsCourse += sub + ', ';
+          }
+          workloadsCourseDetail += sub + ' a schema:PropertyValue ; schema:name  "' + this.inputs2[i].name[0] + '" ; schema:value ' + this.inputs2[i].name[1] + ' .  ';
         }
-        let str = values.join(', ');
-        query += str + ' . ';
+        query += workloadsCourse
+        query += workloadsCourseDetail
 
-        for (let i = 0; i < values.length; i++) {
-          query += values[i] + ' a schema:PropertyValue ; schema:name  "' + this.inputs2[i].name[0] + '" ; schema:value ' + this.inputs2[i].name[1] + ' . '
-        }
         query += ' } '
       }
 
       this.updateQuery = query;
 
-      axios
+      /*axios
         .post("http://fbw-sgmwi.th-brandenburg.de:3030/modcat/update", query, {
           headers: { "Content-Type": "application/sparql-update" }
         })
@@ -588,7 +629,7 @@ export default {
         })
         .catch(e => {
           this.errors.push(e);
-        });
+        });*/
     },
     checkModule() {
       let query =
@@ -597,9 +638,9 @@ export default {
         " SELECT ?label " +
         " WHERE { <" +
         this.moduleUri +
-        "> rdfs:label ?label . } ";
+        '> schema:name ?label . FILTER(lang(?label) = "de") } ';
       axios
-        .post("http://fbw-sgmwi.th-brandenburg.de:3030/modcat/query", query, {
+        .post("http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query", query, {
           headers: { "Content-Type": "application/sparql-query" }
         })
         .then(response => {
@@ -652,9 +693,7 @@ export default {
       this.modMethod = [];
       this.delete = [];
       this.insert = [];
-      this.where =
-        " schema:interactivityType ?interType ;  " +
-        " module:addProp_CompWL ?addPropCompWL . ";
+      this.where = [];
       this.modMethod = _.cloneDeep(this.modMethodOrigin);
       if (this.newBoolean) {
         this.checkModule();

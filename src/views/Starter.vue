@@ -179,7 +179,7 @@ export default {
       selectedModule: "",
       studyProgram: "",
       code: null,
-      basicFilled: false,
+      basicFilled: true,
       role: null,
       newBoolean: false,
       modBasis: [],
