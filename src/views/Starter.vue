@@ -14,7 +14,7 @@
               <h1>Modulkatalog @THB</h1>
               <h3>Fachbereich Wirtschaft</h3>
               <div>
-                <Select @module="getModule" @newBoolean="getNewBoolean" @showPopUp="showPopUp = true" />
+                <Select @module="getModule" @studyProgram="getStudyProgram" @newBoolean="getNewBoolean" @showPopUp="showPopUp = true" />
               </div>
             </div>
           </div>
@@ -74,6 +74,7 @@
             <div class="svg md-layout-item">
               <SVGGraph
                 :module-uri="selectedModule"
+                :studyProgram="studyProgram"
                 :role="role"
                 :code="code"
                 :newBoolean="newBoolean"
@@ -177,7 +178,7 @@ export default {
     return {
       selectedModule: "",
       studyProgram: "",
-      code: "",
+      code: null,
       basicFilled: false,
       role: null,
       newBoolean: false,
@@ -215,6 +216,7 @@ export default {
     },
     getModBasicData(value) {
       this.modBasis = value;
+      this.code = value[0].code.value;
     },
     getModOutcomes(value) {
       this.modOutcome = value;

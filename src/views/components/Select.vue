@@ -4,10 +4,13 @@
       <md-field>
         <label>Studiengang</label>
         <md-select v-model="studyProgram" name="studyProgram" id="studyProgram">
-          <md-option value="WIB">WI Bachelor</md-option>
-          <md-option value="WIM">WI Master</md-option>
-          <md-option value="BWLB">BWL Bachelor</md-option>
-          <md-option value="BWLM">BWL Master</md-option>
+          <md-option value="BWIK">Wirtschaftsinformatik Bachelor</md-option>
+          <md-option value="MWIV">Wirtschaftsinformatik Master</md-option>
+          <md-option value="BBWV">Betriebswirtschaftslehre Bachelor</md-option>
+          <md-option value="MBWV">Betriebswirtschaftslehre Master</md-option>
+          <md-option value="BIFK">Informatik Bachelor</md-option>
+          <md-option value="BACS">Angewandte Informatik Bachelor</md-option>
+          <md-option value="BMZK">Medizininformatik Bachelor</md-option>
         </md-select>
       </md-field>
     </div>
@@ -76,6 +79,7 @@ export default {
       let i = this.labels.indexOf(v);
       let value = this.modules[i];
       this.$emit("module", value);
+      this.$emit("studyProgram", this.studyProgram);
       this.$emit("newBoolean", false);
     },
     studyProgram(v) {
@@ -98,11 +102,12 @@ export default {
         "          schema:isPartOf module:" +
         sp +
         " ; " +
-        "          rdfs:label ?label. " +
-        "}";
+        "          schema:name ?label. " +
+        '          FILTER(lang(?label) = "de")' +
+        "} ORDER BY ?label";
 
       axios
-        .post("http://fbw-sgmwi.th-brandenburg.de:3030/modcat/query", query, {
+        .post("http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query", query, {
           headers: { "Content-Type": "application/sparql-query" }
         })
         .then(response => {
