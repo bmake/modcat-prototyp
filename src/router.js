@@ -7,6 +7,9 @@ import Profile from "./views/Profile.vue";
 import MainNavbar from "./layout/MainNavbar.vue";
 import MainFooter from "./layout/MainFooter.vue";
 import Starter from "./views/Starter";
+import Navigation from "./views/Navigation";
+import Browsing from "./views/Browsing";
+
 
 Vue.use(Router);
 
@@ -15,7 +18,25 @@ export default new Router({
     {
       path: "/",
       name: "index",
-      components: { default: Starter, header: '', footer: MainFooter },
+      components: { default: Navigation, header: '', footer: MainFooter },
+      props: {
+        header: { colorOnScroll: 400 },
+        footer: { backgroundColor: "black" }
+      }
+    },
+    {
+      path: "/starter",
+      name: "starter",
+      components: { default: Starter, header:  '', footer: MainFooter },
+      props: {
+        header: { colorOnScroll: 400 },
+        footer: { backgroundColor: "black" }
+      }
+    },
+    {
+      path: "/browsing",
+      name: "browsing",
+      components: { default: Browsing, header:  '', footer: MainFooter },
       props: {
         header: { colorOnScroll: 400 },
         footer: { backgroundColor: "black" }
