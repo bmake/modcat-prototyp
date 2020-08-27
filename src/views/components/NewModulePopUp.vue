@@ -25,10 +25,13 @@
                     name="studyProgram"
                     id="studyProgram"
                   >
-                    <md-option value="WIB">WI Bachelor</md-option>
-                    <md-option value="WIM">WI Master</md-option>
-                    <md-option value="BWLB">BWL Bachelor</md-option>
-                    <md-option value="BWLM">BWL Master</md-option>
+                    <md-option value="BWIK">Wirtschaftsinformatik Bachelor</md-option>
+                    <md-option value="MWIV">Wirtschaftsinformatik Master</md-option>
+                    <md-option value="BBWV">Betriebswirtschaftslehre Bachelor</md-option>
+                    <md-option value="MBWV">Betriebswirtschaftslehre Master</md-option>
+                    <md-option value="BIFK">Informatik Bachelor</md-option>
+                    <md-option value="BACS">Angewandte Informatik Bachelor</md-option>
+                    <md-option value="BMZK">Medizininformatik Bachelor</md-option>
                   </md-select>
                   <span class="md-error" v-if="!$v.studyProgram.required"
                     >Sie müssen einen Studiengang auswählen</span
@@ -159,7 +162,7 @@ export default {
           let boo = true;
           await axios
             .post(
-              "http://fbw-sgmwi.th-brandenburg.de:3030/modcat/query",
+              "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
               query,
               {
                 headers: { "Content-Type": "application/sparql-query" }
@@ -218,6 +221,7 @@ export default {
           label: { type: "literal", value: "" },
           accPerson: { type: "uri", value: "" },
           semester: { type: "uri", value: "" },
+          studysem: { type: "literal", value: "" },
           modType_name: { type: "literal", value: "" },
           grade_name: { type: "literal", value: "" },
           learnTypes: { type: "literal", value: [] },

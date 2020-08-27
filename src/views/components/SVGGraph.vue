@@ -10,10 +10,11 @@
 
 <script>
 import axios from "axios";
+import {selectQueries} from "../queries";
 
 export default {
   name: "SvgGraph",
-  props: ["moduleUri", "role", "newBoolean", "code"],
+  props: ["moduleUri", "role", "newBoolean", "code", "studyProgram"],
   data() {
     return {
       svgfile: require("../../assets/modcat.svg"),
@@ -27,9 +28,7 @@ export default {
       form: "BasicData"
     };
   },
-  created() {
-
-  },
+  created() {},
   mounted() {
     d3.xml(this.svgfile).then(xml => {
       var importedNode = document.importNode(xml.documentElement, true);
@@ -108,7 +107,8 @@ export default {
             let q = "";
 
             if (
-              id == "nodeModulKuerzel" ||  id == "nodeStudiengang" ||
+              id == "nodeModulKuerzel" ||
+              id == "nodeStudiengang" ||
               id == "nodeOrdnung" ||
               id == "nodePerson" ||
               id == "nodeModulkuerzel"
@@ -177,41 +177,8 @@ export default {
                 .selectAll("path.groupC")
                 .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
               if (_this.modMethods.length == 0 && !_this.newBoolean) {
-                q =
-                  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
-                  "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
-                  "PREFIX schema: <https://schema.org/> " +
-                  "SELECT DISTINCT ?code ?label ?interTypes ?workloadSum ?workloadDetails " +
-                  "WHERE { " +
-                  "  <" +
-                  _this.moduleUri +
-                  "> schema:courseCode ?code ; " +
-                  "         rdfs:label ?label .  " +
-                  "  OPTIONAL { " +
-                  ' SELECT (GROUP_CONCAT(?interType; separator=" | ") as ?interTypes) ' +
-                  "    WHERE { " +
-                  "      <" +
-                  _this.moduleUri +
-                  "> schema:interactivityType ?interType . " +
-                  "    } " +
-                  "} " +
-                  "  OPTIONAL { " +
-                  'SELECT (SUM(?workloadValue) as ?workloadSum) (GROUP_CONCAT(?workloadDetail; separator=" | ") as ?workloadDetails) ' +
-                  "WHERE { " +
-                  "  SELECT DISTINCT * " +
-                  "  WHERE { " +
-                  "      <" +
-                  _this.moduleUri +
-                  "> module:addProp_CompWL ?addPropCompWL . " +
-                  "      ?addPropCompWL schema:valueReference ?workload . " +
-                  "      ?workload schema:name ?workloadName ; " +
-                  "                schema:value ?workloadValue . " +
-                  '      BIND(CONCAT(?workloadName, " @ ", STR(?workloadValue)) as ?workloadDetail) ' +
-                  "    } ORDER BY ?workload " +
-                  "}" +
-                  "  } " +
-                  "}";
-                _this.queryModuleInfo(q);
+                let queryMethod = selectQueries.selectQueries("SVGqueryMethod", _this.moduleUri, _this.studyProgram)
+                _this.queryModuleInfo(queryMethod);
               }
             } else if (id == "nodeDidaktik") {
               _this.form = "Outcomes";
@@ -227,60 +194,9 @@ export default {
                 .selectAll("path.groupB")
                 .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
               if (_this.modOutcomes.length == 0 && !_this.newBoolean) {
-                q =
-                  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
-                  "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
-                  "PREFIX schema: <https://schema.org/> " +
-                  "SELECT DISTINCT ?code ?label ?learnBlooms ?contents ?exams " +
-                  "WHERE { " +
-                  "  <" +
-                  _this.moduleUri +
-                  "> schema:courseCode ?code ; " +
-                  "         rdfs:label ?label .  " +
-                  "  OPTIONAL { " +
-                  '   SELECT (GROUP_CONCAT(?learnBloom; separator=" | ") as ?learnBlooms)  ' +
-                  "   WHERE {  " +
-                  '   SELECT (CONCAT(?learnResult, " @ ", COALESCE(?bloom_name, "")) as ?learnBloom)  ' +
-                  "      WHERE {  " +
-                  "        <" +
-                  _this.moduleUri +
-                  "> module:about_LResults ?LResult.  " +
-                  "        ?LResult schema:itemListElement ?resList .  " +
-                  "        ?resList schema:description ?learnResult ;  " +
-                  "                 schema:position ?position .  " +
-                  "        OPTIONAL {  " +
-                  "          ?resList schema:additionalType ?addList .  " +
-                  '          FILTER regex(str(?addList), "BloomTax", "i")  ' +
-                  "          ?addList schema:name ?bloom_name .  " +
-                  '          FILTER (LANG(?bloom_name) = "en") .  ' +
-                  "        }  " +
-                  "      } ORDER BY ?position  " +
-                  "    }" +
-                  "    } " +
-                  "  OPTIONAL { " +
-                  '    SELECT (GROUP_CONCAT(?exam; separator=" | ") as ?exams) ' +
-                  "    WHERE { " +
-                  "      <" +
-                  _this.moduleUri +
-                  "> module:about_Exam ?examCode. " +
-                  "      ?examCode schema:itemListElement ?exam . " +
-                  "    } " +
-                  "  } " +
-                  "  OPTIONAL { " +
-                  '    SELECT (GROUP_CONCAT(?content; separator=" | ") as ?contents) ' +
-                  "    WHERE { " +
-                  "      SELECT ?content " +
-                  "      WHERE { " +
-                  "        <" +
-                  _this.moduleUri +
-                  "> module:about_Content ?contentCode. " +
-                  "        ?contentCode schema:itemListElement ?content . " +
-                  "      } ORDER BY ?content " +
-                  "    } " +
-                  "  } " +
-                  "   " +
-                  "} ";
-                _this.queryModuleInfo(q);
+                let queryOutcome = selectQueries.selectQueries("SVGqueryOutcome", _this.moduleUri, _this.studyProgram)
+                console.log(queryOutcome)
+                _this.queryModuleInfo(queryOutcome);
               }
             } else if (id == "nodeLiteratur") {
               //_this.form = "Literature";
@@ -322,9 +238,13 @@ export default {
     },
     queryModuleInfo(q) {
       axios
-        .post("http://fbw-sgmwi.th-brandenburg.de:3030/modcat/query", q, {
-          headers: { "Content-Type": "application/sparql-query" }
-        })
+        .post(
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
+          q,
+          {
+            headers: { "Content-Type": "application/sparql-query" }
+          }
+        )
         .then(response => {
           // JSON responses are automatically parsed.
           this.moduleInfo = response.data.results.bindings;
@@ -402,59 +322,12 @@ export default {
           .selectAll("g")
           .classed("selected", false);
         this.form = "BasicData";
-        let queryBase =
-          "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  " +
-          "PREFIX module: <https://bmake.th-brandenburg.de/module/>  " +
-          "PREFIX schema: <https://schema.org/>  " +
-          "SELECT DISTINCT ?code ?label ?accPerson ?semester ?modType_name ?grade_name ?learnTypes ?eduUse ?swsSum ?ects ?duration ?courseMode ?pre ?url ?comment ?languages" +
-          " WHERE {  " +
-          "<" +
-          uri +
-          ">  schema:courseCode ?code ;  " +
-          "         rdfs:label ?label;  " +
-          //"         module:eduAlignm_Curr ?curr ;   " +
-          "         module:eduAlignm_Grade ?grade ;  " +
-          "         module:eduAlignm_ModuleType ?modType ;   " +
-          "         schema:educationalCredentialAwarded ?ects ;  " +
-          "         schema:hasCourseInstance ?semester ;  " +
-          "         schema:educationalUse ?eduUse ;  " +
-          "         module:eduAlignm_SWS ?sws ; " +
-          "         schema:accountablePerson ?accPerson ;  " +
-          "         schema:url ?url ;  " +
-          "         schema:comment ?comment .  " +
-          "            ?semester schema:duration ?durationSem;  " +
-          "                      schema:courseMode ?courseMode ;  " +
-          "                      schema:instructor ?instrctor.  " +
-          '            BIND(REPLACE(?durationSem, "P0.5Y", "1 Semester", "i") AS ?durationSem1) ' +
-          '            BIND(REPLACE(?durationSem1, "P1Y", "2 Semester", "i") AS ?duration)' +
-          "            ?instrctor rdfs:label ?instructorLabel .  " +
-         // "            ?curr schema:targetName ?curr_name ;  " +
-          //"                  schema:targetDescription ?curr_des .  " +
-          "            ?grade schema:targetName ?grade_name ;  " +
-          "                   schema:targetDescription ?grade_des .  " +
-          "            ?modType schema:targetName ?modType_name ." +
-          "            ?sws schema:targetName ?swsSum . " +
-          "   OPTIONAL { <" +
-          uri +
-          ">  schema:coursePrerequisites ?pre. }  " +
-          "            OPTIONAL {  " +
-          '           SELECT (GROUP_CONCAT(?learnType; separator=" | ") as ?learnTypes)  ' +
-          "              WHERE {  " +
-          "                <" +
-          uri +
-          "> schema:learningResourceType ?learnType.  " +
-          "              }  " +
-          "            }  " +
-          "OPTIONAL { " +
-          '    SELECT (GROUP_CONCAT(?lan; separator=" | ") as ?languages) ' +
-          "    WHERE { " +
-          "    <" +
-          uri +
-          "> schema:inLanguage ?lan . " +
-          "  } " +
-          "  }" +
-          " }";
-        this.queryModuleInfo(queryBase);
+
+        if (uri != null) {
+          let queryBase = selectQueries.selectQueries("SVGqueryBase", uri, this.studyProgram)
+          //console.log(queryBase)
+          this.queryModuleInfo(queryBase);
+        }
         this.modOutcomes = [];
         this.modMethods = [];
         this.modLiterature = [];
