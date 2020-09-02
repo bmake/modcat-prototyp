@@ -162,7 +162,7 @@
       </div>
 
       <!--SPO abhängige Eigenschaften-->
-      <div class="md-layout-item md-size-15">
+      <div class="md-layout-item md-size-10">
         <md-field :class="getValidationClass('swsSum')">
           <label>SWS*</label>
           <md-input
@@ -217,7 +217,7 @@
           >
         </md-field>
       </div>
-      <div class="md-layout-item md-size-40">
+      <div class="md-layout-item md-size-50">
         <div
           style="text-align:left;"
           v-if="modBasisOrigin.length > 0"
@@ -294,7 +294,7 @@
       </div>
       <div class="md-layout-item md-size-100">
         <md-field>
-          <label>Voraussetzungen</label>
+          <label>SPO-relevante Vorraussetzungen</label>
           <md-textarea
             v-if="modBasisOrigin[0].pre"
             v-model="modBasis.pre.value"
@@ -411,34 +411,6 @@ export default {
         courseMode: null,
         languages: []
       },
-      /*spo: {
-        WIB: [
-          "Studien- und Prüfungsordnung für den Bachelor-Studiengang Wirtschaftsinformatik [Business & Information Systems Engineering B.Sc.] (SPO-BSc-WI-THB-2017) im Fachbereich Wirtschaft vom 15.02.2017, Anlage 1",
-          "https://www.th-brandenburg.de/fileadmin/user_upload/hochschule/Dateien/Amtliche-Mitteilungen/2017/2017-11-SPO-BSc-WI.pdf",
-          "Gewichtungsanteile der Note im Hinblick auf die spezifische Fachnote (1/3), den Mittelwert aller Fachnoten (3,33 %) sowie die Abschlussnote (2,67 %)"
-        ],
-        WIM: [
-          "Studien- und Prüfungsordnung für den Master-Studiengang Wirtschaftsinformatik [Business & Information Systems Engineering M.Sc] (SPO-MSc-WI-THB-2017) im Fachbereich Wirtschaft vom 21.12.2016, Anlage 1",
-          "https://www.th-brandenburg.de/fileadmin/user_upload/hochschule/Dateien/Amtliche-Mitteilungen/2017/2017-12-SPO-MSc-WI.pdf",
-          "Gewichtungsanteile der Note im Hinblick auf die spezifische Fachnote (1/3), den Mittelwert aller Fachnoten (6,67 %) sowie die Abschlussnote (4,67 %)"
-        ],
-        BWLB: [
-          "Studien- und Prüfungsordnung für den Bachelor-Studiengang „Betriebswirtschaftslehre (B.Sc.)“„Gründen – Führen – Steuern“ (SPO-BSc-BWL-2016) im Fachbereich Wirtschaft vom 20.01.2016, § 13",
-          "https://wirtschaft.th-brandenburg.de/fileadmin/user_upload/fb-wirtschaft/Studiengaenge/BWL/Dokumente/2016-14-SPO-BSc-BWL-2016_1_.pdf",
-          "Gewichtungsanteile der Note im Hinblick auf den Mittelwert aller Fachnoten (4 %) sowie die Abschlussnote (3,2 %)"
-        ],
-        BWLM: [
-          "Studien- und Prüfungsordnung für den Master-Studiengang „Betriebswirtschaftslehre (M.Sc.)“ [Business Administration M.Sc.] „Innovativ – Integrativ – International“ (SPO MSc-BWL-THB-2017) im Fachbereich Wirtschaft vom 18.01.2017, Anlage 1",
-          "https://www.th-brandenburg.de/fileadmin/user_upload/hochschule/Dateien/Amtliche-Mitteilungen/2017/2017-06-SPO-MSc-BWL.pdf",
-          "Gewichtungsanteile der Note im Hinblick auf die Gesamtfachnote (6,25 %) sowie auf die Abschlussnote (5 %)"
-        ]
-      },*/
-      /*curriculum: {
-        WIB: ["WI Ba", "Wirtschaftsinformatik Bachelor"],
-        WIM: ["WI Ma", "Wirtschaftsinformatik Master"],
-        BWLB: ["BWL BA", "Betriebswirtschaftslehre Bachelor"],
-        BWLM: ["BWL MA", "Betriebswirtschaftslehre Master"]
-      },*/
       changedArray: [],
       updateQuery: "",
       notification: false,
@@ -567,7 +539,6 @@ export default {
         this.checkboxChanged = true;
       }
       if (!this.$v.$invalid) {
-        console.log("here validation input");
         this.updateData();
       }
     },
@@ -635,7 +606,6 @@ export default {
     },
     updateData() {
       let query = this.prefixes;
-      console.log("newBoolean", this.newBoolean);
       if (!this.newBoolean) {
         /*if (this.changedArray.includes("duration")) {
           let i = this.changedArray.indexOf("duration");
@@ -905,11 +875,10 @@ export default {
 
         query += " }";
       }
-      console.log(query);
       this.updateQuery = query;
 
       /* axios
-        .post("http://fbw-sgmwi.th-brandenburg.de:3030/modcat/update", query, {
+        .post("http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/update", query, {
           headers: { "Content-Type": "application/sparql-update" }
         })
         .then(response => {
@@ -1143,8 +1112,6 @@ export default {
   },
   watch: {
     modBasisOrigin(v) {
-      console.log("modBasisOrigin", v);
-      console.log("code", this.code);
       this.initialState();
       this.$v.$reset();
       this.countLecturer = 0;

@@ -96,24 +96,25 @@ export const selectQueries = {
         "         schema:name ?label .  " +
         'FILTER(lang(?label) = "de")' +
         "  OPTIONAL { " +
-        '   SELECT (GROUP_CONCAT(?learnBloom; separator=" | ") as ?learnBlooms)  ' +
+        '   SELECT (GROUP_CONCAT(?comNames; separator=" | ") as ?learnBlooms)  ' +
         "   WHERE {  " +
-        '   SELECT (CONCAT(?learnResult, " @ ", COALESCE(?bloom_name, "")) as ?learnBloom)  ' +
+        '   SELECT (CONCAT(?learnResult, " @ ", COALESCE(?comName1, "")) as ?comNames)  ' +
         "      WHERE {  " +
-        " module:LResults_" +
+        'SELECT ?learnResult (GROUP_CONCAT(?addList; separator=" @ ") as ?comName1) ' +
+        "    WHERE { " +
+        "      SELECT ?learnResult ?addList " +
+        "      WHERE { " +
+        "      module:LResults_" +
         code +
-        "         schema:itemListElement ?resList .  " +
-        "        ?resList schema:description ?learnResult ;  " +
-        "                 schema:position ?position .  " +
-        "        OPTIONAL {  " +
-        "          ?resList schema:additionalType ?addList .  " +
-        '          FILTER regex(str(?addList), "BloomTax", "i")  ' +
-        "          ?addList schema:name ?bloom_name .  " +
-        '          FILTER (LANG(?bloom_name) = "en") .  ' +
-        "        }  " +
-        "      } ORDER BY ?position  " +
-        "    }" +
-        "    } " +
+        "                 schema:itemListElement ?resList .  " +
+        "                 ?resList schema:description ?learnResult ; " +
+        "                         schema:position ?position .  " +
+        "                  ?resList schema:additionalType ?addList . " +
+        "      } GROUP BY ?learnResult ?addList ORDER BY ?position DESC(?addList)" +
+        "    } GROUP BY ?learnResult" +
+        "   } " +
+        "  } " +
+        " } " +
         "  OPTIONAL { " +
         '    SELECT (GROUP_CONCAT(?examName; separator=" | ") as ?exams) ' +
         "    WHERE { " +
@@ -176,6 +177,149 @@ export const selectQueries = {
         "  } " +
         "}";
       return SVGqueryMethod;
+    }
+
+    if (param == "PDF") {
+      let generatePDF =
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  " +
+        "PREFIX module: <https://bmake.th-brandenburg.de/module/>  " +
+        "PREFIX schema: <https://schema.org/>  " +
+        "SELECT DISTINCT ?code ?label ?learnTypes ?duration ?modType_name ?programName ?eduUse ?courseMode ?accPersonLabel ?instructorLabel ?languages ?pre ?basedOns ?ects ?workloadSum ?workloadDetails ?swsSum ?swsDetails ?exams ?grade_name ?learnResults ?contents ?interTypes ?citations ?comment ?url  " +
+        " WHERE {  " +
+        "<" +
+        moduleUri +
+        ">  schema:courseCode ?code ;  " +
+        "         schema:name ?label ;  " +
+        " schema:timeRequired ?duration ; " +
+        "         schema:numberOfCredits ?ects ;  " +
+        "         schema:hasCourseInstance ?semester ;  " +
+        "         schema:accountablePerson ?accPerson ;  " +
+        "         schema:coursePrerequisites ?pre . " +
+        "            ?accPerson rdfs:label ?accPersonLabel . " +
+        ' FILTER(lang(?label) = "de" && lang(?pre) = "de") ' +
+        "            ?semester schema:courseMode ?courseMode ;  " +
+        "                      schema:instructor ?instructor.  " +
+        "            ?instructor rdfs:label ?instructorLabel .  " +
+        "   module:" +
+        studyProgram +
+        " schema:name ?programName . " +
+        '   FILTER(lang(?programName) = "de") ' +
+        "  module:ModuleType_" +
+        studyProgram +
+        "_" +
+        code +
+        "  schema:value ?modType_name .  " +
+        "  module:SWS_" +
+        studyProgram +
+        "_" +
+        code +
+        "  schema:value ?swsSum .  " +
+        "   OPTIONAL { <" +
+        moduleUri +
+        ">  schema:educationalUse ?eduUse . " +
+        '  FILTER(lang(?eduUse) = "de")  ' +
+        "   }  " +
+        "OPTIONAL { <" +
+        moduleUri +
+        ">  schema:url ?url . " +
+        "   } " +
+        "  OPTIONAL { <" +
+        moduleUri +
+        ">  schema:comment ?comment . " +
+        "   } " +
+        "  OPTIONAL { " +
+        "    module:GradingRatio_" +
+        studyProgram +
+        "_" +
+        code +
+        " schema:value ?grade_name . " +
+        "  }" +
+        "            OPTIONAL {  " +
+        '              SELECT (GROUP_CONCAT(?language; separator=", ") as ?languages)  ' +
+        "              WHERE {  " +
+        "              module:Language_" +
+        studyProgram +
+        "_" +
+        code +
+        "   schema:value ?lan .  " +
+        '          BIND(REPLACE(?lan, "de", "Deutsch", "i") AS ?lan1)  ' +
+        '          BIND(REPLACE(?lan1, "en", "Englisch", "i") AS ?language)  ' +
+        "              }  " +
+        "            }  " +
+        "            OPTIONAL {  " +
+        '           SELECT (GROUP_CONCAT(?learnType; separator=", ") as ?learnTypes)  ' +
+        "              WHERE {  " +
+        "                <" +
+        moduleUri +
+        "> schema:interactivityType ?learnType.  " +
+        ' FILTER(lang(?learnType) = "de") ' +
+        "              }  " +
+        "            }  " +
+        "            OPTIONAL {  " +
+        '       SELECT (SUM(?workloadValue) as ?workloadSum) (GROUP_CONCAT(?workloadDetail; separator="\\n") as ?workloadDetails)  ' +
+        "                WHERE {  module:CompWL_" +
+        code +
+        " schema:valueReference ?workload .  " +
+        "                  ?workload schema:name ?workloadName ;  " +
+        "                            schema:value ?workloadValue .  " +
+        '                  BIND(CONCAT(?workloadName, ": ", STR(?workloadValue), " Stunden") as ?workloadDetail)  ' +
+        "                }  " +
+        "            }  " +
+        "            OPTIONAL {  " +
+        '       SELECT (GROUP_CONCAT(?exam; separator="\\n") as ?exams)  ' +
+        "                WHERE {  " +
+        "                module:Exam_" +
+        code +
+        "  schema:itemListElement ?examCode.  " +
+        "                  ?examCode schema:name ?exam .  " +
+        "                }  " +
+        "            }  " +
+        "            OPTIONAL {  " +
+        '       SELECT (GROUP_CONCAT(?learnResult; separator="\\n") as ?learnResults)  ' +
+        "                WHERE {  " +
+        "                module:LResults_" +
+        code +
+        " schema:itemListElement ?resList .  " +
+        "                  ?resList schema:description ?learnResult  " +
+        "                }  " +
+        "            }  " +
+        "    OPTIONAL {  " +
+        '       SELECT (GROUP_CONCAT(?content; separator="\\n") as ?contents)  ' +
+        "                WHERE {  " +
+        "                  SELECT ?content  " +
+        "                  WHERE {  " +
+        "                module:Content_" +
+        code +
+        "   schema:itemListElement ?contentCode .  " +
+        " ?contentCode schema:name ?content . " +
+        "                  } ORDER BY ?contentCode  " +
+        "                }  " +
+        "            }  " +
+        "            OPTIONAL {  " +
+        '       SELECT (GROUP_CONCAT(?interType; separator="\\n") as ?interTypes)  ' +
+        "                WHERE {  " +
+        "                module:TeachingForms_" +
+        code +
+        "  schema:itemListElement ?interTypeCode .  " +
+        "  ?interTypeCode schema:name ?interType " +
+        "                }  " +
+        "            }  " +
+        "            OPTIONAL {  " +
+        '       SELECT (GROUP_CONCAT(?citation; separator="\\n") as ?citations)  ' +
+        "                WHERE {  " +
+        '                  SELECT (CONCAT((GROUP_CONCAT(?authorLabel; separator=", ")), "\\n", ?headline) as ?citation)  ' +
+        "                  WHERE {  " +
+        "                    <" +
+        moduleUri +
+        "> schema:citation ?citationCode .  " +
+        "                    ?citationCode schema:author ?author ;  " +
+        "                                  schema:headline ?headline .  " +
+        "                    ?author rdfs:label ?authorLabel .  " +
+        "                  } GROUP BY ?headline  " +
+        "                }  " +
+        "            }  " +
+        " }";
+      return generatePDF;
     }
   }
 };

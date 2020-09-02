@@ -319,9 +319,9 @@ export default {
       insert: [],
       where: [],
       countWorkload: 0,
-      whereStr:
+      /*whereStr:
         " schema:interactivityType ?interType ;  " +
-        " module:addProp_CompWL ?addPropCompWL . ",
+        " module:addProp_CompWL ?addPropCompWL . ",*/
       inputs1: [
         {
           name: []
@@ -614,7 +614,7 @@ export default {
       this.updateQuery = query;
 
       /*axios
-        .post("http://fbw-sgmwi.th-brandenburg.de:3030/modcat/update", query, {
+        .post("http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/update", query, {
           headers: { "Content-Type": "application/sparql-update" }
         })
         .then(response => {
@@ -667,9 +667,7 @@ export default {
       };
       this.delete = [];
       this.insert = [];
-      this.where =
-        " schema:interactivityType ?interType ;  " +
-        " module:addProp_CompWL ?addPropCompWL . ";
+      this.where = [];
     },
     resetData() {
       this.initialState();

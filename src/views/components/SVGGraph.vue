@@ -195,7 +195,6 @@ export default {
                 .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
               if (_this.modOutcomes.length == 0 && !_this.newBoolean) {
                 let queryOutcome = selectQueries.selectQueries("SVGqueryOutcome", _this.moduleUri, _this.studyProgram)
-                console.log(queryOutcome)
                 _this.queryModuleInfo(queryOutcome);
               }
             } else if (id == "nodeLiteratur") {
@@ -325,7 +324,6 @@ export default {
 
         if (uri != null) {
           let queryBase = selectQueries.selectQueries("SVGqueryBase", uri, this.studyProgram)
-          //console.log(queryBase)
           this.queryModuleInfo(queryBase);
         }
         this.modOutcomes = [];

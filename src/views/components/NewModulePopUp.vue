@@ -25,13 +25,25 @@
                     name="studyProgram"
                     id="studyProgram"
                   >
-                    <md-option value="BWIK">Wirtschaftsinformatik Bachelor</md-option>
-                    <md-option value="MWIV">Wirtschaftsinformatik Master</md-option>
-                    <md-option value="BBWV">Betriebswirtschaftslehre Bachelor</md-option>
-                    <md-option value="MBWV">Betriebswirtschaftslehre Master</md-option>
-                    <md-option value="BIFK">Informatik Bachelor</md-option>
-                    <md-option value="BACS">Angewandte Informatik Bachelor</md-option>
-                    <md-option value="BMZK">Medizininformatik Bachelor</md-option>
+                    <md-option value="BWIK"
+                      >Wirtschaftsinformatik (B.Sc.)</md-option
+                    >
+                    <md-option value="MWIV"
+                      >Wirtschaftsinformatik (M.Sc.)</md-option
+                    >
+                    <md-option value="BBWV"
+                      >Betriebswirtschaftslehre (B.Sc.)</md-option
+                    >
+                    <md-option value="MBWV"
+                      >Betriebswirtschaftslehre (M.Sc.)</md-option
+                    >
+                    <md-option value="BIFK">Informatik (B.Sc.)</md-option>
+                    <md-option value="BACS"
+                      >Applied Computer Science (B.Sc.)</md-option
+                    >
+                    <md-option value="BMZK"
+                      >Medizininformatik (B.Sc.)</md-option
+                    >
                   </md-select>
                   <span class="md-error" v-if="!$v.studyProgram.required"
                     >Sie müssen einen Studiengang auswählen</span

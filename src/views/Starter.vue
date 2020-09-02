@@ -158,6 +158,7 @@ import FormLiterature from "./components/FormLiterature";
 import FormTeachers from "./components/FormTeachers";
 import FormDynamic from "./components/FormDynamic";
 import NewModulePopUp from "./components/NewModulePopUp";
+import {selectQueries} from "./queries";
 
 export default {
   components: {
@@ -234,150 +235,9 @@ export default {
       this.form = value;
     },
     generatePDF() {
-      let query =
-        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  " +
-        "PREFIX module: <https://bmake.th-brandenburg.de/module/>  " +
-        "PREFIX schema: <https://schema.org/>  " +
-        "SELECT DISTINCT ?code ?label ?learnTypes ?duration ?curr_des ?modType_name ?eduUse ?courseMode ?accPersonLabel ?instructorLabel ?languages ?pre ?basedOns ?ects ?workloadSum ?workloadDetails ?swsSum ?swsDetails ?exams ?grade_name ?learnResults ?contents ?interTypes ?citations ?comment ?url  " +
-        " WHERE {  " +
-        "<" +
-        this.selectedModule +
-        ">  schema:courseCode ?code ;  " +
-        "         rdfs:label ?label;  " +
-        "         module:eduAlignm_Curr ?curr ;   " +
-        "         module:eduAlignm_Grade ?grade ;  " +
-        "         module:eduAlignm_ModuleType ?modType ;   " +
-        "         schema:educationalCredentialAwarded ?ects ;  " +
-        "         schema:hasCourseInstance ?semester ;  " +
-        "         schema:educationalUse ?eduUse ;  " +
-        "         schema:accountablePerson ?accPerson ;  " +
-        "         schema:url ?url ;  " +
-        "         schema:comment ?comment .  " +
-        "            ?accPerson rdfs:label ?accPersonLabel . " +
-        "            ?semester schema:duration ?durationSem;  " +
-        "                      schema:courseMode ?courseMode ;  " +
-        "                      schema:instructor ?instrctor.  " +
-        '            BIND(REPLACE(?durationSem, "P0.5Y", "1 Semester", "i") AS ?durationSem1) ' +
-        '            BIND(REPLACE(?durationSem1, "P1Y", "2 Semester", "i") AS ?duration)' +
-        "            ?instrctor rdfs:label ?instructorLabel .  " +
-        "            ?curr schema:targetName ?curr_name ;  " +
-        "                  schema:targetDescription ?curr_des .  " +
-        "            ?grade schema:targetName ?grade_name ;  " +
-        "                   schema:targetDescription ?grade_des .  " +
-        "            ?modType schema:targetName ?modType_name .      " +
-        "    " +
-        "   OPTIONAL { <" +
-        this.selectedModule +
-        ">  schema:coursePrerequisites ?pre}  " +
-        "   OPTIONAL {  " +
-        '    SELECT (GROUP_CONCAT(?basedOnModule; separator=", ") as ?basedOns)  ' +
-        "       WHERE {  " +
-        "        <" +
-        this.selectedModule +
-        "> schema:isBasedOn ?basedOn .  " +
-        "          ?basedOn rdfs:label ?basedOnModule .  " +
-        "    }  " +
-        "   }  " +
-        "            OPTIONAL {  " +
-        '              SELECT (GROUP_CONCAT(?language; separator=", ") as ?languages)  ' +
-        "              WHERE {  " +
-        "                  <" +
-        this.selectedModule +
-        "> schema:inLanguage ?lan .  " +
-        '          BIND(REPLACE(?lan, "de", "Deutsch", "i") AS ?lan1)  ' +
-        '          BIND(REPLACE(?lan1, "en", "Englisch", "i") AS ?language)  ' +
-        "              }  " +
-        "            }  " +
-        "            OPTIONAL {  " +
-        '           SELECT (GROUP_CONCAT(?learnType; separator=", ") as ?learnTypes)  ' +
-        "              WHERE {  " +
-        "                <" +
-        this.selectedModule +
-        "> schema:learningResourceType ?learnType.  " +
-        "              }  " +
-        "            }  " +
-        "            OPTIONAL {  " +
-        '       SELECT (SUM(?workloadValue) as ?workloadSum) (GROUP_CONCAT(?workloadDetail; separator="\\n") as ?workloadDetails)  ' +
-        "                WHERE {  " +
-        "                  <" +
-        this.selectedModule +
-        "> module:addProp_CompWL ?addPropCompWL .  " +
-        "                  ?addPropCompWL schema:valueReference ?workload .  " +
-        "                  ?workload schema:name ?workloadName ;  " +
-        "                            schema:value ?workloadValue .  " +
-        '                  BIND(CONCAT(?workloadName, ": ", STR(?workloadValue), " Stunden") as ?workloadDetail)  ' +
-        "                }  " +
-        "            }  " +
-        "     OPTIONAL {  " +
-        '       SELECT ?swsSum  ' +
-        "                WHERE {  " +
-        "                  <" +
-        this.selectedModule +
-        "> module:eduAlignm_SWS ?sws .  " +
-        //"                                  module:addProp_TeachingForms ?teachingform .  " +
-        "                  ?sws schema:targetName ?swsSum .  " +
-        //"                  ?teachingform schema:valueReference ?value .  " +
-        //"                  ?value schema:name ?swsName ;  " +
-        //"                         schema:value ?swsValue .  " +
-        //'                  BIND(CONCAT(?swsName, ": ", STR(?swsValue)) as ?swsDetail)  ' +
-        "                }  " +
-        "     }  " +
-        "            OPTIONAL {  " +
-        '       SELECT (GROUP_CONCAT(?exam; separator="\\n") as ?exams)  ' +
-        "                WHERE {  " +
-        "                  <" +
-        this.selectedModule +
-        "> module:about_Exam ?examCode.  " +
-        "                  ?examCode schema:itemListElement ?exam .  " +
-        "                }  " +
-        "            }  " +
-        "            OPTIONAL {  " +
-        '       SELECT (GROUP_CONCAT(?learnResult; separator="\\n") as ?learnResults)  ' +
-        "                WHERE {  " +
-        "                  <" +
-        this.selectedModule +
-        "> module:about_LResults ?LResult.  " +
-        "                  ?LResult schema:itemListElement ?resList .  " +
-        "                  ?resList schema:description ?learnResult  " +
-        "                }  " +
-        "            }  " +
-        "    OPTIONAL {  " +
-        '       SELECT (GROUP_CONCAT(?content; separator="\\n") as ?contents)  ' +
-        "                WHERE {  " +
-        "                  SELECT ?content  " +
-        "                  WHERE {  " +
-        "                    <" +
-        this.selectedModule +
-        "> module:about_Content ?contentCode.  " +
-        "                    ?contentCode schema:itemListElement ?content .  " +
-        "                  } ORDER BY ?content  " +
-        "                }  " +
-        "            }  " +
-        "            OPTIONAL {  " +
-        '       SELECT (GROUP_CONCAT(?interType; separator="\\n") as ?interTypes)  ' +
-        "                WHERE {  " +
-        "                  <" +
-        this.selectedModule +
-        "> schema:interactivityType ?interType .  " +
-        "                }  " +
-        "            }  " +
-        "            OPTIONAL {  " +
-        '       SELECT (GROUP_CONCAT(?citation; separator="\\n") as ?citations)  ' +
-        "                WHERE {  " +
-        '                  SELECT (CONCAT((GROUP_CONCAT(?authorLabel; separator=", ")), "\\n", ?headline) as ?citation)  ' +
-        "                  WHERE {  " +
-        "                    <" +
-        this.selectedModule +
-        "> schema:citation ?citationCode .  " +
-        "                    ?citationCode schema:author ?author ;  " +
-        "                                  schema:headline ?headline .  " +
-        "                    ?author rdfs:label ?authorLabel .  " +
-        "                  } GROUP BY ?headline  " +
-        "                }  " +
-        "            }  " +
-        " }";
+      let query = selectQueries.selectQueries("PDF", this.selectedModule, this.studyProgram)
       axios
-        .post("http://fbw-sgmwi.th-brandenburg.de:3030/modcat/query", query, {
+        .post("http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query", query, {
           headers: { "Content-Type": "application/sparql-query" }
         })
         .then(response => {
@@ -394,9 +254,8 @@ export default {
           pdfBody.push(["Dauer des Moduls", res[0].duration.value]);
           pdfBody.push([
             "Zuordnung zum Curriculum",
-            res[0].curr_des.value + ", " + res[0].modType_name.value
+            res[0].programName.value + ", " + res[0].modType_name.value
           ]);
-          pdfBody.push(["Verwendbarkeit des Moduls", res[0].eduUse.value]);
           pdfBody.push([
             "Häufigkeit des Angebots von Modulen",
             res[0].courseMode.value
@@ -406,8 +265,7 @@ export default {
           pdfBody.push(["Lehrsprache", res[0].languages.value]);
           pdfBody.push([
             "Voraussetzungen",
-            res[0].pre
-              .value
+            res[0].pre.value
           ]);/*+ "basiert auf folgende Module: " + res[0].basedOns.value*/
           pdfBody.push(["ECTS-Credits", res[0].ects.value]);
           pdfBody.push([
@@ -420,16 +278,25 @@ export default {
           ]);
           pdfBody.push(["Lehrform/SWS", res[0].swsSum.value]);
           pdfBody.push(["Studien-/Prüfungsleistungen", res[0].exams.value]);
-          pdfBody.push([
-            "Gewichtung der Note in der Gesamtnote",
-            res[0].grade_name.value
-          ]);
           pdfBody.push(["Lernergebnisse", res[0].learnResults.value]);
           pdfBody.push(["Inhalte", res[0].contents.value]);
           pdfBody.push(["Lehr- und Lernmethoden", res[0].interTypes.value]);
           pdfBody.push(["Literatur", res[0].citations.value]);
-          pdfBody.push(["Besonderes", res[0].comment.value]);
-          pdfBody.push(["URL", res[0].url.value]);
+          if(res[0].grade_name) {
+            pdfBody.push([
+              "Gewichtung der Note in der Gesamtnote",
+              res[0].grade_name.value
+            ]);
+          }
+          if(res[0].eduUse) {
+            pdfBody.push(["Verwendbarkeit des Moduls", res[0].eduUse.value]);
+          }
+          if(res[0].comment) {
+            pdfBody.push(["Besonderes", res[0].comment.value]);
+          }
+          if(res[0].url) {
+            pdfBody.push(["URL", res[0].url.value]);
+          }
 
           const doc = new jsPDF();
 
