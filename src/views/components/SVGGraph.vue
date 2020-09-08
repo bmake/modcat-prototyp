@@ -324,6 +324,7 @@ export default {
 
         if (uri != null) {
           let queryBase = selectQueries.selectQueries("SVGqueryBase", uri, this.studyProgram)
+          console.log(queryBase)
           this.queryModuleInfo(queryBase);
         }
         this.modOutcomes = [];

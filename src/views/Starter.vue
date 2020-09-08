@@ -217,6 +217,7 @@ export default {
     },
     getModBasicData(value) {
       this.modBasis = value;
+      console.log(value)
       this.code = value[0].code.value;
     },
     getModOutcomes(value) {

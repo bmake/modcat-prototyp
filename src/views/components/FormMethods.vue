@@ -48,12 +48,13 @@
         <div
           class="md-layout md-gutter"
           style="border-color:#fcdd86; border-width: 3px; border-style: solid; border-radius: 10px; margin:3px;"
+          v-sortable="{ onEnd: reorder1, handle: '.handle' }"
         >
           <div
             class="md-layout-item md-size-100"
             v-if="!newBoolean"
             v-for="(input, i) in inputs1"
-            :key="i"
+            :key="input.id"
           >
             <md-field>
               <label>Lehr- und Lernmethode</label>
@@ -76,6 +77,10 @@
                   @click="add('1', i)"
                   v-show="i == inputs1.length - 1"
                 />
+                <i
+                  class="handle fas fa-arrows-alt"
+                  style="margin-left: 10px"
+                ></i>
               </span>
             </md-field>
           </div>
@@ -84,7 +89,7 @@
             style="margin-bottom: 10px"
             v-if="newBoolean"
             v-for="(input, i) in $v.inputs1.$each.$iter"
-            :key="i"
+            :key="input.id"
           >
             <md-field :class="getValidationClass('inputs1')">
               <label>Lehr- und Lernmethode*</label>
@@ -107,6 +112,10 @@
                   @click="add('1', i)"
                   v-show="i == inputs1.length - 1"
                 />
+                <i
+                  class="handle fas fa-arrows-alt"
+                  style="margin-left: 10px"
+                ></i>
               </span>
               <span class="md-error" v-if="!input.name.required"
                 >Pflichtfeld</span
@@ -117,8 +126,8 @@
 
         <div
           class="md-layout md-gutter md-alignment-center-right"
-          v-if="!newBoolean"
           style="border-color:#fcdd86; border-width: 3px; border-style: solid; border-radius: 10px; margin:3px;"
+          v-sortable="{ onEnd: reorder2, handle: '.handle' }"
         >
           <div class="md-layout-item md-size-30">
             <md-field>
@@ -135,8 +144,9 @@
           </div>
           <div
             class="md-layout-item md-layout md-gutter md-size-70"
+            v-if="!newBoolean"
             v-for="(input, i) in inputs2"
-            :key="i"
+            :key="input.id"
           >
             <div class="md-layout-item md-size-70">
               <md-field>
@@ -175,17 +185,15 @@
                     @click="add('2', i)"
                     v-show="i == inputs2.length - 1"
                   />
+                  <i
+                    class="handle fas fa-arrows-alt"
+                    style="margin-left: 10px"
+                  ></i>
                 </span>
               </md-field>
             </div>
           </div>
-        </div>
-        <div
-          class="md-layout md-gutter md-alignment-center-right"
-          v-if="newBoolean"
-          style="border-color:#fcdd86; border-width: 3px; border-style: solid; border-radius: 10px; margin:3px;"
-        >
-          <div class="md-layout-item md-size-30">
+          <!--<div class="md-layout-item md-size-30">
             <md-field>
               <label>Gesamtworkload</label>
               <md-input
@@ -197,12 +205,13 @@
               <md-input v-else disabled />
               <span v-if="modMethod.length > 0" class="md-suffix">Stunden</span>
             </md-field>
-          </div>
+          </div>-->
           <div
             class="md-layout-item md-layout md-gutter md-size-70"
             style="margin-bottom: 10px"
+            v-if="newBoolean"
             v-for="(input, i) in $v.inputs2.$each.$iter"
-            :key="i"
+            :key="input.id"
           >
             <div class="md-layout-item md-size-70">
               <md-field :class="getValidationClass('inputs2')">
@@ -245,6 +254,10 @@
                     @click="add('2', i)"
                     v-show="i == inputs2.length - 1"
                   />
+                  <i
+                    class="handle fas fa-arrows-alt"
+                    style="margin-left: 10px"
+                  ></i>
                 </span>
               </md-field>
             </div>
@@ -299,11 +312,26 @@ import jsPDF from "jspdf";
 import lodash from "lodash";
 import { validationMixin } from "vuelidate";
 import { alphaNum, required } from "vuelidate/lib/validators";
+import Sortable from "sortablejs";
 
 export default {
-  props: ["modMethodOrigin", "moduleUri", "role", "newBoolean", "code", "basicFilled"],
+  props: [
+    "modMethodOrigin",
+    "moduleUri",
+    "role",
+    "newBoolean",
+    "code",
+    "basicFilled"
+  ],
   name: "method",
   mixins: [validationMixin],
+  directives: {
+    sortable: {
+      inserted: function(el, binding) {
+        new Sortable(el, binding.value || {});
+      }
+    }
+  },
   data() {
     return {
       changedArray: [],
@@ -324,11 +352,13 @@ export default {
         " module:addProp_CompWL ?addPropCompWL . ",*/
       inputs1: [
         {
+          id: 0,
           name: []
         }
       ],
       inputs2: [
         {
+          id: 0,
           name: []
         }
       ]
@@ -368,10 +398,24 @@ export default {
     }
   },
   methods: {
+    reorder1({ oldIndex, newIndex }) {
+      console.log(oldIndex, newIndex);
+      const movedItem = this.inputs1.splice(oldIndex, 1)[0];
+      this.inputs1.splice(newIndex, 0, movedItem);
+      this.addChanged("inputs1", newIndex + 1);
+      this.addChanged("inputs1", oldIndex + 1);
+    },
+    reorder2({ oldIndex, newIndex }) {
+      console.log(oldIndex, newIndex);
+      const movedItem = this.inputs2.splice((oldIndex - 1), 1)[0];
+      this.inputs2.splice((newIndex - 1), 0, movedItem);
+      this.addChanged("inputs2", newIndex);
+      this.addChanged("inputs2", oldIndex);
+    },
     validateInput() {
       this.$v.$touch();
 
-      if(!this.newBoolean) {
+      if (!this.newBoolean) {
         this.updateData();
       } else if (!this.$v.$invalid) {
         this.updateData();
@@ -415,19 +459,27 @@ export default {
       if (!this.newBoolean) {
         if (this.changedArray.inputs1.length > 0) {
           let teachingformsSub = " module:TeachingForms_" + this.code;
-          let tripleDelWhe = teachingformsSub + " schema:itemListElement ?interType . ?interType ?pTeach ?oTeach . ";
+          let tripleDelWhe =
+            teachingformsSub +
+            " schema:itemListElement ?interType . ?interType ?pTeach ?oTeach . ";
           this.delete.push(tripleDelWhe);
           this.where.push(tripleDelWhe);
-          let tripleIns = teachingformsSub + ' schema:itemListElement ';
+          let tripleIns = teachingformsSub + " schema:itemListElement ";
           let tripleInsDetail = "";
           for (let i = 0; i < this.inputs1.length; i++) {
-            let sub = "module:TF" + (i+1) + "_" + this.code;
+            let sub = "module:TF" + (i + 1) + "_" + this.code;
             if (i == this.inputs1.length - 1) {
-              tripleIns += sub + ' . ';
+              tripleIns += sub + " . ";
             } else {
-              tripleIns += sub + ', ';
+              tripleIns += sub + ", ";
             }
-            tripleInsDetail += sub + ' a schema:ListItem ; schema:name  "' + this.inputs1[i].name + '" ; schema:position ' + (i+1) + ' .  ';
+            tripleInsDetail +=
+              sub +
+              ' a schema:ListItem ; schema:name  "' +
+              this.inputs1[i].name +
+              '" ; schema:position ' +
+              (i + 1) +
+              " .  ";
           }
           this.insert.push(tripleIns);
           this.insert.push(tripleInsDetail);
@@ -435,23 +487,31 @@ export default {
 
         if (this.changedArray.inputs2.length > 0) {
           let workloadsSub = " module:CompWL_" + this.code;
-          let tripleDelWhe = workloadsSub + " schema:valueReference ?workloads . ?workloads ?pWork ?oWork . ";
+          let tripleDelWhe =
+            workloadsSub +
+            " schema:valueReference ?workloads . ?workloads ?pWork ?oWork . ";
           this.delete.push(tripleDelWhe);
           this.where.push(tripleDelWhe);
-          let tripleIns = workloadsSub + ' schema:valueReference ';
+          let tripleIns = workloadsSub + " schema:valueReference ";
           let tripleInsDetail = "";
           for (let i = 0; i < this.inputs2.length; i++) {
-            let sub = "module:WL" + (i+1) + "_" + this.code;
+            let sub = "module:WL" + (i + 1) + "_" + this.code;
             if (i == this.inputs2.length - 1) {
-              tripleIns += sub + ' . ';
+              tripleIns += sub + " . ";
             } else {
-              tripleIns += sub + ', ';
+              tripleIns += sub + ", ";
             }
-            tripleInsDetail += sub + ' a schema:PropertyValue ; schema:name  "' + this.inputs2[i].name[0] + '" ; schema:value ' + this.inputs2[i].name[1] + ' .  ';
+            tripleInsDetail +=
+              sub +
+              ' a schema:PropertyValue ; schema:name  "' +
+              this.inputs2[i].name[0] +
+              '" ; schema:value ' +
+              this.inputs2[i].name[1] +
+              " .  ";
           }
           this.insert.push(tripleIns);
           this.insert.push(tripleInsDetail);
- /*         let code = this.modMethod[0].code.value;
+          /*         let code = this.modMethod[0].code.value;
           if (this.inputs2.length <= this.countWorkload) {
             for (let i = 0; i < this.inputs2.length; i++) {
               if (
@@ -563,60 +623,89 @@ export default {
         this.insert.forEach(function(item) {
           query += item;
         });
-        query += " } WHERE { " ;
+        query += " } WHERE { ";
         this.where.forEach(function(item) {
           query += item;
         });
         query += " }";
-
       } else {
-        let subject = " <" + this.moduleUri + "> " ;
+        let subject = " <" + this.moduleUri + "> ";
         let teachingformSub = "module:TeachingForms_" + this.code;
-        let workloadsSub = "module:CompWL_" + this.code ;
+        let workloadsSub = "module:CompWL_" + this.code;
 
-        query += ' INSERT DATA { ';
+        query += " INSERT DATA { ";
 
-        query += subject + ' module:addProp_TeachingForms ' + teachingformSub + ' ;  module:addProp_CompWL ' + workloadsSub + ' . ';
+        query +=
+          subject +
+          " module:addProp_TeachingForms " +
+          teachingformSub +
+          " ;  module:addProp_CompWL " +
+          workloadsSub +
+          " . ";
 
         //interactivity types
-        let teachingformCourse = teachingformSub + ' a schema:ItemList ; schema:identifier "TeachingForms" ; schema:name "Lehr-Lernmethoden ' + this.code + '" ; schema:itemListElement ';
+        let teachingformCourse =
+          teachingformSub +
+          ' a schema:ItemList ; schema:identifier "TeachingForms" ; schema:name "Lehr-Lernmethoden ' +
+          this.code +
+          '" ; schema:itemListElement ';
         let teachingformCourseDetail = "";
         for (let i = 0; i < this.inputs1.length; i++) {
-          let sub = "module:TF" + (i+1) + "_" + this.code;
+          let sub = "module:TF" + (i + 1) + "_" + this.code;
           if (i == this.inputs1.length - 1) {
-            teachingformCourse += sub + ' . ';
+            teachingformCourse += sub + " . ";
           } else {
-            teachingformCourse += sub + ', ';
+            teachingformCourse += sub + ", ";
           }
-          teachingformCourseDetail += sub + ' a schema:ListItem ; schema:name  "' + this.inputs1[i].name + '" ; schema:position ' + (i+1) + ' .  ';
+          teachingformCourseDetail +=
+            sub +
+            ' a schema:ListItem ; schema:name  "' +
+            this.inputs1[i].name +
+            '" ; schema:position ' +
+            (i + 1) +
+            " .  ";
         }
-        query += teachingformCourse
-        query += teachingformCourseDetail
+        query += teachingformCourse;
+        query += teachingformCourseDetail;
 
         //workloads
-        let workloadsCourse = workloadsSub + + ' a schema:PropertyValue ; schema:identifier "Workload" ; schema:name "Aufteilung der Workload in Stunden ' + this.code + '" ; schema:valueReference ';
+        let workloadsCourse =
+          workloadsSub +
+          ' a schema:PropertyValue ; schema:identifier "Workload" ; schema:name "Aufteilung der Workload in Stunden ' +
+          this.code +
+          '" ; schema:valueReference ';
         let workloadsCourseDetail = "";
         for (let i = 0; i < this.inputs2.length; i++) {
-          let sub = "module:WL" + (i+1) + "_" + this.code;
+          let sub = "module:WL" + (i + 1) + "_" + this.code;
           if (i == this.inputs2.length - 1) {
-            workloadsCourse += sub + ' . ';
+            workloadsCourse += sub + " . ";
           } else {
-            workloadsCourse += sub + ', ';
+            workloadsCourse += sub + ", ";
           }
-          workloadsCourseDetail += sub + ' a schema:PropertyValue ; schema:name  "' + this.inputs2[i].name[0] + '" ; schema:value ' + this.inputs2[i].name[1] + ' .  ';
+          workloadsCourseDetail +=
+            sub +
+            ' a schema:PropertyValue ; schema:name  "' +
+            this.inputs2[i].name[0] +
+            '" ; schema:value ' +
+            this.inputs2[i].name[1] +
+            " .  ";
         }
-        query += workloadsCourse
-        query += workloadsCourseDetail
+        query += workloadsCourse;
+        query += workloadsCourseDetail;
 
-        query += ' } '
+        query += " } ";
       }
 
       this.updateQuery = query;
 
-      /*axios
-        .post("http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/update", query, {
-          headers: { "Content-Type": "application/sparql-update" }
-        })
+      axios
+        .post(
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/update",
+          query,
+          {
+            headers: { "Content-Type": "application/sparql-update" }
+          }
+        )
         .then(response => {
           let status = response.status;
           if (status == 204) {
@@ -629,20 +718,25 @@ export default {
         })
         .catch(e => {
           this.errors.push(e);
-        });*/
+        });
     },
     checkModule() {
       let query =
         " PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
         " PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+        " PREFIX schema: <https://schema.org/> " +
         " SELECT ?label " +
         " WHERE { <" +
         this.moduleUri +
         '> schema:name ?label . FILTER(lang(?label) = "de") } ';
       axios
-        .post("http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query", query, {
-          headers: { "Content-Type": "application/sparql-query" }
-        })
+        .post(
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
+          query,
+          {
+            headers: { "Content-Type": "application/sparql-query" }
+          }
+        )
         .then(response => {
           let res = response.data.results.bindings;
           if (res.length > 0) {
@@ -675,11 +769,13 @@ export default {
     initialState() {
       this.inputs1 = [
         {
+          id: 0,
           name: []
         }
       ];
       this.inputs2 = [
         {
+          id: 0,
           name: []
         }
       ];
@@ -781,10 +877,10 @@ export default {
         let workloaddetails = v[0].workloadDetails.value;
         this.countWorkload = workloaddetails.length;
         for (let i = 0; i < intertypes.length; i++) {
-          this.inputs1[i] = { name: intertypes[i] };
+          this.inputs1[i] = { id: i, name: intertypes[i] };
         }
         for (let i = 0; i < workloaddetails.length; i++) {
-          this.inputs2[i] = { name: workloaddetails[i] };
+          this.inputs2[i] = { id: i, name: workloaddetails[i] };
         }
       }
     }

@@ -52,7 +52,7 @@
         <div
           class="md-layout md-gutter list"
           style="border-color:#fcdd86; border-width: 3px; border-style: solid; border-radius: 10px; margin: 3px;"
-          v-sortable="{ onEnd: reorder, handle: '.handle' }"
+          v-sortable="{ onEnd: reorder1, handle: '.handle' }"
         >
           <div
             class="md-layout-item md-size-100 md-layout md-gutter md-alignment-bottom-center"
@@ -152,15 +152,15 @@
               </span>
             </md-field>
           </div>
-          <!--<div
+          <div
             class="md-layout-item md-size-100 md-layout md-gutter md-alignment-bottom-center"
             style="margin-bottom: 10px"
             v-if="newBoolean"
             v-for="(input, i) in $v.inputs1.$each.$iter"
-            :key="i"
+            :key="input.id"
           >
             <md-field
-              class="md-layout-item md-size-70"
+              class="md-layout-item md-size-55"
               :class="getValidationClass('inputs1')"
             >
               <label>Lernergebnis*</label>
@@ -173,55 +173,105 @@
               />
               <md-input v-else disabled />
               <span class="md-error" v-if="!input.name.required"
-                >Bitte beide Felder "Lernergebnis" und "Bloomsche Taxonomie"
-                vervollständigen</span
+                >Bitte alle bearbeitbaren Felder vervollständigen</span
               >
             </md-field>
-            <md-field
-              class="md-layout-item md-size-30"
-              :class="getValidationClass('inputs1')"
-            >
-              <label>Bloomsche Taxonomie*</label>
+            <md-field class="md-layout-item md-size-20">
+              <label>Kompetenzen*</label>
               <md-select
                 v-if="modOutcome.length > 0 && existence"
                 v-model="input.name.$model[1]"
-                @md-selected="addChanged('inputs1', parseInt(i) + 1 + '1')"
+                @md-selected="
+                  addChanged('inputs1', parseInt(i) + 1 + '1'),
+                    clearBloom(parseInt(i))
+                "
                 :disabled="role != 1 && role != 2"
                 md-dense
               >
-                <md-option value="Remember">Erinnern</md-option>
-                <md-option value="Understand">Verstehen</md-option>
-                <md-option value="Apply">Anwenden</md-option>
-                <md-option value="Analyze">Analysieren</md-option>
-                <md-option value="Evaluate">Evaluieren</md-option>
-                <md-option value="Create">Erschaffen</md-option>
+                <md-option
+                  value="https://bmake.th-brandenburg.de/module/SubjectMatterCompetence"
+                  >Fachkompetenz</md-option
+                >
+                <md-option
+                  value="https://bmake.th-brandenburg.de/module/SocialCompetence"
+                  >Sozialkompetenz</md-option
+                >
+                <md-option
+                  value="https://bmake.th-brandenburg.de/module/SelfCompetence"
+                  >SelfCompetence</md-option
+                >
+              </md-select>
+              <md-select v-else md-dense disabled />
+            </md-field>
+            <md-field class="md-layout-item md-size-25">
+              <label>Bloomsche Taxonomie*</label>
+              <md-select
+                v-if="modOutcome.length > 0 && existence"
+                v-model="input.name.$model[2]"
+                @md-selected="addChanged('inputs1', parseInt(i) + 1 + '2')"
+                :disabled="
+                  (role != 1 && role != 2) ||
+                    input.name.$model[1] !=
+                      'https://bmake.th-brandenburg.de/module/SubjectMatterCompetence'
+                "
+                md-dense
+              >
+                <md-option
+                  value="https://bmake.th-brandenburg.de/module/BloomTax_Remember"
+                  >Erinnern</md-option
+                >
+                <md-option
+                  value="https://bmake.th-brandenburg.de/module/BloomTax_Understand"
+                  >Verstehen</md-option
+                >
+                <md-option
+                  value="https://bmake.th-brandenburg.de/module/BloomTax_Apply"
+                  >Anwenden</md-option
+                >
+                <md-option
+                  value="https://bmake.th-brandenburg.de/module/BloomTax_Analyze"
+                  >Analysieren</md-option
+                >
+                <md-option
+                  value="https://bmake.th-brandenburg.de/module/BloomTax_Evaluate"
+                  >Evaluieren</md-option
+                >
+                <md-option
+                  value="https://bmake.th-brandenburg.de/module/BloomTax_Create"
+                  >Erschaffen</md-option
+                >
               </md-select>
               <md-select v-else md-dense disabled />
               <span v-if="role == 1 || role == 2">
                 <i
                   class="fas fa-minus-circle"
                   @click="remove('1', i)"
-                  v-show="i >= countLearn && i > 0"
+                  v-show="i || (!i && inputs1.length > 1)"
                 />
                 <i
                   class="fas fa-plus-circle"
                   @click="add('1', i)"
                   v-show="i == inputs1.length - 1"
                 />
+                <i
+                  class="handle fas fa-arrows-alt"
+                  style="margin-left: 10px"
+                ></i>
               </span>
             </md-field>
-          </div>-->
+          </div>
         </div>
 
         <div
           class="md-layout md-gutter"
-          v-if="!newBoolean"
           style="border-color:#fcdd86; border-width: 3px; border-style: solid; border-radius: 10px; margin:3px;"
+          v-sortable="{ onEnd: reorder2, handle: '.handle' }"
         >
           <div
             class="md-layout-item md-size-100"
+            v-if="!newBoolean"
             v-for="(input, i) in inputs2"
-            :key="i"
+            :key="input.id"
           >
             <md-field>
               <label>Inhaltselement</label>
@@ -244,20 +294,19 @@
                   @click="add('2', i)"
                   v-show="i == inputs2.length - 1"
                 />
+                <i
+                  class="handle fas fa-arrows-alt"
+                  style="margin-left: 10px"
+                ></i>
               </span>
             </md-field>
           </div>
-        </div>
-        <div
-          class="md-layout md-gutter"
-          v-if="newBoolean"
-          style="border-color:#fcdd86; border-width: 3px; border-style: solid; border-radius: 10px; margin:3px;"
-        >
           <div
             class="md-layout-item md-size-100"
             style="margin-bottom: 10px"
+            v-if="newBoolean"
             v-for="(input, i) in $v.inputs2.$each.$iter"
-            :key="i"
+            :key="input.id"
           >
             <md-field :class="getValidationClass('inputs2')">
               <label>Inhaltselement*</label>
@@ -280,6 +329,10 @@
                   @click="add('2', i)"
                   v-show="i == inputs2.length - 1"
                 />
+                <i
+                  class="handle fas fa-arrows-alt"
+                  style="margin-left: 10px"
+                ></i>
               </span>
               <span class="md-error" v-if="!input.name.required"
                 >Pflichtfeld</span
@@ -315,13 +368,14 @@
 
         <div
           class="md-layout md-gutter"
-          v-if="!newBoolean"
           style="border-color:#fcdd86; border-width: 3px; border-style: solid; border-radius: 10px; margin:3px;"
+          v-sortable="{ onEnd: reorder4, handle: '.handle' }"
         >
           <div
             class="md-layout-item md-size-100"
+            v-if="!newBoolean"
             v-for="(input, i) in inputs4"
-            :key="i"
+            :key="input.id"
           >
             <md-field>
               <label>Prüfungsleistung</label>
@@ -344,20 +398,19 @@
                   @click="add('4', i)"
                   v-show="i == inputs4.length - 1"
                 />
+                <i
+                  class="handle fas fa-arrows-alt"
+                  style="margin-left: 10px"
+                ></i>
               </span>
             </md-field>
           </div>
-        </div>
-        <div
-          class="md-layout md-gutter"
-          v-if="newBoolean"
-          style="border-color:#fcdd86; border-width: 3px; border-style: solid; border-radius: 10px; margin:3px;"
-        >
           <div
             class="md-layout-item md-size-100"
             style="margin-bottom: 10px"
+            v-if="newBoolean"
             v-for="(input, i) in $v.inputs4.$each.$iter"
-            :key="i"
+            :key="input.id"
           >
             <md-field :class="getValidationClass('inputs4')">
               <label>Prüfungsleistung*</label>
@@ -380,6 +433,10 @@
                   @click="add('4', i)"
                   v-show="i == inputs4.length - 1"
                 />
+                <i
+                  class="handle fas fa-arrows-alt"
+                  style="margin-left: 10px"
+                ></i>
               </span>
               <span class="md-error" v-if="!input.name.required"
                 >Pflichtfeld</span
@@ -516,7 +573,10 @@ export default {
               value.length < 2 ||
               value[0] == "" ||
               value[0] == null ||
-              value[1] == null
+              value[1] == null ||
+              (value[1] ==
+                "https://bmake.th-brandenburg.de/module/SubjectMatterCompetence" &&
+                value[2] == null)
             ) {
               return false;
             } else {
@@ -544,12 +604,26 @@ export default {
     }
   },
   methods: {
-    reorder({ oldIndex, newIndex }) {
+    reorder1({ oldIndex, newIndex }) {
       console.log(oldIndex, newIndex);
       const movedItem = this.inputs1.splice(oldIndex, 1)[0];
       this.inputs1.splice(newIndex, 0, movedItem);
       this.addChanged("inputs1", newIndex + 1 + "0");
       this.addChanged("inputs1", oldIndex + 1 + "0");
+    },
+    reorder2({ oldIndex, newIndex }) {
+      console.log(oldIndex, newIndex);
+      const movedItem = this.inputs2.splice(oldIndex, 1)[0];
+      this.inputs2.splice(newIndex, 0, movedItem);
+      this.addChanged("inputs2", newIndex + 1);
+      this.addChanged("inputs2", oldIndex + 1);
+    },
+    reorder4({ oldIndex, newIndex }) {
+      console.log(oldIndex, newIndex);
+      const movedItem = this.inputs4.splice(oldIndex, 1)[0];
+      this.inputs4.splice(newIndex, 0, movedItem);
+      this.addChanged("inputs4", newIndex + 1);
+      this.addChanged("inputs4", oldIndex + 1);
     },
     validateInput() {
       this.$v.$touch();
@@ -621,6 +695,17 @@ export default {
           }
         }
         this.count++;
+      }
+    },
+    clearBloom(i) {
+      if (this.count != 0) {
+        if (
+          this.inputs1[i].name[1] !=
+            "https://bmake.th-brandenburg.de/module/SubjectMatterCompetence" &&
+          this.inputs1[i].name[2]
+        ) {
+          this.inputs1[i].name.splice(2, 1);
+        }
       }
     },
     updateData() {
@@ -840,7 +925,7 @@ export default {
             '" ; schema:position ' +
             (i + 1) +
             ' ; schema:description "' +
-            +this.inputs1[i].name[0] +
+            this.inputs1[i].name[0] +
             '" ; schema:additionalType ' +
             " <" +
             this.inputs1[i].name[1] +
@@ -916,16 +1001,22 @@ export default {
             (i + 1) +
             " .  ";
         }
+        query += examCourse;
+        query += examCourseDetail;
 
         query += " } ";
       }
 
       this.updateQuery = query;
 
-      /*axios
-        .post("http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/update", query, {
-          headers: { "Content-Type": "application/sparql-update" }
-        })
+      axios
+        .post(
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/update",
+          query,
+          {
+            headers: { "Content-Type": "application/sparql-update" }
+          }
+        )
         .then(response => {
           let status = response.status;
           if (status == 204) {
@@ -934,19 +1025,20 @@ export default {
               this.notification = false;
             }, 2000);
           }
-          /!*setTimeout(() => {
+          /*setTimeout(() => {
             this.clearCache();
-          }, 20000);*!/
+          }, 20000);*/
           this.clearCache();
         })
         .catch(e => {
           this.errors.push(e);
-        });*/
+        });
     },
     checkModule() {
       let query =
         " PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
         " PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+        " PREFIX schema: <https://schema.org/> " +
         " SELECT ?label " +
         " WHERE { <" +
         this.moduleUri +

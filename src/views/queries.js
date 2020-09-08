@@ -102,7 +102,7 @@ export const selectQueries = {
         "      WHERE {  " +
         'SELECT ?learnResult (GROUP_CONCAT(?addList; separator=" @ ") as ?comName1) ' +
         "    WHERE { " +
-        "      SELECT ?learnResult ?addList " +
+        "      SELECT ?learnResult ?position ?addList " +
         "      WHERE { " +
         "      module:LResults_" +
         code +
@@ -110,8 +110,8 @@ export const selectQueries = {
         "                 ?resList schema:description ?learnResult ; " +
         "                         schema:position ?position .  " +
         "                  ?resList schema:additionalType ?addList . " +
-        "      } GROUP BY ?learnResult ?addList ORDER BY ?position DESC(?addList)" +
-        "    } GROUP BY ?learnResult" +
+        "      } GROUP BY ?learnResult ?position ?addList ORDER BY DESC(?addList)" +
+        "    } GROUP BY ?learnResult ?position  ORDER BY ?position" +
         "   } " +
         "  } " +
         " } " +

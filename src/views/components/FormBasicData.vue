@@ -278,6 +278,20 @@
         </md-field>
       </div>
 
+      <div class="md-layout-item md-size-100">
+        <md-field>
+          <label>SPO-relevante Vorraussetzungen</label>
+          <md-textarea
+            v-if="modBasisOrigin[0].pre"
+            v-model="modBasis.pre.value"
+            @change="addChanged('pre')"
+            :disabled="role != 2"
+            md-autogrow
+          />
+          <md-input v-else />
+        </md-field>
+      </div>
+
       <!--Sonstige Eigenschaften-->
       <div v-if="!checkInfoStudyPro" class="md-layout-item md-size-100">
         <md-field>
@@ -290,19 +304,6 @@
             md-autogrow
           />
           <md-input v-else :disabled="role != 2" />
-        </md-field>
-      </div>
-      <div class="md-layout-item md-size-100">
-        <md-field>
-          <label>SPO-relevante Vorraussetzungen</label>
-          <md-textarea
-            v-if="modBasisOrigin[0].pre"
-            v-model="modBasis.pre.value"
-            @change="addChanged('pre')"
-            :disabled="role != 2"
-            md-autogrow
-          />
-          <md-input v-else />
         </md-field>
       </div>
       <div v-if="!checkInfoStudyPro" class="md-layout-item md-size-100">
@@ -554,7 +555,7 @@ export default {
     addChanged(item) {
       if (item == "learnTypes") {
         let learnTypes = this.modBasis.learnTypes.value;
-        this.modBasis.learnTypes.value = learnTypes.split(",");
+        this.modBasis.learnTypes.value = learnTypes.split("@de ,");
       }
       if (this.changedArray.indexOf(item) === -1) {
         this.changedArray.push(item);
@@ -591,13 +592,23 @@ export default {
           this.template[i].o,
           ". "
         );
-        insArray.push(
-          this.template[i].s,
-          this.template[i].p,
-          ' "',
-          this.modBasis[i].value,
-          '". '
-        );
+        if (i == "pre" || i == "eduUse" || i == "learnTypes") {
+          insArray.push(
+            this.template[i].s,
+            this.template[i].p,
+            ' "',
+            this.modBasis[i].value,
+            '"@de . '
+          );
+        } else {
+          insArray.push(
+            this.template[i].s,
+            this.template[i].p,
+            ' "',
+            this.modBasis[i].value,
+            '". '
+          );
+        }
       }
 
       this.delete.push(delArray);
@@ -683,8 +694,8 @@ export default {
         query +=
           ' schema:numberOfCredits  "' + this.modBasis.ects.value + '"; ';
         //Lehrform
-        let learnTypes = this.modBasis.learnTypes.value.join('" , "');
-        query += ' schema:interactivityType  "' + learnTypes + '"; ';
+        let learnTypes = this.modBasis.learnTypes.value.join('"@de , "');
+        query += ' schema:interactivityType  "' + learnTypes + '"@de ; ';
         //languages
         let languageCourse = "module:Language_" + this.code;
         query += ' module:progrSpecProp_Language  "' + languageCourse + '" ; ';
@@ -692,8 +703,8 @@ export default {
         /*//Curr Zuordnung
         let curr = "module:Curr_" + this.studyProgram + "_" + this.code;
         query += " module:eduAlignm_Curr  " + curr + " ; ";*/
-        let studySemCourse = ""
-        let gradeCourse = ""
+        let studySemCourse = "";
+        let gradeCourse = "";
 
         if (this.checkInfoStudyPro) {
           //Studiensemester
@@ -704,7 +715,9 @@ export default {
         //Voraussetzung
         if (this.modBasis.pre.value != "") {
           query +=
-            ' schema:coursePrerequisites  "' + this.modBasis.pre.value + '" ; ';
+            ' schema:coursePrerequisites  "' +
+            this.modBasis.pre.value +
+            '"@de ; ';
         }
         if (!this.checkInfoStudyPro) {
           //Notengewichtung
@@ -713,7 +726,7 @@ export default {
           //Verwendbarkeit
           if (this.modBasis.eduUse.value != "") {
             query +=
-              ' schema:educationalUse  "' + this.modBasis.eduUse.value + '" ; ';
+              ' schema:educationalUse  "' + this.modBasis.eduUse.value + '"@de ; ';
           }
           //Website
           if (this.modBasis.url.value != "") {
@@ -870,17 +883,21 @@ export default {
             this.studyProgram +
             '" ; schema:value ' +
             this.modBasis.studysem.value +
-            ' .';
+            " .";
         }
 
         query += " }";
       }
       this.updateQuery = query;
 
-      /* axios
-        .post("http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/update", query, {
-          headers: { "Content-Type": "application/sparql-update" }
-        })
+      axios
+        .post(
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/update",
+          query,
+          {
+            headers: { "Content-Type": "application/sparql-update" }
+          }
+        )
         .then(response => {
           let status = response.status;
           if (status == 204) {
@@ -896,7 +913,7 @@ export default {
         })
         .catch(e => {
           this.errors.push(e);
-        });*/
+        });
     },
     clearCache() {
       this.countModType = 0;
