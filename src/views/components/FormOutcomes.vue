@@ -478,7 +478,7 @@
             <p>insert: {{ insert }}</p>
             <p>where: {{ where }}</p>
             <p>update: {{ updateQuery }}</p>
-            <p>modOutcome: {{ modOutcome[0] }}</p>
+            <p>modOutcome: {{ modOutcome }}</p>
           </div>
         </div>
       </div>
@@ -1210,7 +1210,7 @@ export default {
       this.checkModule();
     },
     modOutcome(v) {
-      if (!this.newBoolean && v.length > 0) {
+      if (!this.newBoolean && this.modOutcomeOrigin.length > 0) {
         let learnblooms = v[0].learnBlooms.value;
         this.countLearn = learnblooms.length;
         let contents = v[0].contents.value;
