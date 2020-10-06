@@ -6,21 +6,6 @@
     <form @submit.prevent="validateInput">
       <div>
         <div class="md-layout md-gutter">
-          <!--<div class="md-layout-item md-size-20">
-            <md-field>
-              <label>Modulkürzel</label>
-              <md-input
-                v-if="modMethod.length > 0"
-                v-model="modMethod[0].code.value"
-                name="modKuerzel"
-                id="modKuerzel"
-                md-dense
-                disabled
-              >
-              </md-input>
-              <md-input v-else disabled />
-            </md-field>
-          </div>-->
 
           <div class="md-layout-item md-size-100">
             <div
@@ -52,50 +37,15 @@
         >
           <div
             class="md-layout-item md-size-100"
-            v-if="!newBoolean"
-            v-for="(input, i) in inputs1"
-            :key="input.id"
-          >
-            <md-field>
-              <label>Lehr- und Lernmethode</label>
-              <md-textarea
-                v-if="modMethod.length > 0"
-                v-model="input.name"
-                @change="addChanged('inputs1', i)"
-                :disabled="role != 1 && role != 2"
-                md-autogrow
-              />
-              <md-input v-else disabled />
-              <span v-if="role == 1 || role == 2">
-                <i
-                  class="fas fa-minus-circle"
-                  @click="remove('1', i)"
-                  v-show="i || (!i && inputs1.length > 1)"
-                />
-                <i
-                  class="fas fa-plus-circle"
-                  @click="add('1', i)"
-                  v-show="i == inputs1.length - 1"
-                />
-                <i
-                  class="handle fas fa-arrows-alt"
-                  style="margin-left: 10px"
-                ></i>
-              </span>
-            </md-field>
-          </div>
-          <div
-            class="md-layout-item md-size-100"
             style="margin-bottom: 10px"
-            v-if="newBoolean"
             v-for="(input, i) in $v.inputs1.$each.$iter"
-            :key="input.id"
+            :key="input.$model.id"
           >
             <md-field :class="getValidationClass('inputs1')">
               <label>Lehr- und Lernmethode*</label>
               <md-textarea
                 v-if="modMethod.length > 0 && existence"
-                v-model.trim="input.name.$model"
+                v-model.trim="input.$model.name"
                 @change="addChanged('inputs1', i)"
                 :disabled="role != 1 && role != 2"
                 md-autogrow
@@ -144,88 +94,22 @@
           </div>
           <div
             class="md-layout-item md-layout md-gutter md-size-70"
-            v-if="!newBoolean"
-            v-for="(input, i) in inputs2"
-            :key="input.id"
-          >
-            <div class="md-layout-item md-size-70">
-              <md-field>
-                <label>Workload-Komponente</label>
-                <md-input
-                  v-if="modMethod.length > 0"
-                  v-model="input.name[0]"
-                  @change="addChanged('inputs2', i)"
-                  :disabled="role != 1 && role != 2"
-                />
-                <md-input v-else disabled />
-              </md-field>
-            </div>
-            <div
-              class="md-layout-item md-size-30"
-              style="margin-right: 0; padding: 0"
-            >
-              <md-field>
-                <label>in Stunden</label>
-                <md-input
-                  type="number"
-                  v-if="modMethod.length > 0"
-                  v-model="input.name[1]"
-                  @change="addChanged('inputs2', i)"
-                  :disabled="role != 1 && role != 2"
-                />
-                <md-input v-else disabled />
-                <span v-if="role == 1 || role == 2">
-                  <i
-                    class="fas fa-minus-circle"
-                    @click="remove('2', i)"
-                    v-show="i || (!i && inputs2.length > 1)"
-                  />
-                  <i
-                    class="fas fa-plus-circle"
-                    @click="add('2', i)"
-                    v-show="i == inputs2.length - 1"
-                  />
-                  <i
-                    class="handle fas fa-arrows-alt"
-                    style="margin-left: 10px"
-                  ></i>
-                </span>
-              </md-field>
-            </div>
-          </div>
-          <!--<div class="md-layout-item md-size-30">
-            <md-field>
-              <label>Gesamtworkload</label>
-              <md-input
-                type="number"
-                v-if="modMethod.length > 0"
-                v-model="modMethod[0].workloadSum.value"
-                disabled
-              />
-              <md-input v-else disabled />
-              <span v-if="modMethod.length > 0" class="md-suffix">Stunden</span>
-            </md-field>
-          </div>-->
-          <div
-            class="md-layout-item md-layout md-gutter md-size-70"
             style="margin-bottom: 10px"
-            v-if="newBoolean"
             v-for="(input, i) in $v.inputs2.$each.$iter"
-            :key="input.id"
+            :key="input.$model.id"
           >
             <div class="md-layout-item md-size-70">
               <md-field :class="getValidationClass('inputs2')">
                 <label>Workload-Komponente*</label>
                 <md-input
                   v-if="modMethod.length > 0 && existence"
-                  v-model.trim="input.name.$model[0]"
+                  v-model.trim="input.$model.name[0]"
                   @change="addChanged('inputs2', i)"
                   :disabled="role != 1 && role != 2"
                 />
                 <md-input v-else disabled />
                 <span class="md-error" v-if="!input.name.required"
-                  >Bitte beide Felder "Workload-Komponente" und "in Stunden"
-                  vervollständigen</span
+                  >Bitte beide Felder vervollständigen</span
                 >
               </md-field>
             </div>
@@ -238,7 +122,7 @@
                 <md-input
                   type="number"
                   v-if="modMethod.length > 0 && existence"
-                  v-model="input.name.$model[1]"
+                  v-model="input.$model.name[1]"
                   @change="addChanged('inputs2', i)"
                   :disabled="role != 1 && role != 2"
                 />
@@ -347,9 +231,6 @@ export default {
       insert: [],
       where: [],
       countWorkload: 0,
-      /*whereStr:
-        " schema:interactivityType ?interType ;  " +
-        " module:addProp_CompWL ?addPropCompWL . ",*/
       inputs1: [
         {
           id: 0,
@@ -415,9 +296,7 @@ export default {
     validateInput() {
       this.$v.$touch();
 
-      if (!this.newBoolean) {
-        this.updateData();
-      } else if (!this.$v.$invalid) {
+      if (!this.$v.$invalid) {
         this.updateData();
       }
     },
@@ -511,108 +390,6 @@ export default {
           }
           this.insert.push(tripleIns);
           this.insert.push(tripleInsDetail);
-          /*         let code = this.modMethod[0].code.value;
-          if (this.inputs2.length <= this.countWorkload) {
-            for (let i = 0; i < this.inputs2.length; i++) {
-              if (
-                this.inputs2[i].name[0] != null &&
-                this.inputs2[i].name[1] != null &&
-                this.inputs2[i].name[0] != "" &&
-                this.inputs2[i].name[1] != ""
-              ) {
-                let sub = " module:WL" + (i + 1) + "_" + code;
-                let triple =
-                  sub +
-                  " schema:name ?workloadName" +
-                  (i + 1) +
-                  " ; " +
-                  " schema:value ?workloadValue" +
-                  (i + 1) +
-                  " . ";
-                let tripleIns =
-                  sub +
-                  ' schema:name "' +
-                  this.inputs2[i].name[0] +
-                  '" ; ' +
-                  " schema:value " +
-                  this.inputs2[i].name[1] +
-                  " . ";
-                this.delete.push(triple);
-                this.insert.push(tripleIns);
-                this.where += triple;
-              }
-            }
-            if (this.inputs2.length < this.countWorkload) {
-              for (let i = this.inputs2.length; i < this.countWorkload; i++) {
-                let sub = " module:WL" + (i + 1) + "_" + code;
-                let triple =
-                  sub +
-                  " ?p" +
-                  (i + 1) +
-                  " ?o" +
-                  (i + 1) +
-                  " . " +
-                  " ?addPropCompWL schema:valueReference " +
-                  sub +
-                  " . ";
-                this.delete.push(triple);
-                this.where += triple;
-              }
-            }
-          } else {
-            for (let i = 0; i < this.countWorkload; i++) {
-              if (
-                this.inputs2[i].name[0] != null &&
-                this.inputs2[i].name[1] != null &&
-                this.inputs2[i].name[0] != "" &&
-                this.inputs2[i].name[1] != ""
-              ) {
-                let sub = " module:WL" + (i + 1) + "_" + code;
-                let triple =
-                  sub +
-                  " schema:name ?workloadName" +
-                  (i + 1) +
-                  " ; " +
-                  " schema:value ?workloadValue" +
-                  (i + 1) +
-                  " . ";
-                let tripleIns =
-                  sub +
-                  ' schema:name "' +
-                  this.inputs2[i].name[0] +
-                  '" ; ' +
-                  " schema:value " +
-                  this.inputs2[i].name[1] +
-                  " . ";
-                this.delete.push(triple);
-                this.insert.push(tripleIns);
-                this.where += triple;
-              }
-            }
-            for (let i = this.countWorkload; i < this.inputs2.length; i++) {
-              if (
-                this.inputs2[i].name[0] != null &&
-                this.inputs2[i].name[1] != null &&
-                this.inputs2[i].name[0] != "" &&
-                this.inputs2[i].name[1] != ""
-              ) {
-                let sub = " module:WL" + (i + 1) + "_" + code;
-                let tripleIns =
-                  sub +
-                  " a   schema:PropertyValue ; " +
-                  ' schema:name "' +
-                  this.inputs2[i].name[0] +
-                  '" ; ' +
-                  "                schema:value " +
-                  this.inputs2[i].name[1] +
-                  " . " +
-                  " ?addPropCompWL schema:valueReference " +
-                  sub +
-                  " . ";
-                this.insert.push(tripleIns);
-              }
-            }
-          }*/
         }
 
         query += " DELETE { ";
@@ -747,7 +524,7 @@ export default {
           } else {
             this.existence = false;
           }
-          this.$v.$reset();
+          //this.$v.$reset();
         })
         .catch(e => {
           this.errors.push(e);
@@ -792,7 +569,7 @@ export default {
       if (this.newBoolean) {
         this.checkModule();
       }
-      this.$v.$reset();
+      //this.$v.$reset();
     },
     generatePDF() {
       const doc = new jsPDF();
@@ -898,5 +675,6 @@ input {
 }
 span {
   top: 32px;
+  padding: 0;
 }
 </style>

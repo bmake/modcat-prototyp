@@ -6,22 +6,6 @@
     <form @submit.prevent="validateInput">
       <div>
         <div class="md-layout md-gutter">
-          <!--<div class="md-layout-item md-size-20">
-          <md-field>
-            <label>Modulkürzel</label>
-            <md-input
-              v-if="modOutcome.length > 0"
-              v-model="modOutcome[0].code.value"
-              name="modKuerzel"
-              id="modKuerzel"
-              md-dense
-              disabled
-            >
-            </md-input>
-            <md-input v-else disabled />
-          </md-field>
-        </div>-->
-
           <div class="md-layout-item md-size-100">
             <div
               class="alert alert-danger md-layout-item md-size-100"
@@ -45,10 +29,6 @@
           </div>
         </div>
 
-        <!--<div v-sortable>
-          <li v-for="i in items" :key="i.id">{{ i.id }}</li>
-        </div>-->
-
         <div
           class="md-layout md-gutter list"
           style="border-color:#fcdd86; border-width: 3px; border-style: solid; border-radius: 10px; margin: 3px;"
@@ -56,117 +36,18 @@
         >
           <div
             class="md-layout-item md-size-100 md-layout md-gutter md-alignment-bottom-center"
-            v-if="!newBoolean"
-            v-for="(input, i) in inputs1"
-            :key="input.id"
-          >
-            <md-field class="md-layout-item md-size-55">
-              <label>Lernergebnis</label>
-              <md-textarea
-                v-if="modOutcome.length > 0 && existence"
-                v-model.trim="input.name[0]"
-                @change="addChanged('inputs1', i + 1 + '0')"
-                :disabled="role != 1 && role != 2"
-                md-autogrow
-              />
-              <md-input v-else disabled />
-            </md-field>
-            <md-field class="md-layout-item md-size-20">
-              <label>Kompetenzen</label>
-              <md-select
-                v-if="modOutcome.length > 0 && existence"
-                v-model="input.name[1]"
-                @md-selected="addChanged('inputs1', i + 1 + '1')"
-                :disabled="role != 1 && role != 2"
-                md-dense
-              >
-                <md-option
-                  value="https://bmake.th-brandenburg.de/module/SubjectMatterCompetence"
-                  >Fachkompetenz</md-option
-                >
-                <md-option
-                  value="https://bmake.th-brandenburg.de/module/SocialCompetence"
-                  >Sozialkompetenz</md-option
-                >
-                <md-option
-                  value="https://bmake.th-brandenburg.de/module/SelfCompetence"
-                  >SelfCompetence</md-option
-                >
-              </md-select>
-              <md-select v-else md-dense disabled />
-            </md-field>
-            <md-field class="md-layout-item md-size-25">
-              <label>Bloomsche Taxonomie</label>
-              <md-select
-                v-if="modOutcome.length > 0 && existence"
-                v-model="input.name[2]"
-                @md-selected="addChanged('inputs1', i + 1 + '2')"
-                :disabled="
-                  (role != 1 && role != 2) ||
-                    input.name[1] !=
-                      'https://bmake.th-brandenburg.de/module/SubjectMatterCompetence'
-                "
-                md-dense
-              >
-                <md-option
-                  value="https://bmake.th-brandenburg.de/module/BloomTax_Remember"
-                  >Erinnern</md-option
-                >
-                <md-option
-                  value="https://bmake.th-brandenburg.de/module/BloomTax_Understand"
-                  >Verstehen</md-option
-                >
-                <md-option
-                  value="https://bmake.th-brandenburg.de/module/BloomTax_Apply"
-                  >Anwenden</md-option
-                >
-                <md-option
-                  value="https://bmake.th-brandenburg.de/module/BloomTax_Analyze"
-                  >Analysieren</md-option
-                >
-                <md-option
-                  value="https://bmake.th-brandenburg.de/module/BloomTax_Evaluate"
-                  >Evaluieren</md-option
-                >
-                <md-option
-                  value="https://bmake.th-brandenburg.de/module/BloomTax_Create"
-                  >Erschaffen</md-option
-                >
-              </md-select>
-              <md-select v-else md-dense disabled />
-              <span v-if="role == 1 || role == 2">
-                <i
-                  class="fas fa-minus-circle"
-                  @click="remove('1', i)"
-                  v-show="i || (!i && inputs1.length > 1)"
-                />
-                <i
-                  class="fas fa-plus-circle"
-                  @click="add('1', i)"
-                  v-show="i == inputs1.length - 1"
-                />
-                <i
-                  class="handle fas fa-arrows-alt"
-                  style="margin-left: 10px"
-                ></i>
-              </span>
-            </md-field>
-          </div>
-          <div
-            class="md-layout-item md-size-100 md-layout md-gutter md-alignment-bottom-center"
             style="margin-bottom: 10px"
-            v-if="newBoolean"
             v-for="(input, i) in $v.inputs1.$each.$iter"
-            :key="input.id"
+            :key="input.$model.id"
           >
             <md-field
-              class="md-layout-item md-size-55"
+              class="md-layout-item md-size-55 noPadding"
               :class="getValidationClass('inputs1')"
             >
               <label>Lernergebnis*</label>
               <md-textarea
                 v-if="modOutcome.length > 0 && existence"
-                v-model.trim="input.name.$model[0]"
+                v-model.trim="input.$model.name[0]"
                 @change="addChanged('inputs1', parseInt(i) + 1 + '0')"
                 :disabled="role != 1 && role != 2"
                 md-autogrow
@@ -176,11 +57,11 @@
                 >Bitte alle bearbeitbaren Felder vervollständigen</span
               >
             </md-field>
-            <md-field class="md-layout-item md-size-20">
+            <md-field class="md-layout-item md-size-20 noPadding">
               <label>Kompetenzen*</label>
               <md-select
                 v-if="modOutcome.length > 0 && existence"
-                v-model="input.name.$model[1]"
+                v-model="input.$model.name[1]"
                 @md-selected="
                   addChanged('inputs1', parseInt(i) + 1 + '1'),
                     clearBloom(parseInt(i))
@@ -203,11 +84,11 @@
               </md-select>
               <md-select v-else md-dense disabled />
             </md-field>
-            <md-field class="md-layout-item md-size-25">
+            <md-field class="md-layout-item md-size-25 noPadding">
               <label>Bloomsche Taxonomie*</label>
               <md-select
                 v-if="modOutcome.length > 0 && existence"
-                v-model="input.name.$model[2]"
+                v-model="input.$model.name[2]"
                 @md-selected="addChanged('inputs1', parseInt(i) + 1 + '2')"
                 :disabled="
                   (role != 1 && role != 2) ||
@@ -269,44 +150,9 @@
         >
           <div
             class="md-layout-item md-size-100"
-            v-if="!newBoolean"
-            v-for="(input, i) in inputs2"
-            :key="input.id"
-          >
-            <md-field>
-              <label>Inhaltselement</label>
-              <md-textarea
-                v-if="modOutcome.length > 0 && existence"
-                v-model.trim="input.name"
-                @change="addChanged('inputs2', i)"
-                :disabled="role != 1 && role != 2"
-                md-autogrow
-              />
-              <md-input v-else disabled />
-              <span v-if="role == 1 || role == 2">
-                <i
-                  class="fas fa-minus-circle"
-                  @click="remove('2', i)"
-                  v-show="i || (!i && inputs2.length > 1)"
-                />
-                <i
-                  class="fas fa-plus-circle"
-                  @click="add('2', i)"
-                  v-show="i == inputs2.length - 1"
-                />
-                <i
-                  class="handle fas fa-arrows-alt"
-                  style="margin-left: 10px"
-                ></i>
-              </span>
-            </md-field>
-          </div>
-          <div
-            class="md-layout-item md-size-100"
             style="margin-bottom: 10px"
-            v-if="newBoolean"
             v-for="(input, i) in $v.inputs2.$each.$iter"
-            :key="input.id"
+            :key="input.$model.id"
           >
             <md-field :class="getValidationClass('inputs2')">
               <label>Inhaltselement*</label>
@@ -373,44 +219,9 @@
         >
           <div
             class="md-layout-item md-size-100"
-            v-if="!newBoolean"
-            v-for="(input, i) in inputs4"
-            :key="input.id"
-          >
-            <md-field>
-              <label>Prüfungsleistung</label>
-              <md-textarea
-                v-if="modOutcome.length > 0 && existence"
-                v-model="input.name"
-                @change="addChanged('inputs4', i)"
-                :disabled="role != 1 && role != 2"
-                md-autogrow
-              />
-              <md-input v-else disabled />
-              <span v-if="role == 1 || role == 2">
-                <i
-                  class="fas fa-minus-circle"
-                  @click="remove('4', i)"
-                  v-show="i || (!i && inputs4.length > 1)"
-                />
-                <i
-                  class="fas fa-plus-circle"
-                  @click="add('4', i)"
-                  v-show="i == inputs4.length - 1"
-                />
-                <i
-                  class="handle fas fa-arrows-alt"
-                  style="margin-left: 10px"
-                ></i>
-              </span>
-            </md-field>
-          </div>
-          <div
-            class="md-layout-item md-size-100"
             style="margin-bottom: 10px"
-            v-if="newBoolean"
             v-for="(input, i) in $v.inputs4.$each.$iter"
-            :key="input.id"
+            :key="input.$model.id"
           >
             <md-field :class="getValidationClass('inputs4')">
               <label>Prüfungsleistung*</label>
@@ -628,9 +439,7 @@ export default {
     validateInput() {
       this.$v.$touch();
 
-      if (!this.newBoolean) {
-        this.updateData();
-      } else if (!this.$v.$invalid) {
+      if (!this.$v.$invalid) {
         this.updateData();
       }
     },
@@ -648,35 +457,7 @@ export default {
     remove(input, index) {
       this["inputs" + input].splice(index, 1);
       if (input == "1") {
-        //if (index > this.countLearn - 1) {
-
-        /*let removeLength = index + 1;
-        let totalLength = this.inputs1.length + 1;
-        let i = this.changedArray.inputs1.indexOf(removeLength + "0");
-        if (i > -1) {
-          this.changedArray.inputs1.splice(i, 1);
-        } else {
-          //todo: remove actions
-        }
-        i = this.changedArray.inputs1.indexOf(removeLength + "1");
-        if (i > -1) {
-          this.changedArray.inputs1.splice(i, 1);
-        }
-
-        if (totalLength > removeLength) {
-          for (let i = removeLength + 1; i <= totalLength; i++) {
-            let a = this.changedArray.inputs1.indexOf(i + "0");
-            if (a > -1) {
-              this.changedArray.inputs1[a] = i - 1 + "0";
-            }
-            let b = this.changedArray.inputs1.indexOf(i + "1");
-            if (b > -1) {
-              this.changedArray.inputs1[b] = i - 1 + "1";
-            }
-          }
-        }*/
         this.changedArray["inputs" + input].push(index + "0");
-        //}
       } else {
         this.changedArray["inputs" + input].push(index);
       }
@@ -1061,7 +842,7 @@ export default {
           } else {
             this.existence = false;
           }
-          this.$v.$reset();
+          //this.$v.$reset();
         })
         .catch(e => {
           this.errors.push(e);
@@ -1124,7 +905,7 @@ export default {
       if (this.newBoolean) {
         this.checkModule();
       }
-      this.$v.$reset();
+      //this.$v.$reset();
     },
     generatePDF() {
       const doc = new jsPDF();
@@ -1238,5 +1019,10 @@ span {
 }
 .list > *.dragging {
   box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.2);
+}
+
+.noPadding {
+  padding-right: 0px !important;
+  padding-left: 0px !important;
 }
 </style>
