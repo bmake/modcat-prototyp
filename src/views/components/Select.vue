@@ -16,20 +16,6 @@
     </div>
 
     <div class="md-layout-item md-size-30">
-      <!--- <md-field>
-        <label style="font-size:18px;">Modul</label>
-        <md-select v-model="course" name="course" id="course">
-          <md-option
-            v-if="Object.keys(moduleList).length > 0"
-            v-for="(modulejson, index) in moduleList"
-            v-bind:value="modulejson.module.value"
-            v-bind:key="index"
-          >
-            {{ modulejson.label.value }}
-          </md-option>
-        </md-select>
-      </md-field> --->
-
       <md-autocomplete
         v-model="course"
         name="course"
@@ -50,10 +36,6 @@
         </div>
       </md-autocomplete>
 
-      <!--- <md-autocomplete v-model="value" :md-options="modules" @md-changed="getModules" @md-opened="getModules">
-      <label>Country</label>
-      <template slot="md-autocomplete-item" slot-scope="{ item }">{{ item.name }}</template>
-    </md-autocomplete> --->
     </div>
   </div>
 </template>
@@ -107,7 +89,7 @@ export default {
         "} ORDER BY ?label";
 
       axios
-        .post("http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query", query, {
+        .post("http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query", query, {
           headers: { "Content-Type": "application/sparql-query" }
         })
         .then(response => {

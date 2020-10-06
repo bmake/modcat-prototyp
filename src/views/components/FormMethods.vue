@@ -6,12 +6,11 @@
     <form @submit.prevent="validateInput">
       <div>
         <div class="md-layout md-gutter">
-
           <div class="md-layout-item md-size-100">
             <div
-                    class="alert alert-danger md-layout-item md-size-100"
-                    style="margin-top: 30px"
-                    v-if="newBoolean && !existence"
+              class="alert alert-danger md-layout-item md-size-100"
+              style="margin-top: 30px"
+              v-if="newBoolean && !existence"
             >
               Bitte vervollständigen Sie zuerst die Rahmendaten!
             </div>
@@ -21,9 +20,9 @@
             <md-field>
               <label>Modulbezeichnung</label>
               <md-input
-                      v-if="modMethod.length > 0 && existence"
-                      v-model="modMethod[0].label.value"
-                      disabled
+                v-if="modMethod.length > 0 && existence"
+                v-model="modMethod[0].label.value"
+                disabled
               />
               <md-input v-else disabled />
             </md-field>
@@ -31,116 +30,116 @@
         </div>
 
         <div
-                class="md-layout md-gutter"
-                style="border-color:#fcdd86; border-width: 3px; border-style: solid; border-radius: 10px; margin:3px;"
-                v-sortable="{ onEnd: reorder1, handle: '.handle' }"
+          class="md-layout md-gutter"
+          style="border-color:#fcdd86; border-width: 3px; border-style: solid; border-radius: 10px; margin:3px;"
+          v-sortable="{ onEnd: reorder1, handle: '.handle' }"
         >
           <div
-                  class="md-layout-item md-size-100"
-                  style="margin-bottom: 10px"
-                  v-for="(input, i) in $v.inputs1.$each.$iter"
-                  :key="input.$model.id"
+            class="md-layout-item md-size-100"
+            style="margin-bottom: 10px"
+            v-for="(input, i) in $v.inputs1.$each.$iter"
+            :key="input.$model.id"
           >
             <md-field :class="getValidationClass('inputs1')">
               <label>Lehr- und Lernmethode*</label>
               <md-textarea
-                      v-if="modMethod.length > 0 && existence"
-                      v-model.trim="input.$model.name"
-                      @change="addChanged('inputs1', i)"
-                      :disabled="role != 1 && role != 2"
-                      md-autogrow
+                v-if="modMethod.length > 0 && existence"
+                v-model.trim="input.$model.name"
+                @change="addChanged('inputs1', i)"
+                :disabled="role != 1 && role != 2"
+                md-autogrow
               />
               <md-input v-else disabled />
               <span v-if="role == 1 || role == 2">
                 <i
-                        class="fas fa-minus-circle"
-                        @click="remove('1', i)"
-                        v-show="inputs1.length > 1"
+                  class="fas fa-minus-circle"
+                  @click="remove('1', i)"
+                  v-show="inputs1.length > 1"
                 />
                 <i
-                        class="fas fa-plus-circle"
-                        @click="add('1', i)"
-                        v-show="i == inputs1.length - 1"
+                  class="fas fa-plus-circle"
+                  @click="add('1', i)"
+                  v-show="i == inputs1.length - 1"
                 />
                 <i
-                        class="handle fas fa-arrows-alt"
-                        style="margin-left: 10px"
+                  class="handle fas fa-arrows-alt"
+                  style="margin-left: 10px"
                 ></i>
               </span>
               <span class="md-error" v-if="!input.name.required"
-              >Pflichtfeld</span
+                >Pflichtfeld</span
               >
             </md-field>
           </div>
         </div>
 
         <div
-                class="md-layout md-gutter md-alignment-center-right"
-                style="border-color:#fcdd86; border-width: 3px; border-style: solid; border-radius: 10px; margin:3px;"
-                v-sortable="{ onEnd: reorder2, handle: '.handle' }"
+          class="md-layout md-gutter md-alignment-center-right"
+          style="border-color:#fcdd86; border-width: 3px; border-style: solid; border-radius: 10px; margin:3px;"
+          v-sortable="{ onEnd: reorder2, handle: '.handle' }"
         >
           <div class="md-layout-item md-size-30">
             <md-field>
               <label>Gesamtworkload</label>
               <md-input
-                      type="number"
-                      v-if="modMethod.length > 0"
-                      v-model="modMethod[0].workloadSum.value"
-                      disabled
+                type="number"
+                v-if="modMethod.length > 0"
+                v-model="modMethod[0].workloadSum.value"
+                disabled
               />
               <md-input v-else disabled />
               <span v-if="modMethod.length > 0" class="md-suffix">Stunden</span>
             </md-field>
           </div>
           <div
-                  class="md-layout-item md-layout md-gutter md-size-70"
-                  style="margin-bottom: 10px"
-                  v-for="(input, i) in $v.inputs2.$each.$iter"
-                  :key="input.$model.id"
+            class="md-layout-item md-layout md-gutter md-size-70"
+            style="margin-bottom: 10px"
+            v-for="(input, i) in $v.inputs2.$each.$iter"
+            :key="input.$model.id"
           >
             <div class="md-layout-item md-size-70">
               <md-field :class="getValidationClass('inputs2')">
                 <label>Workload-Komponente*</label>
                 <md-input
-                        v-if="modMethod.length > 0 && existence"
-                        v-model.trim="input.$model.name[0]"
-                        @change="addChanged('inputs2', i)"
-                        :disabled="role != 1 && role != 2"
+                  v-if="modMethod.length > 0 && existence"
+                  v-model.trim="input.$model.name[0]"
+                  @change="addChanged('inputs2', i)"
+                  :disabled="role != 1 && role != 2"
                 />
                 <md-input v-else disabled />
                 <span class="md-error" v-if="!input.name.required"
-                >Bitte beide Felder vervollständigen</span
+                  >Bitte beide Felder vervollständigen</span
                 >
               </md-field>
             </div>
             <div
-                    class="md-layout-item md-size-30"
-                    style="margin-right: 0; padding: 0"
+              class="md-layout-item md-size-30"
+              style="margin-right: 0; padding: 0"
             >
               <md-field :class="getValidationClass('inputs2')">
                 <label>in Stunden*</label>
                 <md-input
-                        type="number"
-                        v-if="modMethod.length > 0 && existence"
-                        v-model="input.$model.name[1]"
-                        @change="addChanged('inputs2', i)"
-                        :disabled="role != 1 && role != 2"
+                  type="number"
+                  v-if="modMethod.length > 0 && existence"
+                  v-model="input.$model.name[1]"
+                  @change="addChanged('inputs2', i)"
+                  :disabled="role != 1 && role != 2"
                 />
                 <md-input v-else disabled />
                 <span v-if="role == 1 || role == 2">
                   <i
-                          class="fas fa-minus-circle"
-                          @click="remove('2', i)"
-                          v-show="inputs2.length > 1"
+                    class="fas fa-minus-circle"
+                    @click="remove('2', i)"
+                    v-show="inputs2.length > 1"
                   />
                   <i
-                          class="fas fa-plus-circle"
-                          @click="add('2', i)"
-                          v-show="i == inputs2.length - 1"
+                    class="fas fa-plus-circle"
+                    @click="add('2', i)"
+                    v-show="i == inputs2.length - 1"
                   />
                   <i
-                          class="handle fas fa-arrows-alt"
-                          style="margin-left: 10px"
+                    class="handle fas fa-arrows-alt"
+                    style="margin-left: 10px"
                   ></i>
                 </span>
               </md-field>
@@ -153,16 +152,16 @@
           <div class="md-layout-item">
             <div class="col-md-12">
               <md-button
-                      v-if="modMethod.length > 0"
-                      type="submit"
-                      :disabled="role != 1 && role != 2"
-              >Änderung speichern</md-button
+                v-if="modMethod.length > 0"
+                type="submit"
+                :disabled="role != 1 && role != 2"
+                >Änderung speichern</md-button
               >
               <md-button
-                      v-if="modMethod.length > 0"
-                      @click="resetData"
-                      :disabled="role != 1 && role != 2"
-              >Änderung verwerfen</md-button
+                v-if="modMethod.length > 0"
+                @click="resetData"
+                :disabled="role != 1 && role != 2"
+                >Änderung verwerfen</md-button
               >
               <!--<md-button v-if="modMethod.length > 0" @click="generatePDF"
                 >Download</md-button
@@ -175,14 +174,6 @@
                   Änderungen gespeichert!
                 </div>
               </transition>
-              <p>input1 is: {{ inputs1 }}</p>
-              <p>input2 is: {{ inputs2 }}</p>
-              <p>changedArray: {{ changedArray }}</p>
-              <p>delete: {{ this.delete }}</p>
-              <p>insert: {{ insert }}</p>
-              <p>where: {{ where }}</p>
-              <p>update: {{ updateQuery }}</p>
-              <p>modOutcome: {{ modMethod[0] }}</p>
             </div>
           </div>
         </div>
@@ -231,9 +222,6 @@ export default {
       insert: [],
       where: [],
       countWorkload: 0,
-      /*whereStr:
-        " schema:interactivityType ?interType ;  " +
-        " module:addProp_CompWL ?addPropCompWL . ",*/
       inputs1: [
         {
           id: 0,
@@ -283,25 +271,21 @@ export default {
   },
   methods: {
     reorder1({ oldIndex, newIndex }) {
-      console.log(oldIndex, newIndex);
       const movedItem = this.inputs1.splice(oldIndex, 1)[0];
       this.inputs1.splice(newIndex, 0, movedItem);
       this.addChanged("inputs1", newIndex + 1);
       this.addChanged("inputs1", oldIndex + 1);
     },
     reorder2({ oldIndex, newIndex }) {
-      console.log(oldIndex, newIndex);
-      const movedItem = this.inputs2.splice((oldIndex - 1), 1)[0];
-      this.inputs2.splice((newIndex - 1), 0, movedItem);
+      const movedItem = this.inputs2.splice(oldIndex - 1, 1)[0];
+      this.inputs2.splice(newIndex - 1, 0, movedItem);
       this.addChanged("inputs2", newIndex);
       this.addChanged("inputs2", oldIndex);
     },
     validateInput() {
       this.$v.$touch();
 
-      if (!this.newBoolean) {
-        this.updateData();
-      } else if (!this.$v.$invalid) {
+      if (!this.$v.$invalid) {
         this.updateData();
       }
     },
@@ -529,7 +513,7 @@ export default {
           } else {
             this.existence = false;
           }
-          this.$v.$reset();
+          //this.$v.$reset();
         })
         .catch(e => {
           this.errors.push(e);
@@ -574,7 +558,7 @@ export default {
       if (this.newBoolean) {
         this.checkModule();
       }
-      this.$v.$reset();
+      //this.$v.$reset();
     },
     generatePDF() {
       const doc = new jsPDF();
@@ -613,9 +597,13 @@ export default {
         "}";
 
       axios
-        .post("http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query", q, {
-          headers: { "Content-Type": "application/sparql-query" }
-        })
+        .post(
+          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query",
+          q,
+          {
+            headers: { "Content-Type": "application/sparql-query" }
+          }
+        )
         .then(response => {
           let res = response.data.results.bindings;
           pdfHead.push(["Modul-Kurzkennzeichen", res[0].code.value]);
@@ -680,5 +668,6 @@ input {
 }
 span {
   top: 32px;
+  padding: 0;
 }
 </style>
