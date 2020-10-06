@@ -238,7 +238,7 @@ export default {
     queryModuleInfo(q) {
       axios
         .post(
-          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
+          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query",
           q,
           {
             headers: { "Content-Type": "application/sparql-query" }

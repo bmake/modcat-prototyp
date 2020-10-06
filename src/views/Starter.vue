@@ -238,7 +238,7 @@ export default {
     generatePDF() {
       let query = selectQueries.selectQueries("PDF", this.selectedModule, this.studyProgram)
       axios
-        .post("http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query", query, {
+        .post("http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query", query, {
           headers: { "Content-Type": "application/sparql-query" }
         })
         .then(response => {

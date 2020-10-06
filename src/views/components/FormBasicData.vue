@@ -358,13 +358,6 @@
             Änderungen gespeichert!
           </div>
         </transition>
-        <p>{{ updateQuery }}</p>
-        <p>changed Array: {{ changedArray }}</p>
-        <p>deleteArray: {{ this.delete }}</p>
-        <p>insertArray: {{ this.insert }}</p>
-        <p>where: {{ this.where }}</p>
-        <p>modBasis: {{ modBasis }}</p>
-        <p>update: {{ updateQuery }}</p>
       </div>
     </form>
   </div>
@@ -442,7 +435,7 @@ export default {
       "WHERE {?lecturer a module:Lecturer; rdfs:label ?lecturerLabel.}";
     axios
       .post(
-        "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
+        "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query",
         query,
         {
           headers: { "Content-Type": "application/sparql-query" }
@@ -892,7 +885,7 @@ export default {
 
       axios
         .post(
-          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/update",
+          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/update",
           query,
           {
             headers: { "Content-Type": "application/sparql-update" }
@@ -1082,7 +1075,7 @@ export default {
         " }";
 
       axios
-        .post("http://fbw-sgmwi.th-brandenburg.de:3030/modcat/query", q, {
+        .post("http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query", q, {
           headers: { "Content-Type": "application/sparql-query" }
         })
         .then(response => {
