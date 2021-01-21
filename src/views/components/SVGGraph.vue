@@ -59,6 +59,7 @@ export default {
   methods: {
     styleImportedSVG(d) {
       let _this = this;
+      //refresh, clear all mouse events and all effects on nodes at start
       d3.select("#nodes")
         .selectAll("g")
         .on("mouseover", null)
@@ -67,18 +68,21 @@ export default {
       d3.select("#nodes")
         .selectAll("g")
         .classed("selected", false);
+      //refresh, set stroke-width of all edges with default value
       d3.select("#layer1")
         .selectAll("path")
         .style("stroke-width", 0.2);
+      //refresh, set arrows of all edges with default value
       d3.select("defs")
         .selectAll("marker")
         .selectAll("path")
         .attr("transform", "scale(0.8) rotate(180) translate(12.5,0)");
+      //add mouse events on non-faded nodes
       d3.select("#nodes")
         .selectAll("g:not(.faded)")
         .on("mouseover", function() {
           if (_this.role > 0) {
-            this.style.cursor = "pointer";
+            this.style.cursor = "pointer"; //hand cursor
             this.style.opacity = 0.5;
             this.style.transition = "0.3s opacity";
           } else {
@@ -90,8 +94,9 @@ export default {
         })
         .on("click", function() {
           if (_this.role > 0) {
+            //set as default
             _this.upG();
-            //const g = d3.select('#nodes').selectAll("g")
+            //remove all graph element effects of last click
             const g = d3.select("#nodes").selectAll("g");
             g.classed("selected", false);
             d3.select("#layer1")
@@ -110,8 +115,7 @@ export default {
               id == "nodeModulKuerzel" ||
               id == "nodeStudiengang" ||
               id == "nodeOrdnung" ||
-              id == "nodePerson" ||
-              id == "nodeModulkuerzel"
+              id == "nodePerson"
             ) {
               _this.form = "BasicData";
               d3.select("#nodeModulKuerzel").classed("selected", true);
@@ -293,14 +297,19 @@ export default {
         .attr("dx", relaCenSem);
     },
     upG() {
+      //refresh function, set the graph to default
+      //a role must be choosed
       if (this.role > 0) {
+        //set default, make all faded elements as non-faded (colorful)
         d3.select("#layer1")
           .selectAll(".faded")
           .classed("faded", false);
+        //set all elements of relevant group as faded (grey)
         let group = ".group" + this.role;
         d3.select("#layer1")
           .selectAll(group)
           .classed("faded", true);
+        //groupS and groupL as seperate groups should be faded as default
         d3.select("#layer1")
           .selectAll(".groupS")
           .classed("faded", true);
@@ -316,6 +325,7 @@ export default {
   },
   watch: {
     moduleUri: {
+      // if module choosed, the query for basic data will be sent to fuseki, BasicData-Component as default
       handler(uri) {
         d3.select("#nodes")
           .selectAll("g")
@@ -407,6 +417,7 @@ export default {
       }
     },
     role: {
+      //role choosed, graph will be updated (not relevant part will be shown as grey)
       handler(v) {
         this.upG();
         this.styleImportedSVG();

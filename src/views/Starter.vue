@@ -97,13 +97,6 @@
                 v-if="role == 1 || role == 2"
                 style="text-align: right; padding: 1em"
               >
-                <md-button
-                  id="download"
-                  @click="generatePDF"
-                  class="md-simple md-success md-lg"
-                  :disabled="selectedModule == ''"
-                  >Modulbeschreibung herunterladen</md-button
-                >
               </div>
               <div
                 v-else
