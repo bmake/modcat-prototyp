@@ -13,7 +13,7 @@
       >
         {{ tab }}
       </button>
-      <component :is="currentTab" class="tab" />
+      <component :is="currentTabComponent" class="tab" />
     </div>
   </div>
 </template>
@@ -22,6 +22,8 @@
 import FormLiteratureDOI from "./FormLiteratureDOI";
 import FormLiteratureISBN from "./FormLiteratureISBN";
 import FormLiteratureManual from "./FormLiteratureManual";
+
+console.log(FormLiteratureDOI);
 
 export default {
   components: {
@@ -43,9 +45,14 @@ export default {
   data() {
     return {
       modLiterature: [],
-      currentTab: "FormLiteratureDOI",
-      tabs: ["FormLiteratureDOI", "FormLiteratureISBN", "FormLiteratureManual"],
+      currentTab: "DOI",
+      tabs: ["DOI", "ISBN", "Manual"],
     };
+  },
+  computed: {
+    currentTabComponent() {
+      return "FormLiterature" + this.currentTab;
+    },
   },
 };
 </script>

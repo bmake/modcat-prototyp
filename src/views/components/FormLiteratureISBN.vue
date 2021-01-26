@@ -9,7 +9,7 @@ export default {
   name: "literatureISBN",
   data() {
     return {
-      isActive: true,
+      label: "ISBN",
     };
   },
 };

@@ -9,7 +9,7 @@ export default {
   name: "literatureDOI",
   data() {
     return {
-      isActive: true,
+      label: "DOI",
     };
   },
 };
