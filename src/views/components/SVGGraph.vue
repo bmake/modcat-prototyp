@@ -202,7 +202,7 @@ export default {
                 _this.queryModuleInfo(queryOutcome);
               }
             } else if (id == "nodeLiteratur") {
-              //_this.form = "Literature";
+              _this.form = "Literature"; // Enable Literature Form
               d3.select("#nodeModulKuerzel").classed("selected", true);
               d3.select("#nodeLiteratur").classed("selected", true);
               d3.select("#nodePerson").classed("selected", true);
