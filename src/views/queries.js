@@ -176,7 +176,56 @@ export const selectQueries = {
         "}" +
         "  } " +
         "}";
+      //SPARQL-Abfrage Log-Ausgabe
+      console.log("queries.js - Method");
+      console.log(SVGqueryMethod);  
       return SVGqueryMethod;
+    }
+    
+    //SPARQL-Abfrage für Literatur
+    if (param == "SVGqueryLiteratur") {
+    let SVGqueryLiteratur =
+      "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+      "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+      "PREFIX schema: <https://schema.org/> " +
+      "SELECT DISTINCT ?code ?label ?interTypes ?workloadSum ?workloadDetails " +
+      "WHERE { " +
+      "  <" +
+      moduleUri +
+      "> schema:courseCode ?code ; " +
+      "         schema:name ?label .  " +
+      'FILTER(lang(?label) = "de")' +
+      /*
+      "  OPTIONAL { " +
+      '    SELECT (GROUP_CONCAT(?teachingFormName; separator=" | ") as ?interTypes) ' +
+      "    WHERE { " +
+      " module:TeachingForms_" +
+      code +
+      "      schema:itemListElement ?teachingForm . " +
+      " ?teachingForm schema:name ?teachingFormName ; " +
+      "       schema:position ?teachingFormPos . " +
+      "    } ORDER BY ?teachingFormPos " +
+      "  } " +
+      "  OPTIONAL { " +
+      'SELECT (SUM(?workloadValue) as ?workloadSum) (GROUP_CONCAT(?workloadDetail; separator=" | ") as ?workloadDetails) ' +
+      "WHERE { " +
+      "  SELECT DISTINCT * " +
+      "  WHERE { " +
+      " module:CompWL_" +
+      code +
+      "      schema:valueReference ?workload . " +
+      "      ?workload schema:name ?workloadName ; " +
+      "                schema:value ?workloadValue . " +
+      '      BIND(CONCAT(?workloadName, " @ ", STR(?workloadValue)) as ?workloadDetail) ' +
+      "    } ORDER BY ?workload " +
+      "}" +
+      "  } " +
+      */
+      "}";
+    //SPARQL-Abfrage Log-Ausgabe
+    console.log("queries.js - Literatur");
+    console.log(SVGqueryLiteratur);  
+    return SVGqueryLiteratur;
     }
 
     if (param == "PDF") {

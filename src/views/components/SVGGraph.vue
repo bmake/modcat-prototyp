@@ -243,6 +243,11 @@ export default {
                 .selectAll("marker")
                 .selectAll("path.groupL")
                 .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
+               //Aufruf "queries.js" -> initialer Select (GET) der Literatur
+              if (_this.modLiterature.length == 0 && !_this.newBoolean) {
+                let queryLiterature = selectQueries.selectQueries("SVGqueryLiteratur", _this.moduleUri, _this.studyProgram)
+                _this.queryModuleInfo(queryLiterature);
+              } 
             }
           }
         });
