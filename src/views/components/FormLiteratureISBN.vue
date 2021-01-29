@@ -1,6 +1,7 @@
 <template>
   <div>
-    <label> Hey there! Enter a ISBN!</label>
+    <p> ISBN: {{ message }} </p>
+    <input v-model="message">
   </div>
 </template>
 
@@ -9,7 +10,7 @@ export default {
   name: "literatureISBN",
   data() {
     return {
-      label: "ISBN",
+      message: "Hier ISBN eingeben!"
     };
   },
 };
