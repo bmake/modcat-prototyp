@@ -80,6 +80,9 @@ export const selectQueries = {
         " schema:value ?studysem . " +
         "  } " +
         " } ";
+      //SPARQL-Abfrage Log-Ausgabe
+      console.log("queries.js - Base");
+      console.log(SVGqueryBase);
       return SVGqueryBase;
     }
 
@@ -136,6 +139,9 @@ export const selectQueries = {
         "    } ORDER BY ?contentPos " +
         "  } " +
         " } ";
+      //SPARQL-Abfrage Log-Ausgabe
+      console.log("queries.js - Outcomes");
+      console.log(SVGqueryOutcome);
       return SVGqueryOutcome;
     }
 
@@ -178,54 +184,64 @@ export const selectQueries = {
         "}";
       //SPARQL-Abfrage Log-Ausgabe
       console.log("queries.js - Method");
-      console.log(SVGqueryMethod);  
+      console.log(SVGqueryMethod);
       return SVGqueryMethod;
     }
-    
+
     //SPARQL-Abfrage für Literatur
     if (param == "SVGqueryLiteratur") {
-    let SVGqueryLiteratur =
-      "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
-      "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
-      "PREFIX schema: <https://schema.org/> " +
-      "SELECT DISTINCT ?code ?label ?interTypes ?workloadSum ?workloadDetails " +
-      "WHERE { " +
-      "  <" +
-      moduleUri +
-      "> schema:courseCode ?code ; " +
-      "         schema:name ?label .  " +
-      'FILTER(lang(?label) = "de")' +
-      /*
-      "  OPTIONAL { " +
-      '    SELECT (GROUP_CONCAT(?teachingFormName; separator=" | ") as ?interTypes) ' +
-      "    WHERE { " +
-      " module:TeachingForms_" +
-      code +
-      "      schema:itemListElement ?teachingForm . " +
-      " ?teachingForm schema:name ?teachingFormName ; " +
-      "       schema:position ?teachingFormPos . " +
-      "    } ORDER BY ?teachingFormPos " +
-      "  } " +
-      "  OPTIONAL { " +
-      'SELECT (SUM(?workloadValue) as ?workloadSum) (GROUP_CONCAT(?workloadDetail; separator=" | ") as ?workloadDetails) ' +
-      "WHERE { " +
-      "  SELECT DISTINCT * " +
-      "  WHERE { " +
-      " module:CompWL_" +
-      code +
-      "      schema:valueReference ?workload . " +
-      "      ?workload schema:name ?workloadName ; " +
-      "                schema:value ?workloadValue . " +
-      '      BIND(CONCAT(?workloadName, " @ ", STR(?workloadValue)) as ?workloadDetail) ' +
-      "    } ORDER BY ?workload " +
-      "}" +
-      "  } " +
-      */
-      "}";
-    //SPARQL-Abfrage Log-Ausgabe
-    console.log("queries.js - Literatur");
-    console.log(SVGqueryLiteratur);  
-    return SVGqueryLiteratur;
+      let SVGqueryLiteratur =
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+        "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+        "PREFIX schema: <https://schema.org/> " +
+        "SELECT ?code ?label ?literatur ?titel ?auflage ?autor ?autorLabel ?datePublished " +
+        "?isbn ?pageStart ?pageEnd ?publisher ?publisherName " +
+        "WHERE { " +
+        //"  <" +
+        //moduleUri +
+        //"> " +
+        "module:GPMO " + //Nur zum Test, muss dann am Ende für die 3 Zeilen davor weichen
+        "schema:courseCode ?code ; " +
+        "         schema:name ?label .  " +
+        'FILTER(lang(?label) = "de")' +
+        //"  <" +
+        //moduleUri +
+        //"> " +
+        "module:GPMO " + //Nur zum Test, muss dann am Ende für die 3 Zeilen davor weichen
+        "schema:citation ?literatur. " +
+        "?literatur schema:headline ?titel; " +
+        "           schema:datePublished ?datePublished. " +
+        //Optionale Angaben Book
+        "OPTIONAL { " +
+        "?literatur a schema:Book; " +
+        "          schema:author ?autor; " +
+        "          schema:bookEdition ?auflage. " +
+        "?autor rdfs:label ?autorLabel. " +
+        "OPTIONAL { " +
+        "?literatur schema:isbn ?isbn. " +
+        "} " +
+        "} " +
+        //Optionale Angaben Article
+        "OPTIONAL { " +
+        "?literatur a schema:Article; " +
+        "          schema:author ?autor. " +
+        "?autor rdfs:label ?autorLabel. " +
+        "OPTIONAL{ " +
+        "?literatur schema:pageStart ?pageStart; " +
+        "           schema:pageEnd ?pageEnd. " +
+        "} " +
+        "} " +
+        //Optionale Angaben DigitalDocument
+        "OPTIONAL { " +
+        "?literatur a schema:DigitalDocument; " +
+        "             schema:publisher ?publisher. " +
+        "?publisher schema:legalName ?publisherName " +
+        "} " +
+        "}";
+      //SPARQL-Abfrage Log-Ausgabe
+      console.log("queries.js - Literatur");
+      console.log(SVGqueryLiteratur);
+      return SVGqueryLiteratur;
     }
 
     if (param == "PDF") {
@@ -370,5 +386,5 @@ export const selectQueries = {
         " }";
       return generatePDF;
     }
-  }
+  },
 };

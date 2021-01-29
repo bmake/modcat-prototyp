@@ -131,6 +131,7 @@
                     :basicFilled="basicFilled"
                     :modOutcomeOrigin="modOutcome"
                     :modMethodOrigin="modMethod"
+                    :modLiteratureOrigin="modLiter"
                   />
                 </keep-alive>
               </div>
