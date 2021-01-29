@@ -1,6 +1,7 @@
 <template>
   <div>
-    <label> Hey there! Enter a DOI!</label>
+    <p> DOI: {{ message }} </p>
+    <input v-model="message">
   </div>
 </template>
 
@@ -9,7 +10,7 @@ export default {
   name: "literatureDOI",
   data() {
     return {
-      label: "DOI",
+      message: "Hier DOI eingeben!"
     };
   },
 };
