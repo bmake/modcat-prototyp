@@ -194,8 +194,8 @@ export const selectQueries = {
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
         "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
         "PREFIX schema: <https://schema.org/> " +
-        "SELECT ?code ?label ?literatur ?titel ?auflage ?autor ?autorLabel ?datePublished " +
-        "?isbn ?pageStart ?pageEnd ?publisher ?publisherName " +
+        "SELECT ?code ?label ?literaturUri ?titel ?auflage ?autorUri ?autorLabel ?autorVorname " +
+        "?autorNachname ?datePublished ?isbn ?litIdentifier ?pageStart ?pageEnd ?publisherUri ?publisherName " +
         "WHERE { " +
         //"  <" +
         //moduleUri +
@@ -208,36 +208,40 @@ export const selectQueries = {
         //moduleUri +
         //"> " +
         "module:GPMO " + //Nur zum Test, muss dann am Ende für die 3 Zeilen davor weichen
-        "schema:citation ?literatur. " +
-        "?literatur schema:headline ?titel; " +
-        "           schema:datePublished ?datePublished. " +
+        "schema:citation ?literaturUri. " +
+        "?literaturUri schema:headline ?titel; " +
+        "              schema:datePublished ?datePublished. " +
+        //Optionale Angaben Autor
+        "OPTIONAL { " +
+        "?literaturUri schema:author ?autorUri. " +          
+        "?autorUri  schema:givenName ?autorVorname; " +
+        "           schema:familyName ?autorNachname. " +  
+        "} " +
         //Optionale Angaben Book
         "OPTIONAL { " +
-        "?literatur a schema:Book; " +
-        "          schema:author ?autor; " +
+        "?literaturUri a schema:Book; " +
         "          schema:bookEdition ?auflage. " +
-        "?autor rdfs:label ?autorLabel. " +
+        "   OPTIONAL { " +
+        "   ?literaturUri schema:isbn ?isbn. " +
+        "   } " +
+        "} " +
+        // Optionale Angaben Book-Identifier (DOI) 
         "OPTIONAL { " +
-        "?literatur schema:isbn ?isbn. " +
-        "} " +
-        "} " +
+        "?literaturUri schema:identifier ?litIdentifier. " +
+        "} " +  
         //Optionale Angaben Article
         "OPTIONAL { " +
-        "?literatur a schema:Article; " +
-        "          schema:author ?autor. " +
-        "?autor rdfs:label ?autorLabel. " +
-        "OPTIONAL{ " +
-        "?literatur schema:pageStart ?pageStart; " +
+        "?literaturUri a schema:Article; " +
+        "           schema:pageStart ?pageStart; " +
         "           schema:pageEnd ?pageEnd. " +
-        "} " +
         "} " +
         //Optionale Angaben DigitalDocument
         "OPTIONAL { " +
-        "?literatur a schema:DigitalDocument; " +
-        "             schema:publisher ?publisher. " +
-        "?publisher schema:legalName ?publisherName " +
+        "?literaturUri a schema:DigitalDocument; " +
+        "              schema:publisher ?publisherUri. " +
+        "?publisherUri schema:legalName ?publisherName " +
         "} " +
-        "}";
+        "}"; //Schließende Klammer vom WHERE
       //SPARQL-Abfrage Log-Ausgabe
       console.log("queries.js - Literatur");
       console.log(SVGqueryLiteratur);
