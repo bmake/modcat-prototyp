@@ -5,7 +5,7 @@
       <b>Literatur </b>
     </div>
     <form>
-      <div>
+      <div> 
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-100">
             <div
@@ -16,19 +16,19 @@
               Bitte vervollständigen Sie zuerst die Rahmendaten!
             </div>
           </div>
-          <!--
+          <!-- Ausgabe des ausgewählten Moduls (außerhalb des gelben Rahmens) -->
           <div class="md-layout-item md-size-80">
             <md-field>
               <label>Modulbezeichnung</label>
               <md-input
-                v-if="modMethod.length > 0 && existence"
-                v-model="modMethod[0].label.value"
+                v-if="modLiterature.length > 0 && existence"
+                v-model="modLiterature[0].label.value"
                 disabled
               />
               <md-input v-else disabled />
             </md-field>
           </div>
-          -->
+          
         </div>
 
         <!-- Gelber Rahmen -->
@@ -37,79 +37,26 @@
           style="border-color:#fcdd86; border-width: 3px; border-style: solid; border-radius: 10px; margin:3px;"
         >
           <!-- Ausgabe der SPARQL-Daten in Inputs -->
-          <div>
-            <!-- Hier soll die SPARQL-Ausgabe hin -->
-            <div class="md-layout-item md-size-80">
-              <md-field>
-                <label>Modulbezeichnung</label>
-                <md-input
-                  v-if="modLiterature.length > 0 && existence"
-                  v-model="modLiterature[0].label.value"
-                  disabled
-                />
-                <md-input v-else disabled />
-              </md-field>
-            </div>
-            <div>
-              <!-- Simple Tabelle => Nur Test, am Ende wieder löschen! -->
-              <table style="width:100%">
-                <tr>
-                  <td>
-                    <md-field>
-                      <label>Titel</label>
-                      <md-input v-model="modLiterature[0].titel.value"
-                    /></md-field>
-                  </td>
-                  <td>
-                    <md-field>
-                      <label>Auflage</label>
-                      <md-input v-model="modLiterature[0].auflage.value"
-                    /></md-field>
-                  </td>
-                  <td>
-                    <md-field>
-                      <label>Autor</label>
-                      <md-input v-model="modLiterature[0].autorLabel.value"
-                    /></md-field>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <md-field
-                      ><md-input v-model="modLiterature[1].titel.value"
-                    /></md-field>
-                  </td>
-                  <td>
-                    <md-field
-                      ><md-input v-model="modLiterature[1].auflage.value"
-                    /></md-field>
-                  </td>
-                  <td>
-                    <md-field
-                      ><md-input v-model="modLiterature[1].autorLabel.value"
-                    /></md-field>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <md-field
-                      ><md-input v-model="modLiterature[2].titel.value"
-                    /></md-field>
-                  </td>
-                  <td>
-                    <md-field
-                      ><md-input v-model="modLiterature[2].auflage.value"
-                    /></md-field>
-                  </td>
-                  <td>
-                    <md-field
-                      ><md-input v-model="modLiterature[2].autorLabel.value"
-                    /></md-field>
-                  </td>
-                </tr>
-              </table>
-            </div>
-            <br />
+          <div class="md-layout-item md-size-100">            
+               <!-- 
+               <div> 
+                 <md-input v-model="modLiterature[0].titel.value"/> 
+               </div>-->
+            
+            <!-- Literatur-Block (Zusammenfassung) -->
+            <div v-for="literature in modLiterature"
+                  :key="literature.titel.value" 
+                  >
+                   <!-- {{ literature.titel.value }} -->
+                  <md-field>
+                    <label>Literatur</label>
+                     <md-input
+                          v-model="literature.titel.value"
+                          disabled
+                        />
+                  </md-field>
+            </div> 
+
             <div>
               <!-- Tab-Control -->
               <div>
@@ -126,12 +73,191 @@
               </div>
             </div>
             <br /><br />
+
+            <!-- Ausgeklappte Anzeige einer Literatur -->
+            <!-- var "detailAnsicht" ist der Schalter für Anzeige -->
+            <div v-if="detailAnsicht=true"> 
+              <label> Ausgeklappte Anzeige einer Literatur</label>
+                <!-- Titel -->
+                <div class="md-size-100">
+                    <md-field>
+                      <label>Titel</label>
+                      <md-input
+                          v-if="modLiterature.length > 0 && existence"
+                          v-model="modLiterature[0].titel.value"
+                          disabled
+                        />
+                      <md-input v-else disabled />
+                    </md-field>
+                </div>
+                <!-- ISBN -->
+                <div class="md-size-100">
+                    <md-field>
+                      <label>ISBN</label>
+                      <md-input
+                          v-if="modLiterature.length > 0 && existence"
+                          v-model="modLiterature[0].isbn.value"
+                          disabled
+                        />
+                      <md-input v-else disabled />
+                    </md-field>
+                </div>  
+                <!-- Herausgeber/ Verlag -->
+                <!-- Hier kommen noch dieverse Fehler, wie Existenz von Publisher besser prüfen? -->
+                <div class="md-size-100"
+                     v-if="modLiterature.length > 0 && modLiterature[5].hasOwnProperty('publisherName')">
+                    <md-field >
+                      <label>Herausgeber/ Verlag</label>
+                      <md-input 
+                          v-model="modLiterature[5].publisherName.value"
+                      />
+                    </md-field>
+                </div>
+              
+                <!-- Veröffentlichung -->
+                <div class="md-size-100">
+                    <md-field>
+                      <label>Veröffentlichung</label>
+                      <md-input
+                          v-if="modLiterature.length > 0 && existence"
+                          v-model="modLiterature[0].datePublished.value"
+                          disabled
+                        />
+                      <md-input v-else disabled />
+                    </md-field>
+                </div>
+                <!-- Auflage -->
+                <div class="md-size-100">
+                    <md-field>
+                      <label>Auflage</label>
+                      <md-input
+                          v-if="modLiterature.length > 0 && existence"
+                          v-model="modLiterature[0].auflage.value"
+                          disabled
+                        />
+                      <md-input v-else disabled />
+                    </md-field>
+                </div>
+                <!-- URL z.B. OPAC-Link, Springer-Link oder arxiv-Link -->
+                <!-- 
+                <div class="md-layout-item md-size-100">
+                    <md-field>
+                      <label>URL</label>
+                      <md-input
+                          v-if="modLiterature.length > 0 && existence"
+                          v-model="modLiterature[0].url.value"
+                          disabled
+                        />
+                      <md-input v-else disabled />
+                    </md-field>
+                </div>
+                -->
+                <!-- DOI-Link (Identifier nicht ausgeben, aber DOI-Link, wenn vorhanden) -->
+                <!-- 
+                <div class="md-layout-item md-size-100">
+                    <md-field>
+                      <label>DOI</label>
+                      <md-input
+                          v-if="modLiterature.length > 0 && existence"
+                          v-model="modLiterature[0].litIdentifier.value"
+                          disabled
+                        />
+                      <md-input v-else disabled />
+                    </md-field>
+                </div>
+                -->
+                  <!-- Autoren/innen -->
+                <div class="md-size-100"> 
+                  <label>Autoren/innen</label>
+                  <div class="md-layout md-gutter"> 
+                    <!-- Nachname -->
+                    <div class="md-layout-item md-size-20">
+                        <md-field>
+                          <label>Nachname</label>
+                          <md-input
+                              v-if="modLiterature.length > 0 && existence"
+                              v-model="modLiterature[0].autorNachname.value"
+                              disabled
+                            />
+                          <md-input v-else disabled />
+                        </md-field>
+                    </div>
+                    <!-- Vorname -->
+                    <div class="md-layout-item md-size-20">
+                        <md-field>
+                          <label>Vorname</label>
+                          <md-input
+                              v-if="modLiterature.length > 0 && existence"
+                              v-model="modLiterature[0].autorVorname.value"
+                              disabled
+                            />
+                          <md-input v-else disabled />
+                        </md-field>
+                    </div>
+                    <!-- URL/ Profil-Link -->
+                    <div class="md-layout-item md-size-60">
+                        <md-field>
+                          <label>Profil-Link/URL</label>
+                          <md-input
+                              v-if="modLiterature.length > 0 && existence"
+                              v-model="modLiterature[0].autorUri.value"
+                              disabled
+                            />
+                          <md-input v-else disabled />
+                        </md-field>
+                    </div>
+                  </div>
+                  <!-- ENDE Autoren/innen -->
+                  <!-- Autoren/innen -->
+                  <div class="md-layout md-gutter"> 
+                    <!-- Nachname -->
+                    <div class="md-layout-item md-size-20">
+                        <md-field>
+                          <label>Nachname</label>
+                          <md-input
+                              v-if="modLiterature.length > 0 && existence"
+                              v-model="modLiterature[1].autorNachname.value"
+                              disabled
+                            />
+                          <md-input v-else disabled />
+                        </md-field>
+                    </div>
+                    <!-- Vorname -->
+                    <div class="md-layout-item md-size-20">
+                        <md-field>
+                          <label>Vorname</label>
+                          <md-input
+                              v-if="modLiterature.length > 0 && existence"
+                              v-model="modLiterature[1].autorVorname.value"
+                              disabled
+                            />
+                          <md-input v-else disabled />
+                        </md-field>
+                    </div>
+                    <!-- URL/ Profil-Link -->
+                    <div class="md-layout-item md-size-60">
+                        <md-field>
+                          <label>Profil-Link/URL</label>
+                          <md-input
+                              v-if="modLiterature.length > 0 && existence"
+                              v-model="modLiterature[1].autorUri.value"
+                              disabled
+                            />
+                          <md-input v-else disabled />
+                        </md-field>
+                    </div>
+                  </div>
+                  <!-- ENDE Autoren/innen -->
+                </div>
+            </div>
             <div>
               <!-- Text-Ausgabe JSON-->
+              <!-- 
               <span v-once>JSON-Ausgabe: {{ this.modLiterature }}</span>
+              -->
             </div>
-          </div>
-        </div>
+          
+        </div> <!-- ENDE Gelber Rahmen -->
       </div>
       <!-- Buttons -->
       <div class="md-layout md-gutter">
@@ -154,6 +280,7 @@
             </transition>
           </div>
         </div>
+      </div>
       </div>
     </form>
   </div>
@@ -200,6 +327,7 @@ export default {
       existence: true,
       notification: false,
       modMethod: [],
+      detailAnsicht: true,
     };
   },
   computed: {

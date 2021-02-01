@@ -420,6 +420,8 @@ export default {
           newData[0].workloadDetails.value = workloadDetails;
         }
         this.$emit("modMethods", newData);
+        //Log
+        console.log(newData);
       },
     },
     modLiterature: {
@@ -427,6 +429,8 @@ export default {
         if (this.modLiterature.length > 0) {
           this.$emit("modLiterature", v);
         }
+        //Log
+        console.log(v);
       },
     },
     modTeachers: {
