@@ -4,7 +4,7 @@
     <div style="text-align:left; font-size:26px;">
       <b>Literatur </b>
     </div>
-    <form>
+    <form @submit.prevent="">
       <div>
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-100">
@@ -43,14 +43,10 @@
                </div>-->
 
             <!-- Literatur-Block (Zusammenfassung) -->
-            <div
-              v-for="literature in modLiterature"
-              :key="literature.titel.value"
-            >
+            <div v-for="literature in literatureHeadings" :key="literature">
               <!-- {{ literature.titel.value }} -->
-              <md-field>
-                <label>Literatur</label>
-                <md-input v-model="literature.titel.value" disabled />
+              <md-field class="literatureHeading">
+                <p v-html="literature"></p>
               </md-field>
             </div>
 
@@ -248,7 +244,7 @@
                   </div>
                 </div>
                 <!-- ENDE Autoren/innen -->
-                <div>{{ computedLiterature[1] }}</div>
+                <div>{{ cleanedLiterature[1] }}</div>
               </div>
             </div>
             <div>
@@ -332,10 +328,12 @@ export default {
     };
   },
   computed: {
+    // Current tab position for literature submission
     currentTabComponent() {
       return "FormLiterature" + this.currentTab;
     },
-    computedLiterature() {
+    // Clean raw Fuseki response (aggregate authors, merge duplicates)
+    cleanedLiterature() {
       if (this.modLiteratureOrigin.length < 1) return [];
 
       let cleanedLiterature = [];
@@ -349,7 +347,7 @@ export default {
         // index = -1 -> doesn't exist
         if (indexInResult < 0) {
           // Clone literature object
-          let newEntry = Object.assign({}, entry);
+          let newEntry = JSON.parse(JSON.stringify(entry));
 
           // Build author object
           let autor = {
@@ -380,6 +378,36 @@ export default {
         }
       }
       return cleanedLiterature;
+    },
+    literatureHeadings() {
+      let beschreibungen = [];
+      let data = this.cleanedLiterature;
+
+      for (let entry of data) {
+        if (typeof entry.autoren[0].autorVorname === "undefined") continue;
+        let autoren = entry.autoren
+          .map(
+            (autor) =>
+              autor.autorVorname.value +
+              ", " +
+              autor.autorNachname.value.charAt(0) +
+              "."
+          )
+          .join(", ");
+        beschreibungen.push(
+          autoren +
+            ", " +
+            entry.datePublished.value +
+            ". " +
+            entry.titel.value +
+            ",<br><a href='" +
+            entry.literaturUri.value +
+            "'>" +
+            entry.literaturUri.value +
+            "</a>"
+        );
+      }
+      return beschreibungen;
     },
   },
   mounted() {
@@ -453,6 +481,9 @@ export default {
 </script>
 
 <style scoped>
+.literatureHeading {
+  text-align: left;
+}
 .tab-button {
   padding: 6px 10px;
   border-top-left-radius: 3px;
