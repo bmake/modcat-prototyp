@@ -43,12 +43,56 @@
                </div>-->
 
             <!-- Literatur-Block (Zusammenfassung) -->
+              <vsa-list
+                :init-active="false"
+                :auto-collapse="true"
+              >
+                <vsa-item v-for="literature in modLiterature" :key="literature.index" >
+                  <vsa-heading>
+                    <md-field>
+                    <label>Literatur</label>
+                     <md-input
+                          v-model="literature.titel.value"
+                          disabled
+                        />
+                  </md-field>
+                  </vsa-heading>
+
+                  <vsa-content>
+                    <md-field>
+                      <label>Titel</label>
+                      <md-input
+                          v-if="modLiterature.length > 0 && existence"
+                          v-model="modLiterature.titel.value"
+                          disabled
+                        />
+                      <md-input v-else disabled />
+                    </md-field>
+                  </vsa-content>
+                </vsa-item>
+              </vsa-list>
+            <!-- End Toggle Control -->
+
+            <div v-for="literature in modLiterature"
+                  :key="literature.titel.value" 
+                  >
+                   <!-- {{ literature.titel.value }} -->
+                  <md-field>
+                    <label>Literatur</label>
+                     <md-input
+                          v-model="literature.titel.value"
+                          disabled
+                        />
+                  </md-field>
+            </div> 
+            <!--- Prepared Headings -> Use above! -->
             <div v-for="literature in literatureHeadings" :key="literature">
               <!-- {{ literature.titel.value }} -->
               <md-field class="literatureHeading">
                 <p v-html="literature"></p>
               </md-field>
             </div>
+
 
             <div>
               <!-- Tab-Control -->
@@ -290,6 +334,14 @@ import FormLiteratureManual from "./FormLiteratureManual";
 import { validationMixin } from "vuelidate";
 import { alphaNum, required } from "vuelidate/lib/validators";
 import Sortable from "sortablejs";
+import {
+  VsaList,
+  VsaItem,
+  VsaHeading,
+  VsaContent,
+  VsaIcon
+} from 'vue-simple-accordion';
+import 'vue-simple-accordion/dist/vue-simple-accordion.css';
 
 console.log(FormLiteratureDOI);
 
@@ -298,6 +350,11 @@ export default {
     FormLiteratureDOI,
     FormLiteratureISBN,
     FormLiteratureManual,
+    VsaList,
+    VsaItem,
+    VsaHeading,
+    VsaContent,
+    VsaIcon,
   },
   props: [
     "modLiteratureOrigin",
@@ -325,6 +382,11 @@ export default {
       notification: false,
       modMethod: [],
       detailAnsicht: true,
+      item: [
+        { heading: 'Test: Literatur X', content: 'Sollte vlt ein objekt sein? keine ahnung vlt sollte auch item ein objekt sein!'},
+        { heading: 'Test: Literatur Y', content: 'Sollte vlt ein objekt sein? keine ahnung vlt sollte auch item ein objekt sein!'},
+        { heading: 'Test: Literatur Z', content: 'Sollte vlt ein objekt sein? keine ahnung vlt sollte auch item ein objekt sein!'},
+      ]
     };
   },
   computed: {
@@ -514,5 +576,19 @@ input {
 span {
   top: 32px;
   padding: 0;
+}
+.vsa-list {
+--vsa-max-width: 720px;
+--vsa-min-width: 300px;
+--vsa-text-color: rgba(55, 55, 55, 1);
+--vsa-highlight-color: rgba(85, 119, 170, 1);
+--vsa-bg-color: rgba(255, 255, 255, 1);
+--vsa-border-color: rgba(0, 0, 0, 0.2);
+--vsa-border-width: 1px;
+--vsa-border-style: solid;
+--vsa-heading-padding: 1rem 1rem;
+--vsa-content-padding: 1rem 1rem;
+--vsa-default-icon-size: 1;
+
 }
 </style>
