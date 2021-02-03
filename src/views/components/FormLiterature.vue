@@ -388,9 +388,9 @@ export default {
         let autoren = entry.autoren
           .map(
             (autor) =>
-              autor.autorVorname.value +
+              autor.autorNachname.value +
               ", " +
-              autor.autorNachname.value.charAt(0) +
+              autor.autorVorname.value.charAt(0) +
               "."
           )
           .join(", ");
