@@ -626,6 +626,8 @@ export default {
       //this.$v.$reset();
     },
     updateData() {
+      //Methopde erforderlich, wenn wir "+" und "-" Button hinbekommen!?
+
       // für SPARQL-DataUpdate
       /*axios
          .post(
