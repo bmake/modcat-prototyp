@@ -45,48 +45,54 @@
             <!-- Literatur-Block (Zusammenfassung) 
             v-if="cleanedLiterature[index].hasOwnProperty('publisherName')">
             -->
-              <vsa-list  >
-              <vsa-item v-for="literature in cleanedLiterature"
-                        :key="literature"
+            <vsa-list>
+              <vsa-item
+                v-for="literature in cleanedLiterature"
+                :key="literature"
               >
                 <vsa-heading>
-                      <p class="literatureHeading" v-html="literature.summary.value"></p>
+                  <p
+                    class="literatureHeading"
+                    v-html="literature.summary.value"
+                  ></p>
                 </vsa-heading>
-                
+
                 <vsa-content>
                   <!-- Titel -->
-                  <div class="md-size-100"
-                       v-if="literature.hasOwnProperty('titel')">
+                  <div
+                    class="md-size-100"
+                    v-if="literature.hasOwnProperty('titel')"
+                  >
                     <md-field>
                       <label>Titel</label>
-                      <md-input
-                          v-model="literature.titel.value"
-                          disabled
-                      />
+                      <md-input v-model="literature.titel.value" disabled />
                     </md-field>
                   </div>
                   <!-- ISBN -->
-                  <div class="md-size-100"
-                       v-if="literature.hasOwnProperty('isbn')">
+                  <div
+                    class="md-size-100"
+                    v-if="literature.hasOwnProperty('isbn')"
+                  >
                     <md-field>
                       <label>ISBN</label>
-                      <md-input
-                        v-model="literature.isbn.value"
-                        disabled
-                      />
+                      <md-input v-model="literature.isbn.value" disabled />
                     </md-field>
                   </div>
                   <!-- Herausgeber/ Verlag -->
-                  <div class="md-size-100"
-                       v-if="literature.hasOwnProperty('publisherName')">
+                  <div
+                    class="md-size-100"
+                    v-if="literature.hasOwnProperty('publisherName')"
+                  >
                     <md-field>
                       <label>Herausgeber/ Verlag</label>
                       <md-input v-model="literature.publisherName.value" />
                     </md-field>
                   </div>
                   <!-- Veröffentlichung -->
-                  <div class="md-size-100"
-                       v-if="literature.hasOwnProperty('datePublished')">
+                  <div
+                    class="md-size-100"
+                    v-if="literature.hasOwnProperty('datePublished')"
+                  >
                     <md-field>
                       <label>Veröffentlichung</label>
                       <md-input
@@ -96,84 +102,83 @@
                     </md-field>
                   </div>
                   <!-- Auflage -->
-                  <div class="md-size-100"
-                       v-if="literature.hasOwnProperty('auflage')">
+                  <div
+                    class="md-size-100"
+                    v-if="literature.hasOwnProperty('auflage')"
+                  >
                     <md-field>
                       <label>Auflage</label>
+                      <md-input v-model="literature.auflage.value" disabled />
+                    </md-field>
+                  </div>
+                  <!-- URL z.B. OPAC-Link, Springer-Link oder arxiv-Link -->
+                  <div
+                    class="md-size-100"
+                    v-if="literature.hasOwnProperty('url')"
+                  >
+                    <md-field>
+                      <label>URL</label>
+                      <md-input v-model="literature.url.value" disabled />
+                    </md-field>
+                  </div>
+                  <!-- DOI-Link (Identifier nicht ausgeben, aber DOI-Link, wenn vorhanden) -->
+                  <div
+                    class="md-size-100"
+                    v-if="literature.hasOwnProperty('litIdentifier')"
+                  >
+                    <md-field>
+                      <label>DOI</label>
                       <md-input
-                        v-model="literature.auflage.value"
+                        v-model="literature.litIdentifier.value"
                         disabled
                       />
                     </md-field>
                   </div>
-                  <!-- URL z.B. OPAC-Link, Springer-Link oder arxiv-Link -->
-                  <div class="md-size-100"
-                       v-if="literature.hasOwnProperty('url')">
-                      <md-field>
-                        <label>URL</label>
-                        <md-input
-                            v-model="literature.url.value"
-                            disabled
-                          />
-                      </md-field>
-                  </div>
-                  <!-- DOI-Link (Identifier nicht ausgeben, aber DOI-Link, wenn vorhanden) -->
-                  <div class="md-size-100"
-                       v-if="literature.hasOwnProperty('litIdentifier')">
-                      <md-field>
-                        <label>DOI</label>
-                        <md-input
-                            v-model="literature.litIdentifier.value"
-                            disabled
-                          />
-                      </md-field>
-                  </div>
 
                   <!-- Autoren/innen -->
-                  <div class="md-size-100"
-                       v-if="literature.hasOwnProperty('autoren')">
-                       <label>Autoren/innen</label>
-                        <!-- v-for Autoren -->
-                        <div class="md-layout md-gutter" 
-                            v-for="autor in literature.autoren"
-                            :key="autor">
-
-                            <!-- Nachname -->
-                            <div class="md-layout-item md-size-20">
-                              <md-field>
-                                <label>Nachname</label>
-                                <md-input
-                                  v-model="autor.autorNachname.value"
-                                  disabled
-                                />
-                              </md-field>
-                            </div>
-                            <!-- Vorname -->
-                            <div class="md-layout-item md-size-20">
-                              <md-field>
-                                <label>Vorname</label>
-                                <md-input
-                                  v-model="autor.autorVorname.value"
-                                  disabled
-                                />
-                              </md-field>
-                            </div>
-                            <!-- URL/ Profil-Link -->
-                            <div class="md-layout-item md-size-60">
-                              <md-field>
-                                <label>Profil-Link/URL</label>
-                                <md-input
-                                  v-model="autor.autorUri.value"
-                                  disabled
-                                />
-                              </md-field>
-                            </div>
-                        </div> 
+                  <div
+                    class="md-size-100"
+                    v-if="literature.hasOwnProperty('autoren')"
+                  >
+                    <label>Autoren/innen</label>
+                    <!-- v-for Autoren -->
+                    <div
+                      class="md-layout md-gutter"
+                      v-for="autor in literature.autoren"
+                      :key="autor"
+                    >
+                      <!-- Nachname -->
+                      <div class="md-layout-item md-size-20">
+                        <md-field>
+                          <label>Nachname</label>
+                          <md-input
+                            v-model="autor.autorNachname.value"
+                            disabled
+                          />
+                        </md-field>
+                      </div>
+                      <!-- Vorname -->
+                      <div class="md-layout-item md-size-20">
+                        <md-field>
+                          <label>Vorname</label>
+                          <md-input
+                            v-model="autor.autorVorname.value"
+                            disabled
+                          />
+                        </md-field>
+                      </div>
+                      <!-- URL/ Profil-Link -->
+                      <div class="md-layout-item md-size-60">
+                        <md-field>
+                          <label>Profil-Link/URL</label>
+                          <md-input v-model="autor.autorUri.value" disabled />
+                        </md-field>
+                      </div>
+                    </div>
                   </div>
-                  
                 </vsa-content>
               </vsa-item>
-              </vsa-list>
+            </vsa-list>
             <!-- End Toggle Control -->
 
             <!-- 
@@ -188,7 +193,7 @@
                           disabled
                         />
                   </md-field>
-            </div> --> 
+            </div> -->
             <!--- Prepared Headings -> Use above! -->
             <!-- 
             <div v-for="literature in literatureHeadings" :key="literature">
@@ -198,7 +203,6 @@
               </md-field>
             </div>
             -->
-
 
             <div>
               <!-- Tab-Control -->
@@ -212,7 +216,11 @@
                   {{ tab }}
                 </button>
                 <!-- Subview laden -->
-                <component :is="currentTabComponent" class="tab" />
+                <component
+                  :is="currentTabComponent"
+                  class="tab"
+                  @queryChanged="receiveInsertQuery"
+                />
               </div>
             </div>
             <br /><br />
@@ -398,10 +406,14 @@
             </div>
             <div>
               <!-/- Text-Ausgabe JSON-->
-              <!-- 
+            <!-- 
               <span v-once>JSON-Ausgabe: {{ this.modLiterature }}</span>
               -->
-            
+            <div>
+              <b>Query generiert durch Manuell.vue:</b>
+              <br />
+              {{ this.insertQuery }}
+            </div>
           </div>
           <!-- ENDE Gelber Rahmen -->
         </div>
@@ -444,9 +456,9 @@ import {
   VsaItem,
   VsaHeading,
   VsaContent,
-  VsaIcon
-} from 'vue-simple-accordion';
-import 'vue-simple-accordion/dist/vue-simple-accordion.css';
+  VsaIcon,
+} from "vue-simple-accordion";
+import "vue-simple-accordion/dist/vue-simple-accordion.css";
 
 console.log(FormLiteratureDOI);
 
@@ -487,11 +499,24 @@ export default {
       notification: false,
       modMethod: [],
       detailAnsicht: true,
+      insertQuery: null,
       item: [
-        { heading: 'Test: Literatur X', content: 'Sollte vlt ein objekt sein? keine ahnung vlt sollte auch item ein objekt sein!'},
-        { heading: 'Test: Literatur Y', content: 'Sollte vlt ein objekt sein? keine ahnung vlt sollte auch item ein objekt sein!'},
-        { heading: 'Test: Literatur Z', content: 'Sollte vlt ein objekt sein? keine ahnung vlt sollte auch item ein objekt sein!'},
-      ]
+        {
+          heading: "Test: Literatur X",
+          content:
+            "Sollte vlt ein objekt sein? keine ahnung vlt sollte auch item ein objekt sein!",
+        },
+        {
+          heading: "Test: Literatur Y",
+          content:
+            "Sollte vlt ein objekt sein? keine ahnung vlt sollte auch item ein objekt sein!",
+        },
+        {
+          heading: "Test: Literatur Z",
+          content:
+            "Sollte vlt ein objekt sein? keine ahnung vlt sollte auch item ein objekt sein!",
+        },
+      ],
     };
   },
   computed: {
@@ -502,15 +527,15 @@ export default {
     // Clean raw Fuseki response (aggregate authors, merge duplicates)
     cleanedLiterature() {
       if (this.modLiteratureOrigin.length < 1) return [];
- 
+
       let cleanedLiterature = [];
- 
+
       for (let entry of this.modLiteratureOrigin) {
         // Get index of entry in cleanedLiterature array
         let indexInResult = cleanedLiterature
           .map((e) => e.literaturUri.value)
           .indexOf(entry.literaturUri.value);
- 
+
         // index = -1 -> doesn't exist
         if (indexInResult < 0) {
           // Clone literature object
@@ -520,24 +545,24 @@ export default {
             cleanedLiterature.push(newEntry);
             continue;
           }
- 
+
           // Build author object
           let autor = {
             autorVorname: newEntry.autorVorname,
             autorNachname: newEntry.autorNachname,
             autorUri: newEntry.autorUri,
           };
- 
+
           // Restructure author part
           delete newEntry.autorVorname;
           delete newEntry.autorNachname;
           delete newEntry.autorUri;
           newEntry.autoren = [];
           newEntry.autoren.push(autor);
- 
+
           // Append restructured literature entry
           cleanedLiterature.push(newEntry);
- 
+
           // Literature already exists
         } else {
           let newAutor = {
@@ -549,7 +574,7 @@ export default {
           cleanedLiterature[indexInResult].autoren.push(newAutor);
         }
       }
- 
+
       // Attach summary property
       cleanedLiterature.forEach((entry) => {
         entry.summary = {};
@@ -563,6 +588,9 @@ export default {
     this.initialState();
   },
   methods: {
+    receiveInsertQuery(query) {
+      this.insertQuery = query;
+    },
     getLiteratureHeading(literatureData) {
       let autoren = "";
       if (!literatureData.hasOwnProperty("autoren")) {
@@ -627,7 +655,6 @@ export default {
     },
     updateData() {
       //Methopde erforderlich, wenn wir "+" und "-" Button hinbekommen!?
-
       // für SPARQL-DataUpdate
       /*axios
          .post(
@@ -697,17 +724,16 @@ span {
   padding: 0;
 }
 .vsa-list {
---vsa-max-width: 100%;
---vsa-min-width: 40%;
---vsa-text-color: rgba(55, 55, 55, 1);
---vsa-highlight-color: rgba(85, 119, 170, 1);
---vsa-bg-color: rgba(255, 255, 255, 1);
---vsa-border-color: rgba(0, 0, 0, 0.2);
---vsa-border-width: 1px;
---vsa-border-style: solid;
---vsa-heading-padding: 1rem 1rem;
---vsa-content-padding: 1rem 1rem;
---vsa-default-icon-size: 1;
-
+  --vsa-max-width: 100%;
+  --vsa-min-width: 40%;
+  --vsa-text-color: rgba(55, 55, 55, 1);
+  --vsa-highlight-color: rgba(85, 119, 170, 1);
+  --vsa-bg-color: rgba(255, 255, 255, 1);
+  --vsa-border-color: rgba(0, 0, 0, 0.2);
+  --vsa-border-width: 1px;
+  --vsa-border-style: solid;
+  --vsa-heading-padding: 1rem 1rem;
+  --vsa-content-padding: 1rem 1rem;
+  --vsa-default-icon-size: 1;
 }
 </style>
