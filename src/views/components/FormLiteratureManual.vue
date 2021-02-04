@@ -131,33 +131,55 @@
                 <!-- Autoren/innen -->
                 <div class="md-size-100"> 
                   <label>Autoren/innen</label>
-                  <div class="md-layout md-gutter"> 
+                  <div  v-for="(autor, i) in autoren"
+                        :key="autor"
+                        class="md-layout md-gutter"> 
                     <!-- Nachname -->
                     <div class="md-layout-item md-size-20">
                         <md-field>
                           <label>Nachname</label>
-                          <md-input v-model="inputs.autorNachnameNeu1"/>
+                          <md-input v-model="autor.autorNachnameNeu"/>
                         </md-field>
                     </div>
                     <!-- Vorname -->
                     <div class="md-layout-item md-size-20">
                         <md-field>
                           <label>Vorname</label>
-                          <md-input v-model="inputs.autorVornameNeu1"/>
+                          <md-input v-model="autor.autorVornameNeu"/>
                         </md-field>
                     </div>
                     <!-- URL/ Profil-Link -->
                     <div class="md-layout-item md-size-60">
                         <md-field>
                           <label>Profil-Link/URL</label>
-                          <md-input v-model="inputs.autorProfilLinkNeu1"/>
+                          <md-input v-model="autor.autorProfilLinkNeu"/>
+                          <!-- Plus, Minus, Verschieben-Symbole -->
+                          <span>
+                          <i
+                            class="fas fa-minus-circle"
+                            @click="removeAutor('autoren', i)"
+                             v-show="autoren.length > 1"
+                           
+                          />
+                          <i
+                            class="fas fa-plus-circle"
+                            @click="addAutor('autoren', i)"
+                            v-show="i == autoren.length - 1"
+                          />
+                          <i
+                              class="handle fas fa-arrows-alt"
+                              style="margin-left: 10px"
+                          />
+                          </span>
                         </md-field>
+                        
                     </div>
-                  </div>
+                    
+                   </div>
                 </div> <!-- ENDE Autoren/innen -->
                 
               <!-- TestAusagbe -->
-              <p>Message is: {{ inputs.titelNeu }} - {{ inputs.isbnNeu }} </p>
+              <p>Message is: {{ inputs.titelNeu }} - {{ inputs.titelInBandNeu }} - {{autoren}}</p>
               <button class="md-layout-item md-size-20" @click="updateData">
                 QueryLaden
               </button>
@@ -170,6 +192,7 @@ export default {
   name: "literatureManual",
   data() {
     return {
+      changedArray: [],
       label: "Manuell",
       litAuswahl: "Buch",
       prefixes:
@@ -191,16 +214,28 @@ export default {
           jahrInBandNeu: [],
           seitenVonInBandNeu: [],
           seitenBisInBandNeu: [],
-          autorUri: [],
-          autorNachnameNeu1: [],
-          autorVornameNeu1: [],
-          autorProfilLinkNeu1: [],
-          literaturUri: [] 
+          literaturUri: [],
+          literaturJournalUri: [] 
         },
-      ]
+      ],
+      autoren:[
+        {        
+          autorUri: [],
+          autorNachnameNeu: [],
+          autorVornameNeu: [],
+          autorProfilLinkNeu: [],
+        }
+      ],
     };
   },
   methods: {
+    addAutor(input, index) {
+      this[input].push({ autorNachnameNeu: [] });
+    },
+    removeAutor(input, index) {
+      this[input].splice(index, 1);
+      this.changedArray[input].push(index);
+    },
     /*
      ### Module GPMO
       module:GPMO schema:citation <http://doi.org/10.1007/978-3-8348-2428-8>.
@@ -212,19 +247,20 @@ export default {
 			schema:bookEdition "7. Auflage" ;
 			schema:datePublished "2012" . 
 			
-resGate:Andreas_Gadatsch a module:Author ;
-			rdfs:label "Andreas Gadatsch" ;
-			schema:givenName "Andreas" ;
-			schema:familyName "Gadatsch" ;
-			schema:honorificPrefix "Prof. Dr." .
+      resGate:Andreas_Gadatsch a module:Author ;
+            rdfs:label "Andreas Gadatsch" ;
+            schema:givenName "Andreas" ;
+            schema:familyName "Gadatsch" ;
+            schema:honorificPrefix "Prof. Dr." .
     */
     updateData() {
       let query = this.prefixes;
       
-      //literaturUri + autorUri müss noch erzeugt werden
+      //literaturUri + autorUri müss noch erzeugt werden (siehe Philipp)
       //this.inputs.literaturUri = "<http://th-brandenburg.de/" + uuidv4() + ">";
-      this.inputs.literaturUri = "<http://th-brandenburg.de/121234234>";
-      this.inputs.autorUri = "<http://aurotUri.com/123456>";
+      this.inputs.literaturUri = "<http://th-brandenburg.de/literatur/121234234>";
+      this.autoren[0].autorUri = "<http://th-brandenburg.de/autor/123456>";
+      //this.autoren[1].autorUri = "<http://th-brandenburg.de/autor/12345643546>";
       
       if (this.inputs.titelNeu.length > 0) {
         query += " INSERT { ";
@@ -235,40 +271,107 @@ resGate:Andreas_Gadatsch a module:Author ;
         if (this.litAuswahl === "Buch"){
           query += this.inputs.literaturUri + " a schema:Book ; ";
           
-          if (this.inputs.isbnNeu.length > 0){
+          if (!this.inputs.isbnNeu === "undefined"){
             query += 'schema:isbn "' + this.inputs.isbnNeu + '"; ';
           }
-          if (this.inputs.publisherNeu.length > 0){
+          if (!this.inputs.publisherNeu === "undefined"){
             query += 'schema:publisher "' + this.inputs.publisherNeu + '"; ';
           }
-          if (this.inputs.datePublishedNeu.length > 0){
+          if (!this.inputs.datePublishedNeu === "undefined"){
             query += 'schema:datePublished "' + this.inputs.datePublishedNeu + '"; ';
           }
-          if (this.inputs.auflageNeu.length > 0){
+          if (!this.inputs.auflageNeu === "undefined"){
             query += 'schema:bookEdition "' + this.inputs.auflageNeu + '"; ';
           }
-          if (this.inputs.urlLinkNeu.length > 0){
+          if (!this.inputs.urlLinkNeu === "undefined"){
             query += 'schema:url "' + this.inputs.urlLinkNeu + '"; ';
           }
-          if (this.inputs.doiLinkNeu.length > 0){
+          if (!this.inputs.doiLinkNeu === "undefined"){
             query += 'schema:identifier "' + this.inputs.doiLinkNeu + '"; ';
           }
-          if (this.inputs.autorUri.length > 0){
-            query += 'schema:author "' + this.inputs.autorUri + '"; ';
+          if (this.autoren.length > 0){
+            //Referenz zu den Autoren in Lit erzeugen
+            this.autoren[0].autorUri = "<http://th-brandenburg.de/autor/123456>";
+            this.autoren[1].autorUri = "<http://th-brandenburg.de/autor/12345643546>";
+
+            query += 'schema:author ';
+            for (let autor of this.autoren) {
+              query += autor.autorUri + ' , ';
+            }
+            query = query.slice(0, query.length-3);
+            query += ' ; ';
           }          
         }
         else if (this.litAuswahl === "Artikel"){
+          
+          //In Journal als Book definiert -> Teil greift aktuell nicht!
+          // IF-Prüfung funktioniert nicht, irgendwie erkennt Vue.js nicht, dass die Felder gefüllt sind
+          if (!this.inputs.titelInBandNeu === "undefined"){
+            //@Philipp die URI müssten wir dann auch neu erzeugen
+            this.inputs.literaturJournalUri = "<http://th-brandenburg.de/literaturJournal/121234234>";
+            query += this.inputs.literaturJournalUri + " a schema:Book ; ";
+            
+            if (!this.inputs.bandInBandNeu === "undefined"){
+              query += 'schema:bookEdition "' + this.inputs.publisherNeu + '"; ';
+            }
+            if (!this.inputs.jahrInBandNeu === "undefined"){
+              query += 'schema:datePublished "' + this.inputs.bandInBandNeu + '"; ';
+            }
+
+            query += 'schema:headline "' + this.inputs.titelInBandNeu + '". ';
+          }
+           
+          //Artikle
           query += this.inputs.literaturUri + " a schema:Article ; ";
+
+          if (!this.inputs.titelInBandNeu === "undefined"){
+            query += 'schema:isPartOf "' + this.inputs.literaturJournalUri + '"; ';
+          }
+          if (!this.inputs.publisherNeu === "undefined"){
+            query += 'schema:publisher "' + this.inputs.publisherNeu + '"; ';
+          }
+          if (!this.inputs.datePublishedNeu === "undefined"){
+            query += 'schema:datePublished "' + this.inputs.datePublishedNeu + '"; ';
+          }
+          if (!this.inputs.seitenVonInBandNeu === "undefined" && !this.inputs.seitenVonInBandNeu === "undefined"){
+            query += 'schema:pageStart "' + this.seitenVonInBandNeu + '"; ';
+            query += 'schema:pageEnd "' + this.seitenBisInBandNeu + '"; ';
+          }
+          if (!this.inputs.urlLinkNeu === "undefined"){
+            query += 'schema:url "' + this.inputs.urlLinkNeu + '"; ';
+          }
+          
           
         }
         else if (this.litAuswahl === "DigitalesDokument"){
           query += this.inputs.literaturUri + " a schema:DigitalDocument ; ";
+
+          if (!this.inputs.publisherNeu === "undefined"){
+            query += 'schema:publisher "' + this.inputs.publisherNeu + '"; ';
+          }
+          if (!this.inputs.datePublishedNeu === "undefined"){
+            query += 'schema:datePublished "' + this.inputs.datePublishedNeu + '"; ';
+          }
+          if (!this.inputs.urlLinkNeu === "undefined"){
+            query += 'schema:url "' + this.inputs.urlLinkNeu + '"; ';
+          }
         }
         //Titel
         query += 'schema:headline "' + this.inputs.titelNeu + '". ';
 
-        //Autoren/innen
+        //Autoren/innen -> Die IF-Prüfung ist noch nicht optimal!
+        for (let autor of this.autoren) {
+          query += autor.autorUri + " a module:Author ; ";
+          
+          if (autor.autorNachnameNeu != ""){
+            query += 'schema:familyName "' + autor.autorNachnameNeu + '"; ';
+          }
+          if (autor.autorVornameNeu != ""){
+            query += 'schema:givenName "' + autor.autorVornameNeu + '"; ';
+          }
 
+           query += 'schema:sameAs "' + autor.autorProfilLinkNeu + '". ';
+        }
       }
           
          
