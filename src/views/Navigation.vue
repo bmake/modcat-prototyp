@@ -55,7 +55,7 @@
       <ul class="topic">
     <li class="header"><b>{{ dokumentieren }}</b></li>
     <li class="description"><b>Dokumentieren Sie die Ihnen zugeordneten Module – melden Sie sich dafür mit Ihrem THB-Account an.</b></li>
-    <li class="description"><a href="Starter" class="button"><b>Anschauen</b></a></li>
+    <li class="description"><router-link to="/Dokumentieren"><b>Anschauen</b></router-link></li>
 
   </ul>
   </div>
@@ -77,6 +77,7 @@
 <script>
 import Starter from "./Starter";
 import Browsing from "./Browsing";
+import Dokumentieren from "./Dokumentieren";
 
 
   export default {

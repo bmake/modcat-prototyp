@@ -36,84 +36,57 @@
         </div>
       </div>
     </div>
-    <div class="main main-raised">
-      <div style="text-align: center; margin-bottom:10px; padding-top: 3em">
-        <h3>
-          <b>Bitte wählen Sie Ihren Fachbereich</b>
-        </h3>
-      </div>
-
+    <div class="main main-raised">      
       <div class="section section-examples">
         <div class="container-fluid text-center">
-          <div class="md-layout">
-            <div class="svg md-layout-item">
-              <SVGGraphTHB>
-              </SVGGraphTHB>
-            </div>
-
-
-      <div class="md-layout-item">
-        <div>
-          <div id="app" v-on:click="lecturers = !lecturers" class="control">
-      <button>SVG Lehrpersonen</button>
-  </div>
-  <div id="app" v-on:click="courses = !courses" class="control">
-      <button>SVG Studiengänge</button>
-  </div>
-
-    <div v-if="lecturers" id="hide">
-
-            <table id="mods">
-                <tr>
-                 <th>DozentInn</th>
-                 <th>Fachrichtung</th>
-                 <th>Aktion</th>
-               </tr>
-                <tr v-for="(module, k) in modules" :key="k">
-                 <td>
-                 </td>
-                 <td>
-                 </td>
-                 <td scope="row" class="trashIconContainer">
-                     <i class="far fa-trash-alt" @click="deleteRow(k, module)"></i>
-                 </td>
-               </tr>
-               <tr>
-                 <td class="fas fa-plus-circle" @click="addNewRow">Add</td>
-               </tr>
-              </table>
-    </div>
-
-      <div v-if="courses" id="hide">
-
-            <table id="mods">
-                <tr>
-                 <th>Fachbereich</th>
-                 <th>Studiengang</th>
-                 <th>Abschluss</th>
-                 <th>Aktion</th>
-               </tr>
-                <tr v-for="(module, k) in modules" :key="k">
-                 <td>
-                 </td>
-                 <td>
-                 </td>
-                 <td>
-                 </td>
-                 <td scope="row" class="trashIconContainer">
-                     <i class="far fa-trash-alt" @click="deleteRow(k, module)"></i>
-                 </td>
-               </tr>
-               <tr>
-                 <td class="fas fa-plus-circle" @click="addNewRow">Add</td>
-               </tr>
-              </table>
-    </div>
-
-
-            </div>
-            </div>
+          
+          <div class="container">
+        <div class="md-layout">
+          <div
+            class="md-layout-item md-size-33 md-small-size-66 md-xsmall-size-100 md-medium-size-40 mx-auto"
+          >
+            <login-card header-color="green">
+              <h4 slot="title" class="card-title">Login</h4>
+              <md-button
+                slot="buttons"
+                href="javascript:void(0)"
+                class="md-just-icon md-simple md-white"
+              >
+                <i class="fab fa-facebook-square"></i>
+              </md-button>
+              <md-button
+                slot="buttons"
+                href="javascript:void(0)"
+                class="md-just-icon md-simple md-white"
+              >
+                <i class="fab fa-twitter"></i>
+              </md-button>
+              <md-button
+                slot="buttons"
+                href="javascript:void(0)"
+                class="md-just-icon md-simple md-white"
+              >
+                <i class="fab fa-google-plus-g"></i>
+              </md-button>
+              <p slot="description" class="description"><b>Melden Sie sich mit Ihren Hochschulzugangsdaten an, damit Sie die Services nutzen können.</b></p>
+              <md-field class="md-form-group" slot="inputs">
+                <md-icon>face</md-icon>
+                <label>Name</label>
+                <md-input v-model="firstname"></md-input>
+              </md-field>
+              <md-field class="md-form-group" slot="inputs">
+                <md-icon>lock_outline</md-icon>
+                <label>Passwort</label>
+                <md-input v-model="password"></md-input>
+              </md-field>
+              <md-button slot="footer" class="md-simple md-success md-lg">
+                Get Started
+              </md-button>
+            </login-card>
           </div>
+        </div>
+      </div>
+
         </div>
       </div>
     </div>
@@ -121,7 +94,6 @@
 </template>
 
 <script>
-import SVGGraphTHB from "./components/SVGGraphTHB";
 import axios from "axios";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -130,7 +102,7 @@ import {selectQueries} from "./queries";
 
 export default {
   components: {
-    SVGGraphTHB
+    
   },
   name: "index",
   bodyClass: "index-page",

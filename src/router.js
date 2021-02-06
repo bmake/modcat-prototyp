@@ -9,6 +9,7 @@ import MainFooter from "./layout/MainFooter.vue";
 import Starter from "./views/Starter";
 import Navigation from "./views/Navigation";
 import Browsing from "./views/Browsing";
+import Dokumentieren from "./views/Dokumentieren";
 
 
 Vue.use(Router);
@@ -28,6 +29,15 @@ export default new Router({
       path: "/starter",
       name: "starter",
       components: { default: Starter, header:  '', footer: MainFooter },
+      props: {
+        header: { colorOnScroll: 400 },
+        footer: { backgroundColor: "black" }
+      }
+    },
+    {
+      path: "/dokumentieren",
+      name: "dokumentieren",
+      components: { default: Dokumentieren, header:  '', footer: MainFooter },
       props: {
         header: { colorOnScroll: 400 },
         footer: { backgroundColor: "black" }
