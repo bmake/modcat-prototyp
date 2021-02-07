@@ -175,6 +175,8 @@
 </template>
 
 <script>
+import { v4 as uuidv4 } from "uuid";
+
 export default {
   name: "literatureManual",
   data() {
@@ -241,12 +243,21 @@ export default {
     generateQuery() {
       let query = this.prefixes;
 
-      //literaturUri + autorUri müss noch erzeugt werden (siehe Philipp)
-      //this.inputs.literaturUri = "<http://th-brandenburg.de/" + uuidv4() + ">";
-      this.inputs.literaturUri =
-        "<http://th-brandenburg.de/literatur/121234234>";
-      this.autoren[0].autorUri = "<http://th-brandenburg.de/autor/123456>";
-      //this.autoren[1].autorUri = "<http://th-brandenburg.de/autor/12345643546>";
+      // Generate Literature URI
+      if (this.inputs.doiLinkNeu.length > 0) {
+        this.inputs.literaturUri = "<" + this.inputs.doiLinkNeu + ">";
+      } else if (this.inputs.isbnNeu.length > 0) {
+        this.inputs.literaturUri =
+          "<http://isbn-international.org/" + this.inputs.isbnNeu + ">";
+      } else {
+        this.inputs.literaturUri =
+          "<https://th-brandenburg.de/literatur/" + uuidv4() + ">";
+      }
+
+      // Generate Autoren URIs
+      for (let autor of this.autoren) {
+        autor.autorUri = "<https://th-brandenburg.de/autor/" + uuidv4() + ">";
+      }
 
       if (this.inputs.titelNeu.length > 0) {
         query += " INSERT { ";
@@ -278,8 +289,8 @@ export default {
           }
           if (this.autoren.length > 0) {
             //Referenz zu den Autoren in Lit erzeugen
-            this.autoren[0].autorUri =
-              "<http://th-brandenburg.de/autor/123456>";
+            //this.autoren[0].autorUri =
+            //  "<http://th-brandenburg.de/autor/123456>";
             //this.autoren[1].autorUri =
             //  "<http://th-brandenburg.de/autor/12345643546>";
 
