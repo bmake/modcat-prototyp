@@ -47,7 +47,7 @@
             -->
             <vsa-list>
               <vsa-item
-                v-for="literature in cleanedLiterature"
+                v-for="(literature, i) in cleanedLiterature"
                 :key="literature"
               >
                 <vsa-heading>
@@ -56,6 +56,26 @@
                     v-html="literature.summary.value"
                   ></p>
                 </vsa-heading>
+                
+                <vsa-icon>
+                  <span class="open">▼</span>
+                  <span class="close">▲</span>
+                  <!-- Plus, Minus, Verschieben-Symbole -->
+                  <span 
+                      class="fas fa-minus-circle"
+                      @click="removeLiterature(i)"
+                      v-show="cleanedLiterature.length > 1">
+                  </span>
+                  <span
+                      class="fas fa-plus-circle"
+                      @click="isHidden = !isHidden"
+                      v-show="i == cleanedLiterature.length - 1">
+                  </span>
+                  <span 
+                      class="handle fas fa-arrows-alt" style="margin-left: 10px" >
+                  </span>
+                  
+                </vsa-icon>
 
                 <vsa-content>
                   <!-- Titel -->
@@ -206,7 +226,7 @@
 
             <div>
               <!-- Tab-Control -->
-              <div>
+              <div v-if="!isHidden">
                 <button
                   v-for="tab in tabs"
                   :key="tab"
@@ -500,23 +520,8 @@ export default {
       modMethod: [],
       detailAnsicht: true,
       insertQuery: null,
-      item: [
-        {
-          heading: "Test: Literatur X",
-          content:
-            "Sollte vlt ein objekt sein? keine ahnung vlt sollte auch item ein objekt sein!",
-        },
-        {
-          heading: "Test: Literatur Y",
-          content:
-            "Sollte vlt ein objekt sein? keine ahnung vlt sollte auch item ein objekt sein!",
-        },
-        {
-          heading: "Test: Literatur Z",
-          content:
-            "Sollte vlt ein objekt sein? keine ahnung vlt sollte auch item ein objekt sein!",
-        },
-      ],
+      isHidden: true,
+      changedArray: [],
     };
   },
   computed: {
@@ -588,6 +593,10 @@ export default {
     this.initialState();
   },
   methods: {
+    removeLiterature(index) {
+    this.cleanedLiterature.splice(index, 1);
+    
+    },
     receiveInsertQuery(query) {
       this.insertQuery = query;
     },
@@ -687,7 +696,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .literatureHeading {
   text-align: left;
   font-weight: normal;
@@ -736,4 +745,25 @@ span {
   --vsa-content-padding: 1rem 1rem;
   --vsa-default-icon-size: 1;
 }
+.vsa-item {
+  &--is-active {
+    .vsa-item__trigger__icon {
+      .open {
+        display: none;
+      }
+      .close {
+        display: block;
+      }
+    }
+  }
+  &__trigger__icon {
+    .open {
+      display: block;
+    }
+    .close {
+      display: none;
+    }
+  }
+}
+
 </style>
