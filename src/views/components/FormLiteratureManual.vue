@@ -250,7 +250,7 @@ export default {
           crossdomain: true,
         })
         .then((response) => {
-          if (response.data.includes("Signatur")) {
+          if (response.data.includes("lokaler Katalog")) {
             this.opac.link =
               "https://opac.th-brandenburg.de/search?isbn=" + isbn;
           } else {
@@ -300,6 +300,7 @@ export default {
 
       // Generate Autoren URIs
       for (let autor of this.autoren) {
+        // if (autor.autorProfilLinkNeu.inclued('orcid.org')) -> Dann Orcid als URI
         autor.autorUri = "<https://th-brandenburg.de/autor/" + uuidv4() + ">";
       }
 
@@ -351,7 +352,7 @@ export default {
           if (!this.inputs.titelInBandNeu === "undefined") {
             //@Philipp die URI müssten wir dann auch neu erzeugen
             this.inputs.literaturJournalUri =
-              "<http://th-brandenburg.de/literaturJournal/121234234>";
+              "<https://th-brandenburg.de/literatur/" + uuidv4() + ">";
             query += this.inputs.literaturJournalUri + " a schema:Book ; ";
 
             if (!this.inputs.bandInBandNeu === "undefined") {
