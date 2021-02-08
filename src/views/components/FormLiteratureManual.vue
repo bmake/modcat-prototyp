@@ -170,11 +170,22 @@
       <button class="md-layout-item md-size-20" @click="generateQuery">
         QueryLaden
       </button>
+      <div>
+        <button @click="checkOpacLink(inputs.isbnNeu)">OPAC</button>
+        <div v-if="this.opac.link.length > 0">
+          Link: {{ this.opac.link }} <br />
+          Ausleihbar: {{ this.opac.ausleihbar }} <br />
+          Volltext verfügbar: {{ this.opac.volltext }} <br />
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
+
 export default {
   name: "literatureManual",
   data() {
@@ -211,6 +222,11 @@ export default {
           autorProfilLinkNeu: [],
         },
       ],
+      opac: {
+        link: "",
+        volltext: false,
+        ausleihbar: false,
+      },
     };
   },
   methods: {
@@ -220,6 +236,36 @@ export default {
     removeAutor(input, index) {
       this[input].splice(index, 1);
       this.changedArray[input].push(index);
+    },
+    checkOpacLink(isbn) {
+      this.opac.link = "";
+      this.opac.ausleihbar = false;
+      this.opac.volltext = false;
+
+      axios
+        .get("https://opac.th-brandenburg.de/search?isbn=" + isbn, {
+          headers: {
+            Accept: "text/html",
+          },
+          crossdomain: true,
+        })
+        .then((response) => {
+          if (response.data.includes("lokaler Katalog")) {
+            this.opac.link =
+              "https://opac.th-brandenburg.de/search?isbn=" + isbn;
+          } else {
+            this.opac.link = "Nicht verfügbar";
+          }
+          if (response.data.includes("ausleihbar")) {
+            this.opac.ausleihbar = true;
+          }
+          if (response.data.includes("Volltext")) {
+            this.opac.volltext = true;
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
     /*
      ### Module GPMO
@@ -241,12 +287,22 @@ export default {
     generateQuery() {
       let query = this.prefixes;
 
-      //literaturUri + autorUri müss noch erzeugt werden (siehe Philipp)
-      //this.inputs.literaturUri = "<http://th-brandenburg.de/" + uuidv4() + ">";
-      this.inputs.literaturUri =
-        "<http://th-brandenburg.de/literatur/121234234>";
-      this.autoren[0].autorUri = "<http://th-brandenburg.de/autor/123456>";
-      //this.autoren[1].autorUri = "<http://th-brandenburg.de/autor/12345643546>";
+      // Generate Literature URI
+      if (this.inputs.doiLinkNeu.length > 0) {
+        this.inputs.literaturUri = "<" + this.inputs.doiLinkNeu + ">";
+      } else if (this.inputs.isbnNeu.length > 0) {
+        this.inputs.literaturUri =
+          "<http://isbn-international.org/" + this.inputs.isbnNeu + ">";
+      } else {
+        this.inputs.literaturUri =
+          "<https://th-brandenburg.de/literatur/" + uuidv4() + ">";
+      }
+
+      // Generate Autoren URIs
+      for (let autor of this.autoren) {
+        // if (autor.autorProfilLinkNeu.inclued('orcid.org')) -> Dann Orcid als URI
+        autor.autorUri = "<https://th-brandenburg.de/autor/" + uuidv4() + ">";
+      }
 
       if (this.inputs.titelNeu.length > 0) {
         query += " INSERT { ";
@@ -278,8 +334,8 @@ export default {
           }
           if (this.autoren.length > 0) {
             //Referenz zu den Autoren in Lit erzeugen
-            this.autoren[0].autorUri =
-              "<http://th-brandenburg.de/autor/123456>";
+            //this.autoren[0].autorUri =
+            //  "<http://th-brandenburg.de/autor/123456>";
             //this.autoren[1].autorUri =
             //  "<http://th-brandenburg.de/autor/12345643546>";
 
@@ -296,7 +352,7 @@ export default {
           if (!this.inputs.titelInBandNeu === "undefined") {
             //@Philipp die URI müssten wir dann auch neu erzeugen
             this.inputs.literaturJournalUri =
-              "<http://th-brandenburg.de/literaturJournal/121234234>";
+              "<https://th-brandenburg.de/literatur/" + uuidv4() + ">";
             query += this.inputs.literaturJournalUri + " a schema:Book ; ";
 
             if (!this.inputs.bandInBandNeu === "undefined") {
