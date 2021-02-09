@@ -22,7 +22,7 @@
       <!-- Titel -->
       <div class="md-size-100">
         <md-field>
-          <label>Titel</label>
+          <label>Titel*</label>
           <md-input v-model="inputs.titelNeu" />
         </md-field>
       </div>
@@ -71,7 +71,7 @@
       <!-- Veröffentlichung -->
       <div class="md-size-100">
         <md-field>
-          <label>Veröffentlichung</label>
+          <label>Veröffentlichung*</label>
           <md-input v-model="inputs.datePublishedNeu" />
         </md-field>
       </div>
@@ -127,7 +127,7 @@
           <!-- Nachname -->
           <div class="md-layout-item md-size-20">
             <md-field>
-              <label>Nachname</label>
+              <label>Nachname*</label>
               <md-input v-model="autor.autorNachnameNeu" />
             </md-field>
           </div>
@@ -141,7 +141,7 @@
           <!-- URL/ Profil-Link -->
           <div class="md-layout-item md-size-60">
             <md-field>
-              <label>Profil-Link/URL</label>
+              <label>Profil-Link/URL*</label>
               <md-input v-model="autor.autorProfilLinkNeu" />
               <!-- Plus, Minus, Verschieben-Symbole -->
               <span>
@@ -266,6 +266,25 @@ export default {
        //Log
       console.log("checkAutorQuery");
       console.log( queryAutor);
+
+      // Daten vom Fuseki abrufen
+      /*
+      axios
+        .post(
+          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query",
+          queryAutor,
+          {
+            headers: { "Content-Type": "application/sparql-query" },
+          }
+        )
+        .then((response) => {
+          // JSON responses are automatically parsed.
+          this.moduleInfo = response.data.results.bindings;
+        })
+        .catch((e) => {
+          this.errors.push(e);
+        });
+      */
     },
     checkOpacLink(isbn) {
       this.opac.link = "";
