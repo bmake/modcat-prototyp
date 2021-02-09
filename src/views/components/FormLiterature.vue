@@ -45,40 +45,57 @@
             <!-- Literatur-Block (Zusammenfassung) 
             v-if="cleanedLiterature[index].hasOwnProperty('publisherName')">
             -->
-            <vsa-list>
-              <vsa-item
-                v-for="(literature, i) in cleanedLiterature"
-                :key="literature"
-              >
-                <vsa-heading>
+            <dl
+              class="md-layout-item md-size-100 literatureHeading"
+              style="margin-bottom: 10px"
+              v-for="(literature, i) in cleanedLiterature"
+              :key="literature"
+            >
+              <dt>
+                <md-field>
                   <p
-                    class="literatureHeading"
-                    v-html="literature.summary.value"
-                  ></p>
-                </vsa-heading>
-                
-                <vsa-icon>
-                  <span class="open">▼</span>
-                  <span class="close">▲</span>
-                  <!-- Plus, Minus, Verschieben-Symbole -->
-                  <span 
-                      class="fas fa-minus-circle"
-                      @click="removeLiterature(i)"
-                      v-show="cleanedLiterature.length > 1">
-                  </span>
-                  <span
-                      class="fas fa-plus-circle"
-                      @click="isHidden = !isHidden"
-                      v-show="i == cleanedLiterature.length - 1">
-                  </span>
-                  <span 
-                      class="handle fas fa-arrows-alt" style="margin-left: 10px" >
-                  </span>
-                  
-                </vsa-icon>
-
-                <vsa-content>
-                  <!-- Titel -->
+                  v-html="literature.summary.value"
+                ></p>
+                  <md-input></md-input>
+                  <div>
+                    <span>
+                      <i 
+                        class="open" 
+                        @click="toggleLiterature('literature', i)"
+                        v-show="cleanedLiterature[i].isHidden == true"
+                      >
+                        ▼
+                      </i>
+                      <i 
+                        class="close"
+                        @click="toggleLiterature('literature', i)"
+                        v-show="cleanedLiterature[i].isHidden == false"
+                      >
+                        ▲
+                      </i>
+                      <i
+                        class="fas fa-minus-circle"
+                        @click="removeLiterature(i)"
+                        v-show="cleanedLiterature.length > 1"
+                      />
+                      <i
+                        class="fas fa-plus-circle"
+                        @click="isHidden = !isHidden"
+                        v-show="i == cleanedLiterature.length - 1"
+                      />
+                      <i
+                        class="handle fas fa-arrows-alt" style="margin-left: 10px"
+                      />
+                    </span>
+                  </div>
+                </md-field>
+              </dt>
+              <dd v-if="cleanedLiterature[i].isHidden == false">
+                <div
+                  class="md-layout-item md-size-100 literatureHeading"
+                  style="margin-bottom: 10px"
+                >
+                <!-- Titel -->
                   <div
                     class="md-size-100"
                     v-if="literature.hasOwnProperty('titel')"
@@ -196,10 +213,9 @@
                       </div>
                     </div>
                   </div>
-                </vsa-content>
-              </vsa-item>
-            </vsa-list>
-            <!-- End Toggle Control -->
+                </div>
+              </dd>
+            </dl>
 
             <!-- 
             <div v-for="literature in modLiterature"
@@ -471,14 +487,6 @@ import FormLiteratureManual from "./FormLiteratureManual";
 import { validationMixin } from "vuelidate";
 import { alphaNum, required } from "vuelidate/lib/validators";
 import Sortable from "sortablejs";
-import {
-  VsaList,
-  VsaItem,
-  VsaHeading,
-  VsaContent,
-  VsaIcon,
-} from "vue-simple-accordion";
-import "vue-simple-accordion/dist/vue-simple-accordion.css";
 
 console.log(FormLiteratureDOI);
 
@@ -487,11 +495,6 @@ export default {
     FormLiteratureDOI,
     FormLiteratureISBN,
     FormLiteratureManual,
-    VsaList,
-    VsaItem,
-    VsaHeading,
-    VsaContent,
-    VsaIcon,
   },
   props: [
     "modLiteratureOrigin",
@@ -521,7 +524,6 @@ export default {
       detailAnsicht: true,
       insertQuery: null,
       isHidden: true,
-      changedArray: [],
     };
   },
   computed: {
@@ -580,11 +582,12 @@ export default {
         }
       }
 
-      // Attach summary property
+      // Attach summary and isHidden property
       cleanedLiterature.forEach((entry) => {
         entry.summary = {};
         entry.summary.type = "literal";
         entry.summary.value = this.getLiteratureHeading(entry);
+        entry.isHidden = true;
       });
       return cleanedLiterature;
     },
@@ -594,8 +597,12 @@ export default {
   },
   methods: {
     removeLiterature(index) {
-    this.cleanedLiterature.splice(index, 1);
-    
+      this.cleanedLiterature.splice(index, 1);
+      this.$forceUpdate();
+    },
+    toggleLiterature(input, index){
+      this.cleanedLiterature[index].isHidden = !this.cleanedLiterature[index].isHidden ;
+      this.$forceUpdate();
     },
     receiveInsertQuery(query) {
       this.insertQuery = query;
@@ -701,6 +708,10 @@ export default {
   text-align: left;
   font-weight: normal;
 }
+.literatureButton {
+  text-align: right;
+  font-weight: normal;
+}
 .tab-button {
   padding: 6px 10px;
   border-top-left-radius: 3px;
@@ -732,38 +743,6 @@ span {
   top: 32px;
   padding: 0;
 }
-.vsa-list {
-  --vsa-max-width: 100%;
-  --vsa-min-width: 40%;
-  --vsa-text-color: rgba(55, 55, 55, 1);
-  --vsa-highlight-color: rgba(85, 119, 170, 1);
-  --vsa-bg-color: rgba(255, 255, 255, 1);
-  --vsa-border-color: rgba(0, 0, 0, 0.2);
-  --vsa-border-width: 1px;
-  --vsa-border-style: solid;
-  --vsa-heading-padding: 1rem 1rem;
-  --vsa-content-padding: 1rem 1rem;
-  --vsa-default-icon-size: 1;
-}
-.vsa-item {
-  &--is-active {
-    .vsa-item__trigger__icon {
-      .open {
-        display: none;
-      }
-      .close {
-        display: block;
-      }
-    }
-  }
-  &__trigger__icon {
-    .open {
-      display: block;
-    }
-    .close {
-      display: none;
-    }
-  }
-}
+
 
 </style>
