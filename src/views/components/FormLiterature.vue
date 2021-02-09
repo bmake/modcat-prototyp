@@ -591,7 +591,7 @@ export default {
     receiveInsertQuery(query) {
       this.insertQuery = query;
     },
-    getLiteratureHeading(literatureData) {
+        getLiteratureHeading(literatureData) {
       let autoren = "";
       if (
         !literatureData.hasOwnProperty("autoren") &&
