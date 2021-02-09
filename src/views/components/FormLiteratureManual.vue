@@ -16,6 +16,7 @@
       </md-field>
     </div>
     <!-- END DropDown -->
+    <!-- Ausgabe der Daten in Formular -->
     <div @keypress="generateQuery">
       <label> Eingabebereich Literatur</label>
       <!-- Titel -->
@@ -170,6 +171,9 @@
       <button class="md-layout-item md-size-20" @click="generateQuery">
         QueryLaden
       </button>
+       <button class="md-layout-item md-size-20" @click="checkAutor">
+        checkAutor
+      </button>
       <div>
         <button @click="checkOpacLink(inputs.isbnNeu)">OPAC</button>
         <div v-if="this.opac.link.length > 0">
@@ -179,6 +183,7 @@
         </div>
       </div>
     </div>
+    <!-- ENDE - Ausgabe der Daten in Formular -->
   </div>
 </template>
 
@@ -235,7 +240,32 @@ export default {
     },
     removeAutor(input, index) {
       this[input].splice(index, 1);
-      this.changedArray[input].push(index);
+      //this.changedArray[input].push(index);
+    },
+    checkAutor() {
+      //Vorschalg: Entweder die ganze Query in eine For-Schleif + das jeweils abfangen, 
+      //           oder den index aus dem Formular-Teil übergeben 
+      let queryAutor = this.prefixes;
+
+      queryAutor += " SELECT DISTINCT ?autorUri ?autorVorname ?autorNachname ?autorProfilLink ";
+      queryAutor += " WHERE { ";
+      queryAutor += " ?autorUri  a module:Author; ";
+      queryAutor += "            schema:givenName ?autorVorname; ";
+      queryAutor += "            schema:familyName ?autorNachname. ";
+
+      queryAutor += " OPTIONAL { ";
+      queryAutor += " ?autorUri schema:sameAs ?autorProfilLink.  ";
+      queryAutor += " } ";
+
+      queryAutor += " {?autorUri schema:sameAs '" + this.autoren[0].autorProfilLinkNeu + "' } ";
+      queryAutor += " UNION ";
+      queryAutor += " { ?autorUri schema:familyName '" + this.autoren[0].autorNachnameNeu + "' ; ";
+      queryAutor += "             schema:givenName '" + this.autoren[0].autorVornameNeu + "' . } ";
+      queryAutor += "  }"; 
+      
+       //Log
+      console.log("checkAutorQuery");
+      console.log( queryAutor);
     },
     checkOpacLink(isbn) {
       this.opac.link = "";
@@ -334,11 +364,6 @@ export default {
           }
           if (this.autoren.length > 0) {
             //Referenz zu den Autoren in Lit erzeugen
-            //this.autoren[0].autorUri =
-            //  "<http://th-brandenburg.de/autor/123456>";
-            //this.autoren[1].autorUri =
-            //  "<http://th-brandenburg.de/autor/12345643546>";
-
             query += "schema:author ";
             for (let autor of this.autoren) {
               query += autor.autorUri + " , ";
@@ -349,8 +374,7 @@ export default {
         } else if (this.litAuswahl === "Artikel") {
           //In Journal als Book definiert -> Teil greift aktuell nicht!
           // IF-Prüfung funktioniert nicht, irgendwie erkennt Vue.js nicht, dass die Felder gefüllt sind
-          if (!this.inputs.titelInBandNeu === "undefined") {
-            //@Philipp die URI müssten wir dann auch neu erzeugen
+          if (!this.inputs.titelInBandNeu === "undefined") {           
             this.inputs.literaturJournalUri =
               "<https://th-brandenburg.de/literatur/" + uuidv4() + ">";
             query += this.inputs.literaturJournalUri + " a schema:Book ; ";
