@@ -30,7 +30,7 @@
       <div v-if="litAuswahl == 'Buch'" class="md-size-100">
         <md-field>
           <label>ISBN</label>
-          <md-input v-model="inputs.isbnNeu" />
+          <md-input v-model="inputs.isbnNeu" @change="getOpacLink" />
         </md-field>
       </div>
       <!-- Erscheinen IN z.B. Journal-->
@@ -104,8 +104,10 @@
       <!-- URL z.B. OPAC-Link, Springer-Link oder arxiv-Link -->
       <div class="md-size-100">
         <md-field>
-          <label>URL</label>
-          <md-input v-model="inputs.urlLinkNeu" />
+          <label v-if="loading">Suche OPAC-Link ...</label>
+          <label v-else>URL</label>
+          <md-input v-model="inputs.urlLinkNeu" v-if="loading" disabled />
+          <md-input v-model="inputs.urlLinkNeu" v-else />
         </md-field>
       </div>
 
@@ -142,7 +144,18 @@
           <div class="md-layout-item md-size-60">
             <md-field>
               <label>Profil-Link/URL*</label>
-              <md-input v-model="autor.autorProfilLinkNeu" />
+              <md-input
+                v-model="autor.autorProfilLinkNeu"
+                @change="autorDuplicationCheck(i)"
+              />
+              <AutorSelectionPopUp
+                v-if="showPopUp"
+                @close="showPopUp = false"
+                @duplicateChecked="handleAutorSelection"
+                :demoExistingAutor="demoExistingAutor"
+                :autorIndex="i"
+              >
+              </AutorSelectionPopUp>
               <!-- Plus, Minus, Verschieben-Symbole -->
               <span>
                 <i
@@ -171,7 +184,7 @@
       <button class="md-layout-item md-size-20" @click="generateQuery">
         QueryLaden
       </button>
-       <button class="md-layout-item md-size-20" @click="checkAutor">
+      <button class="md-layout-item md-size-20" @click="checkAutor">
         checkAutor
       </button>
       <div>
@@ -190,9 +203,13 @@
 <script>
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
+import AutorSelectionPopUp from "./AutorSelectionPopUp";
 
 export default {
   name: "literatureManual",
+  components: {
+    AutorSelectionPopUp,
+  },
   data() {
     return {
       changedArray: [],
@@ -227,11 +244,21 @@ export default {
           autorProfilLinkNeu: [],
         },
       ],
-      opac: {
-        link: "",
-        volltext: false,
-        ausleihbar: false,
-      },
+      loading: false,
+      demoExistingAutor: [
+        {
+          vorname: "Klaus",
+          nachname: "Cleber",
+          url: "http://facebook.com/klaus",
+        },
+        {
+          vorname: "Klaus",
+          nachname: "Cleber",
+          url: "http://xing.com/klausi",
+        },
+      ],
+      showPopUp: false,
+      test: null,
     };
   },
   methods: {
@@ -286,35 +313,52 @@ export default {
         });
       */
     },
-    checkOpacLink(isbn) {
-      this.opac.link = "";
-      this.opac.ausleihbar = false;
-      this.opac.volltext = false;
-
+    getOpacLink() {
+      this.inputs.urlLinkNeu = "";
+      this.loading = true;
       axios
-        .get("https://opac.th-brandenburg.de/search?isbn=" + isbn, {
-          headers: {
-            Accept: "text/html",
-          },
-          crossdomain: true,
-        })
+        .get(
+          "https://opac.th-brandenburg.de/search?isbn=" + this.inputs.isbnNeu,
+          {
+            headers: {
+              Accept: "text/html",
+            },
+            crossdomain: true,
+          }
+        )
         .then((response) => {
-          if (response.data.includes("lokaler Katalog")) {
-            this.opac.link =
-              "https://opac.th-brandenburg.de/search?isbn=" + isbn;
-          } else {
-            this.opac.link = "Nicht verfügbar";
+          if (response.data.includes("in die Merkliste")) {
+            this.inputs.urlLinkNeu =
+              "https://opac.th-brandenburg.de/search?isbn=" +
+              this.inputs.isbnNeu;
           }
-          if (response.data.includes("ausleihbar")) {
-            this.opac.ausleihbar = true;
-          }
-          if (response.data.includes("Volltext")) {
-            this.opac.volltext = true;
-          }
+          this.loading = false;
         })
         .catch((e) => {
           console.log(e);
+          this.loading = false;
         });
+    },
+    autorDuplicationCheck(index) {
+      let autor = this.autoren[index];
+      if (this.demoExistingAutor.length < 1) return;
+      if (
+        autor.autorVornameNeu.length > 0 &&
+        autor.autorNachnameNeu.length > 0 &&
+        autor.autorProfilLinkNeu.length > 0
+      ) {
+        console.log(index);
+        this.showPopUp = true;
+      }
+    },
+    handleAutorSelection(result) {
+      this.test = result;
+      if (result.autor.vorname.length > 0) {
+        console.log(result);
+        this.autoren[result.index].autorVornameNeu = result.autor.vorname;
+        this.autoren[result.index].autorNachnameNeu = result.autor.nachname;
+        this.autoren[result.index].autorProfilLinkNeu = result.autor.url;
+      }
     },
     /*
      ### Module GPMO
