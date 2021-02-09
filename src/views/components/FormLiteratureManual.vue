@@ -17,7 +17,7 @@
     </div>
     <!-- END DropDown -->
     <!-- Ausgabe der Daten in Formular -->
-    <div @keypress="generateQuery">
+    <div @change="generateQuery">
       <label> Eingabebereich Literatur</label>
       <!-- Titel -->
       <div class="md-size-100">
@@ -380,7 +380,7 @@ export default {
             schema:honorificPrefix "Prof. Dr." .
     */
     generateQuery() {
-      let query = this.prefixes;
+      let query = ""; //let query = this.prefixes; // wird in LiteratureForm hinzugefügt
 
       // Generate Literature URI
       if (this.inputs.doiLinkNeu.length > 0) {
@@ -394,13 +394,14 @@ export default {
       }
 
       // Generate Autoren URIs
+      console.log(this.autoren)
       for (let autor of this.autoren) {
         // if (autor.autorProfilLinkNeu.inclued('orcid.org')) -> Dann Orcid als URI
         autor.autorUri = "<https://th-brandenburg.de/autor/" + uuidv4() + ">";
       }
 
       if (this.inputs.titelNeu.length > 0) {
-        query += " INSERT { ";
+        //query += " INSERT { "; //wird in LiteratureForm hinzugefügt
         //query += " moduleUri ";
         query += "module:GPMO "; //Nur zum Test, muss dann am Ende für die 3 Zeilen davor weichen
         query += "schema:citation " + this.inputs.literaturUri + " . ";
@@ -408,27 +409,27 @@ export default {
         if (this.litAuswahl === "Buch") {
           query += this.inputs.literaturUri + " a schema:Book ; ";
 
-          if (!this.inputs.isbnNeu === "undefined") {
+          if (this.inputs.isbnNeu.length > 0) {
             query += 'schema:isbn "' + this.inputs.isbnNeu + '"; ';
           }
-          if (!this.inputs.publisherNeu === "undefined") {
+          if (this.inputs.publisherNeu.length > 0) {
             query += 'schema:publisher "' + this.inputs.publisherNeu + '"; ';
           }
-          if (!this.inputs.datePublishedNeu === "undefined") {
+          if (this.inputs.datePublishedNeu.length > 0) {
             query +=
               'schema:datePublished "' + this.inputs.datePublishedNeu + '"; ';
           }
-          if (!this.inputs.auflageNeu === "undefined") {
+          if (this.inputs.auflageNeu.length > 0) {
             query += 'schema:bookEdition "' + this.inputs.auflageNeu + '"; ';
           }
-          if (!this.inputs.urlLinkNeu === "undefined") {
+          if (this.inputs.urlLinkNeu.length > 0) {
             query += 'schema:url "' + this.inputs.urlLinkNeu + '"; ';
           }
-          if (!this.inputs.doiLinkNeu === "undefined") {
+          if (this.inputs.doiLinkNeu.length > 0) {
             query += 'schema:identifier "' + this.inputs.doiLinkNeu + '"; ';
           }
-          if (this.autoren.length > 0) {
-            //Referenz zu den Autoren in Lit erzeugen
+          //Referenz zu den Autoren in Lit erzeugen
+          if (this.autoren.every(autor => autor.autorNachnameNeu.length > 0)) {
             query += "schema:author ";
             for (let autor of this.autoren) {
               query += autor.autorUri + " , ";
@@ -439,16 +440,16 @@ export default {
         } else if (this.litAuswahl === "Artikel") {
           //In Journal als Book definiert -> Teil greift aktuell nicht!
           // IF-Prüfung funktioniert nicht, irgendwie erkennt Vue.js nicht, dass die Felder gefüllt sind
-          if (!this.inputs.titelInBandNeu === "undefined") {
+          if (this.inputs.titelInBandNeu.length > 0) {
             this.inputs.literaturJournalUri =
               "<https://th-brandenburg.de/literatur/" + uuidv4() + ">";
             query += this.inputs.literaturJournalUri + " a schema:Book ; ";
 
-            if (!this.inputs.bandInBandNeu === "undefined") {
+            if (this.inputs.bandInBandNeu.length > 0) {
               query +=
                 'schema:bookEdition "' + this.inputs.publisherNeu + '"; ';
             }
-            if (!this.inputs.jahrInBandNeu === "undefined") {
+            if (this.inputs.jahrInBandNeu.length > 0) {
               query +=
                 'schema:datePublished "' + this.inputs.bandInBandNeu + '"; ';
             }
@@ -459,38 +460,36 @@ export default {
           //Artikle
           query += this.inputs.literaturUri + " a schema:Article ; ";
 
-          if (!this.inputs.titelInBandNeu === "undefined") {
+          if (this.inputs.titelInBandNeu.length > 0) {
             query +=
               'schema:isPartOf "' + this.inputs.literaturJournalUri + '"; ';
           }
-          if (!this.inputs.publisherNeu === "undefined") {
+          if (this.inputs.publisherNeu.length > 0) {
             query += 'schema:publisher "' + this.inputs.publisherNeu + '"; ';
           }
-          if (!this.inputs.datePublishedNeu === "undefined") {
+          if (this.inputs.datePublishedNeu.length > 0) {
             query +=
               'schema:datePublished "' + this.inputs.datePublishedNeu + '"; ';
           }
-          if (
-            !this.inputs.seitenVonInBandNeu === "undefined" &&
-            !this.inputs.seitenVonInBandNeu === "undefined"
-          ) {
+          if (this.inputs.seitenVonInBandNeu.length > 0 &&
+              this.inputs.seitenBisInBandNeu.length > 0) {
             query += 'schema:pageStart "' + this.seitenVonInBandNeu + '"; ';
             query += 'schema:pageEnd "' + this.seitenBisInBandNeu + '"; ';
           }
-          if (!this.inputs.urlLinkNeu === "undefined") {
+          if (this.inputs.urlLinkNeu.length > 0) {
             query += 'schema:url "' + this.inputs.urlLinkNeu + '"; ';
           }
         } else if (this.litAuswahl === "DigitalesDokument") {
           query += this.inputs.literaturUri + " a schema:DigitalDocument ; ";
 
-          if (!this.inputs.publisherNeu === "undefined") {
+          if (this.inputs.publisherNeu.length > 0) {
             query += 'schema:publisher "' + this.inputs.publisherNeu + '"; ';
           }
-          if (!this.inputs.datePublishedNeu === "undefined") {
+          if (this.inputs.datePublishedNeu.length > 0) {
             query +=
               'schema:datePublished "' + this.inputs.datePublishedNeu + '"; ';
           }
-          if (!this.inputs.urlLinkNeu === "undefined") {
+          if (this.inputs.urlLinkNeu.length > 0) {
             query += 'schema:url "' + this.inputs.urlLinkNeu + '"; ';
           }
         }
@@ -498,7 +497,11 @@ export default {
         query += 'schema:headline "' + this.inputs.titelNeu + '". ';
 
         //Autoren/innen -> Die IF-Prüfung ist noch nicht optimal!
-        for (let autor of this.autoren) {
+        //[{"autorUri":[],"autorNachnameNeu":[],"autorVornameNeu":[],"autorProfilLinkNeu":[]}]
+        //if (!this.autoren === "[{'autorUri':[],'autorNachnameNeu':[],'autorVornameNeu':[],'autorProfilLinkNeu':[]}]") {
+        //if (this.autoren.length > 0 ) {
+        if (this.autoren.every(autor => autor.autorNachnameNeu.length > 0)) {
+          for (let autor of this.autoren) {
           query += autor.autorUri + " a module:Author ; ";
 
           if (autor.autorNachnameNeu != "") {
@@ -509,7 +512,8 @@ export default {
           }
 
           query += 'schema:sameAs "' + autor.autorProfilLinkNeu + '". ';
-        }
+          }
+        }        
       }
 
       //Log

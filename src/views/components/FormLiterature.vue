@@ -252,7 +252,7 @@
         <div class="md-layout md-gutter">
           <div class="md-layout-item">
             <div>
-              <md-button type="submit" :disabled="role != 1 && role != 2"
+              <md-button type="submit" @click="updateData" :disabled="role != 1 && role != 2"
                 >Änderung speichern</md-button
               >
               <md-button @click="resetData" :disabled="role != 1 && role != 2"
@@ -282,6 +282,7 @@ import FormLiteratureManual from "./FormLiteratureManual";
 import { validationMixin } from "vuelidate";
 import { alphaNum, required } from "vuelidate/lib/validators";
 import Sortable from "sortablejs";
+import axios from "axios";
 
 console.log(FormLiteratureDOI);
 
@@ -310,6 +311,10 @@ export default {
   },
   data() {
     return {
+      prefixes:
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+        "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+        "PREFIX schema: <https://schema.org/>  ",
       modLiterature: [],
       currentTab: "DOI",
       tabs: ["DOI", "ISBN", "Manual"],
@@ -319,6 +324,7 @@ export default {
       detailAnsicht: true,
       insertQuery: null,
       isHidden: true,
+      deleteLitRef: "",
     };
   },
   computed: {
@@ -392,6 +398,9 @@ export default {
   },
   methods: {
     removeLiterature(index) {
+      //log
+      console.log (this.cleanedLiterature[index].literaturUri.value);
+      this.deleteLiteratureRef(this.cleanedLiterature[index].literaturUri.value);
       this.cleanedLiterature.splice(index, 1);
       this.$forceUpdate();
     },
@@ -402,7 +411,7 @@ export default {
     receiveInsertQuery(query) {
       this.insertQuery = query;
     },
-        getLiteratureHeading(literatureData) {
+    getLiteratureHeading(literatureData) {
       let autoren = "";
       if (
         !literatureData.hasOwnProperty("autoren") &&
@@ -439,22 +448,7 @@ export default {
       return beschreibung;
     },
 
-    validateInput() {
-      this.$v.$touch();
-
-      if (!this.$v.$invalid) {
-        this.updateData();
-      }
-    },
-
-    getValidationClass(fieldName) {
-      const field = this.$v[fieldName];
-      if (field) {
-        return {
-          "md-invalid": field.$invalid && field.$dirty,
-        };
-      }
-    },
+    
     resetData() {
       this.initialState();
     },
@@ -472,10 +466,51 @@ export default {
       //}
       //this.$v.$reset();
     },
+    deleteLiteratureRef(litUri){
+      //log
+      console.log(litUri);
+      /*
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+      PREFIX module: <https://bmake.th-brandenburg.de/module/> 
+      PREFIX schema: <https://schema.org/>   
+      DELETE { module:GPMO schema:citation <http://isbn-international.org/13124344342553311>. }
+      WHERE {  }
+      */
+      this.deleteLitRef += "module:GPMO "; //Nur zum Test, muss dann am Ende für die 3 Zeilen davor weichen
+      //this.deleteLitRef += "  <";
+      //this.deleteLitRef += moduleUri;
+      //this.deleteLitRef += "> ";
+      this.deleteLitRef += "schema:citation <";
+      this.deleteLitRef +=  litUri;
+      this.deleteLitRef += "> . "
+
+      //log
+      console.log(this.deleteLitRef);
+    },
     updateData() {
-      //Methopde erforderlich, wenn wir "+" und "-" Button hinbekommen!?
+      let query = this.prefixes;
+
+      // DELETE Part der Query
+      query += " DELETE { ";
+      if (this.deleteLitRef != "" ){
+        query += this.deleteLitRef; 
+      }        
+      query += " } "; // DELETE Ende
+      // INSERT Part der Query
+      query += " INSERT { ";
+      if (this.insertQuery != null ){
+        query += this.insertQuery;
+      }      
+      query += " } "; // INSERT Ende
+      // WHERE Part der Query
+      query += " WHERE { ";
+      query += " } "; // WHERE Ende
+
+      console.log (query)
+
+      
       // für SPARQL-DataUpdate
-      /*axios
+      axios
          .post(
            "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/update",
            query,
@@ -495,7 +530,7 @@ export default {
          })
          .catch(e => {
            this.errors.push(e);
-         }); */
+         });
     },
   },
   watch: {
