@@ -187,14 +187,6 @@
       <button class="md-layout-item md-size-20" @click="checkAutor">
         checkAutor
       </button>
-      <div>
-        <button @click="checkOpacLink(inputs.isbnNeu)">OPAC</button>
-        <div v-if="this.opac.link.length > 0">
-          Link: {{ this.opac.link }} <br />
-          Ausleihbar: {{ this.opac.ausleihbar }} <br />
-          Volltext verfügbar: {{ this.opac.volltext }} <br />
-        </div>
-      </div>
     </div>
     <!-- ENDE - Ausgabe der Daten in Formular -->
   </div>
@@ -270,11 +262,12 @@ export default {
       //this.changedArray[input].push(index);
     },
     checkAutor() {
-      //Vorschalg: Entweder die ganze Query in eine For-Schleif + das jeweils abfangen, 
-      //           oder den index aus dem Formular-Teil übergeben 
+      //Vorschalg: Entweder die ganze Query in eine For-Schleif + das jeweils abfangen,
+      //           oder den index aus dem Formular-Teil übergeben
       let queryAutor = this.prefixes;
 
-      queryAutor += " SELECT DISTINCT ?autorUri ?autorVorname ?autorNachname ?autorProfilLink ";
+      queryAutor +=
+        " SELECT DISTINCT ?autorUri ?autorVorname ?autorNachname ?autorProfilLink ";
       queryAutor += " WHERE { ";
       queryAutor += " ?autorUri  a module:Author; ";
       queryAutor += "            schema:givenName ?autorVorname; ";
@@ -284,15 +277,24 @@ export default {
       queryAutor += " ?autorUri schema:sameAs ?autorProfilLink.  ";
       queryAutor += " } ";
 
-      queryAutor += " {?autorUri schema:sameAs '" + this.autoren[0].autorProfilLinkNeu + "' } ";
+      queryAutor +=
+        " {?autorUri schema:sameAs '" +
+        this.autoren[0].autorProfilLinkNeu +
+        "' } ";
       queryAutor += " UNION ";
-      queryAutor += " { ?autorUri schema:familyName '" + this.autoren[0].autorNachnameNeu + "' ; ";
-      queryAutor += "             schema:givenName '" + this.autoren[0].autorVornameNeu + "' . } ";
-      queryAutor += "  }"; 
-      
-       //Log
+      queryAutor +=
+        " { ?autorUri schema:familyName '" +
+        this.autoren[0].autorNachnameNeu +
+        "' ; ";
+      queryAutor +=
+        "             schema:givenName '" +
+        this.autoren[0].autorVornameNeu +
+        "' . } ";
+      queryAutor += "  }";
+
+      //Log
       console.log("checkAutorQuery");
-      console.log( queryAutor);
+      console.log(queryAutor);
 
       // Daten vom Fuseki abrufen
       /*
@@ -437,7 +439,7 @@ export default {
         } else if (this.litAuswahl === "Artikel") {
           //In Journal als Book definiert -> Teil greift aktuell nicht!
           // IF-Prüfung funktioniert nicht, irgendwie erkennt Vue.js nicht, dass die Felder gefüllt sind
-          if (!this.inputs.titelInBandNeu === "undefined") {           
+          if (!this.inputs.titelInBandNeu === "undefined") {
             this.inputs.literaturJournalUri =
               "<https://th-brandenburg.de/literatur/" + uuidv4() + ">";
             query += this.inputs.literaturJournalUri + " a schema:Book ; ";
