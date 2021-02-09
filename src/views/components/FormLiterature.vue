@@ -593,8 +593,16 @@ export default {
     },
     getLiteratureHeading(literatureData) {
       let autoren = "";
-      if (!literatureData.hasOwnProperty("autoren")) {
+      if (
+        !literatureData.hasOwnProperty("autoren") &&
+        literatureData.hasOwnProperty("publisherName")
+      ) {
         autoren = literatureData.publisherName.value;
+      } else if (
+        !literatureData.hasOwnProperty("autoren") &&
+        !literatureData.hasOwnProperty("publisherName")
+      ) {
+        autoren = "";
       } else {
         autoren = literatureData.autoren
           .map(

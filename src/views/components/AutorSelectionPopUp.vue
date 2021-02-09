@@ -15,7 +15,7 @@
             <h5 class="text-left">
               Handelt es sich bei Ihrer Eingabe um eine Person aus dieser Liste?
               Bitte prüfen Sie die Links und wählen Sie wenn möglich die
-              korrekte Person aus.
+              korrekte Person aus oder lehnen Sie mit Klick auf "Nein" ab.
             </h5>
             <md-button
               class="md-simple md-just-icon md-round modal-default-button"
