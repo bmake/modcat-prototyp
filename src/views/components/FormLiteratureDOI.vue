@@ -302,8 +302,16 @@ export default {
       }
       filteredResponse.uri = this.doi;
 
+      // Find author names
+      let possibleAuthorObjects = ["author", "editor"];
+      for (const [i, object] of possibleAuthorObjects.entries()) {
+        if (typeof this.rawDoiData[object] == "undefined") {
+          possibleAuthorObjects.splice(i, 1);
+        }
+      }
+
       // Authors
-      for (let author of this.rawDoiData.author) {
+      for (let author of this.rawDoiData[possibleAuthorObjects[0]]) {
         console.log(author);
         filteredResponse.authors.push({
           family: author.family,
