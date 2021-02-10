@@ -463,12 +463,11 @@ export default {
       }
       
       //Log
-      console.log("FormMethods");
-      console.log(query);
+      //console.log("FormMethods");
+      //console.log(query);
 
       this.updateQuery = query;
 
-      /*
       axios
         .post(
           "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/update",
@@ -490,7 +489,6 @@ export default {
         .catch(e => {
           this.errors.push(e);
         });
-      */
     },
     checkModule() {
       let query =

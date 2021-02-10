@@ -274,8 +274,8 @@ export default {
           this.errors.push(e);
         });
       //SPARQL-Abfrage Log-Ausgabe
-      console.log("SVGGraph - queryModule");
-      console.log(q);
+      //console.log("SVGGraph - queryModule");
+      //console.log(q);
     },
     updateGraphText() {
       let module = d3.select("#textModulkuerzel").select("tspan");
@@ -421,7 +421,7 @@ export default {
         }
         this.$emit("modMethods", newData);
         //Log
-        console.log(newData);
+        //console.log(newData);
       },
     },
     modLiterature: {
@@ -430,7 +430,7 @@ export default {
           this.$emit("modLiterature", v);
         }
         //Log
-        console.log(v);
+        //console.log(v);
       },
     },
     modTeachers: {
