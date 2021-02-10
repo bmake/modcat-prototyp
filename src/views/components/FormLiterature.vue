@@ -53,20 +53,18 @@
             >
               <dt>
                 <md-field>
-                  <p
-                  v-html="literature.summary.value"
-                ></p>
+                  <p v-html="literature.summary.value"></p>
                   <md-input></md-input>
                   <div>
                     <span>
-                      <i 
-                        class="open" 
+                      <i
+                        class="open"
                         @click="toggleLiterature('literature', i)"
                         v-show="cleanedLiterature[i].isHidden == true"
                       >
                         ▼
                       </i>
-                      <i 
+                      <i
                         class="close"
                         @click="toggleLiterature('literature', i)"
                         v-show="cleanedLiterature[i].isHidden == false"
@@ -84,7 +82,8 @@
                         v-show="i == cleanedLiterature.length - 1"
                       />
                       <i
-                        class="handle fas fa-arrows-alt" style="margin-left: 10px"
+                        class="handle fas fa-arrows-alt"
+                        style="margin-left: 10px"
                       />
                     </span>
                   </div>
@@ -95,9 +94,11 @@
                   class="md-layout-item md-size-100 literatureHeading"
                   style="margin-bottom: 10px"
                 >
-                <!-- Titel -->
-                  <div class="md-size-100"
-                       v-if="literature.hasOwnProperty('titel')" >
+                  <!-- Titel -->
+                  <div
+                    class="md-size-100"
+                    v-if="literature.hasOwnProperty('titel')"
+                  >
                     <md-field>
                       <label>Titel</label>
                       <md-input v-model="literature.titel.value" disabled />
@@ -239,33 +240,37 @@
                 </div>
               </dd>
             </dl>
-
-            <div class="md-size-100">
+            <div class="md-layout-item md-size-100">
               <!-- Tab-Control -->
               <div v-if="!isHidden || typeof(this.modLiteratureOrigin[0].titel) == 'undefined' ">
-                <button
-                  v-for="tab in tabs"
-                  :key="tab"
-                  :class="['tab-button', { active: currentTab === tab }]"
-                  @click="currentTab = tab"
-                >
-                  {{ tab }}
-                </button>
+                <!-- Tab-Header -->
+                <div>
+                  <div class="left-center-vertically">
+                    <button
+                      v-for="tab in tabs"
+                      :key="tab"
+                      :class="['tab-button', { active: currentTab === tab }]"
+                      @click="currentTab = tab"
+                    >
+                      {{ tab }}
+                    </button>
+                  </div>
+                  <!--
+                  <div class="left-center-vertically">
+                    <span class="h4">Literatur einpflegen</span>
+                  </div>
+                  -->
+                  <div style="clear: both;"></div>
+                </div>
+
                 <!-- Subview laden -->
                 <component
                   :is="currentTabComponent"
-                  :moduleUri="moduleUri"
-                  class="tab"
+                  :moduleUri="moduleUri"                  
                   @queryChanged="receiveInsertQuery"
                 />
               </div>
-            </div>
-            <br /><br />
-
-            <div>
-              <b>Query generiert durch Manuell.vue:</b>
               <br />
-              {{ this.insertQuery }}
             </div>
           </div>
           <!-- ENDE Gelber Rahmen -->
@@ -274,7 +279,10 @@
         <div class="md-layout md-gutter">
           <div class="md-layout-item">
             <div>
-              <md-button type="submit" @click="updateData" :disabled="role != 1 && role != 2"
+              <md-button
+                type="submit"
+                @click="updateData"
+                :disabled="role != 1 && role != 2"
                 >Änderung speichern</md-button
               >
               <md-button @click="resetData" :disabled="role != 1 && role != 2"
@@ -423,13 +431,16 @@ export default {
   methods: {
     removeLiterature(index) {
       //log
-      console.log (this.cleanedLiterature[index].literaturUri.value);
-      this.deleteLiteratureRef(this.cleanedLiterature[index].literaturUri.value);
+      console.log(this.cleanedLiterature[index].literaturUri.value);
+      this.deleteLiteratureRef(
+        this.cleanedLiterature[index].literaturUri.value
+      );
       this.cleanedLiterature.splice(index, 1);
       this.$forceUpdate();
     },
-    toggleLiterature(input, index){
-      this.cleanedLiterature[index].isHidden = !this.cleanedLiterature[index].isHidden ;
+    toggleLiterature(input, index) {
+      this.cleanedLiterature[index].isHidden = !this.cleanedLiterature[index]
+        .isHidden;
       this.$forceUpdate();
     },
     receiveInsertQuery(query) {
@@ -472,7 +483,6 @@ export default {
       return beschreibung;
     },
 
-    
     resetData() {
       this.initialState();
     },
@@ -490,7 +500,7 @@ export default {
       //}
       //this.$v.$reset();
     },
-    deleteLiteratureRef(litUri){
+    deleteLiteratureRef(litUri) {
       //log
       console.log(litUri);
       /*
@@ -503,8 +513,8 @@ export default {
       //this.deleteLitRef += "module:GPMO "; //Nur zum Test
       this.deleteLitRef += "  <" + this.moduleUri + "> ";
       this.deleteLitRef += "schema:citation <";
-      this.deleteLitRef +=  litUri;
-      this.deleteLitRef += "> . "
+      this.deleteLitRef += litUri;
+      this.deleteLitRef += "> . ";
 
       //log
       console.log(this.moduleUri);
@@ -515,45 +525,44 @@ export default {
 
       // DELETE Part der Query
       query += " DELETE { ";
-      if (this.deleteLitRef != "" ){
-        query += this.deleteLitRef; 
-      }        
+      if (this.deleteLitRef != "") {
+        query += this.deleteLitRef;
+      }
       query += " } "; // DELETE Ende
       // INSERT Part der Query
       query += " INSERT { ";
-      if (this.insertQuery != null ){
+      if (this.insertQuery != null) {
         query += this.insertQuery;
-      }      
+      }
       query += " } "; // INSERT Ende
       // WHERE Part der Query
       query += " WHERE { ";
       query += " } "; // WHERE Ende
 
-      console.log (query)
+      console.log(query);
 
-      
       // für SPARQL-DataUpdate
       axios
-         .post(
-           "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/update",
-           query,
-           {
-             headers: { "Content-Type": "application/sparql-update" }
-           }
-         )
-         .then(response => {
-           let status = response.status;
-           if (status == 204) {
-             this.notification = true;
-             setTimeout(() => {
-               this.notification = false;
-             }, 2000);
-           }
-           this.clearCache();
-         })
-         .catch(e => {
-           this.errors.push(e);
-         });
+        .post(
+          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/update",
+          query,
+          {
+            headers: { "Content-Type": "application/sparql-update" },
+          }
+        )
+        .then((response) => {
+          let status = response.status;
+          if (status == 204) {
+            this.notification = true;
+            setTimeout(() => {
+              this.notification = false;
+            }, 2000);
+          }
+          this.clearCache();
+        })
+        .catch((e) => {
+          this.errors.push(e);
+        });
     },
   },
   watch: {
@@ -604,6 +613,16 @@ span {
   top: 32px;
   padding: 0;
 }
-
-
+.right-center-vertically {
+  vertical-align: middle;
+  float: right;
+  line-height: 2rem;
+  margin-bottom: 1rem;
+}
+.left-center-vertically {
+  vertical-align: middle;
+  float: left;
+  line-height: 2rem;
+  margin-bottom: 1rem;
+}
 </style>
