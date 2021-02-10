@@ -81,8 +81,8 @@ export const selectQueries = {
         "  } " +
         " } ";
       //SPARQL-Abfrage Log-Ausgabe
-      console.log("queries.js - Base");
-      console.log(SVGqueryBase);
+      //console.log("queries.js - Base");
+      //console.log(SVGqueryBase);
       return SVGqueryBase;
     }
 
@@ -140,8 +140,8 @@ export const selectQueries = {
         "  } " +
         " } ";
       //SPARQL-Abfrage Log-Ausgabe
-      console.log("queries.js - Outcomes");
-      console.log(SVGqueryOutcome);
+      //console.log("queries.js - Outcomes");
+      //console.log(SVGqueryOutcome);
       return SVGqueryOutcome;
     }
 
@@ -183,8 +183,8 @@ export const selectQueries = {
         "  } " +
         "}";
       //SPARQL-Abfrage Log-Ausgabe
-      console.log("queries.js - Method");
-      console.log(SVGqueryMethod);
+      //console.log("queries.js - Method");
+      //console.log(SVGqueryMethod);
       return SVGqueryMethod;
     }
 
@@ -197,17 +197,14 @@ export const selectQueries = {
         "SELECT ?code ?label ?literaturUri ?titel ?auflage ?autorUri ?autorLabel ?autorVorname ?autorNachname " +
         "?autorProfilLink ?datePublished ?isbn ?litIdentifier ?pageStart ?pageEnd ?publisherUri ?publisherName " +
         "WHERE { " +
-        //"  <" +
-        //moduleUri +
-        //"> " +
-        "module:GPMO " + //Nur zum Test, muss dann am Ende für die 3 Zeilen davor weichen
+        //"module:GPMO " + //Nur zum Test
+        "  <" + moduleUri + "> " +        
         "schema:courseCode ?code ; " +
         "         schema:name ?label .  " +
         'FILTER(lang(?label) = "de") ' +
-        //"  <" +
-        //moduleUri +
-        //"> " +
-        "module:GPMO " + //Nur zum Test, muss dann am Ende für die 3 Zeilen davor weichen
+        "OPTIONAL { " +
+        //"module:GPMO " + //Nur zum Test
+        "  <" + moduleUri + "> " +
         "schema:citation ?literaturUri. " +
         "?literaturUri schema:headline ?titel. " +
         "OPTIONAL { ?literaturUri schema:datePublished ?datePublished. } " +
@@ -240,6 +237,7 @@ export const selectQueries = {
         "   ?literaturUri schema:publisher ?publisherUri. " +
         "   OPTIONAL { ?publisherUri schema:legalName ?publisherName .} " +
         "} " +
+        "} " + //Schließende Klammer 1. Optional
         "}"; //Schließende Klammer vom WHERE
       //SPARQL-Abfrage Log-Ausgabe
       console.log("queries.js - Literatur");
