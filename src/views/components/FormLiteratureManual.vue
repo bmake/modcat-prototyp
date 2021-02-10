@@ -198,6 +198,9 @@ import axios from "axios";
 import AutorSelectionPopUp from "./AutorSelectionPopUp";
 
 export default {
+  props: [    
+    "moduleUri"
+  ],
   name: "literatureManual",
   components: {
     AutorSelectionPopUp,
@@ -402,8 +405,8 @@ export default {
 
       if (this.inputs.titelNeu.length > 0) {
         //query += " INSERT { "; //wird in LiteratureForm hinzugefügt
-        //query += " moduleUri ";
-        query += "module:GPMO "; //Nur zum Test, muss dann am Ende für die 3 Zeilen davor weichen
+        //query += "module:GPMO "; //Nur zum Test
+        query += "  <" + this.moduleUri + "> ";
         query += "schema:citation " + this.inputs.literaturUri + " . ";
 
         if (this.litAuswahl === "Buch") {
@@ -438,8 +441,7 @@ export default {
             query += " ; ";
           }
         } else if (this.litAuswahl === "Artikel") {
-          //In Journal als Book definiert -> Teil greift aktuell nicht!
-          // IF-Prüfung funktioniert nicht, irgendwie erkennt Vue.js nicht, dass die Felder gefüllt sind
+          //In Journal als Book definiert
           if (this.inputs.titelInBandNeu.length > 0) {
             this.inputs.literaturJournalUri =
               "<https://th-brandenburg.de/literatur/" + uuidv4() + ">";
@@ -496,10 +498,7 @@ export default {
         //Titel
         query += 'schema:headline "' + this.inputs.titelNeu + '". ';
 
-        //Autoren/innen -> Die IF-Prüfung ist noch nicht optimal!
-        //[{"autorUri":[],"autorNachnameNeu":[],"autorVornameNeu":[],"autorProfilLinkNeu":[]}]
-        //if (!this.autoren === "[{'autorUri':[],'autorNachnameNeu':[],'autorVornameNeu':[],'autorProfilLinkNeu':[]}]") {
-        //if (this.autoren.length > 0 ) {
+        //Autoren/innen
         if (this.autoren.every(autor => autor.autorNachnameNeu.length > 0)) {
           for (let autor of this.autoren) {
           query += autor.autorUri + " a module:Author ; ";
