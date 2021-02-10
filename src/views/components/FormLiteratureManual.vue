@@ -446,14 +446,18 @@ export default {
             this.inputs.seitenVonInBandNeu.length > 0 &&
             this.inputs.seitenBisInBandNeu.length > 0
           ) {
-            query += 'schema:pageStart "' + this.seitenVonInBandNeu + '"; ';
-            query += 'schema:pageEnd "' + this.seitenBisInBandNeu + '"; ';
+            query +=
+              'schema:pageStart "' + this.inputs.seitenVonInBandNeu + '"; ';
+            query +=
+              'schema:pageEnd "' + this.inputs.seitenBisInBandNeu + '"; ';
           }
           if (this.inputs.urlLinkNeu.length > 0) {
             query += 'schema:url "' + this.inputs.urlLinkNeu + '"; ';
           }
           //Referenz zu den Autoren in Lit erzeugen
-          if (this.autoren.every((autor) => autor.autorNachnameNeu.length > 0)) {
+          if (
+            this.autoren.every((autor) => autor.autorNachnameNeu.length > 0)
+          ) {
             query += "schema:author ";
             for (let autor of this.autoren) {
               query += autor.autorUri + " , ";
@@ -475,7 +479,9 @@ export default {
             query += 'schema:url "' + this.inputs.urlLinkNeu + '"; ';
           }
           //Referenz zu den Autoren in Lit erzeugen
-          if (this.autoren.every((autor) => autor.autorNachnameNeu.length > 0)) {
+          if (
+            this.autoren.every((autor) => autor.autorNachnameNeu.length > 0)
+          ) {
             query += "schema:author ";
             for (let autor of this.autoren) {
               query += autor.autorUri + " , ";

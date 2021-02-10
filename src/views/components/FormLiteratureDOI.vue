@@ -24,7 +24,11 @@
     <br />
 
     <!-- Ausgabe der Daten -->
-    <div @change="generateQuery" class="md-layout-item md-size-100" v-if="loading === false">
+    <div
+      @change="generateQuery"
+      class="md-layout-item md-size-100"
+      v-if="loading === false"
+    >
       <!-- Titel -->
       <div class="md-size-100">
         <md-field>
@@ -34,7 +38,12 @@
       </div>
 
       <!-- Artikel -->
-      <div v-if="cleanedDoiData.type == 'article-journal'">
+      <div
+        v-if="
+          cleanedDoiData.type == 'article-journal' ||
+            cleanedDoiData.type == 'paper-conference'
+        "
+      >
         <!-- Erschienen In -->
         <div class="md-size-100">
           <p style="text-align: left">Erschienen in</p>
@@ -258,27 +267,34 @@ export default {
           publishDate: "",
           volume: "",
         },
-        authors: [],              
+        authors: [],
         url: "",
         uri: "",
-        literaturUri: "",        
-        publisherUri: "",        
+        literaturUri: "",
+        publisherUri: "",
       };
       if (this.rawDoiData.length < 1) return filteredResponse;
       // Map values
       // Literature Data
-      if (this.rawDoiData.type == "article-journal") {
+      if (
+        this.rawDoiData.type == "article-journal" ||
+        this.rawDoiData.type == "paper-conference"
+      ) {
         filteredResponse.article.containerTitle = this.rawDoiData[
           "container-title"
         ];
         filteredResponse.article.publisher = this.rawDoiData["publisher"];
-        filteredResponse.article.volume = this.rawDoiData["volume"];
+        if (typeof this.rawDoiData["volume"] != "undefined") {
+          filteredResponse.article.volume = this.rawDoiData["volume"];
+        }
         filteredResponse.article.publishDate = this.rawDoiData[
           "published-print"
         ]["date-parts"][0].join("-");
-        let pages = this.rawDoiData["page"].split("-");
-        filteredResponse.article.pageStart = pages[0];
-        filteredResponse.article.pageEnd = pages[1];
+        if (typeof this.rawDoiData["page"] != "undefined") {
+          let pages = this.rawDoiData["page"].split("-");
+          filteredResponse.article.pageStart = pages[0];
+          filteredResponse.article.pageEnd = pages[1];
+        }
       } else if (this.rawDoiData.type == "book") {
         filteredResponse.book.isbn = this.rawDoiData["isbn-type"][0].value;
         // Merge title and subtitle
@@ -447,7 +463,9 @@ export default {
         this.cleanedDoiData.literaturUri = "<" + this.cleanedDoiData.uri + ">";
       } else if (this.cleanedDoiData.book.isbn.length > 0) {
         this.cleanedDoiData.literaturUri =
-          "<http://isbn-international.org/" + this.cleanedDoiData.book.isbn + ">";
+          "<http://isbn-international.org/" +
+          this.cleanedDoiData.book.isbn +
+          ">";
       } else {
         this.cleanedDoiData.literaturUri =
           "<https://th-brandenburg.de/literatur/" + uuidv4() + ">";
@@ -460,12 +478,16 @@ export default {
         author.authorUri = "<https://th-brandenburg.de/autor/" + uuidv4() + ">";
       }
 
-      // Generate Pulisher URIs (Herausgeber/ Verlag) 
-      if (this.cleanedDoiData.book.publisher.length > 0 || this.cleanedDoiData.article.publisher.length > 0 ) {
-          this.cleanedDoiData.publisherUri = "<https://th-brandenburg.de/publisher/" + uuidv4() + ">";
-          console.log(this.cleanedDoiData.publisherUri);
+      // Generate Pulisher URIs (Herausgeber/ Verlag)
+      if (
+        this.cleanedDoiData.book.publisher.length > 0 ||
+        this.cleanedDoiData.article.publisher.length > 0
+      ) {
+        this.cleanedDoiData.publisherUri =
+          "<https://th-brandenburg.de/publisher/" + uuidv4() + ">";
+        console.log(this.cleanedDoiData.publisherUri);
       }
-      
+
       if (this.cleanedDoiData.title.length > 0) {
         //query += " INSERT { "; //wird in LiteratureForm hinzugefügt
         //query += "module:GPMO "; //Nur zum Test
@@ -479,15 +501,19 @@ export default {
             query += 'schema:isbn "' + this.cleanedDoiData.book.isbn + '"; ';
           }
           if (this.cleanedDoiData.book.publisher.length > 0) {
-            // Referenz zur Pulisher URIs erzeugen (Herausgeber/ Verlag) 
-            query += "schema:publisher " + this.cleanedDoiData.publisherUri + "; ";
+            // Referenz zur Pulisher URIs erzeugen (Herausgeber/ Verlag)
+            query +=
+              "schema:publisher " + this.cleanedDoiData.publisherUri + "; ";
           }
           if (this.cleanedDoiData.book.publishDate.length > 0) {
             query +=
-              'schema:datePublished "' + this.cleanedDoiData.book.publishDate + '"; ';
+              'schema:datePublished "' +
+              this.cleanedDoiData.book.publishDate +
+              '"; ';
           }
           if (this.cleanedDoiData.book.volume.length > 0) {
-            query += 'schema:bookEdition "' + this.cleanedDoiData.book.volume + '"; ';
+            query +=
+              'schema:bookEdition "' + this.cleanedDoiData.book.volume + '"; ';
           }
           if (this.cleanedDoiData.url.length > 0) {
             query += 'schema:url "' + this.cleanedDoiData.url + '"; ';
@@ -505,50 +531,77 @@ export default {
             query = query.slice(0, query.length - 3);
             query += " ; ";
           }
-        } else if (this.cleanedDoiData.type === "article-journal") {
+        } else if (
+          this.cleanedDoiData.type === "article-journal" ||
+          this.cleanedDoiData.type === "paper-conference"
+        ) {
           //In Journal als Book definiert
           if (this.cleanedDoiData.article.containerTitle.length > 0) {
             this.cleanedDoiData.article.literaturContainerUri =
               "<https://th-brandenburg.de/literatur/" + uuidv4() + ">";
-            query += this.cleanedDoiData.article.literaturContainerUri + " a schema:Book ; ";
-            
+            query +=
+              this.cleanedDoiData.article.literaturContainerUri +
+              " a schema:Book ; ";
+
             if (this.cleanedDoiData.article.volume.length > 0) {
               query +=
-                'schema:bookEdition "' + this.cleanedDoiData.article.volume + '"; ';
+                'schema:bookEdition "' +
+                this.cleanedDoiData.article.volume +
+                '"; ';
             }
             if (this.cleanedDoiData.article.publishDate.length > 0) {
               query +=
-                'schema:datePublished "' + this.cleanedDoiData.article.publishDate + '"; ';
+                'schema:datePublished "' +
+                this.cleanedDoiData.article.publishDate +
+                '"; ';
             }
 
-            query += 'schema:headline "' + this.cleanedDoiData.article.containerTitle + '". ';
+            query +=
+              'schema:headline "' +
+              this.cleanedDoiData.article.containerTitle +
+              '". ';
           }
 
           //Artikle
           query += this.cleanedDoiData.literaturUri + " a schema:Article ; ";
 
           if (this.cleanedDoiData.article.containerTitle > 0) {
-            query += 'schema:isPartOf "' + this.cleanedDoiData.literaturContainerUri + '"; ';
+            query +=
+              'schema:isPartOf "' +
+              this.cleanedDoiData.literaturContainerUri +
+              '"; ';
           }
           if (this.cleanedDoiData.article.publisher.length > 0) {
-            // Referenz zur Pulisher URIs erzeugen (Herausgeber/ Verlag) 
-            query += "schema:publisher " + this.cleanedDoiData.publisherUri + "; ";
+            // Referenz zur Pulisher URIs erzeugen (Herausgeber/ Verlag)
+            query +=
+              "schema:publisher " + this.cleanedDoiData.publisherUri + "; ";
           }
           if (this.cleanedDoiData.article.publishDate.length > 0) {
-            query += 'schema:datePublished "' + this.cleanedDoiData.article.publishDate + '"; ';
+            query +=
+              'schema:datePublished "' +
+              this.cleanedDoiData.article.publishDate +
+              '"; ';
           }
           if (
             this.cleanedDoiData.article.pageStart.length > 0 &&
             this.cleanedDoiData.article.pageEnd.length > 0
           ) {
-            query += 'schema:pageStart "' + this.cleanedDoiData.article.pageStart + '"; ';
-            query += 'schema:pageEnd "' + this.cleanedDoiData.article.pageEnd + '"; ';
+            query +=
+              'schema:pageStart "' +
+              this.cleanedDoiData.article.pageStart +
+              '"; ';
+            query +=
+              'schema:pageEnd "' + this.cleanedDoiData.article.pageEnd + '"; ';
           }
           if (this.cleanedDoiData.url.length > 0) {
             query += 'schema:url "' + this.cleanedDoiData.url + '"; ';
           }
           //Referenz zu den Autoren in Lit erzeugen
-          if (this.cleanedDoiData.authors.every((author) => author.family.length > 0)) {
+          if (
+            this.cleanedDoiData.authors.every(
+              (author) => author.family.length > 0
+            )
+          ) {
             query += "schema:author ";
             for (let author of this.cleanedDoiData.authors) {
               query += author.authorUri + " , ";
@@ -556,13 +609,17 @@ export default {
             query = query.slice(0, query.length - 3);
             query += " ; ";
           }
-        } 
+        }
 
         //Titel
         query += 'schema:headline "' + this.cleanedDoiData.title + '". ';
 
         //Autoren/innen
-        if (this.cleanedDoiData.authors.every((author) => author.family.length > 0)) {
+        if (
+          this.cleanedDoiData.authors.every(
+            (author) => author.family.length > 0
+          )
+        ) {
           for (let author of this.cleanedDoiData.authors) {
             query += author.authorUri + " a module:Author ; ";
 
@@ -576,19 +633,24 @@ export default {
             query += 'schema:sameAs "' + author.url + '". ';
           }
         }
-        
-        //Herausgeber/ Verlag
-        if (this.cleanedDoiData.book.publisher.length > 0 ) {
-            // Generate Pulisher URIs (Herausgeber/ Verlag) 
-            query += this.cleanedDoiData.publisherUri + ' a schema:Organization ; ';
-            query += 'schema:legalName "' + this.cleanedDoiData.book.publisher + '". ';
-        }
-        if (this.cleanedDoiData.article.publisher.length > 0 ) {
-            // Generate Pulisher URIs (Herausgeber/ Verlag) 
-            query += this.cleanedDoiData.publisherUri + ' a schema:Organization ; ';
-            query += 'schema:legalName "' + this.cleanedDoiData.article.publisher + '". ';
-        }
 
+        //Herausgeber/ Verlag
+        if (this.cleanedDoiData.book.publisher.length > 0) {
+          // Generate Pulisher URIs (Herausgeber/ Verlag)
+          query +=
+            this.cleanedDoiData.publisherUri + " a schema:Organization ; ";
+          query +=
+            'schema:legalName "' + this.cleanedDoiData.book.publisher + '". ';
+        }
+        if (this.cleanedDoiData.article.publisher.length > 0) {
+          // Generate Pulisher URIs (Herausgeber/ Verlag)
+          query +=
+            this.cleanedDoiData.publisherUri + " a schema:Organization ; ";
+          query +=
+            'schema:legalName "' +
+            this.cleanedDoiData.article.publisher +
+            '". ';
+        }
       }
 
       //Log
