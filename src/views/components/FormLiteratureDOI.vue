@@ -23,7 +23,7 @@
     </div>
     <br />
 
-    <!-- Ausgabe der Daten in Formular (DEMO) -->
+    <!-- Ausgabe der Daten -->
     <div class="md-layout-item md-size-100" v-if="loading === false">
       <!-- Titel -->
       <div class="md-size-100">
@@ -50,17 +50,17 @@
               </md-field>
             </div>
             <!-- Band -->
-            <div class="md-layout-item md-size-15">
+            <div class="md-layout-item md-size-10">
               <md-field>
                 <label>Band</label>
                 <md-input v-model="cleanedDoiData.article.volume" />
               </md-field>
             </div>
             <!-- Jahr -->
-            <div class="md-layout-item md-size-15">
+            <div class="md-layout-item md-size-20">
               <md-field>
-                <label>Band</label>
-                <md-input v-model="cleanedDoiData.article.publishYear" />
+                <label>Veröffentlichung</label>
+                <md-input v-model="cleanedDoiData.article.publishDate" />
               </md-field>
             </div>
           </div>
@@ -76,7 +76,7 @@
         <div class="md-size-100">
           <md-field>
             <label>Veröffentlichung</label>
-            <md-input v-model="cleanedDoiData.article.publishYear" />
+            <md-input v-model="cleanedDoiData.article.publishDate" />
           </md-field>
         </div>
         <!-- Seiten -->
@@ -103,6 +103,7 @@
         </div>
       </div>
 
+      <!-- Buch -->
       <div v-if="cleanedDoiData.type == 'book'">
         <!-- ISBN -->
         <div class="md-size-100">
@@ -122,7 +123,7 @@
         <div class="md-size-100">
           <md-field>
             <label>Veröffentlichung</label>
-            <md-input v-model="cleanedDoiData.book.publishYear" />
+            <md-input v-model="cleanedDoiData.book.publishDate" />
           </md-field>
         </div>
         <!-- Herausgeber -->
@@ -152,20 +153,51 @@
       <!-- Autoren -->
       <div class="md-size-100">
         <label>Autoren/innen</label>
-        <div v-for="author in rawDoiData.author" :key="author">
+        <div v-for="(autor, index) in cleanedDoiData.authors" :key="autor">
           <div class="md-layout md-gutter">
             <!-- Nachname -->
-            <div class="md-layout-item md-size-50">
+            <div class="md-layout-item md-size-20">
               <md-field>
                 <label>Nachname</label>
-                <md-input v-model="author.family" disabled />
+                <md-input v-model="autor.family" />
               </md-field>
             </div>
             <!-- Vorname -->
-            <div class="md-layout-item md-size-50">
+            <div class="md-layout-item md-size-20">
               <md-field>
                 <label>Vorname</label>
-                <md-input v-model="author.given" />
+                <md-input v-model="autor.given" />
+              </md-field>
+            </div>
+            <!-- URL/ Profil-Link -->
+            <div class="md-layout-item md-size-60">
+              <md-field>
+                <label>Profil-Link/URL*</label>
+                <md-input
+                  v-model="autor.url"
+                  @change="autorDuplicationCheck(index)"
+                />
+                <AutorSelectionPopUp
+                  v-if="showPopUp"
+                  @close="showPopUp = false"
+                  @duplicateChecked="handleAutorSelection"
+                  :demoExistingAutor="demoExistingAutor"
+                  :autorIndex="authorIndexPopUp"
+                >
+                </AutorSelectionPopUp>
+                <!-- Plus, Minus, Verschieben-Symbole -->
+                <span>
+                  <i
+                    class="fas fa-minus-circle"
+                    @click="removeAutor(index)"
+                    v-show="cleanedDoiData.authors.length > 1"
+                  />
+                  <i
+                    class="fas fa-plus-circle"
+                    @click="addAutor()"
+                    v-show="index == cleanedDoiData.authors.length - 1"
+                  />
+                </span>
               </md-field>
             </div>
           </div>
@@ -182,16 +214,35 @@
 </template>
 
 <script>
+import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
+import AutorSelectionPopUp from "./AutorSelectionPopUp";
 
 export default {
   name: "literatureDOI",
+  components: {
+    AutorSelectionPopUp,
+  },
   data() {
     return {
       doi: "https://doi.org/10.1257/jep.29.2.213",
       rawDoiData: {},
       loading: null,
       apiError: null,
+      showPopUp: false,
+      authorIndexPopUp: 0,
+      demoExistingAutor: [
+        {
+          vorname: "Klaus",
+          nachname: "Cleber",
+          url: "http://facebook.com/klaus",
+        },
+        {
+          vorname: "Klaus",
+          nachname: "Cleber",
+          url: "http://xing.com/klausi",
+        },
+      ],
     };
   },
   computed: {
@@ -205,29 +256,32 @@ export default {
           containerTitle: "",
           publisher: "",
           volume: "",
-          publishYear: "",
+          publishDate: "",
           pageStart: "",
           pageEnd: "",
         },
         book: {
           isbn: "",
           publisher: "",
+          publishDate: "",
           volume: "",
         },
+        authors: [],
         url: "",
         uri: "",
       };
       if (this.rawDoiData.length < 1) return filteredResponse;
       // Map values
+      // Literature Data
       if (this.rawDoiData.type == "article-journal") {
         filteredResponse.article.containerTitle = this.rawDoiData[
           "container-title"
         ];
         filteredResponse.article.publisher = this.rawDoiData["publisher"];
         filteredResponse.article.volume = this.rawDoiData["volume"];
-        filteredResponse.article.publishYear = this.rawDoiData[
+        filteredResponse.article.publishDate = this.rawDoiData[
           "published-print"
-        ]["date-parts"][0][0];
+        ]["date-parts"][0].join("-");
         let pages = this.rawDoiData["page"].split("-");
         filteredResponse.article.pageStart = pages[0];
         filteredResponse.article.pageEnd = pages[1];
@@ -239,16 +293,39 @@ export default {
             filteredResponse.title + " – " + this.rawDoiData["subtitle"];
         }
         filteredResponse.book.publisher = this.rawDoiData["publisher"];
+        filteredResponse.book.publishDate = this.rawDoiData["published-print"][
+          "date-parts"
+        ][0].join("-");
         if (this.rawDoiData["link"][0]["content-type"] == "application/pdf") {
           filteredResponse.url = this.rawDoiData["link"][0]["URL"];
         }
       }
       filteredResponse.uri = this.doi;
 
+      // Authors
+      for (let author of this.rawDoiData.author) {
+        console.log(author);
+        filteredResponse.authors.push({
+          family: author.family,
+          given: author.given,
+          url: "",
+        });
+      }
+
       return filteredResponse;
     },
   },
   methods: {
+    addAutor() {
+      this.cleanedDoiData.authors.push({ family: "", given: "", url: "" });
+      this.$forceUpdate();
+    },
+    removeAutor(index) {
+      this.cleanedDoiData.authors.splice(index, 1);
+      this.$forceUpdate();
+
+      //this.changedArray[input].push(index);
+    },
     // Query literature data from doi.org API
     queryDoiData() {
       this.loading = true;
@@ -274,6 +351,29 @@ export default {
           }
           this.loading = null;
         });
+    },
+    autorDuplicationCheck(index) {
+      let autor = this.cleanedDoiData.authors[index];
+      if (this.demoExistingAutor.length < 1) return;
+      if (
+        autor.given.length > 0 &&
+        autor.family.length > 0 &&
+        autor.url.length > 0
+      ) {
+        console.log(index);
+        this.authorIndexPopUp = index;
+        this.showPopUp = true;
+      }
+    },
+    handleAutorSelection(result) {
+      if (result.autor.vorname.length > 0) {
+        console.log(result);
+        this.cleanedDoiData.authors[result.index].given = result.autor.vorname;
+        this.cleanedDoiData.authors[result.index].family =
+          result.autor.nachname;
+        this.cleanedDoiData.authors[result.index].url = result.autor.url;
+        this.$forceUpdate();
+      }
     },
   },
   watch: {
