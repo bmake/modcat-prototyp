@@ -7,9 +7,9 @@
         v-model="isbn"
         @keyup.enter="queryISBNData"
       />
-      <button class="md-layout-item md-size-20" @click="queryISBNData">
+      <md-button class="md-layout-item md-warning" @click="queryISBNData">
         Laden
-      </button>
+      </md-button>
       <div v-if="loading === true">
         <div class="lds-ripple">
           <div></div>
@@ -65,28 +65,62 @@
           <md-input v-model="cleanedISBNData.infoLink" />
         </md-field>
       </div>
-      <!-- Authoren -->
+      <!-- Autoren/innen -->
       <div class="md-size-100">
         <label>Autoren/innen</label>
-        <div v-for="author in cleanedISBNData.authors" :key="author">
-          <div class="md-layout md-gutter">
-            <!-- Nachname -->
-            <div class="md-layout-item md-size-50">
-              <md-field>
-                <label>Nachname</label>
-                <md-input v-model="author.family" />
-              </md-field>
-            </div>
-            <!-- Vorname -->
-            <div class="md-layout-item md-size-50">
-              <md-field>
-                <label>Vorname</label>
-                <md-input v-model="author.given" />
-              </md-field>
-            </div>
+        <div
+          v-for="(author, i) in cleanedISBNData.authors" :key="author"
+          class="md-layout md-gutter"
+        >
+          <!-- Nachname -->
+          <div class="md-layout-item md-size-20">
+            <md-field>
+              <label>Nachname*</label>
+              <md-input v-model="author.family" />
+            </md-field>
+          </div>
+          <!-- Vorname -->
+          <div class="md-layout-item md-size-20">
+            <md-field>
+              <label>Vorname*</label>
+              <md-input v-model="author.given" />
+            </md-field>
+          </div>
+          <!-- URL/ Profil-Link -->
+          <div class="md-layout-item md-size-60">
+            <md-field>
+              <label>Profil-Link/URL*</label>
+              <md-input
+                v-model="author.url"
+               @change="autorDuplicationCheck(i)"
+              />
+              <AutorSelectionPopUp
+                v-if="showPopUp"
+                @close="showPopUp = false"
+                @duplicateChecked="handleAutorSelection"
+                :demoExistingAutor="demoExistingAutor"
+                :autorIndex="authorIndexPopUp"
+              >
+              </AutorSelectionPopUp>
+              <!-- Plus, Minus, Verschieben-Symbole -->
+              <span>
+                <i
+                  class="fas fa-minus-circle"
+                  @click="removeAutor(i)"
+                  v-show="cleanedISBNData.authors.length > 1"
+                />
+                <i
+                  class="fas fa-plus-circle"
+                  @click="addAutor()"
+                  v-show="i == cleanedISBNData.authors.length - 1"
+                />
+                <i class="handle fas fa-arrows-alt" style="margin-left: 10px" />
+              </span>
+            </md-field>
           </div>
         </div>
       </div>
+      <!-- ENDE Autoren/innen -->
     </div>
     <!-- JSON-Output
     <div v-if="loading === false">
@@ -99,9 +133,13 @@
 
 <script>
 import axios from "axios";
+import AutorSelectionPopUp from "./AutorSelectionPopUp";
 
 export default {
   name: "literatureISBN",
+  components: {
+    AutorSelectionPopUp,
+  },
   data() {
     return {
       isbn: "978-1-83867-495-3",
@@ -109,6 +147,20 @@ export default {
       loading: null,
       apiError: null,
       opacLink: "",
+      showPopUp: false,
+      authorIndexPopUp: 0,
+      demoExistingAutor: [
+        {
+          vorname: "Klaus",
+          nachname: "Cleber",
+          url: "http://facebook.com/klaus",
+        },
+        {
+          vorname: "Klaus",
+          nachname: "Cleber",
+          url: "http://xing.com/klausi",
+        },
+      ],
     };
   },
   computed: {
@@ -125,6 +177,7 @@ export default {
         authorObject.given = nameParts[0];
         nameParts.shift();
         authorObject.family = nameParts.join(" ");
+        authorObject.url = "";
         authors.push(authorObject);
       }
       delete data.items[0].volumeInfo.authors;
@@ -143,6 +196,36 @@ export default {
     },
   },
   methods: {
+    addAutor() {
+      this.cleanedISBNData.authors.push({ family: "", given: "", url: "" });
+      this.$forceUpdate();
+    },
+    removeAutor(index) {
+      this.cleanedISBNData.authors.splice(index, 1);
+      this.$forceUpdate();
+    },
+    autorDuplicationCheck(index) {
+      let autor = this.cleanedISBNData.authors[index];
+      if (this.demoExistingAutor.length < 1) return;
+      if (
+        autor.given.length > 0 &&
+        autor.family.length > 0 &&
+        autor.url.length > 0
+      ) {
+        console.log(index);
+        this.authorIndexPopUp = index;
+        this.showPopUp = true;
+      }
+    },
+    handleAutorSelection(result) {
+      if (result.autor.vorname.length > 0) {
+        console.log(result);
+        this.cleanedISBNData.authors[result.index].given = result.autor.vorname;
+        this.cleanedISBNData.authors[result.index].family = result.autor.nachname;
+        this.cleanedISBNData.authors[result.index].url = result.autor.url;
+        this.$forceUpdate();
+      }
+    },
     // Query literature data from Google Books API
     queryISBNData() {
       this.loading = true;

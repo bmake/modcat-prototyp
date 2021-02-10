@@ -262,7 +262,7 @@ export default {
     },
     removeAutor(input, index) {
       this[input].splice(index, 1);
-      //this.changedArray[input].push(index);
+
     },
     checkAutor() {
       //Vorschalg: Entweder die ganze Query in eine For-Schleif + das jeweils abfangen,
