@@ -153,7 +153,7 @@
                 @close="showPopUp = false"
                 @duplicateChecked="handleAutorSelection"
                 :demoExistingAutor="demoExistingAutor"
-                :autorIndex="i"
+                :autorIndex="authorIndexPopUp"
               >
               </AutorSelectionPopUp>
               <!-- Plus, Minus, Verschieben-Symbole -->
@@ -198,9 +198,7 @@ import axios from "axios";
 import AutorSelectionPopUp from "./AutorSelectionPopUp";
 
 export default {
-  props: [    
-    "moduleUri"
-  ],
+  props: ["moduleUri"],
   name: "literatureManual",
   components: {
     AutorSelectionPopUp,
@@ -231,6 +229,7 @@ export default {
         literaturUri: [],
         literaturJournalUri: [],
       },
+      authorIndexPopUp: 0,
       autoren: [
         {
           autorUri: [],
@@ -253,7 +252,6 @@ export default {
         },
       ],
       showPopUp: false,
-      test: null,
     };
   },
   methods: {
@@ -353,11 +351,11 @@ export default {
         autor.autorProfilLinkNeu.length > 0
       ) {
         console.log(index);
+        this.authorIndexPopUp = index;
         this.showPopUp = true;
       }
     },
     handleAutorSelection(result) {
-      this.test = result;
       if (result.autor.vorname.length > 0) {
         console.log(result);
         this.autoren[result.index].autorVornameNeu = result.autor.vorname;
@@ -503,7 +501,7 @@ export default {
         query += 'schema:headline "' + this.inputs.titelNeu + '". ';
 
         //Autoren/innen
-        if (this.autoren.every(autor => autor.autorNachnameNeu.length > 0)) {
+        if (this.autoren.every((autor) => autor.autorNachnameNeu.length > 0)) {
           for (let autor of this.autoren) {
             query += autor.autorUri + " a module:Author ; ";
 

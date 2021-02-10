@@ -10,7 +10,7 @@
               </h3>
             </slot>
           </div>
-
+          {{ this.result.index }}
           <div class="modal-body">
             <h5 class="text-left">
               Handelt es sich bei Ihrer Eingabe um eine Person aus dieser Liste?
@@ -41,14 +41,14 @@
           <md-button
             style="margin-top: 2vh;"
             class="md-success"
-            @click="emitResult()"
+            @click="emitYesResult()"
           >
             Ja
           </md-button>
           <md-button
             style="margin-top: 2vh; margin-left: 0.5vw;"
             class="md-danger"
-            @click="emitResult()"
+            @click="emitNoResult()"
           >
             Nein
           </md-button>
@@ -75,8 +75,12 @@ export default {
     };
   },
   methods: {
-    emitResult() {
+    emitYesResult() {
       this.result.autor = this.demoExistingAutor[this.selection];
+      this.$emit("duplicateChecked", this.result);
+      this.$emit("close");
+    },
+    emitNoResult() {
       this.$emit("duplicateChecked", this.result);
       this.$emit("close");
     },
