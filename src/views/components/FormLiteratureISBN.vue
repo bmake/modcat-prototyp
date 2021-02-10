@@ -20,37 +20,52 @@
         {{ apiError }}
       </div>
     </div>
-    <!-- Ausgabe der Daten in Formular (DEMO) -->
+    <!-- Ausgabe der Daten in Formular -->
     <div class="md-layout-item md-size-100" v-if="loading === false">
       <br />
       <!-- Titel -->
       <div class="md-size-100">
         <md-field>
           <label>Titel</label>
-          <md-input v-model="cleanedISBNData.title" disabled />
+          <md-input v-model="cleanedISBNData.title" />
         </md-field>
       </div>
-      <!-- Untertitel -->
+      <!-- ISBN -->
       <div class="md-size-100">
         <md-field>
-          <label>Untertitel</label>
-          <md-input v-model="cleanedISBNData.subtitle" disabled />
-        </md-field>
-      </div>
-      <!-- Seiten -->
-      <div class="md-size-100">
-        <md-field>
-          <label>Seiten</label>
-          <md-input v-model="cleanedISBNData.pageCount" disabled />
+          <label>ISBN</label>
+          <md-input v-model="isbn" disabled />
         </md-field>
       </div>
       <!-- Herausgeber -->
       <div class="md-size-100">
         <md-field>
           <label>Herausgeber</label>
-          <md-input v-model="cleanedISBNData.publisher" disabled />
+          <md-input v-model="cleanedISBNData.publisher" />
         </md-field>
       </div>
+      <!-- Veröffentlichung -->
+      <div class="md-size-100">
+        <md-field>
+          <label>Veröffentlichung</label>
+          <md-input v-model="cleanedISBNData.publishedDate" />
+        </md-field>
+      </div>
+      <!-- Auflage -->
+      <div class="md-size-100">
+        <md-field>
+          <label>Auflage</label>
+          <md-input v-model="cleanedISBNData.contentVersion" />
+        </md-field>
+      </div>
+      <!-- URL -->
+      <div class="md-size-100">
+        <md-field>
+          <label>URL</label>
+          <md-input v-model="cleanedISBNData.infoLink" />
+        </md-field>
+      </div>
+      <!-- Authoren -->
       <div class="md-size-100">
         <label>Autoren/innen</label>
         <div v-for="author in cleanedISBNData.authors" :key="author">
@@ -59,7 +74,7 @@
             <div class="md-layout-item md-size-50">
               <md-field>
                 <label>Nachname</label>
-                <md-input v-model="author.family" disabled />
+                <md-input v-model="author.family" />
               </md-field>
             </div>
             <!-- Vorname -->
@@ -93,12 +108,14 @@ export default {
       rawISBNData: [],
       loading: null,
       apiError: null,
+      opacLink: "",
     };
   },
   computed: {
     // Clean up API response
     // authors part, simplify structure
     cleanedISBNData() {
+      if (this.rawISBNData.length < 1) return {};
       let data = JSON.parse(JSON.stringify(this.rawISBNData));
       let cleanedData = {};
       let authors = [];
@@ -113,8 +130,15 @@ export default {
       delete data.items[0].volumeInfo.authors;
       data.items[0].volumeInfo.authors = authors;
 
+      if (data.items[0].volumeInfo.subtitle.length > 1 ) {
+        let title = data.items[0].volumeInfo.title+" - "+data.items[0].volumeInfo.subtitle;
+        data.items[0].volumeInfo.title = title;
+      }
+      
       cleanedData = data.items[0].volumeInfo;
 
+      
+      
       return cleanedData;
     },
   },
@@ -146,6 +170,35 @@ export default {
         });
     },
   },
+  watch: {
+    cleanedISBNData(data) {
+      if (this.opacLink.length < 1 || this.opacLink.substring(this.opacLink.length - this.isbn.length) != this.isbn) {
+        axios
+          .get("https://opac.th-brandenburg.de/search?isbn=" + this.isbn, {
+            headers: {
+              Accept: "text/html",
+            },
+            crossdomain: true,
+          })
+          .then((response) => {
+            if (response.data.includes("in die Merkliste")) {
+              console.log(
+                "https://opac.th-brandenburg.de/search?isbn=" + this.isbn
+              );
+              data.infoLink = "https://opac.th-brandenburg.de/search?isbn=" + this.isbn;
+              this.opacLink = data.infoLink;
+              this.cleanedISBNData = data;
+              this.$forceUpdate();
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } else {
+        console.log(false);
+      }
+    }
+  }
 };
 </script>
 <style scoped>
