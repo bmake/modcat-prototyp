@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Eingabe der DOI -->
-    <div>
+    <div class="md-size-100">
       <div class="md-layout-item md-size-100">
         <md-field>
           <label>DOI</label>
@@ -173,15 +173,12 @@
             <div class="md-layout-item md-size-60">
               <md-field>
                 <label>Profil-Link/URL*</label>
-                <md-input
-                  v-model="autor.url"
-                  @change="autorDuplicationCheck(index)"
-                />
+                <md-input v-model="autor.url" @change="checkAutor(index)" />
                 <AutorSelectionPopUp
                   v-if="showPopUp"
                   @close="showPopUp = false"
                   @duplicateChecked="handleAutorSelection"
-                  :demoExistingAutor="demoExistingAutor"
+                  :existingAuthors="existingAuthors"
                   :autorIndex="authorIndexPopUp"
                 >
                 </AutorSelectionPopUp>
@@ -226,23 +223,16 @@ export default {
   data() {
     return {
       doi: "https://doi.org/10.1257/jep.29.2.213",
+      prefixes:
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+        "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+        "PREFIX schema: <https://schema.org/>  ",
       rawDoiData: {},
       loading: null,
       apiError: null,
       showPopUp: false,
       authorIndexPopUp: 0,
-      demoExistingAutor: [
-        {
-          vorname: "Klaus",
-          nachname: "Cleber",
-          url: "http://facebook.com/klaus",
-        },
-        {
-          vorname: "Klaus",
-          nachname: "Cleber",
-          url: "http://xing.com/klausi",
-        },
-      ],
+      existingAuthors: [],
     };
   },
   computed: {
@@ -317,6 +307,7 @@ export default {
           family: author.family,
           given: author.given,
           url: "",
+          uri: "",
         });
       }
 
@@ -333,6 +324,68 @@ export default {
       this.$forceUpdate();
 
       //this.changedArray[input].push(index);
+    },
+    checkAutor(index) {
+      let autor = this.cleanedDoiData.authors[index];
+
+      // User has to input all values for an author
+      if (
+        autor.given.length < 1 ||
+        autor.family.length < 1 ||
+        autor.url.length < 1
+      )
+        return;
+
+      let queryAutor = this.prefixes;
+
+      queryAutor +=
+        " SELECT DISTINCT ?autorUri ?autorVorname ?autorNachname ?autorProfilLink ";
+      queryAutor += " WHERE { ";
+      queryAutor += " ?autorUri  a module:Author; ";
+      queryAutor += "            schema:givenName ?autorVorname; ";
+      queryAutor += "            schema:familyName ?autorNachname. ";
+
+      queryAutor += " OPTIONAL { ";
+      queryAutor += " ?autorUri schema:sameAs ?autorProfilLink.  ";
+      queryAutor += " } ";
+
+      queryAutor += " {?autorUri schema:sameAs '" + autor.url + "' } ";
+      queryAutor += " UNION ";
+      queryAutor += " { ?autorUri schema:familyName '" + autor.family + "' ; ";
+      queryAutor += "             schema:givenName '" + autor.given + "' . } ";
+      queryAutor += "  }";
+
+      //Log
+      console.log("checkAutorQuery");
+      console.log(queryAutor);
+
+      // Daten vom Fuseki abrufen
+      axios
+        .post(
+          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query",
+          queryAutor,
+          {
+            headers: { "Content-Type": "application/sparql-query" },
+          }
+        )
+        .then((response) => {
+          // JSON responses are automatically parsed.
+          let result = response.data.results.bindings;
+          let formattedResult = [];
+          for (let entry of result) {
+            formattedResult.push({
+              given: entry.autorVorname.value,
+              family: entry.autorNachname.value,
+              url: entry.autorProfilLink.value,
+              uri: entry.autorUri.value,
+            });
+          }
+          this.existingAuthors = formattedResult;
+          this.authorIndexPopUp = index;
+        })
+        .catch((e) => {
+          this.errors.push(e);
+        });
     },
     // Query literature data from doi.org API
     queryDoiData() {
@@ -374,17 +427,19 @@ export default {
       }
     },
     handleAutorSelection(result) {
-      if (result.autor.vorname.length > 0) {
-        console.log(result);
-        this.cleanedDoiData.authors[result.index].given = result.autor.vorname;
-        this.cleanedDoiData.authors[result.index].family =
-          result.autor.nachname;
+      if (result.autor.given.length > 0) {
+        this.cleanedDoiData.authors[result.index].given = result.autor.given;
+        this.cleanedDoiData.authors[result.index].family = result.autor.family;
         this.cleanedDoiData.authors[result.index].url = result.autor.url;
-        this.$forceUpdate();
+        this.cleanedDoiData.authors[result.index].uri = result.autor.uri;
       }
     },
   },
   watch: {
+    existingAuthors() {
+      if (this.existingAuthors.length < 1) return;
+      this.showPopUp = true;
+    },
     cleanedDoiData(data) {
       if (
         data.type == "book" &&
