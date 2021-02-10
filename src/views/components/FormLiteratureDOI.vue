@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Eingabe der DOI -->
-    <div>
+    <div class="md-size-100">
       <div class="md-layout-item md-size-100">
         <md-field>
           <label>DOI</label>

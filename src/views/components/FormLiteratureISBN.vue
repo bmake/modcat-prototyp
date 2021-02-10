@@ -1,12 +1,13 @@
 <template>
   <div>
-    <div>
-      <p>Bitte geben Sie eine gültige ISBN ein</p>
-      <md-input
-        class="md-layout-item md-size-80"
-        v-model="isbn"
-        @keyup.enter="queryISBNData"
-      />
+    <!-- Eingabe der ISBN -->
+    <div class="md-size-100">
+      <div class="md-layout-item md-size-100">
+        <md-field>
+          <label>ISBN</label>
+          <md-input v-model="isbn" @keyup.enter="queryISBNData" />
+        </md-field>
+      </div>
       <md-button class="md-layout-item md-warning" @click="queryISBNData">
         Laden
       </md-button>
@@ -20,6 +21,8 @@
         {{ apiError }}
       </div>
     </div>
+    <br />
+
     <!-- Ausgabe der Daten in Formular -->
     <div class="md-layout-item md-size-100" v-if="loading === false">
       <br />

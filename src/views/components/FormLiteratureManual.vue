@@ -1,13 +1,7 @@
 <template>
   <div>
-    <label> Hey there! Enter all information!</label>
-    <!-- Ausgeklappte Anzeige einer Literatur -->
-    <!-- var "detailAnsicht" ist der Schalter für Anzeige -->
-
     <div>
-      <label> DropdownAuswahl</label>
       <md-field class="md-size-100">
-        <label>Literaturauswahl*</label>
         <md-select v-model="litAuswahl">
           <md-option value="Buch">Buch</md-option>
           <md-option value="Artikel">Artikel</md-option>
@@ -18,7 +12,6 @@
     <!-- END DropDown -->
     <!-- Ausgabe der Daten in Formular -->
     <div @change="generateQuery">
-      <label> Eingabebereich Literatur</label>
       <!-- Titel -->
       <div class="md-size-100">
         <md-field>
@@ -175,18 +168,6 @@
         </div>
       </div>
       <!-- ENDE Autoren/innen -->
-
-      <!-- TestAusagbe -->
-      <p>
-        Message is: {{ inputs.titelNeu }} - {{ inputs.titelInBandNeu }} -
-        {{ autoren }}
-      </p>
-      <button class="md-layout-item md-size-20" @click="generateQuery">
-        QueryLaden
-      </button>
-      <button class="md-layout-item md-size-20" @click="checkAutor">
-        checkAutor
-      </button>
     </div>
     <!-- ENDE - Ausgabe der Daten in Formular -->
   </div>
@@ -245,16 +226,19 @@ export default {
     };
   },
   methods: {
+    // Add author entry
     addAutor(input, index) {
       this[input].push({ autorNachnameNeu: [] });
     },
+    // Remove author entry
     removeAutor(input, index) {
       this[input].splice(index, 1);
     },
+    // Check if author with same name exists
     checkAutor(index) {
       let autor = this.autoren[index];
 
-      // User has to input all values for an author
+      // User has to input all values for a check
       if (
         autor.autorVornameNeu.length < 1 ||
         autor.autorNachnameNeu.length < 1 ||
@@ -317,6 +301,7 @@ export default {
           this.errors.push(e);
         });
     },
+    // Get OPAC link for isbn
     getOpacLink() {
       this.inputs.urlLinkNeu = "";
       this.loading = true;
@@ -343,6 +328,7 @@ export default {
           this.loading = false;
         });
     },
+    // Handle selection from duplicate popup
     handleAutorSelection(result) {
       if (result.autor.given.length > 0) {
         this.autoren[result.index].autorVornameNeu = result.autor.given;
@@ -351,6 +337,7 @@ export default {
         this.autoren[result.index].autorUri = result.autor.uri;
       }
     },
+    // Query for inserting new literature
     generateQuery() {
       let query = ""; //let query = this.prefixes; // wird in LiteratureForm hinzugefügt
 
