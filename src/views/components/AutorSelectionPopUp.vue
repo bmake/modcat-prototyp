@@ -10,7 +10,7 @@
               </h3>
             </slot>
           </div>
-
+          {{ this.result.index }}
           <div class="modal-body">
             <h5 class="text-left">
               Handelt es sich bei Ihrer Eingabe um eine Person aus dieser Liste?
@@ -23,7 +23,7 @@
             >
               <md-icon>clear</md-icon>
             </md-button>
-
+ 
             <!-- Input from Fuseki -->
             <div
               class="md-layout md-layout-item md-size-100"
@@ -37,18 +37,18 @@
               </md-radio-label>
             </div>
           </div>
-
+ 
           <md-button
             style="margin-top: 2vh;"
             class="md-success"
-            @click="emitResult()"
+            @click="emitYesResult()"
           >
             Ja
           </md-button>
           <md-button
             style="margin-top: 2vh; margin-left: 0.5vw;"
             class="md-danger"
-            @click="emitResult()"
+            @click="emitNoResult()"
           >
             Nein
           </md-button>
@@ -60,7 +60,7 @@
     </div>
   </transition>
 </template>
-
+ 
 <script>
 export default {
   name: "AutorSelectionPopUp",
@@ -75,20 +75,24 @@ export default {
     };
   },
   methods: {
-    emitResult() {
+    emitYesResult() {
       this.result.autor = this.demoExistingAutor[this.selection];
+      this.$emit("duplicateChecked", this.result);
+      this.$emit("close");
+    },
+    emitNoResult() {
       this.$emit("duplicateChecked", this.result);
       this.$emit("close");
     },
   },
 };
 </script>
-
+ 
 <style lang="scss" scoped>
 span {
   top: 35px;
 }
-
+ 
 .center-vertically {
   line-height: normal;
   display: flex;
