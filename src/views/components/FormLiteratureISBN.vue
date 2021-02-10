@@ -24,7 +24,7 @@
     <br />
 
     <!-- Ausgabe der Daten in Formular -->
-    <div class="md-layout-item md-size-100" v-if="loading === false">
+    <div @change="generateQuery" class="md-layout-item md-size-100" v-if="loading === false">
       <br />
       <!-- Titel -->
       <div class="md-size-100">
@@ -135,8 +135,10 @@
 <script>
 import axios from "axios";
 import AutorSelectionPopUp from "./AutorSelectionPopUp";
+import { v4 as uuidv4 } from "uuid";
 
 export default {
+  props: ["moduleUri"],
   name: "literatureISBN",
   components: {
     AutorSelectionPopUp,
@@ -172,6 +174,7 @@ export default {
         nameParts.shift();
         authorObject.family = nameParts.join(" ");
         authorObject.url = "";
+        authorObject.uri = "";
         authors.push(authorObject);
       }
       delete data.items[0].volumeInfo.authors;
@@ -184,7 +187,9 @@ export default {
           data.items[0].volumeInfo.subtitle;
         data.items[0].volumeInfo.title = title;
       }
-
+      data.items[0].volumeInfo.publisherUri = "";
+      data.items[0].volumeInfo.literatureUri = "";
+      data.items[0].volumeInfo.industryIdentifiers = this.isbn;
       cleanedData = data.items[0].volumeInfo;
 
       return cleanedData;
@@ -283,6 +288,7 @@ export default {
         .then((response) => {
           this.rawISBNData = response.data;
           this.loading = false;
+          this.generateQuery();
         })
         .catch((e) => {
           if (e.toString().includes("504")) {
@@ -294,6 +300,105 @@ export default {
           }
           this.loading = null;
         });
+    },
+    // Query für fuseki
+    generateQuery() {
+      let query = ""; //let query = this.prefixes; // wird in LiteratureForm hinzugefügt
+
+      // Generate Literature URI
+      if (this.cleanedISBNData.industryIdentifiers.length > 0) {
+        this.cleanedISBNData.industryIdentifiers = "<http://isbn-international.org/" + this.isbn + ">";
+      } else {
+        this.cleanedISBNData.industryIdentifiers =
+          "<https://th-brandenburg.de/literatur/" + uuidv4() + ">";
+      }
+
+      // Generate Autoren URIs
+      console.log(this.cleanedISBNData.authors);
+      for (let autor of this.cleanedISBNData.authors) {
+        // if (autor.autorProfilLinkNeu.inclued('orcid.org')) -> Dann Orcid als URI
+        if (autor.uri.length < 1) {autor.uri = "<https://th-brandenburg.de/autor/" + uuidv4() + ">";}
+      }
+
+      // Generate Pulisher URIs (Herausgeber/ Verlag) 
+      if (this.cleanedISBNData.publisher.length > 0) {
+          this.cleanedISBNData.publisherUri = "<https://th-brandenburg.de/publisher/" + uuidv4() + ">";
+          console.log(this.cleanedISBNData.publisherUri);
+      }
+      // generate 
+      if (this.cleanedISBNData.title.length > 0) {
+        //query += " INSERT { "; //wird in LiteratureForm hinzugefügt
+        //query += "module:GPMO "; //Nur zum Test
+        query += "  <" + this.moduleUri + "> ";
+        query += "schema:citation " + this.cleanedISBNData.industryIdentifiers + " . ";
+
+        
+        query += this.cleanedISBNData.industryIdentifiers + " a schema:Book ; ";
+
+        if (this.isbn.length > 0) {
+          query += 'schema:isbn "' + this.isbn + '"; ';
+        }
+        if (this.cleanedISBNData.publisher.length > 0) {
+          // Referenz zur Pulisher URIs erzeugen (Herausgeber/ Verlag) 
+          query += "schema:publisher " + this.cleanedISBNData.publisherUri + "; ";
+        }
+        if (this.cleanedISBNData.publishedDate.length > 0) {
+          query +=
+            'schema:datePublished "' + this.cleanedISBNData.publishedDate + '"; ';
+        }
+        if (this.cleanedISBNData.contentVersion.length > 0) {
+          query += 'schema:bookEdition "' + this.cleanedISBNData.contentVersion + '"; ';
+        }
+        if (this.cleanedISBNData.infoLink != this.opacLink || this.cleanedISBNData.infoLink.length > 0) {
+          query += 'schema:url "' + this.cleanedISBNData.infoLink + '"; ';
+        }
+        //Referenz zu den Autoren in Lit erzeugen
+        if (
+          this.cleanedISBNData.authors.every((autor) => autor.family.length > 0)
+        ) {
+          query += "schema:author ";
+          for (let autor of this.cleanedISBNData.authors) {
+            query += autor.uri + " , ";
+          }
+          query = query.slice(0, query.length - 3);
+          query += " ; ";
+        }
+        
+        //Titel
+        query += 'schema:headline "' + this.cleanedISBNData.title + '". ';
+
+        //Autoren/innen
+        if (this.cleanedISBNData.authors.every((autor) => autor.family.length > 0)) {
+          for (let autor of this.cleanedISBNData.authors) {
+            query += autor.uri + " a module:Author ; ";
+
+            if (autor.family != "") {
+              query += 'schema:familyName "' + autor.family + '"; ';
+            }
+            if (autor.given != "") {
+              query += 'schema:givenName "' + autor.given + '"; ';
+            }
+
+            query += 'schema:sameAs "' + autor.url + '". ';
+          }
+        }
+        
+        //Herausgeber/ Verlag
+        if (this.cleanedISBNData.publisher.length > 0) {
+            // Generate Pulisher URIs (Herausgeber/ Verlag) 
+            query += this.cleanedISBNData.publisherUri + ' a schema:Organization ; ';
+            query += 'schema:legalName "' + this.cleanedISBNData.publisher + '". ';
+        }
+
+      }
+
+      //Log
+      console.log("literatureISBN");
+      console.log(query);
+      this.updateQuery = query;
+
+      // Let Literature.vue know of changes
+      this.$emit("queryChanged", query);
     },
   },
   watch: {
@@ -324,6 +429,7 @@ export default {
               this.opacLink = data.infoLink;
               this.cleanedISBNData = data;
               this.$forceUpdate();
+              this.generateQuery();
             }
           })
           .catch((e) => {
