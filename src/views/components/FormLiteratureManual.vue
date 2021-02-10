@@ -136,7 +136,7 @@
           <!-- Vorname -->
           <div class="md-layout-item md-size-20">
             <md-field>
-              <label>Vorname</label>
+              <label>Vorname*</label>
               <md-input v-model="autor.autorVornameNeu" />
             </md-field>
           </div>
@@ -394,7 +394,7 @@ export default {
       }
 
       // Generate Autoren URIs
-      console.log(this.autoren)
+      console.log(this.autoren);
       for (let autor of this.autoren) {
         // if (autor.autorProfilLinkNeu.inclued('orcid.org')) -> Dann Orcid als URI
         autor.autorUri = "<https://th-brandenburg.de/autor/" + uuidv4() + ">";
@@ -429,7 +429,9 @@ export default {
             query += 'schema:identifier "' + this.inputs.doiLinkNeu + '"; ';
           }
           //Referenz zu den Autoren in Lit erzeugen
-          if (this.autoren.every(autor => autor.autorNachnameNeu.length > 0)) {
+          if (
+            this.autoren.every((autor) => autor.autorNachnameNeu.length > 0)
+          ) {
             query += "schema:author ";
             for (let autor of this.autoren) {
               query += autor.autorUri + " , ";
@@ -471,8 +473,10 @@ export default {
             query +=
               'schema:datePublished "' + this.inputs.datePublishedNeu + '"; ';
           }
-          if (this.inputs.seitenVonInBandNeu.length > 0 &&
-              this.inputs.seitenBisInBandNeu.length > 0) {
+          if (
+            this.inputs.seitenVonInBandNeu.length > 0 &&
+            this.inputs.seitenBisInBandNeu.length > 0
+          ) {
             query += 'schema:pageStart "' + this.seitenVonInBandNeu + '"; ';
             query += 'schema:pageEnd "' + this.seitenBisInBandNeu + '"; ';
           }
@@ -500,20 +504,20 @@ export default {
         //[{"autorUri":[],"autorNachnameNeu":[],"autorVornameNeu":[],"autorProfilLinkNeu":[]}]
         //if (!this.autoren === "[{'autorUri':[],'autorNachnameNeu':[],'autorVornameNeu':[],'autorProfilLinkNeu':[]}]") {
         //if (this.autoren.length > 0 ) {
-        if (this.autoren.every(autor => autor.autorNachnameNeu.length > 0)) {
+        if (this.autoren.every((autor) => autor.autorNachnameNeu.length > 0)) {
           for (let autor of this.autoren) {
-          query += autor.autorUri + " a module:Author ; ";
+            query += autor.autorUri + " a module:Author ; ";
 
-          if (autor.autorNachnameNeu != "") {
-            query += 'schema:familyName "' + autor.autorNachnameNeu + '"; ';
-          }
-          if (autor.autorVornameNeu != "") {
-            query += 'schema:givenName "' + autor.autorVornameNeu + '"; ';
-          }
+            if (autor.autorNachnameNeu != "") {
+              query += 'schema:familyName "' + autor.autorNachnameNeu + '"; ';
+            }
+            if (autor.autorVornameNeu != "") {
+              query += 'schema:givenName "' + autor.autorVornameNeu + '"; ';
+            }
 
-          query += 'schema:sameAs "' + autor.autorProfilLinkNeu + '". ';
+            query += 'schema:sameAs "' + autor.autorProfilLinkNeu + '". ';
           }
-        }        
+        }
       }
 
       //Log

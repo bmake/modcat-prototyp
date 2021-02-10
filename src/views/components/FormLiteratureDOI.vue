@@ -2,15 +2,15 @@
   <div>
     <!-- Eingabe der DOI -->
     <div>
-      <p>Bitte geben Sie eine gültige DOI ein</p>
-      <md-input
-        class="md-layout-item md-size-80"
-        v-model="doi"
-        @keyup.enter="queryDoiData"
-      />
-      <button class="md-layout-item md-size-20" @click="queryDoiData">
+      <div class="md-layout-item md-size-100">
+        <md-field>
+          <label>DOI</label>
+          <md-input v-model="doi" @keyup.enter="queryDoiData" />
+        </md-field>
+      </div>
+      <md-button class="md-layout-item md-warning" @click="queryDoiData">
         Laden
-      </button>
+      </md-button>
       <div v-if="loading === true">
         <div class="lds-ripple">
           <div></div>
@@ -21,34 +21,138 @@
         {{ apiError }}
       </div>
     </div>
+    <br />
+
     <!-- Ausgabe der Daten in Formular (DEMO) -->
     <div class="md-layout-item md-size-100" v-if="loading === false">
-      <br />
       <!-- Titel -->
       <div class="md-size-100">
         <md-field>
           <label>Titel</label>
-          <md-input v-model="cleanedDoiData.title" disabled />
+          <md-input v-model="cleanedDoiData.title" />
         </md-field>
       </div>
-      <!-- Seiten -->
+
+      <!-- Artikel -->
+      <div v-if="cleanedDoiData.type == 'article-journal'">
+        <!-- Erschienen In -->
+        <div class="md-size-100">
+          <p style="text-align: left">Erschienen in</p>
+          <div class="md-layout md-gutter">
+            <!-- Titel -->
+            <div class="md-layout-item md-size-70">
+              <md-field>
+                <label>Titel</label>
+                <md-input
+                  style="text-overflow:clip"
+                  v-model="cleanedDoiData.article.containerTitle"
+                />
+              </md-field>
+            </div>
+            <!-- Band -->
+            <div class="md-layout-item md-size-15">
+              <md-field>
+                <label>Band</label>
+                <md-input v-model="cleanedDoiData.article.volume" />
+              </md-field>
+            </div>
+            <!-- Jahr -->
+            <div class="md-layout-item md-size-15">
+              <md-field>
+                <label>Band</label>
+                <md-input v-model="cleanedDoiData.article.publishYear" />
+              </md-field>
+            </div>
+          </div>
+        </div>
+        <!-- Herausgeber -->
+        <div class="md-size-100">
+          <md-field>
+            <label>Herausgeber</label>
+            <md-input v-model="cleanedDoiData.article.publisher" />
+          </md-field>
+        </div>
+        <!-- Veröffentlichung -->
+        <div class="md-size-100">
+          <md-field>
+            <label>Veröffentlichung</label>
+            <md-input v-model="cleanedDoiData.article.publishYear" />
+          </md-field>
+        </div>
+        <!-- Seiten -->
+        <div class="md-size-100">
+          <div class="md-layout md-gutter">
+            <!-- Start -->
+            <div class="md-layout-item md-size-50">
+              <md-field>
+                <label>Seiten von</label>
+                <md-input
+                  style="text-overflow:clip"
+                  v-model="cleanedDoiData.article.pageStart"
+                />
+              </md-field>
+            </div>
+            <!-- Ende -->
+            <div class="md-layout-item md-size-50">
+              <md-field>
+                <label>Seiten bis</label>
+                <md-input v-model="cleanedDoiData.article.pageEnd" />
+              </md-field>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="cleanedDoiData.type == 'book'">
+        <!-- ISBN -->
+        <div class="md-size-100">
+          <md-field>
+            <label>ISBN</label>
+            <md-input v-model="cleanedDoiData.book.isbn" />
+          </md-field>
+        </div>
+        <!-- Herausgeber -->
+        <div class="md-size-100">
+          <md-field>
+            <label>Herausgeber</label>
+            <md-input v-model="cleanedDoiData.book.publisher" />
+          </md-field>
+        </div>
+        <!-- Veröffentlichung -->
+        <div class="md-size-100">
+          <md-field>
+            <label>Veröffentlichung</label>
+            <md-input v-model="cleanedDoiData.book.publishYear" />
+          </md-field>
+        </div>
+        <!-- Herausgeber -->
+        <div class="md-size-100">
+          <md-field>
+            <label>Auflage</label>
+            <md-input v-model="cleanedDoiData.book.volume" />
+          </md-field>
+        </div>
+      </div>
+
+      <!-- URL -->
       <div class="md-size-100">
         <md-field>
-          <label>Seiten</label>
-          <md-input v-model="cleanedDoiData.page" disabled />
+          <label>URL</label>
+          <md-input v-model="cleanedDoiData.url" />
         </md-field>
       </div>
-      <!-- Erschienen in -->
+      <!-- DOI -->
       <div class="md-size-100">
         <md-field>
-          <label>Seiten</label>
-          <md-input v-model="cleanedDoiData.containerTitle" disabled />
+          <label>DOI</label>
+          <md-input v-model="cleanedDoiData.uri" />
         </md-field>
       </div>
+
       <!-- Autoren -->
       <div class="md-size-100">
         <label>Autoren/innen</label>
-        <div v-for="author in cleanedDoiData.author" :key="author">
+        <div v-for="author in rawDoiData.author" :key="author">
           <div class="md-layout md-gutter">
             <!-- Nachname -->
             <div class="md-layout-item md-size-50">
@@ -85,25 +189,63 @@ export default {
   data() {
     return {
       doi: "https://doi.org/10.1257/jep.29.2.213",
-      rawDoiData: null,
+      rawDoiData: {},
       loading: null,
       apiError: null,
     };
   },
   computed: {
-    // Swap problematic property keys from raw API response
-    // v-model doesn't accept properties with e.g. "-" (math. function!)
+    // Restructure API result due to changing keys depending on DOI
     cleanedDoiData() {
-      let renamedData = Object.assign({}, this.rawDoiData);
-      let newKeyLabels = { "container-title": "containerTitle" };
-      for (let key in renamedData) {
-        if (key in newKeyLabels) {
-          let values = renamedData[key];
-          delete renamedData[key];
-          renamedData[newKeyLabels[key]] = values;
+      // Prepare object
+      let filteredResponse = {
+        type: this.rawDoiData.type,
+        title: this.rawDoiData.title,
+        article: {
+          containerTitle: "",
+          publisher: "",
+          volume: "",
+          publishYear: "",
+          pageStart: "",
+          pageEnd: "",
+        },
+        book: {
+          isbn: "",
+          publisher: "",
+          volume: "",
+        },
+        url: "",
+        uri: "",
+      };
+      if (this.rawDoiData.length < 1) return filteredResponse;
+      // Map values
+      if (this.rawDoiData.type == "article-journal") {
+        filteredResponse.article.containerTitle = this.rawDoiData[
+          "container-title"
+        ];
+        filteredResponse.article.publisher = this.rawDoiData["publisher"];
+        filteredResponse.article.volume = this.rawDoiData["volume"];
+        filteredResponse.article.publishYear = this.rawDoiData[
+          "published-print"
+        ]["date-parts"][0][0];
+        let pages = this.rawDoiData["page"].split("-");
+        filteredResponse.article.pageStart = pages[0];
+        filteredResponse.article.pageEnd = pages[1];
+      } else if (this.rawDoiData.type == "book") {
+        filteredResponse.book.isbn = this.rawDoiData["isbn-type"][0].value;
+        // Merge title and subtitle
+        if (this.rawDoiData["subtitle"].length > 0) {
+          filteredResponse.title =
+            filteredResponse.title + " – " + this.rawDoiData["subtitle"];
+        }
+        filteredResponse.book.publisher = this.rawDoiData["publisher"];
+        if (this.rawDoiData["link"][0]["content-type"] == "application/pdf") {
+          filteredResponse.url = this.rawDoiData["link"][0]["URL"];
         }
       }
-      return renamedData;
+      filteredResponse.uri = this.doi;
+
+      return filteredResponse;
     },
   },
   methods: {
@@ -132,6 +274,37 @@ export default {
           }
           this.loading = null;
         });
+    },
+  },
+  watch: {
+    cleanedDoiData(data) {
+      if (
+        data.type == "book" &&
+        data.book.isbn.length > 0 &&
+        data.url.length < 1
+      ) {
+        axios
+          .get("https://opac.th-brandenburg.de/search?isbn=" + data.book.isbn, {
+            headers: {
+              Accept: "text/html",
+            },
+            crossdomain: true,
+          })
+          .then((response) => {
+            if (response.data.includes("in die Merkliste")) {
+              console.log(
+                "https://opac.th-brandenburg.de/search?isbn=" + data.book.isbn
+              );
+              data.url =
+                "https://opac.th-brandenburg.de/search?isbn=" + data.book.isbn;
+              this.cleanedDoiData = data;
+              this.$forceUpdate();
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
     },
   },
 };

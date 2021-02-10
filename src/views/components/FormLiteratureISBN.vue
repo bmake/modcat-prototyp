@@ -99,6 +99,7 @@ export default {
     // Clean up API response
     // authors part, simplify structure
     cleanedISBNData() {
+      if (this.rawISBNData.length < 1) return {};
       let data = JSON.parse(JSON.stringify(this.rawISBNData));
       let cleanedData = {};
       let authors = [];
