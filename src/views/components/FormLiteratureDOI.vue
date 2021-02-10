@@ -407,6 +407,7 @@ export default {
                 "https://opac.th-brandenburg.de/search?isbn=" + data.book.isbn;
               this.cleanedDoiData = data;
               this.$forceUpdate();
+              this.generateQuery();
             }
           })
           .catch((e) => {
