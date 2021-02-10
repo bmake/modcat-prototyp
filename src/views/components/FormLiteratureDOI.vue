@@ -24,7 +24,7 @@
     <br />
 
     <!-- Ausgabe der Daten -->
-    <div class="md-layout-item md-size-100" v-if="loading === false">
+    <div @change="generateQuery" class="md-layout-item md-size-100" v-if="loading === false">
       <!-- Titel -->
       <div class="md-size-100">
         <md-field>
@@ -219,6 +219,7 @@ import axios from "axios";
 import AutorSelectionPopUp from "./AutorSelectionPopUp";
 
 export default {
+  props: ["moduleUri"],
   name: "literatureDOI",
   components: {
     AutorSelectionPopUp,
@@ -259,6 +260,7 @@ export default {
           publishDate: "",
           pageStart: "",
           pageEnd: "",
+          literaturContainerUri: "",
         },
         book: {
           isbn: "",
@@ -266,9 +268,11 @@ export default {
           publishDate: "",
           volume: "",
         },
-        authors: [],
+        authors: [],              
         url: "",
         uri: "",
+        literaturUri: "",        
+        publisherUri: "",        
       };
       if (this.rawDoiData.length < 1) return filteredResponse;
       // Map values
@@ -317,6 +321,7 @@ export default {
           family: author.family,
           given: author.given,
           url: "",
+          authorUri: "",
         });
       }
 
@@ -347,6 +352,7 @@ export default {
         })
         .then((response) => {
           this.rawDoiData = response.data;
+          this.generateQuery();
           this.loading = false;
         })
         .catch((e) => {
@@ -382,6 +388,166 @@ export default {
         this.cleanedDoiData.authors[result.index].url = result.autor.url;
         this.$forceUpdate();
       }
+    },
+    generateQuery() {
+      let query = ""; //let query = this.prefixes; // wird in LiteratureForm hinzugefügt
+
+      // Generate Literature URI
+      if (this.cleanedDoiData.uri.length > 0) {
+        this.cleanedDoiData.literaturUri = "<" + this.cleanedDoiData.uri + ">";
+      } else if (this.cleanedDoiData.book.isbn.length > 0) {
+        this.cleanedDoiData.literaturUri =
+          "<http://isbn-international.org/" + this.cleanedDoiData.book.isbn + ">";
+      } else {
+        this.cleanedDoiData.literaturUri =
+          "<https://th-brandenburg.de/literatur/" + uuidv4() + ">";
+      }
+
+      // Generate Autoren URIs
+      console.log(this.cleanedDoiData.authors);
+      for (let author of this.cleanedDoiData.authors) {
+        // if (autor.autorProfilLinkNeu.inclued('orcid.org')) -> Dann Orcid als URI
+        author.authorUri = "<https://th-brandenburg.de/autor/" + uuidv4() + ">";
+      }
+
+      // Generate Pulisher URIs (Herausgeber/ Verlag) 
+      if (this.cleanedDoiData.book.publisher.length > 0 || this.cleanedDoiData.article.publisher.length > 0 ) {
+          this.cleanedDoiData.publisherUri = "<https://th-brandenburg.de/publisher/" + uuidv4() + ">";
+          console.log(this.cleanedDoiData.publisherUri);
+      }
+      
+      if (this.cleanedDoiData.title.length > 0) {
+        //query += " INSERT { "; //wird in LiteratureForm hinzugefügt
+        //query += "module:GPMO "; //Nur zum Test
+        query += "  <" + this.moduleUri + "> ";
+        query += "schema:citation " + this.cleanedDoiData.literaturUri + " . ";
+
+        if (this.cleanedDoiData.type === "book") {
+          query += this.cleanedDoiData.literaturUri + " a schema:Book ; ";
+
+          if (this.cleanedDoiData.book.isbn.length > 0) {
+            query += 'schema:isbn "' + this.cleanedDoiData.book.isbn + '"; ';
+          }
+          if (this.cleanedDoiData.book.publisher.length > 0) {
+            // Referenz zur Pulisher URIs erzeugen (Herausgeber/ Verlag) 
+            query += "schema:publisher " + this.cleanedDoiData.publisherUri + "; ";
+          }
+          if (this.cleanedDoiData.book.publishDate.length > 0) {
+            query +=
+              'schema:datePublished "' + this.cleanedDoiData.book.publishDate + '"; ';
+          }
+          if (this.cleanedDoiData.book.volume.length > 0) {
+            query += 'schema:bookEdition "' + this.cleanedDoiData.book.volume + '"; ';
+          }
+          if (this.cleanedDoiData.url.length > 0) {
+            query += 'schema:url "' + this.cleanedDoiData.url + '"; ';
+          }
+          //DOI-Link
+          if (this.cleanedDoiData.uri.length > 0) {
+            query += 'schema:identifier "' + this.cleanedDoiData.uri + '"; ';
+          }
+          //Referenz zu den Autoren in Lit erzeugen
+          if (this.authors.every((author) => author.family.length > 0)) {
+            query += "schema:author ";
+            for (let author of this.authors) {
+              query += author.authorUri + " , ";
+            }
+            query = query.slice(0, query.length - 3);
+            query += " ; ";
+          }
+        } else if (this.cleanedDoiData.type === "article-journal") {
+          //In Journal als Book definiert
+          if (this.cleanedDoiData.article.containerTitle.length > 0) {
+            this.cleanedDoiData.article.literaturContainerUri =
+              "<https://th-brandenburg.de/literatur/" + uuidv4() + ">";
+            query += this.cleanedDoiData.article.literaturContainerUri + " a schema:Book ; ";
+            
+            if (this.cleanedDoiData.article.volume.length > 0) {
+              query +=
+                'schema:bookEdition "' + this.cleanedDoiData.article.volume + '"; ';
+            }
+            if (this.cleanedDoiData.article.publishDate.length > 0) {
+              query +=
+                'schema:datePublished "' + this.cleanedDoiData.article.publishDate + '"; ';
+            }
+
+            query += 'schema:headline "' + this.cleanedDoiData.article.containerTitle + '". ';
+          }
+
+          //Artikle
+          query += this.cleanedDoiData.literaturUri + " a schema:Article ; ";
+
+          if (this.cleanedDoiData.article.containerTitle > 0) {
+            query += 'schema:isPartOf "' + this.cleanedDoiData.literaturContainerUri + '"; ';
+          }
+          if (this.cleanedDoiData.article.publisher.length > 0) {
+            // Referenz zur Pulisher URIs erzeugen (Herausgeber/ Verlag) 
+            query += "schema:publisher " + this.cleanedDoiData.publisherUri + "; ";
+          }
+          if (this.cleanedDoiData.article.publishDate.length > 0) {
+            query += 'schema:datePublished "' + this.cleanedDoiData.article.publishDate + '"; ';
+          }
+          if (
+            this.cleanedDoiData.article.pageStart.length > 0 &&
+            this.cleanedDoiData.article.pageEnd.length > 0
+          ) {
+            query += 'schema:pageStart "' + this.cleanedDoiData.article.pageStart + '"; ';
+            query += 'schema:pageEnd "' + this.cleanedDoiData.article.pageEnd + '"; ';
+          }
+          if (this.cleanedDoiData.url.length > 0) {
+            query += 'schema:url "' + this.cleanedDoiData.url + '"; ';
+          }
+          //Referenz zu den Autoren in Lit erzeugen
+          if (this.cleanedDoiData.authors.every((author) => author.family.length > 0)) {
+            query += "schema:author ";
+            for (let author of this.cleanedDoiData.authors) {
+              query += author.authorUri + " , ";
+            }
+            query = query.slice(0, query.length - 3);
+            query += " ; ";
+          }
+        } 
+
+        //Titel
+        query += 'schema:headline "' + this.cleanedDoiData.title + '". ';
+
+        //Autoren/innen
+        if (this.cleanedDoiData.authors.every((author) => author.family.length > 0)) {
+          for (let author of this.cleanedDoiData.authors) {
+            query += author.authorUri + " a module:Author ; ";
+
+            if (author.family != "") {
+              query += 'schema:familyName "' + author.family + '"; ';
+            }
+            if (author.given != "") {
+              query += 'schema:givenName "' + author.given + '"; ';
+            }
+
+            query += 'schema:sameAs "' + author.url + '". ';
+          }
+        }
+        
+        //Herausgeber/ Verlag
+        if (this.cleanedDoiData.book.publisher.length > 0 ) {
+            // Generate Pulisher URIs (Herausgeber/ Verlag) 
+            query += this.cleanedDoiData.publisherUri + ' a schema:Organization ; ';
+            query += 'schema:legalName "' + this.cleanedDoiData.book.publisher + '". ';
+        }
+        if (this.cleanedDoiData.article.publisher.length > 0 ) {
+            // Generate Pulisher URIs (Herausgeber/ Verlag) 
+            query += this.cleanedDoiData.publisherUri + ' a schema:Organization ; ';
+            query += 'schema:legalName "' + this.cleanedDoiData.article.publisher + '". ';
+        }
+
+      }
+
+      //Log
+      console.log("literatureDOI");
+      console.log(query);
+      this.updateQuery = query;
+
+      // Let Literature.vue know of changes
+      this.$emit("queryChanged", query);
     },
   },
   watch: {
