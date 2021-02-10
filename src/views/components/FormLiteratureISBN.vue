@@ -69,7 +69,8 @@
       <div class="md-size-100">
         <label>Autoren/innen</label>
         <div
-          v-for="(author, i) in cleanedISBNData.authors" :key="author"
+          v-for="(author, i) in cleanedISBNData.authors"
+          :key="author"
           class="md-layout md-gutter"
         >
           <!-- Nachname -->
@@ -90,15 +91,12 @@
           <div class="md-layout-item md-size-60">
             <md-field>
               <label>Profil-Link/URL*</label>
-              <md-input
-                v-model="author.url"
-               @change="autorDuplicationCheck(i)"
-              />
+              <md-input v-model="author.url" @change="checkAutor(i)" />
               <AutorSelectionPopUp
                 v-if="showPopUp"
                 @close="showPopUp = false"
                 @duplicateChecked="handleAutorSelection"
-                :demoExistingAutor="demoExistingAutor"
+                :existingAuthors="existingAuthors"
                 :autorIndex="authorIndexPopUp"
               >
               </AutorSelectionPopUp>
@@ -143,24 +141,17 @@ export default {
   data() {
     return {
       isbn: "978-1-83867-495-3",
+      prefixes:
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+        "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+        "PREFIX schema: <https://schema.org/>  ",
       rawISBNData: [],
       loading: null,
       apiError: null,
       opacLink: "",
       showPopUp: false,
       authorIndexPopUp: 0,
-      demoExistingAutor: [
-        {
-          vorname: "Klaus",
-          nachname: "Cleber",
-          url: "http://facebook.com/klaus",
-        },
-        {
-          vorname: "Klaus",
-          nachname: "Cleber",
-          url: "http://xing.com/klausi",
-        },
-      ],
+      existingAuthors: [],
     };
   },
   computed: {
@@ -183,15 +174,16 @@ export default {
       delete data.items[0].volumeInfo.authors;
       data.items[0].volumeInfo.authors = authors;
 
-      if (data.items[0].volumeInfo.subtitle.length > 1 ) {
-        let title = data.items[0].volumeInfo.title+" - "+data.items[0].volumeInfo.subtitle;
+      if (data.items[0].volumeInfo.subtitle.length > 1) {
+        let title =
+          data.items[0].volumeInfo.title +
+          " - " +
+          data.items[0].volumeInfo.subtitle;
         data.items[0].volumeInfo.title = title;
       }
-      
+
       cleanedData = data.items[0].volumeInfo;
 
-      
-      
       return cleanedData;
     },
   },
@@ -204,27 +196,75 @@ export default {
       this.cleanedISBNData.authors.splice(index, 1);
       this.$forceUpdate();
     },
-    autorDuplicationCheck(index) {
-      let autor = this.cleanedISBNData.authors[index];
-      if (this.demoExistingAutor.length < 1) return;
-      if (
-        autor.given.length > 0 &&
-        autor.family.length > 0 &&
-        autor.url.length > 0
-      ) {
-        console.log(index);
-        this.authorIndexPopUp = index;
-        this.showPopUp = true;
+    handleAutorSelection(result) {
+      if (result.autor.given.length > 0) {
+        this.cleanedISBNData.authors[result.index].given = result.autor.given;
+        this.cleanedISBNData.authors[result.index].family = result.autor.family;
+        this.cleanedISBNData.authors[result.index].url = result.autor.url;
+        this.cleanedISBNData.authors[result.index].uri = result.autor.uri;
       }
     },
-    handleAutorSelection(result) {
-      if (result.autor.vorname.length > 0) {
-        console.log(result);
-        this.cleanedISBNData.authors[result.index].given = result.autor.vorname;
-        this.cleanedISBNData.authors[result.index].family = result.autor.nachname;
-        this.cleanedISBNData.authors[result.index].url = result.autor.url;
-        this.$forceUpdate();
-      }
+    checkAutor(index) {
+      let autor = this.cleanedISBNData.authors[index];
+
+      // User has to input all values for an author
+      if (
+        autor.given.length < 1 ||
+        autor.family.length < 1 ||
+        autor.url.length < 1
+      )
+        return;
+
+      let queryAutor = this.prefixes;
+
+      queryAutor +=
+        " SELECT DISTINCT ?autorUri ?autorVorname ?autorNachname ?autorProfilLink ";
+      queryAutor += " WHERE { ";
+      queryAutor += " ?autorUri  a module:Author; ";
+      queryAutor += "            schema:givenName ?autorVorname; ";
+      queryAutor += "            schema:familyName ?autorNachname. ";
+
+      queryAutor += " OPTIONAL { ";
+      queryAutor += " ?autorUri schema:sameAs ?autorProfilLink.  ";
+      queryAutor += " } ";
+
+      queryAutor += " {?autorUri schema:sameAs '" + autor.url + "' } ";
+      queryAutor += " UNION ";
+      queryAutor += " { ?autorUri schema:familyName '" + autor.family + "' ; ";
+      queryAutor += "             schema:givenName '" + autor.given + "' . } ";
+      queryAutor += "  }";
+
+      //Log
+      console.log("checkAutorQuery");
+      console.log(queryAutor);
+
+      // Daten vom Fuseki abrufen
+      axios
+        .post(
+          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query",
+          queryAutor,
+          {
+            headers: { "Content-Type": "application/sparql-query" },
+          }
+        )
+        .then((response) => {
+          // JSON responses are automatically parsed.
+          let result = response.data.results.bindings;
+          let formattedResult = [];
+          for (let entry of result) {
+            formattedResult.push({
+              given: entry.autorVorname.value,
+              family: entry.autorNachname.value,
+              url: entry.autorProfilLink.value,
+              uri: entry.autorUri.value,
+            });
+          }
+          this.existingAuthors = formattedResult;
+          this.authorIndexPopUp = index;
+        })
+        .catch((e) => {
+          this.errors.push(e);
+        });
     },
     // Query literature data from Google Books API
     queryISBNData() {
@@ -254,8 +294,16 @@ export default {
     },
   },
   watch: {
+    existingAuthors() {
+      if (this.existingAuthors.length < 1) return;
+      this.showPopUp = true;
+    },
     cleanedISBNData(data) {
-      if (this.opacLink.length < 1 || this.opacLink.substring(this.opacLink.length - this.isbn.length) != this.isbn) {
+      if (
+        this.opacLink.length < 1 ||
+        this.opacLink.substring(this.opacLink.length - this.isbn.length) !=
+          this.isbn
+      ) {
         axios
           .get("https://opac.th-brandenburg.de/search?isbn=" + this.isbn, {
             headers: {
@@ -268,7 +316,8 @@ export default {
               console.log(
                 "https://opac.th-brandenburg.de/search?isbn=" + this.isbn
               );
-              data.infoLink = "https://opac.th-brandenburg.de/search?isbn=" + this.isbn;
+              data.infoLink =
+                "https://opac.th-brandenburg.de/search?isbn=" + this.isbn;
               this.opacLink = data.infoLink;
               this.cleanedISBNData = data;
               this.$forceUpdate();
@@ -280,8 +329,8 @@ export default {
       } else {
         console.log(false);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

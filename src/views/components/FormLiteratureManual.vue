@@ -146,13 +146,13 @@
               <label>Profil-Link/URL*</label>
               <md-input
                 v-model="autor.autorProfilLinkNeu"
-                @change="autorDuplicationCheck(i)"
+                @change="checkAutor(i)"
               />
               <AutorSelectionPopUp
                 v-if="showPopUp"
                 @close="showPopUp = false"
                 @duplicateChecked="handleAutorSelection"
-                :demoExistingAutor="demoExistingAutor"
+                :existingAuthors="existingAuthors"
                 :autorIndex="authorIndexPopUp"
               >
               </AutorSelectionPopUp>
@@ -240,18 +240,7 @@ export default {
         },
       ],
       loading: false,
-      demoExistingAutor: [
-        {
-          vorname: "Klaus",
-          nachname: "Cleber",
-          url: "http://facebook.com/klaus",
-        },
-        {
-          vorname: "Klaus",
-          nachname: "Cleber",
-          url: "http://xing.com/klausi",
-        },
-      ],
+      existingAuthors: [],
       showPopUp: false,
     };
   },
@@ -261,11 +250,18 @@ export default {
     },
     removeAutor(input, index) {
       this[input].splice(index, 1);
-
     },
-    checkAutor() {
-      //Vorschalg: Entweder die ganze Query in eine For-Schleif + das jeweils abfangen,
-      //           oder den index aus dem Formular-Teil übergeben
+    checkAutor(index) {
+      let autor = this.autoren[index];
+
+      // User has to input all values for an author
+      if (
+        autor.autorVornameNeu.length < 1 ||
+        autor.autorNachnameNeu.length < 1 ||
+        autor.autorProfilLinkNeu.length < 1
+      )
+        return;
+
       let queryAutor = this.prefixes;
 
       queryAutor +=
@@ -280,18 +276,12 @@ export default {
       queryAutor += " } ";
 
       queryAutor +=
-        " {?autorUri schema:sameAs '" +
-        this.autoren[0].autorProfilLinkNeu +
-        "' } ";
+        " {?autorUri schema:sameAs '" + autor.autorProfilLinkNeu + "' } ";
       queryAutor += " UNION ";
       queryAutor +=
-        " { ?autorUri schema:familyName '" +
-        this.autoren[0].autorNachnameNeu +
-        "' ; ";
+        " { ?autorUri schema:familyName '" + autor.autorNachnameNeu + "' ; ";
       queryAutor +=
-        "             schema:givenName '" +
-        this.autoren[0].autorVornameNeu +
-        "' . } ";
+        "             schema:givenName '" + autor.autorVornameNeu + "' . } ";
       queryAutor += "  }";
 
       //Log
@@ -299,7 +289,6 @@ export default {
       console.log(queryAutor);
 
       // Daten vom Fuseki abrufen
-      /*
       axios
         .post(
           "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query",
@@ -310,12 +299,23 @@ export default {
         )
         .then((response) => {
           // JSON responses are automatically parsed.
-          this.moduleInfo = response.data.results.bindings;
+          let result = response.data.results.bindings;
+          let formattedResult = [];
+          // Reformat author results
+          for (let entry of result) {
+            formattedResult.push({
+              given: entry.autorVorname.value,
+              family: entry.autorNachname.value,
+              url: entry.autorProfilLink.value,
+              uri: entry.autorUri.value,
+            });
+          }
+          this.existingAuthors = formattedResult;
+          this.authorIndexPopUp = index;
         })
         .catch((e) => {
           this.errors.push(e);
         });
-      */
     },
     getOpacLink() {
       this.inputs.urlLinkNeu = "";
@@ -343,44 +343,14 @@ export default {
           this.loading = false;
         });
     },
-    autorDuplicationCheck(index) {
-      let autor = this.autoren[index];
-      if (this.demoExistingAutor.length < 1) return;
-      if (
-        autor.autorVornameNeu.length > 0 &&
-        autor.autorNachnameNeu.length > 0 &&
-        autor.autorProfilLinkNeu.length > 0
-      ) {
-        console.log(index);
-        this.authorIndexPopUp = index;
-        this.showPopUp = true;
-      }
-    },
     handleAutorSelection(result) {
-      if (result.autor.vorname.length > 0) {
-        console.log(result);
-        this.autoren[result.index].autorVornameNeu = result.autor.vorname;
-        this.autoren[result.index].autorNachnameNeu = result.autor.nachname;
+      if (result.autor.given.length > 0) {
+        this.autoren[result.index].autorVornameNeu = result.autor.given;
+        this.autoren[result.index].autorNachnameNeu = result.autor.family;
         this.autoren[result.index].autorProfilLinkNeu = result.autor.url;
+        this.autoren[result.index].autorUri = result.autor.uri;
       }
     },
-    /*
-     ### Module GPMO
-      module:GPMO schema:citation <http://doi.org/10.1007/978-3-8348-2428-8>.
-
-      <http://doi.org/10.1007/978-3-8348-2428-8> a schema:Book ;
-			rdfs:label "Gadatsch: GPM" ;
-			schema:author resGate:Andreas_Gadatsch ;
-			schema:headline "Grundkurs Geschäftsprozess-Management – Methoden und Werkzeuge für die IT-Praxis." ;
-			schema:bookEdition "7. Auflage" ;
-			schema:datePublished "2012" .
-
-      resGate:Andreas_Gadatsch a module:Author ;
-            rdfs:label "Andreas Gadatsch" ;
-            schema:givenName "Andreas" ;
-            schema:familyName "Gadatsch" ;
-            schema:honorificPrefix "Prof. Dr." .
-    */
     generateQuery() {
       let query = ""; //let query = this.prefixes; // wird in LiteratureForm hinzugefügt
 
@@ -399,15 +369,18 @@ export default {
       console.log(this.autoren);
       for (let autor of this.autoren) {
         // if (autor.autorProfilLinkNeu.inclued('orcid.org')) -> Dann Orcid als URI
-        autor.autorUri = "<https://th-brandenburg.de/autor/" + uuidv4() + ">";
+        if (autor.autorUri.length < 1) {
+          autor.autorUri = "<https://th-brandenburg.de/autor/" + uuidv4() + ">";
+        }
       }
 
-      // Generate Pulisher URIs (Herausgeber/ Verlag) 
+      // Generate Pulisher URIs (Herausgeber/ Verlag)
       if (this.inputs.publisherNeu.length > 0) {
-          this.inputs.publisherUri = "<https://th-brandenburg.de/publisher/" + uuidv4() + ">";
-          console.log(this.inputs.publisherUri);
+        this.inputs.publisherUri =
+          "<https://th-brandenburg.de/publisher/" + uuidv4() + ">";
+        console.log(this.inputs.publisherUri);
       }
-      
+
       if (this.inputs.titelNeu.length > 0) {
         //query += " INSERT { "; //wird in LiteratureForm hinzugefügt
         //query += "module:GPMO "; //Nur zum Test
@@ -421,7 +394,7 @@ export default {
             query += 'schema:isbn "' + this.inputs.isbnNeu + '"; ';
           }
           if (this.inputs.publisherNeu.length > 0) {
-            // Referenz zur Pulisher URIs erzeugen (Herausgeber/ Verlag) 
+            // Referenz zur Pulisher URIs erzeugen (Herausgeber/ Verlag)
             query += "schema:publisher " + this.inputs.publisherUri + "; ";
           }
           if (this.inputs.datePublishedNeu.length > 0) {
@@ -471,14 +444,16 @@ export default {
           query += this.inputs.literaturUri + " a schema:Article ; ";
 
           if (this.inputs.titelInBandNeu.length > 0) {
-            query += 'schema:isPartOf "' + this.inputs.literaturJournalUri + '"; ';
+            query +=
+              'schema:isPartOf "' + this.inputs.literaturJournalUri + '"; ';
           }
           if (this.inputs.publisherNeu.length > 0) {
-             // Referenz zur Pulisher URIs erzeugen (Herausgeber/ Verlag) 
+            // Referenz zur Pulisher URIs erzeugen (Herausgeber/ Verlag)
             query += "schema:publisher " + this.inputs.publisherUri + "; ";
           }
           if (this.inputs.datePublishedNeu.length > 0) {
-            query += 'schema:datePublished "' + this.inputs.datePublishedNeu + '"; ';
+            query +=
+              'schema:datePublished "' + this.inputs.datePublishedNeu + '"; ';
           }
           if (
             this.inputs.seitenVonInBandNeu.length > 0 &&
@@ -522,14 +497,13 @@ export default {
             query += 'schema:sameAs "' + autor.autorProfilLinkNeu + '". ';
           }
         }
-        
+
         //Herausgeber/ Verlag
         if (this.inputs.publisherNeu.length > 0) {
-            // Generate Pulisher URIs (Herausgeber/ Verlag) 
-            query += this.inputs.publisherUri + ' a schema:Organization ; ';
-            query += 'schema:legalName "' + this.inputs.publisherNeu + '". ';
+          // Generate Pulisher URIs (Herausgeber/ Verlag)
+          query += this.inputs.publisherUri + " a schema:Organization ; ";
+          query += 'schema:legalName "' + this.inputs.publisherNeu + '". ';
         }
-
       }
 
       //Log
@@ -539,6 +513,12 @@ export default {
 
       // Let Literature.vue know of changes
       this.$emit("queryChanged", query);
+    },
+  },
+  watch: {
+    existingAuthors() {
+      if (this.existingAuthors.length < 1) return;
+      this.showPopUp = true;
     },
   },
 };
