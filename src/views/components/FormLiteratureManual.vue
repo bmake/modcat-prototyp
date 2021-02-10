@@ -417,11 +417,11 @@ export default {
 
             if (this.inputs.bandInBandNeu.length > 0) {
               query +=
-                'schema:bookEdition "' + this.inputs.publisherNeu + '"; ';
+                'schema:bookEdition "' + this.inputs.bandInBandNeu + '"; ';
             }
             if (this.inputs.jahrInBandNeu.length > 0) {
               query +=
-                'schema:datePublished "' + this.inputs.bandInBandNeu + '"; ';
+                'schema:datePublished "' + this.inputs.jahrInBandNeu + '"; ';
             }
 
             query += 'schema:headline "' + this.inputs.titelInBandNeu + '". ';
@@ -452,11 +452,20 @@ export default {
           if (this.inputs.urlLinkNeu.length > 0) {
             query += 'schema:url "' + this.inputs.urlLinkNeu + '"; ';
           }
+          //Referenz zu den Autoren in Lit erzeugen
+          if (this.autoren.every((autor) => autor.autorNachnameNeu.length > 0)) {
+            query += "schema:author ";
+            for (let autor of this.autoren) {
+              query += autor.autorUri + " , ";
+            }
+            query = query.slice(0, query.length - 3);
+            query += " ; ";
+          }
         } else if (this.litAuswahl === "DigitalesDokument") {
           query += this.inputs.literaturUri + " a schema:DigitalDocument ; ";
 
           if (this.inputs.publisherNeu.length > 0) {
-            query += "schema:publisher " + this.inputs.publisherNeu + "; ";
+            query += "schema:publisher " + this.inputs.publisherUri + "; ";
           }
           if (this.inputs.datePublishedNeu.length > 0) {
             query +=
@@ -464,6 +473,15 @@ export default {
           }
           if (this.inputs.urlLinkNeu.length > 0) {
             query += 'schema:url "' + this.inputs.urlLinkNeu + '"; ';
+          }
+          //Referenz zu den Autoren in Lit erzeugen
+          if (this.autoren.every((autor) => autor.autorNachnameNeu.length > 0)) {
+            query += "schema:author ";
+            for (let autor of this.autoren) {
+              query += autor.autorUri + " , ";
+            }
+            query = query.slice(0, query.length - 3);
+            query += " ; ";
           }
         }
         //Titel
