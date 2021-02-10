@@ -10,7 +10,6 @@
               </h3>
             </slot>
           </div>
-          {{ this.result.index }}
           <div class="modal-body">
             <h5 class="text-left">
               Handelt es sich bei Ihrer Eingabe um eine Person aus dieser Liste?
@@ -23,21 +22,21 @@
             >
               <md-icon>clear</md-icon>
             </md-button>
- 
+
             <!-- Input from Fuseki -->
             <div
               class="md-layout md-layout-item md-size-100"
-              v-for="(autor, i) in demoExistingAutor"
+              v-for="(autor, i) in existingAuthors"
               :key="autor"
             >
               <md-radio :id="i" v-model="selection" :value="i"> </md-radio>
               <md-radio-label class="center-vertically" :for="i">
-                {{ autor.nachname + ", " + autor.vorname + " – " }}
+                {{ autor.family + ", " + autor.given + " – " }}
                 <a :href="autor.url" target="_blank" v-html="autor.url"></a>
               </md-radio-label>
             </div>
           </div>
- 
+
           <md-button
             style="margin-top: 2vh;"
             class="md-success"
@@ -60,11 +59,11 @@
     </div>
   </transition>
 </template>
- 
+
 <script>
 export default {
   name: "AutorSelectionPopUp",
-  props: ["demoExistingAutor", "autorIndex"],
+  props: ["existingAuthors", "autorIndex"],
   data() {
     return {
       selection: -1,
@@ -76,7 +75,7 @@ export default {
   },
   methods: {
     emitYesResult() {
-      this.result.autor = this.demoExistingAutor[this.selection];
+      this.result.autor = this.existingAuthors[this.selection];
       this.$emit("duplicateChecked", this.result);
       this.$emit("close");
     },
@@ -87,12 +86,12 @@ export default {
   },
 };
 </script>
- 
+
 <style lang="scss" scoped>
 span {
   top: 35px;
 }
- 
+
 .center-vertically {
   line-height: normal;
   display: flex;

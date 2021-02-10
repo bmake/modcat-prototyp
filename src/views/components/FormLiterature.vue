@@ -128,14 +128,14 @@
                       <div class="md-layout-item md-size-20">
                         <md-field>
                           <label>Band</label>
-                           <md-input v-model="literature.bandInBand.value" disabled />
+                           <md-input v-model="literature.volume.value" disabled />
                         </md-field>
                       </div>
                       <!-/- Jahr_IN -/->
                       <div class="md-layout-item md-size-20">
                         <md-field>
                           <label>Jahr</label>
-                          <md-input v-model="literature.jahrInBand.value" disabled />
+                          <md-input v-model="literature.pulishDate.value" disabled />
                         </md-field>
                       </div>
                     </div>
@@ -172,14 +172,14 @@
                       <div class="md-layout-item md-size-50">
                         <md-field>
                           <label>Seiten von</label>
-                          <md-input v-model="literature.seitenVonInBand.value" disabled />
+                          <md-input v-model="literature.pageStart.value" disabled />
                         </md-field>
                       </div>
                       <!-/- Seiten bis -/->
                       <div class="md-layout-item md-size-50">
                         <md-field>
                           <label>Seiten bis</label>
-                          <md-input v-model="literature.seitenBisInBand.value" disabled />
+                          <md-input v-model="literature.pageEnd.value" disabled />
                         </md-field>
                       </div>
                     </div>
