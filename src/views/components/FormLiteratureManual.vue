@@ -230,6 +230,7 @@ export default {
         seitenBisInBandNeu: [],
         literaturUri: [],
         literaturJournalUri: [],
+        publisherUri: [],
       },
       autoren: [
         {
@@ -403,6 +404,12 @@ export default {
         autor.autorUri = "<https://th-brandenburg.de/autor/" + uuidv4() + ">";
       }
 
+      // Generate Pulisher URIs (Herausgeber/ Verlag) 
+      if (this.inputs.publisherNeu.length > 0) {
+          this.inputs.publisherUri = "<https://th-brandenburg.de/publisher/" + uuidv4() + ">";
+          console.log(this.inputs.publisherUri);
+      }
+      
       if (this.inputs.titelNeu.length > 0) {
         //query += " INSERT { "; //wird in LiteratureForm hinzugefügt
         //query += "module:GPMO "; //Nur zum Test
@@ -416,7 +423,8 @@ export default {
             query += 'schema:isbn "' + this.inputs.isbnNeu + '"; ';
           }
           if (this.inputs.publisherNeu.length > 0) {
-            query += 'schema:publisher "' + this.inputs.publisherNeu + '"; ';
+            // Referenz zur Pulisher URIs erzeugen (Herausgeber/ Verlag) 
+            query += "schema:publisher " + this.inputs.publisherUri + "; ";
           }
           if (this.inputs.datePublishedNeu.length > 0) {
             query +=
@@ -465,15 +473,14 @@ export default {
           query += this.inputs.literaturUri + " a schema:Article ; ";
 
           if (this.inputs.titelInBandNeu.length > 0) {
-            query +=
-              'schema:isPartOf "' + this.inputs.literaturJournalUri + '"; ';
+            query += 'schema:isPartOf "' + this.inputs.literaturJournalUri + '"; ';
           }
           if (this.inputs.publisherNeu.length > 0) {
-            query += 'schema:publisher "' + this.inputs.publisherNeu + '"; ';
+             // Referenz zur Pulisher URIs erzeugen (Herausgeber/ Verlag) 
+            query += "schema:publisher " + this.inputs.publisherUri + "; ";
           }
           if (this.inputs.datePublishedNeu.length > 0) {
-            query +=
-              'schema:datePublished "' + this.inputs.datePublishedNeu + '"; ';
+            query += 'schema:datePublished "' + this.inputs.datePublishedNeu + '"; ';
           }
           if (
             this.inputs.seitenVonInBandNeu.length > 0 &&
@@ -489,7 +496,7 @@ export default {
           query += this.inputs.literaturUri + " a schema:DigitalDocument ; ";
 
           if (this.inputs.publisherNeu.length > 0) {
-            query += 'schema:publisher "' + this.inputs.publisherNeu + '"; ';
+            query += "schema:publisher " + this.inputs.publisherNeu + "; ";
           }
           if (this.inputs.datePublishedNeu.length > 0) {
             query +=
@@ -517,6 +524,14 @@ export default {
             query += 'schema:sameAs "' + autor.autorProfilLinkNeu + '". ';
           }
         }
+        
+        //Herausgeber/ Verlag
+        if (this.inputs.publisherNeu.length > 0) {
+            // Generate Pulisher URIs (Herausgeber/ Verlag) 
+            query += this.inputs.publisherUri + ' a schema:Organization ; ';
+            query += 'schema:legalName "' + this.inputs.publisherNeu + '". ';
+        }
+
       }
 
       //Log

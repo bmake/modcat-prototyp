@@ -539,6 +539,7 @@ export default {
       query += " WHERE { ";
       query += " } "; // WHERE Ende
 
+      console.log("FormLiterature");
       console.log(query);
 
       // für SPARQL-DataUpdate
