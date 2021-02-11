@@ -21,7 +21,7 @@
             <md-field>
               <label>Modulbezeichnung</label>
               <md-input
-                v-if="modLiterature.length > 0 && existence" 
+                v-if="modLiterature.length > 0 && existence"
                 v-model="modLiterature[0].label.value"
                 disabled
               />
@@ -105,13 +105,15 @@
                     </md-field>
                   </div>
                   <!-- ISBN -->
-                  <div class="md-size-100"
-                       v-if="literature.hasOwnProperty('isbn')" >
+                  <div
+                    class="md-size-100"
+                    v-if="literature.hasOwnProperty('isbn')"
+                  >
                     <md-field>
                       <label>ISBN</label>
                       <md-input v-model="literature.isbn.value" disabled />
                     </md-field>
-                  </div>            
+                  </div>
                   <!-- Erschienen IN z.B. Journal -/->
                   <div class="md-size-100"
                        v-if="literature.hasOwnProperty('titelInBand')" >
@@ -141,24 +143,36 @@
                     </div>
                   </div> -->
                   <!-- Herausgeber/ Verlag -->
-                  <div class="md-size-100"
-                       v-if="literature.hasOwnProperty('publisherName')" >
+                  <div
+                    class="md-size-100"
+                    v-if="literature.hasOwnProperty('publisherName')"
+                  >
                     <md-field>
                       <label>Herausgeber/ Verlag</label>
-                      <md-input v-model="literature.publisherName.value" disabled />
+                      <md-input
+                        v-model="literature.publisherName.value"
+                        disabled
+                      />
                     </md-field>
                   </div>
                   <!-- Veröffentlichung -->
-                  <div class="md-size-100"
-                       v-if="literature.hasOwnProperty('datePublished')" >
+                  <div
+                    class="md-size-100"
+                    v-if="literature.hasOwnProperty('datePublished')"
+                  >
                     <md-field>
                       <label>Veröffentlichung</label>
-                      <md-input v-model="literature.datePublished.value" disabled />
+                      <md-input
+                        v-model="literature.datePublished.value"
+                        disabled
+                      />
                     </md-field>
                   </div>
                   <!-- Auflage -->
-                  <div class="md-size-100"
-                       v-if="literature.hasOwnProperty('auflage')" >
+                  <div
+                    class="md-size-100"
+                    v-if="literature.hasOwnProperty('auflage')"
+                  >
                     <md-field>
                       <label>Auflage</label>
                       <md-input v-model="literature.auflage.value" disabled />
@@ -185,37 +199,49 @@
                     </div>
                   </div> -->
                   <!-- URL z.B. OPAC-Link, Springer-Link oder arxiv-Link -->
-                  <div class="md-size-100"
-                       v-if="literature.hasOwnProperty('url')" >
+                  <div
+                    class="md-size-100"
+                    v-if="literature.hasOwnProperty('url')"
+                  >
                     <md-field>
                       <label>URL</label>
                       <md-input v-model="literature.url.value" disabled />
                     </md-field>
                   </div>
                   <!-- DOI-Link (Identifier nicht ausgeben, aber DOI-Link, wenn vorhanden) -->
-                  <div class="md-size-100"
-                       v-if="literature.hasOwnProperty('litIdentifier')" >
+                  <div
+                    class="md-size-100"
+                    v-if="literature.hasOwnProperty('litIdentifier')"
+                  >
                     <md-field>
                       <label>DOI</label>
                       <md-input
-                        v-model="literature.litIdentifier.value" disabled />
+                        v-model="literature.litIdentifier.value"
+                        disabled
+                      />
                     </md-field>
                   </div>
 
                   <!-- Autoren/innen -->
-                  <div class="md-size-100"
-                       v-if="literature.hasOwnProperty('autoren')" >
+                  <div
+                    class="md-size-100"
+                    v-if="literature.hasOwnProperty('autoren')"
+                  >
                     <label>Autoren/innen</label>
                     <!-- v-for Autoren -->
-                    <div class="md-layout md-gutter"
-                         v-for="autor in literature.autoren"
-                        :key="autor" >
+                    <div
+                      class="md-layout md-gutter"
+                      v-for="autor in literature.autoren"
+                      :key="autor"
+                    >
                       <!-- Nachname -->
                       <div class="md-layout-item md-size-20">
                         <md-field>
                           <label>Nachname</label>
                           <md-input
-                            v-model="autor.autorNachname.value" disabled />
+                            v-model="autor.autorNachname.value"
+                            disabled
+                          />
                         </md-field>
                       </div>
                       <!-- Vorname -->
@@ -223,16 +249,24 @@
                         <md-field>
                           <label>Vorname</label>
                           <md-input
-                            v-model="autor.autorVorname.value" disabled />
+                            v-model="autor.autorVorname.value"
+                            disabled
+                          />
                         </md-field>
                       </div>
                       <!-- URL/ Profil-Link -->
-                      <div class="md-layout-item md-size-60" >
+                      <div class="md-layout-item md-size-60">
                         <md-field>
                           <label>Profil-Link/URL</label>
-                          <md-input v-if="typeof(autor.autorProfilLink) == 'undefined'"
-                                     disabled />
-                          <md-input v-else v-model="autor.autorProfilLink.value" disabled />
+                          <md-input
+                            v-if="typeof autor.autorProfilLink == 'undefined'"
+                            disabled
+                          />
+                          <md-input
+                            v-else
+                            v-model="autor.autorProfilLink.value"
+                            disabled
+                          />
                         </md-field>
                       </div>
                     </div>
@@ -242,7 +276,12 @@
             </dl>
             <div class="md-layout-item md-size-100">
               <!-- Tab-Control -->
-              <div v-if="!isHidden || typeof(this.modLiteratureOrigin[0].titel) == 'undefined' ">
+              <div
+                v-if="
+                  !isHidden ||
+                    typeof this.modLiteratureOrigin[0].titel == 'undefined'
+                "
+              >
                 <!-- Tab-Header -->
                 <div>
                   <div class="left-center-vertically">
@@ -266,7 +305,7 @@
                 <!-- Subview laden -->
                 <component
                   :is="currentTabComponent"
-                  :moduleUri="moduleUri"                  
+                  :moduleUri="moduleUri"
                   @queryChanged="receiveInsertQuery"
                 />
               </div>
@@ -363,7 +402,7 @@ export default {
     },
     // Clean raw Fuseki response (aggregate authors, merge duplicates)
     cleanedLiterature() {
-      if (typeof(this.modLiteratureOrigin[0].titel) == "undefined") return [];
+      if (typeof this.modLiteratureOrigin[0].titel == "undefined") return [];
 
       let cleanedLiterature = [];
 
