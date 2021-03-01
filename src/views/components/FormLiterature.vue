@@ -353,8 +353,6 @@ import { alphaNum, required } from "vuelidate/lib/validators";
 import Sortable from "sortablejs";
 import axios from "axios";
 
-console.log(FormLiteratureDOI);
-
 export default {
   components: {
     FormLiteratureDOI,
@@ -470,7 +468,6 @@ export default {
   methods: {
     removeLiterature(index) {
       //log
-      console.log(this.cleanedLiterature[index].literaturUri.value);
       this.deleteLiteratureRef(
         this.cleanedLiterature[index].literaturUri.value
       );
@@ -533,7 +530,6 @@ export default {
       this.where = [];
       this.modLiterature = _.cloneDeep(this.modLiteratureOrigin);
       // Log-Ausgabe
-      console.log(this.modLiterature);
       //if (this.newBoolean) {
       // this.checkModule();
       //}
@@ -541,7 +537,6 @@ export default {
     },
     deleteLiteratureRef(litUri) {
       //log
-      console.log(litUri);
       /*
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
       PREFIX module: <https://bmake.th-brandenburg.de/module/> 
@@ -556,8 +551,6 @@ export default {
       this.deleteLitRef += "> . ";
 
       //log
-      console.log(this.moduleUri);
-      console.log(this.deleteLitRef);
     },
     updateData() {
       let query = this.prefixes;
@@ -577,9 +570,6 @@ export default {
       // WHERE Part der Query
       query += " WHERE { ";
       query += " } "; // WHERE Ende
-
-      console.log("FormLiterature");
-      console.log(query);
 
       // für SPARQL-DataUpdate
       axios

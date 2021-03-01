@@ -24,7 +24,11 @@
     <br />
 
     <!-- Ausgabe der Daten in Formular -->
-    <div @change="generateQuery" class="md-layout-item md-size-100" v-if="loading === false">
+    <div
+      @change="generateQuery"
+      class="md-layout-item md-size-100"
+      v-if="loading === false"
+    >
       <br />
       <!-- Titel -->
       <div class="md-size-100">
@@ -242,10 +246,6 @@ export default {
       queryAutor += "             schema:givenName '" + autor.given + "' . } ";
       queryAutor += "  }";
 
-      //Log
-      console.log("checkAutorQuery");
-      console.log(queryAutor);
-
       // Daten vom Fuseki abrufen
       axios
         .post(
@@ -307,49 +307,58 @@ export default {
 
       // Generate Literature URI
       if (this.cleanedISBNData.industryIdentifiers.length > 0) {
-        this.cleanedISBNData.industryIdentifiers = "<http://isbn-international.org/" + this.isbn + ">";
+        this.cleanedISBNData.industryIdentifiers =
+          "<http://isbn-international.org/" + this.isbn + ">";
       } else {
         this.cleanedISBNData.industryIdentifiers =
           "<https://th-brandenburg.de/literatur/" + uuidv4() + ">";
       }
 
       // Generate Autoren URIs
-      console.log(this.cleanedISBNData.authors);
       for (let autor of this.cleanedISBNData.authors) {
         // if (autor.autorProfilLinkNeu.inclued('orcid.org')) -> Dann Orcid als URI
-        if (autor.uri.length < 1) {autor.uri = "<https://th-brandenburg.de/autor/" + uuidv4() + ">";}
+        autor.uri = "<https://th-brandenburg.de/autor/" + uuidv4() + ">";
       }
 
-      // Generate Pulisher URIs (Herausgeber/ Verlag) 
+      // Generate Pulisher URIs (Herausgeber/ Verlag)
       if (this.cleanedISBNData.publisher.length > 0) {
-          this.cleanedISBNData.publisherUri = "<https://th-brandenburg.de/publisher/" + uuidv4() + ">";
-          console.log(this.cleanedISBNData.publisherUri);
+        this.cleanedISBNData.publisherUri =
+          "<https://th-brandenburg.de/publisher/" + uuidv4() + ">";
       }
-      // generate 
+      // generate
       if (this.cleanedISBNData.title.length > 0) {
         //query += " INSERT { "; //wird in LiteratureForm hinzugefügt
         //query += "module:GPMO "; //Nur zum Test
         query += "  <" + this.moduleUri + "> ";
-        query += "schema:citation " + this.cleanedISBNData.industryIdentifiers + " . ";
+        query +=
+          "schema:citation " + this.cleanedISBNData.industryIdentifiers + " . ";
 
-        
         query += this.cleanedISBNData.industryIdentifiers + " a schema:Book ; ";
 
         if (this.isbn.length > 0) {
           query += 'schema:isbn "' + this.isbn + '"; ';
         }
         if (this.cleanedISBNData.publisher.length > 0) {
-          // Referenz zur Pulisher URIs erzeugen (Herausgeber/ Verlag) 
-          query += "schema:publisher " + this.cleanedISBNData.publisherUri + "; ";
+          // Referenz zur Pulisher URIs erzeugen (Herausgeber/ Verlag)
+          query +=
+            "schema:publisher " + this.cleanedISBNData.publisherUri + "; ";
         }
         if (this.cleanedISBNData.publishedDate.length > 0) {
           query +=
-            'schema:datePublished "' + this.cleanedISBNData.publishedDate + '"; ';
+            'schema:datePublished "' +
+            this.cleanedISBNData.publishedDate +
+            '"; ';
         }
         if (this.cleanedISBNData.contentVersion.length > 0) {
-          query += 'schema:bookEdition "' + this.cleanedISBNData.contentVersion + '"; ';
+          query +=
+            'schema:bookEdition "' +
+            this.cleanedISBNData.contentVersion +
+            '"; ';
         }
-        if (this.cleanedISBNData.infoLink != this.opacLink || this.cleanedISBNData.infoLink.length > 0) {
+        if (
+          this.cleanedISBNData.infoLink != this.opacLink ||
+          this.cleanedISBNData.infoLink.length > 0
+        ) {
           query += 'schema:url "' + this.cleanedISBNData.infoLink + '"; ';
         }
         //Referenz zu den Autoren in Lit erzeugen
@@ -363,12 +372,14 @@ export default {
           query = query.slice(0, query.length - 3);
           query += " ; ";
         }
-        
+
         //Titel
         query += 'schema:headline "' + this.cleanedISBNData.title + '". ';
 
         //Autoren/innen
-        if (this.cleanedISBNData.authors.every((autor) => autor.family.length > 0)) {
+        if (
+          this.cleanedISBNData.authors.every((autor) => autor.family.length > 0)
+        ) {
           for (let autor of this.cleanedISBNData.authors) {
             query += autor.uri + " a module:Author ; ";
 
@@ -382,19 +393,17 @@ export default {
             query += 'schema:sameAs "' + autor.url + '". ';
           }
         }
-        
+
         //Herausgeber/ Verlag
         if (this.cleanedISBNData.publisher.length > 0) {
-            // Generate Pulisher URIs (Herausgeber/ Verlag) 
-            query += this.cleanedISBNData.publisherUri + ' a schema:Organization ; ';
-            query += 'schema:legalName "' + this.cleanedISBNData.publisher + '". ';
+          // Generate Pulisher URIs (Herausgeber/ Verlag)
+          query +=
+            this.cleanedISBNData.publisherUri + " a schema:Organization ; ";
+          query +=
+            'schema:legalName "' + this.cleanedISBNData.publisher + '". ';
         }
-
       }
 
-      //Log
-      console.log("literatureISBN");
-      console.log(query);
       this.updateQuery = query;
 
       // Let Literature.vue know of changes
@@ -421,9 +430,6 @@ export default {
           })
           .then((response) => {
             if (response.data.includes("in die Merkliste")) {
-              console.log(
-                "https://opac.th-brandenburg.de/search?isbn=" + this.isbn
-              );
               data.infoLink =
                 "https://opac.th-brandenburg.de/search?isbn=" + this.isbn;
               this.opacLink = data.infoLink;
@@ -432,11 +438,8 @@ export default {
               this.generateQuery();
             }
           })
-          .catch((e) => {
-            console.log(e);
-          });
+          .catch((e) => {});
       } else {
-        console.log(false);
       }
     },
   },

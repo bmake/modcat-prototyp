@@ -322,7 +322,6 @@ export default {
 
       // Authors
       for (let author of this.rawDoiData[possibleAuthorObjects[0]]) {
-        console.log(author);
         filteredResponse.authors.push({
           family: author.family,
           given: author.given,
@@ -374,10 +373,6 @@ export default {
       queryAutor += " { ?autorUri schema:familyName '" + autor.family + "' ; ";
       queryAutor += "             schema:givenName '" + autor.given + "' . } ";
       queryAutor += "  }";
-
-      //Log
-      console.log("checkAutorQuery");
-      console.log(queryAutor);
 
       // Daten vom Fuseki abrufen
       axios
@@ -442,7 +437,6 @@ export default {
         autor.family.length > 0 &&
         autor.url.length > 0
       ) {
-        console.log(index);
         this.authorIndexPopUp = index;
         this.showPopUp = true;
       }
@@ -472,7 +466,6 @@ export default {
       }
 
       // Generate Autoren URIs
-      console.log(this.cleanedDoiData.authors);
       for (let author of this.cleanedDoiData.authors) {
         // if (autor.autorProfilLinkNeu.inclued('orcid.org')) -> Dann Orcid als URI
         author.authorUri = "<https://th-brandenburg.de/autor/" + uuidv4() + ">";
@@ -485,7 +478,6 @@ export default {
       ) {
         this.cleanedDoiData.publisherUri =
           "<https://th-brandenburg.de/publisher/" + uuidv4() + ">";
-        console.log(this.cleanedDoiData.publisherUri);
       }
 
       if (this.cleanedDoiData.title.length > 0) {
@@ -653,9 +645,6 @@ export default {
         }
       }
 
-      //Log
-      console.log("literatureDOI");
-      console.log(query);
       this.updateQuery = query;
 
       // Let Literature.vue know of changes
@@ -682,9 +671,6 @@ export default {
           })
           .then((response) => {
             if (response.data.includes("in die Merkliste")) {
-              console.log(
-                "https://opac.th-brandenburg.de/search?isbn=" + data.book.isbn
-              );
               data.url =
                 "https://opac.th-brandenburg.de/search?isbn=" + data.book.isbn;
               this.cleanedDoiData = data;
@@ -692,9 +678,7 @@ export default {
               this.generateQuery();
             }
           })
-          .catch((e) => {
-            console.log(e);
-          });
+          .catch((e) => {});
       }
     },
   },

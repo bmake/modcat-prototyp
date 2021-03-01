@@ -268,10 +268,6 @@ export default {
         "             schema:givenName '" + autor.autorVornameNeu + "' . } ";
       queryAutor += "  }";
 
-      //Log
-      console.log("checkAutorQuery");
-      console.log(queryAutor);
-
       // Daten vom Fuseki abrufen
       axios
         .post(
@@ -324,7 +320,6 @@ export default {
           this.loading = false;
         })
         .catch((e) => {
-          console.log(e);
           this.loading = false;
         });
     },
@@ -353,19 +348,15 @@ export default {
       }
 
       // Generate Autoren URIs
-      console.log(this.autoren);
       for (let autor of this.autoren) {
         // if (autor.autorProfilLinkNeu.inclued('orcid.org')) -> Dann Orcid als URI
-        if (autor.autorUri.length < 1) {
-          autor.autorUri = "<https://th-brandenburg.de/autor/" + uuidv4() + ">";
-        }
+        autor.autorUri = "<https://th-brandenburg.de/autor/" + uuidv4() + ">";
       }
 
       // Generate Pulisher URIs (Herausgeber/ Verlag)
       if (this.inputs.publisherNeu.length > 0) {
         this.inputs.publisherUri =
           "<https://th-brandenburg.de/publisher/" + uuidv4() + ">";
-        console.log(this.inputs.publisherUri);
       }
 
       if (this.inputs.titelNeu.length > 0) {
@@ -517,9 +508,6 @@ export default {
         }
       }
 
-      //Log
-      console.log("literatureManuell");
-      console.log(query);
       this.updateQuery = query;
 
       // Let Literature.vue know of changes
