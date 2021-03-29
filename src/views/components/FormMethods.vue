@@ -461,6 +461,10 @@ export default {
 
         query += " } ";
       }
+      
+      //Log
+      //console.log("FormMethods");
+      //console.log(query);
 
       this.updateQuery = query;
 

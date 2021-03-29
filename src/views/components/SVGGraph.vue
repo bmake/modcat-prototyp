@@ -3,14 +3,14 @@
     id="svgfield"
     :style="{
       border: '1px solid grey',
-      'border-radius': '5px'
+      'border-radius': '5px',
     }"
   ></div>
 </template>
 
 <script>
 import axios from "axios";
-import {selectQueries} from "../queries";
+import { selectQueries } from "../queries";
 
 export default {
   name: "SvgGraph",
@@ -25,12 +25,12 @@ export default {
       modMethods: [],
       modLiterature: [],
       modTeachers: [],
-      form: "BasicData"
+      form: "BasicData",
     };
   },
   created() {},
   mounted() {
-    d3.xml(this.svgfile).then(xml => {
+    d3.xml(this.svgfile).then((xml) => {
       var importedNode = document.importNode(xml.documentElement, true);
       d3.select("div#svgfield")
         .classed("svg-container", true)
@@ -181,7 +181,11 @@ export default {
                 .selectAll("path.groupC")
                 .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
               if (_this.modMethods.length == 0 && !_this.newBoolean) {
-                let queryMethod = selectQueries.selectQueries("SVGqueryMethod", _this.moduleUri, _this.studyProgram)
+                let queryMethod = selectQueries.selectQueries(
+                  "SVGqueryMethod",
+                  _this.moduleUri,
+                  _this.studyProgram
+                );
                 _this.queryModuleInfo(queryMethod);
               }
             } else if (id == "nodeDidaktik") {
@@ -198,11 +202,15 @@ export default {
                 .selectAll("path.groupB")
                 .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
               if (_this.modOutcomes.length == 0 && !_this.newBoolean) {
-                let queryOutcome = selectQueries.selectQueries("SVGqueryOutcome", _this.moduleUri, _this.studyProgram)
+                let queryOutcome = selectQueries.selectQueries(
+                  "SVGqueryOutcome",
+                  _this.moduleUri,
+                  _this.studyProgram
+                );
                 _this.queryModuleInfo(queryOutcome);
               }
             } else if (id == "nodeLiteratur") {
-              //_this.form = "Literature";
+              _this.form = "Literature"; // Enable Literature Form
               d3.select("#nodeModulKuerzel").classed("selected", true);
               d3.select("#nodeLiteratur").classed("selected", true);
               d3.select("#nodePerson").classed("selected", true);
@@ -235,26 +243,39 @@ export default {
                 .selectAll("marker")
                 .selectAll("path.groupL")
                 .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
+              //Aufruf "queries.js" -> initialer Select (GET) der Literatur
+              if (_this.modLiterature.length == 0 && !_this.newBoolean) {
+                let queryLiterature = selectQueries.selectQueries(
+                  "SVGqueryLiteratur",
+                  _this.moduleUri,
+                  _this.studyProgram
+                );
+                _this.queryModuleInfo(queryLiterature);
+              }
             }
           }
         });
     },
+    //Initiale SPARQL-Abfragen (auf Basis queries.js)
     queryModuleInfo(q) {
       axios
         .post(
           "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query",
           q,
           {
-            headers: { "Content-Type": "application/sparql-query" }
+            headers: { "Content-Type": "application/sparql-query" },
           }
         )
-        .then(response => {
+        .then((response) => {
           // JSON responses are automatically parsed.
           this.moduleInfo = response.data.results.bindings;
         })
-        .catch(e => {
+        .catch((e) => {
           this.errors.push(e);
         });
+      //SPARQL-Abfrage Log-Ausgabe
+      //console.log("SVGGraph - queryModule");
+      //console.log(q);
     },
     updateGraphText() {
       let module = d3.select("#textModulkuerzel").select("tspan");
@@ -321,7 +342,7 @@ export default {
           .selectAll(".faded")
           .classed("faded", false);
       }
-    }
+    },
   },
   watch: {
     moduleUri: {
@@ -333,14 +354,18 @@ export default {
         this.form = "BasicData";
 
         if (uri != null) {
-          let queryBase = selectQueries.selectQueries("SVGqueryBase", uri, this.studyProgram)
+          let queryBase = selectQueries.selectQueries(
+            "SVGqueryBase",
+            uri,
+            this.studyProgram
+          );
           this.queryModuleInfo(queryBase);
         }
         this.modOutcomes = [];
         this.modMethods = [];
         this.modLiterature = [];
         this.modTeachers = [];
-      }
+      },
     },
     moduleInfo: {
       handler(newData) {
@@ -351,7 +376,7 @@ export default {
           let mod = "mod" + this.form;
           this[mod] = this.moduleInfo;
         }
-      }
+      },
     },
     modBasicData: {
       handler(newData) {
@@ -362,7 +387,7 @@ export default {
           newData[0].languages.value = strArrLan;
           this.$emit("modBasicData", newData);
         }
-      }
+      },
     },
     modOutcomes: {
       handler(newData) {
@@ -379,7 +404,7 @@ export default {
           newData[0].exams.value = exams;
         }
         this.$emit("modOutcomes", newData);
-      }
+      },
     },
     modMethods: {
       handler(newData) {
@@ -395,35 +420,39 @@ export default {
           newData[0].workloadDetails.value = workloadDetails;
         }
         this.$emit("modMethods", newData);
-      }
+        //Log
+        //console.log(newData);
+      },
     },
     modLiterature: {
       handler(v) {
         if (this.modLiterature.length > 0) {
           this.$emit("modLiterature", v);
         }
-      }
+        //Log
+        //console.log(v);
+      },
     },
     modTeachers: {
       handler(v) {
         if (this.modTeachers.length > 0) {
           this.$emit("modTeachers", v);
         }
-      }
+      },
     },
     form: {
       handler(v) {
         this.$emit("formType", v);
-      }
+      },
     },
     role: {
       //role choosed, graph will be updated (not relevant part will be shown as grey)
       handler(v) {
         this.upG();
         this.styleImportedSVG();
-      }
-    }
-  }
+      },
+    },
+  },
 };
 </script>
 
