@@ -112,7 +112,7 @@ export default {
             let q = "";
 
             if (
-              id == "nodeModulKuerzel" ||
+              id == "nodeModulkuerzel" ||
               id == "nodeStudiengang" ||
               id == "nodeOrdnung" ||
               id == "nodePerson"
