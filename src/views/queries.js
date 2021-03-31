@@ -80,9 +80,6 @@ export const selectQueries = {
         " schema:value ?studysem . " +
         "  } " +
         " } ";
-      //SPARQL-Abfrage Log-Ausgabe
-      //console.log("queries.js - Base");
-      //console.log(SVGqueryBase);
       return SVGqueryBase;
     }
 
@@ -139,9 +136,6 @@ export const selectQueries = {
         "    } ORDER BY ?contentPos " +
         "  } " +
         " } ";
-      //SPARQL-Abfrage Log-Ausgabe
-      //console.log("queries.js - Outcomes");
-      //console.log(SVGqueryOutcome);
       return SVGqueryOutcome;
     }
 
@@ -182,9 +176,6 @@ export const selectQueries = {
         "}" +
         "  } " +
         "}";
-      //SPARQL-Abfrage Log-Ausgabe
-      //console.log("queries.js - Method");
-      //console.log(SVGqueryMethod);
       return SVGqueryMethod;
     }
 
@@ -198,22 +189,26 @@ export const selectQueries = {
         "?autorProfilLink ?datePublished ?isbn ?litIdentifier ?pageStart ?pageEnd ?publisherUri ?publisherName " +
         "WHERE { " +
         //"module:GPMO " + //Nur zum Test
-        "  <" + moduleUri + "> " +        
+        "  <" +
+        moduleUri +
+        "> " +
         "schema:courseCode ?code ; " +
         "         schema:name ?label .  " +
         'FILTER(lang(?label) = "de") ' +
         "OPTIONAL { " +
         //"module:GPMO " + //Nur zum Test
-        "  <" + moduleUri + "> " +
+        "  <" +
+        moduleUri +
+        "> " +
         "schema:citation ?literaturUri. " +
         "?literaturUri schema:headline ?titel. " +
         "OPTIONAL { ?literaturUri schema:datePublished ?datePublished. } " +
         //Optionale Angaben Autor
         "OPTIONAL { " +
-        "   ?literaturUri schema:author ?autorUri. " + 
-        "   OPTIONAL { ?autorUri  schema:givenName ?autorVorname. } " + 
-        "   OPTIONAL { ?autorUri  schema:familyName ?autorNachname. } " + 
-        "   OPTIONAL { ?autorUri  schema:sameAs ?autorProfilLink. } " + 
+        "   ?literaturUri schema:author ?autorUri. " +
+        "   OPTIONAL { ?autorUri  schema:givenName ?autorVorname. } " +
+        "   OPTIONAL { ?autorUri  schema:familyName ?autorNachname. } " +
+        "   OPTIONAL { ?autorUri  schema:sameAs ?autorProfilLink. } " +
         "} " +
         //Optionale Angaben Book
         "OPTIONAL { " +
@@ -221,8 +216,8 @@ export const selectQueries = {
         "   OPTIONAL { ?literaturUri schema:bookEdition ?auflage. } " +
         "   OPTIONAL { ?literaturUri schema:isbn ?isbn. } " +
         "} " +
-        // Optionale Angaben Book-Identifier (DOI) 
-        "OPTIONAL { ?literaturUri schema:identifier ?litIdentifier. } " +  
+        // Optionale Angaben Book-Identifier (DOI)
+        "OPTIONAL { ?literaturUri schema:identifier ?litIdentifier. } " +
         //Optionale Angaben Article
         "OPTIONAL { " +
         "   ?literaturUri a schema:Article. " +
@@ -240,8 +235,6 @@ export const selectQueries = {
         "} " + //Schließende Klammer 1. Optional
         "}"; //Schließende Klammer vom WHERE
       //SPARQL-Abfrage Log-Ausgabe
-      console.log("queries.js - Literatur");
-      console.log(SVGqueryLiteratur);
       return SVGqueryLiteratur;
     }
 
@@ -387,5 +380,5 @@ export const selectQueries = {
         " }";
       return generatePDF;
     }
-  },
+  }
 };
