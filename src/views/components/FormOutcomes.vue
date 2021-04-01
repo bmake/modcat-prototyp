@@ -187,31 +187,6 @@
           </div>
         </div>
 
-        <!--<div class="md-layout md-gutter" style="border-color:#fcdd86; border-width: 3px; border-style: solid; border-radius: 10px; margin:3px;">
-        <div
-          class="md-layout-item md-size-100"
-          v-for="(input, i) in inputs3"
-          :key="i"
-        >
-          <md-field>
-            <label>Prüfungsvorleistung</label>
-            <md-input v-model="input.name"></md-input>
-            <span>
-              <i
-                class="fas fa-minus-circle"
-                @click="remove('3', i)"
-                v-show="i || (!i && inputs3.length > 1)"
-              ></i>
-              <i
-                class="fas fa-plus-circle"
-                @click="add('3', i)"
-                v-show="i == inputs3.length - 1"
-              ></i>
-            </span>
-          </md-field>
-        </div>
-      </div>-->
-
         <div
           class="md-layout md-gutter"
           style="border-color:#fcdd86; border-width: 3px; border-style: solid; border-radius: 10px; margin:3px;"
@@ -280,16 +255,6 @@
                 Änderungen gespeichert!
               </div>
             </transition>
-            <p>input1 is: {{ inputs1 }}</p>
-            <p>input2 is: {{ inputs2 }}</p>
-            <p>input4 is: {{ inputs4 }}</p>
-            <p>count: {{ count }}</p>
-            <p>changedArray: {{ changedArray }}</p>
-            <!--<p>delete: {{ this.delete }}</p>-->
-            <p>insert: {{ insert }}</p>
-            <p>where: {{ where }}</p>
-            <p>update: {{ updateQuery }}</p>
-            <p>modOutcome: {{ modOutcome }}</p>
           </div>
         </div>
       </div>
@@ -416,21 +381,18 @@ export default {
   },
   methods: {
     reorder1({ oldIndex, newIndex }) {
-      console.log(oldIndex, newIndex);
       const movedItem = this.inputs1.splice(oldIndex, 1)[0];
       this.inputs1.splice(newIndex, 0, movedItem);
       this.addChanged("inputs1", newIndex + 1 + "0");
       this.addChanged("inputs1", oldIndex + 1 + "0");
     },
     reorder2({ oldIndex, newIndex }) {
-      console.log(oldIndex, newIndex);
       const movedItem = this.inputs2.splice(oldIndex, 1)[0];
       this.inputs2.splice(newIndex, 0, movedItem);
       this.addChanged("inputs2", newIndex + 1);
       this.addChanged("inputs2", oldIndex + 1);
     },
     reorder4({ oldIndex, newIndex }) {
-      console.log(oldIndex, newIndex);
       const movedItem = this.inputs4.splice(oldIndex, 1)[0];
       this.inputs4.splice(newIndex, 0, movedItem);
       this.addChanged("inputs4", newIndex + 1);
@@ -792,7 +754,7 @@ export default {
 
       axios
         .post(
-          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/update",
+          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/update",
           query,
           {
             headers: { "Content-Type": "application/sparql-update" }
@@ -807,8 +769,8 @@ export default {
             }, 2000);
           }
           /*setTimeout(() => {
-            this.clearCache();
-          }, 20000);*/
+                    this.clearCache();
+                  }, 20000);*/
           this.clearCache();
         })
         .catch(e => {
@@ -826,7 +788,7 @@ export default {
         '> schema:name ?label . FILTER(lang(?label) = "de") } ';
       axios
         .post(
-          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
+          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query",
           query,
           {
             headers: { "Content-Type": "application/sparql-query" }
@@ -956,7 +918,7 @@ export default {
         "}";
 
       axios
-        .post("http://fbw-sgmwi.th-brandenburg.de:3030/modcat/query", q, {
+        .post("http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query", q, {
           headers: { "Content-Type": "application/sparql-query" }
         })
         .then(response => {

@@ -358,13 +358,6 @@
             Änderungen gespeichert!
           </div>
         </transition>
-        <p>{{ updateQuery }}</p>
-        <p>changed Array: {{ changedArray }}</p>
-        <p>deleteArray: {{ this.delete }}</p>
-        <p>insertArray: {{ this.insert }}</p>
-        <p>where: {{ this.where }}</p>
-        <p>modBasis: {{ modBasis }}</p>
-        <p>update: {{ updateQuery }}</p>
       </div>
     </form>
   </div>
@@ -442,7 +435,7 @@ export default {
       "WHERE {?lecturer a module:Lecturer; rdfs:label ?lecturerLabel.}";
     axios
       .post(
-        "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
+        "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query",
         query,
         {
           headers: { "Content-Type": "application/sparql-query" }
@@ -619,11 +612,11 @@ export default {
       let query = this.prefixes;
       if (!this.newBoolean) {
         /*if (this.changedArray.includes("duration")) {
-          let i = this.changedArray.indexOf("duration");
-          let d = this.insert[i][3];
-          d = d.replace("1 Semester", "P0.5Y").replace("2 Semester", "P1Y");
-          this.insert[i][3] = d;
-        }*/
+            let i = this.changedArray.indexOf("duration");
+            let d = this.insert[i][3];
+            d = d.replace("1 Semester", "P0.5Y").replace("2 Semester", "P1Y");
+            this.insert[i][3] = d;
+          }*/
         if (this.delete.length > 0) {
           query += " DELETE { ";
           this.delete.forEach(function(itemArr) {
@@ -701,8 +694,8 @@ export default {
         query += ' module:progrSpecProp_Language  "' + languageCourse + '" ; ';
 
         /*//Curr Zuordnung
-        let curr = "module:Curr_" + this.studyProgram + "_" + this.code;
-        query += " module:eduAlignm_Curr  " + curr + " ; ";*/
+          let curr = "module:Curr_" + this.studyProgram + "_" + this.code;
+          query += " module:eduAlignm_Curr  " + curr + " ; ";*/
         let studySemCourse = "";
         let gradeCourse = "";
 
@@ -726,7 +719,9 @@ export default {
           //Verwendbarkeit
           if (this.modBasis.eduUse.value != "") {
             query +=
-              ' schema:educationalUse  "' + this.modBasis.eduUse.value + '"@de ; ';
+              ' schema:educationalUse  "' +
+              this.modBasis.eduUse.value +
+              '"@de ; ';
           }
           //Website
           if (this.modBasis.url.value != "") {
@@ -743,17 +738,17 @@ export default {
         query += " schema:isPartOf  module:" + this.studyProgram + " . ";
 
         /*//Curr Zuordnung
-        query +=
-          curr +
-          ' a  schema:AlignmentObject ;  schema:alignmentType  "Zuordnung zum Curriculum" ; schema:targetName  "' +
-          this.curriculum[this.studyProgram][0] +
-          '" ; schema:targetDescription  "' +
-          this.curriculum[this.studyProgram][1] +
-          '" ; schema:educationalFramework  "' +
-          this.spo[this.studyProgram][0] +
-          '" ; schema:targetURL  "' +
-          this.spo[this.studyProgram][1] +
-          '" . ';*/
+          query +=
+            curr +
+            ' a  schema:AlignmentObject ;  schema:alignmentType  "Zuordnung zum Curriculum" ; schema:targetName  "' +
+            this.curriculum[this.studyProgram][0] +
+            '" ; schema:targetDescription  "' +
+            this.curriculum[this.studyProgram][1] +
+            '" ; schema:educationalFramework  "' +
+            this.spo[this.studyProgram][0] +
+            '" ; schema:targetURL  "' +
+            this.spo[this.studyProgram][1] +
+            '" . ';*/
 
         //module Type
         let moduleTypeProgCourse =
@@ -892,7 +887,7 @@ export default {
 
       axios
         .post(
-          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/update",
+          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/update",
           query,
           {
             headers: { "Content-Type": "application/sparql-update" }
@@ -1082,7 +1077,7 @@ export default {
         " }";
 
       axios
-        .post("http://fbw-sgmwi.th-brandenburg.de:3030/modcat/query", q, {
+        .post("http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query", q, {
           headers: { "Content-Type": "application/sparql-query" }
         })
         .then(response => {
