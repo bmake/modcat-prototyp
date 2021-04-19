@@ -92,13 +92,6 @@
                 v-if="role == 1 || role == 2"
                 style="text-align: right; padding: 1em"
               >
-                <md-button
-                  id="download"
-                  @click="generatePDF"
-                  class="md-simple md-success md-lg"
-                  :disabled="selectedModule == ''"
-                  >Modulbeschreibung herunterladen</md-button
-                >
               </div>
               <div
                 v-else
@@ -336,7 +329,7 @@ export default {
   }
 };
 </script>
-<style lang="scss">
+<style src="vue-multiselect/dist/vue-multiselect.min.css">
 .faded {
   opacity: 0.2 !important;
   transition: 0.3s opacity !important;
@@ -450,9 +443,15 @@ span.md-highlight-text-match {
   color: #2e2e2e !important;
 }
 
+.chips button.md-button.md-icon-button.md-dense.md-input-action.md-clear.md-theme-default {
+  max-height: 1.2em;
+  max-width: 1.2em;
+}
+
 .md-list.md-dense .md-list-item-text {
   margin-left: 20px !important;
   font-size: small !important;
+  position: relative !important;
 }
 
 @media all and (max-width: 700px) {

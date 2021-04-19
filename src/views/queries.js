@@ -7,7 +7,7 @@ export const selectQueries = {
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  " +
         "PREFIX module: <https://bmake.th-brandenburg.de/module/>  " +
         "PREFIX schema: <https://schema.org/>  " +
-        "SELECT DISTINCT ?code ?label ?accPerson ?duration ?semester ?modType_name ?grade_name ?learnTypes ?eduUse ?basedOn ?swsSum ?ects ?studysem ?courseMode ?pre ?url ?comment ?languages" +
+        "SELECT DISTINCT ?code ?label ?accPerson ?duration ?semester ?modType_name ?grade_name ?learnTypes ?eduUse ?swsSum ?ects ?studysem ?courseMode ?pre ?basedOnModuls ?eduLevel ?url ?comment ?languages" +
         " WHERE {  " +
         "<" +
         moduleUri +
@@ -53,10 +53,29 @@ export const selectQueries = {
         ">  schema:educationalUse ?eduUse . " +
         ' FILTER(lang(?eduUse) = "de") ' +
         " } " +
-        //" OPTIONAL { <" +
-        //moduleUri +
-        //">  schema:isBasedOn ?basedOn . " +
-        //" } " +
+        " OPTIONAL { " +
+        ' SELECT (GROUP_CONCAT(DISTINCT ?basedOnModul; separator=" | ") as ?basedOnModuls) ' +
+        "    WHERE { " +
+        "<" +
+        moduleUri +
+        ">  schema:isBasedOn ?basedOn . " +
+        " ?basedOn schema:name ?basedOnModulLabel ;   " +
+        "          schema:isPartOf ?studyprogram .   " +
+        ' FILTER(lang(?basedOnModulLabel) = "de") ' +
+        '  BIND(REPLACE(STR(?studyprogram), "https://bmake.th-brandenburg.de/module/BWIK", "FBW", "i") AS ?studyprogram1)  ' +
+        '  BIND(REPLACE(STR(?studyprogram1), "https://bmake.th-brandenburg.de/module/MWIV", "FBW", "i") AS ?studyprogram2)  ' +
+        '  BIND(REPLACE(STR(?studyprogram2), "https://bmake.th-brandenburg.de/module/BBWV", "FBW", "i") AS ?studyprogram3)  ' +
+        '  BIND(REPLACE(STR(?studyprogram3), "https://bmake.th-brandenburg.de/module/MBWV", "FBW", "i") AS ?studyprogram4)  ' +
+        '  BIND(REPLACE(STR(?studyprogram4), "https://bmake.th-brandenburg.de/module/BIFK", "FBI", "i") AS ?studyprogram5)  ' +
+        '  BIND(REPLACE(STR(?studyprogram5), "https://bmake.th-brandenburg.de/module/BACS", "FBI", "i") AS ?studyprogram6)  ' +
+        '  BIND(REPLACE(STR(?studyprogram6), "https://bmake.th-brandenburg.de/module/BMZK", "FBI", "i") AS ?studyprogramLabel)  ' +
+        '  BIND(CONCAT(STR(?basedOn), " @ ", ?basedOnModulLabel, " @ ", ?studyprogramLabel) as ?basedOnModul) ' +
+        "   } " +
+        " } " +
+        " OPTIONAL { <" +
+        moduleUri +
+        ">  schema:educationalLevel ?eduLevel . " +
+        " } " +
         " OPTIONAL { <" +
         moduleUri +
         ">  schema:url ?url . " +

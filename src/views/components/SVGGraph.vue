@@ -91,7 +91,6 @@ export default {
         .on("click", function() {
           if (_this.role > 0) {
             _this.upG();
-            //const g = d3.select('#nodes').selectAll("g")
             const g = d3.select("#nodes").selectAll("g");
             g.classed("selected", false);
             d3.select("#layer1")
@@ -110,8 +109,7 @@ export default {
               id == "nodeModulKuerzel" ||
               id == "nodeStudiengang" ||
               id == "nodeOrdnung" ||
-              id == "nodePerson" ||
-              id == "nodeModulkuerzel"
+              id == "nodePerson"
             ) {
               _this.form = "BasicData";
               d3.select("#nodeModulKuerzel").classed("selected", true);
@@ -324,7 +322,6 @@ export default {
 
         if (uri != null) {
           let queryBase = selectQueries.selectQueries("SVGqueryBase", uri, this.studyProgram)
-          console.log(queryBase)
           this.queryModuleInfo(queryBase);
         }
         this.modOutcomes = [];
@@ -352,6 +349,19 @@ export default {
           let strArrLan = newData[0].languages.value.split(" | ");
           newData[0].languages.value = strArrLan;
           this.$emit("modBasicData", newData);
+          if(newData[0].basedOnModuls && newData[0].basedOnModuls.value != "") {
+            let strBasedModuls = newData[0].basedOnModuls.value.split(" | ");
+            let basedModuls = [];
+            for (let a = 0; a < strBasedModuls.length; a++) {
+              let itemModul = strBasedModuls[a].split(" @ ")
+              let obj = { uri: itemModul[0], label: itemModul[1], studyprogram: itemModul[2] }
+              basedModuls.push(obj);
+            }
+            newData[0].basedOnModuls.value = basedModuls;
+            console.log("with basedModul", newData)
+          } else {
+            console.log("no basedModul", newData)
+          }
         }
       }
     },
