@@ -387,8 +387,8 @@
             </div>
             Änderungen gespeichert!
           </div>
-        </transition>
-        <!--<p>{{ modBasis.basedOnModuls.value }}</p>-->
+        </transition><!--
+        &lt;!&ndash;<p>{{ modBasis.basedOnModuls.value }}</p>&ndash;&gt;
         <p>{{ selectedBased }}</p>
         <p>{{ updateQuery }}</p>
         <p>changed Array: {{ changedArray }}</p>
@@ -396,7 +396,7 @@
         <p>insertArray: {{ this.insert }}</p>
         <p>where: {{ this.where }}</p>
         <p>modBasis: {{ modBasis }}</p>
-        <p>update: {{ updateQuery }}</p>
+        <p>update: {{ updateQuery }}</p>-->
       </div>
     </form>
   </div>
@@ -1173,7 +1173,6 @@ export default {
       }
       this.modBasis = this.modBasis[0];
       this.selectedBased = this.modBasis.basedOnModuls.value;
-      console.log("initial selectedBased", this.selectedBased);
     }
     /*generatePDF() {
       const doc = new jsPDF();

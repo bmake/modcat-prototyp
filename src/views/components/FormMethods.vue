@@ -175,14 +175,14 @@
                   Änderungen gespeichert!
                 </div>
               </transition>
-              <p>input1 is: {{ inputs1 }}</p>
+              <!--<p>input1 is: {{ inputs1 }}</p>
               <p>input2 is: {{ inputs2 }}</p>
               <p>changedArray: {{ changedArray }}</p>
               <p>delete: {{ this.delete }}</p>
               <p>insert: {{ insert }}</p>
               <p>where: {{ where }}</p>
               <p>update: {{ updateQuery }}</p>
-              <p>modOutcome: {{ modMethod[0] }}</p>
+              <p>modOutcome: {{ modMethod[0] }}</p>-->
             </div>
           </div>
         </div>
@@ -280,14 +280,12 @@ export default {
   },
   methods: {
     reorder1({ oldIndex, newIndex }) {
-      console.log(oldIndex, newIndex);
       const movedItem = this.inputs1.splice(oldIndex, 1)[0];
       this.inputs1.splice(newIndex, 0, movedItem);
       this.addChanged("inputs1", newIndex + 1);
       this.addChanged("inputs1", oldIndex + 1);
     },
     reorder2({ oldIndex, newIndex }) {
-      console.log(oldIndex, newIndex);
       const movedItem = this.inputs2.splice((oldIndex - 1), 1)[0];
       this.inputs2.splice((newIndex - 1), 0, movedItem);
       this.addChanged("inputs2", newIndex);
