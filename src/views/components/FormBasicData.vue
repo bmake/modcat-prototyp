@@ -1021,7 +1021,7 @@ export default {
       }
       this.updateQuery = query;
 
-      /*axios
+      axios
         .post(
           "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/update",
           query,
@@ -1044,7 +1044,7 @@ export default {
         })
         .catch(e => {
           this.errors.push(e);
-        });*/
+        });
     },
     clearCache() {
       this.countModType = 0;
