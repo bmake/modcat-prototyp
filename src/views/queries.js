@@ -198,6 +198,65 @@ export const selectQueries = {
       return SVGqueryMethod;
     }
 
+    //SPARQL-Abfrage für Literatur
+    if (param == "SVGqueryLiteratur") {
+      let SVGqueryLiteratur =
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+        "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+        "PREFIX schema: <https://schema.org/> " +
+        "SELECT ?code ?label ?literaturUri ?titel ?auflage ?autorUri ?autorLabel ?autorVorname ?autorNachname " +
+        "?autorProfilLink ?datePublished ?isbn ?litIdentifier ?pageStart ?pageEnd ?publisherUri ?publisherName " +
+        "WHERE { " +
+        //"module:GPMO " + //Nur zum Test
+        "  <" +
+        moduleUri +
+        "> " +
+        "schema:courseCode ?code ; " +
+        "         schema:name ?label .  " +
+        'FILTER(lang(?label) = "de") ' +
+        "OPTIONAL { " +
+        //"module:GPMO " + //Nur zum Test
+        "  <" +
+        moduleUri +
+        "> " +
+        "schema:citation ?literaturUri. " +
+        "?literaturUri schema:headline ?titel. " +
+        "OPTIONAL { ?literaturUri schema:datePublished ?datePublished. } " +
+        //Optionale Angaben Autor
+        "OPTIONAL { " +
+        "   ?literaturUri schema:author ?autorUri. " +
+        "   OPTIONAL { ?autorUri  schema:givenName ?autorVorname. } " +
+        "   OPTIONAL { ?autorUri  schema:familyName ?autorNachname. } " +
+        "   OPTIONAL { ?autorUri  schema:sameAs ?autorProfilLink. } " +
+        "} " +
+        //Optionale Angaben Book
+        "OPTIONAL { " +
+        "   ?literaturUri a schema:Book. " +
+        "   OPTIONAL { ?literaturUri schema:bookEdition ?auflage. } " +
+        "   OPTIONAL { ?literaturUri schema:isbn ?isbn. } " +
+        "} " +
+        // Optionale Angaben Book-Identifier (DOI)
+        "OPTIONAL { ?literaturUri schema:identifier ?litIdentifier. } " +
+        //Optionale Angaben Article
+        "OPTIONAL { " +
+        "   ?literaturUri a schema:Article. " +
+        "   OPTIONAL { ?literaturUri schema:pageStart ?pageStart;  " +
+        "                            schema:pageEnd ?pageEnd. } " +
+        "} " +
+        //Optionale Angaben DigitalDocument - Keine expliziten Angaben
+        //"OPTIONAL { ?literaturUri a schema:DigitalDocument; "} " +
+
+        //Optionale Angaben zum Herausgeber (für Book + DigitalDocument)
+        "OPTIONAL { " +
+        "   ?literaturUri schema:publisher ?publisherUri. " +
+        "   OPTIONAL { ?publisherUri schema:legalName ?publisherName .} " +
+        "} " +
+        "} " + //Schließende Klammer 1. Optional
+        "}"; //Schließende Klammer vom WHERE
+      //SPARQL-Abfrage Log-Ausgabe
+      return SVGqueryLiteratur;
+    }
+
     if (param == "PDF") {
       let generatePDF =
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  " +

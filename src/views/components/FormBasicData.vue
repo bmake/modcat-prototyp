@@ -11,21 +11,6 @@
       @submit.prevent="validateInput"
       style="padding-right: 2em"
     >
-      <!--<div class="md-layout-item md-size-33">
-        <md-field>
-          <label>Modulkürzel</label>
-          <md-input
-            v-if="modBasis.length > 0"
-            v-model="modBasis[0].code.value"
-            name="modKuerzel"
-            id="modKuerzel"
-            md-dense
-            disabled
-          />
-          <md-input v-else disabled />
-        </md-field>
-      </div>-->
-
       <!--      SPO unabhängige Eigenschaften-->
       <div class="md-layout-item md-size-70">
         <md-field :class="getValidationClass('label')">
@@ -387,16 +372,7 @@
             </div>
             Änderungen gespeichert!
           </div>
-        </transition><!--
-        &lt;!&ndash;<p>{{ modBasis.basedOnModuls.value }}</p>&ndash;&gt;
-        <p>{{ selectedBased }}</p>
-        <p>{{ updateQuery }}</p>
-        <p>changed Array: {{ changedArray }}</p>
-        <p>deleteArray: {{ this.delete }}</p>
-        <p>insertArray: {{ this.insert }}</p>
-        <p>where: {{ this.where }}</p>
-        <p>modBasis: {{ modBasis }}</p>
-        <p>update: {{ updateQuery }}</p>-->
+        </transition>
       </div>
     </form>
   </div>
@@ -736,7 +712,6 @@ export default {
             this.insert.push(insArray);
           }
         }
-
         if (this.delete.length > 0) {
           query += " DELETE { ";
           this.delete.forEach(function(itemArr) {
@@ -819,8 +794,8 @@ export default {
         query += ' module:progrSpecProp_Language  "' + languageCourse + '" ; ';
 
         /*//Curr Zuordnung
-        let curr = "module:Curr_" + this.studyProgram + "_" + this.code;
-        query += " module:eduAlignm_Curr  " + curr + " ; ";*/
+          let curr = "module:Curr_" + this.studyProgram + "_" + this.code;
+          query += " module:eduAlignm_Curr  " + curr + " ; ";*/
         let studySemCourse = "";
         let gradeCourse = "";
 
@@ -1023,7 +998,7 @@ export default {
 
       axios
         .post(
-          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/update",
+          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/update",
           query,
           {
             headers: { "Content-Type": "application/sparql-update" }
@@ -1233,7 +1208,7 @@ export default {
         " }";
 
       axios
-        .post("http://fbw-sgmwi.th-brandenburg.de:3030/modcat/query", q, {
+        .post("http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query", q, {
           headers: { "Content-Type": "application/sparql-query" }
         })
         .then(response => {

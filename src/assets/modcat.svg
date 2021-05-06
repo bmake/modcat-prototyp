@@ -691,11 +691,11 @@
                 y="67.633316">von</tspan></text>
       </g>
       <g
-              inkscape:label="#predicateReferenziertAuf"
-              transform="translate(21.423774,99.320626)"
-              id="predicateReferenziertAuf"
-              style="opacity:1"
-              class="group1 group2">
+         inkscape:label="#predicateReferenziertAuf"
+         transform="translate(21.423774,99.320626)"
+         id="predicateReferenziertAuf"
+         style="opacity:1"
+         class="">
         <rect
                 inkscape:label="#rectReferenziertAuf"
                 style="fill:none;stroke-width:0.184768;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill"
@@ -1065,12 +1065,12 @@
              sodipodi:role="line">Organisation</tspan></text>
       </g>
       <g
-              class=""
-              id="nodeLiteratur"
-              inkscape:label="#nodeLiteratur"
-              transform="matrix(2.6156642,0,0,2.6156642,-117.46444,174.99333)"
-              inkscape:connector-avoid="true"
-              style="display:inline;opacity:1">
+         class=""
+         id="nodeLiteratur"
+         inkscape:label="#nodeLiteratur"
+         transform="matrix(2.6156642,0,0,2.6156642,-117.46444,174.99333)"
+         inkscape:connector-avoid="true"
+         style="display:inline;opacity:1">
         <rect
                 ry="4.9879117"
                 y="1.2656215"
@@ -1289,15 +1289,15 @@
             inkscape:label="#pathLiteratur-VerfasstVon"
             inkscape:connection-end="#predicateVerfasstVon" />
     <path
-            class="group1 group2 groupE"
-            inkscape:connection-end="#nodeLiteratur"
-            style="display:inline;opacity:1;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker7391)"
-            d="M 140.82865,168.20655 153.469,178.30377"
-            id="pathReferenziertAuf-Literatur"
-            inkscape:connector-type="polyline"
-            inkscape:connector-curvature="0"
-            inkscape:label="#pathReferenziertAuf-Literatur"
-            inkscape:connection-start="#predicateReferenziertAuf" />
+       class="groupE"
+       inkscape:connection-end="#nodeLiteratur"
+       style="display:inline;opacity:1;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker7391)"
+       d="M 140.82865,168.20655 153.469,178.30377"
+       id="pathReferenziertAuf-Literatur"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:label="#pathReferenziertAuf-Literatur"
+       inkscape:connection-start="#predicateReferenziertAuf" />
     <path
             class="group2 groupL"
             inkscape:connection-start="#nodeLiteratur"
@@ -1379,15 +1379,15 @@
             inkscape:label="#pathModulkuerzel-VerantwortetVon"
             inkscape:connection-end="#nodeModulkuerzel" />
     <path
-            class="group1 group2 groupE"
-            style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-            d="M 121.06798,154.42937 104.61016,144.24975"
-            id="pathModulkuerzel-ReferenziertAuf"
-            inkscape:connector-type="polyline"
-            inkscape:connector-curvature="0"
-            inkscape:connection-start="#predicateReferenziertAuf"
-            inkscape:label="#pathModulkuerzel-ReferenziertAuf"
-            inkscape:connection-end="#nodeModulkuerzel" />
+       class="groupE"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 121.06798,154.42937 104.61016,144.24975"
+       id="pathModulkuerzel-ReferenziertAuf"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#predicateReferenziertAuf"
+       inkscape:label="#pathModulkuerzel-ReferenziertAuf"
+       inkscape:connection-end="#nodeModulkuerzel" />
     <path
             inkscape:connection-end="#predicateEingesetztIn"
             class="group1 groupA"
@@ -1399,24 +1399,24 @@
             inkscape:label="#pathModulkuerzel-EingesetztIn"
             inkscape:connection-start="#nodeModulkuerzel" />
     <path
-            inkscape:connection-start="#nodeOrdnung"
-            inkscape:connection-end="#predicateErlassenVon"
-            inkscape:label="#pathOrdnung-ErlassenVon"
-            inkscape:connector-curvature="0"
-            inkscape:connector-type="polyline"
-            id="pathOrdnung-ErlassenVon"
-            d="m 119.46153,265.191 4.38958,0.13697"
-            style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264243;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-            class="group1 group2" />
+       inkscape:connection-start="#nodeOrdnung"
+       inkscape:connection-end="#predicateErlassenVon"
+       inkscape:label="#pathOrdnung-ErlassenVon"
+       inkscape:connector-curvature="0"
+       inkscape:connector-type="polyline"
+       id="pathOrdnung-ErlassenVon"
+       d="m 119.46153,265.191 4.38958,0.13697"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264243;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       class="group1 group2" />
     <path
-            inkscape:connection-start="#predicateErlassenVon"
-            inkscape:connection-end="#nodeOrganisation"
-            inkscape:label="#pathErlassenVon-Organisation"
-            inkscape:connector-curvature="0"
-            inkscape:connector-type="polyline"
-            id="pathErlassenVon-Organisation"
-            d="m 152.3089,266.23337 7.17996,0.23283"
-            style="display:inline;opacity:1;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker2215)"
-            class="group1 group2" />
+       inkscape:connection-start="#predicateErlassenVon"
+       inkscape:connection-end="#nodeOrganisation"
+       inkscape:label="#pathErlassenVon-Organisation"
+       inkscape:connector-curvature="0"
+       inkscape:connector-type="polyline"
+       id="pathErlassenVon-Organisation"
+       d="m 152.3089,266.23337 7.17996,0.23283"
+       style="display:inline;opacity:1;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker2215)"
+       class="group1 group2" />
   </g>
 </svg>
