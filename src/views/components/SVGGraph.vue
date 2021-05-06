@@ -274,9 +274,6 @@ export default {
         .catch(e => {
           this.errors.push(e);
         });
-      //SPARQL-Abfrage Log-Ausgabe
-      //console.log("SVGGraph - queryModule");
-      //console.log(q);
     },
     updateGraphText() {
       let module = d3.select("#textModulkuerzel").select("tspan");
@@ -404,9 +401,6 @@ export default {
               basedModuls.push(obj);
             }
             newData[0].basedOnModuls.value = basedModuls;
-            console.log("with basedModul", newData)
-          } else {
-            console.log("no basedModul", newData)
           }
         }
       }
@@ -442,8 +436,6 @@ export default {
           newData[0].workloadDetails.value = workloadDetails;
         }
         this.$emit("modMethods", newData);
-        //Log
-        //console.log(newData);
       }
     },
     modLiterature: {
@@ -451,8 +443,6 @@ export default {
         if (this.modLiterature.length > 0) {
           this.$emit("modLiterature", v);
         }
-        //Log
-        //console.log(v);
       }
     },
     modTeachers: {
