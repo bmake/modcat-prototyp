@@ -3,34 +3,34 @@
     id="svgfield"
     :style="{
       border: '1px solid grey',
-      'border-radius': '5px',
+      'border-radius': '5px'
     }"
   ></div>
 </template>
 
 <script>
 import axios from "axios";
-import { selectQueries } from "../queries";
+import {selectQueries} from "../queries";
 
 export default {
-  name: "SvgGraph",
+  name: "SvgGraphTHB",
   props: ["moduleUri", "role", "newBoolean", "code", "studyProgram"],
   data() {
     return {
-      svgfile: require("../../assets/modcat.svg"),
-      gridSize: 100,
-      moduleInfo: [],
-      modBasicData: [],
+      svgfile: require("../../assets/THBgraphMod.svg"),
+      gridSize: 100
+      /*moduleInfo: [],
+      modBasicData: [],‚
       modOutcomes: [],
       modMethods: [],
-      modLiterature: [],
+      modLiterature: [‚],
       modTeachers: [],
-      form: "BasicData",
+      form: "BasicData"*/
     };
   },
   created() {},
   mounted() {
-    d3.xml(this.svgfile).then((xml) => {
+    d3.xml(this.svgfile).then(xml => {
       var importedNode = document.importNode(xml.documentElement, true);
       d3.select("div#svgfield")
         .classed("svg-container", true)
@@ -59,7 +59,6 @@ export default {
   methods: {
     styleImportedSVG(d) {
       let _this = this;
-      //refresh, clear all mouse events and all effects on nodes at start
       d3.select("#nodes")
         .selectAll("g")
         .on("mouseover", null)
@@ -68,21 +67,18 @@ export default {
       d3.select("#nodes")
         .selectAll("g")
         .classed("selected", false);
-      //refresh, set stroke-width of all edges with default value
       d3.select("#layer1")
         .selectAll("path")
         .style("stroke-width", 0.2);
-      //refresh, set arrows of all edges with default value
       d3.select("defs")
         .selectAll("marker")
         .selectAll("path")
         .attr("transform", "scale(0.8) rotate(180) translate(12.5,0)");
-      //add mouse events on non-faded nodes
       d3.select("#nodes")
         .selectAll("g:not(.faded)")
         .on("mouseover", function() {
           if (_this.role > 0) {
-            this.style.cursor = "pointer"; //hand cursor
+            this.style.cursor = "pointer";
             this.style.opacity = 0.5;
             this.style.transition = "0.3s opacity";
           } else {
@@ -94,9 +90,8 @@ export default {
         })
         .on("click", function() {
           if (_this.role > 0) {
-            //set as default
             _this.upG();
-            //remove all graph element effects of last click
+            //const g = d3.select('#nodes').selectAll("g")
             const g = d3.select("#nodes").selectAll("g");
             g.classed("selected", false);
             d3.select("#layer1")
@@ -112,16 +107,16 @@ export default {
             let q = "";
 
             if (
-              id == "nodeModulkuerzel" ||
-              id == "nodeStudiengang" ||
-              id == "nodeOrdnung" ||
-              id == "nodePerson"
+              id == "nodeTHB" ||
+              id == "nodeFBW" ||
+              id == "nodeFBT" ||
+              id == "nodeFBI"
             ) {
               _this.form = "BasicData";
-              d3.select("#nodeModulKuerzel").classed("selected", true);
-              d3.select("#nodeStudiengang").classed("selected", true);
-              d3.select("#nodeOrdnung").classed("selected", true);
-              d3.select("#nodePerson").classed("selected", true);
+              d3.select("#nodeTHB").classed("selected", true);
+              d3.select("#nodeFBW").classed("selected", true);
+              d3.select("#nodeFBT").classed("selected", true);
+              d3.select("#nodeFBI").classed("selected", true);
               d3.select("#layer1")
                 .selectAll("path.groupA")
                 .transition()
@@ -181,11 +176,7 @@ export default {
                 .selectAll("path.groupC")
                 .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
               if (_this.modMethods.length == 0 && !_this.newBoolean) {
-                let queryMethod = selectQueries.selectQueries(
-                  "SVGqueryMethod",
-                  _this.moduleUri,
-                  _this.studyProgram
-                );
+                let queryMethod = selectQueries.selectQueries("SVGqueryMethod", _this.moduleUri, _this.studyProgram)
                 _this.queryModuleInfo(queryMethod);
               }
             } else if (id == "nodeDidaktik") {
@@ -202,15 +193,11 @@ export default {
                 .selectAll("path.groupB")
                 .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
               if (_this.modOutcomes.length == 0 && !_this.newBoolean) {
-                let queryOutcome = selectQueries.selectQueries(
-                  "SVGqueryOutcome",
-                  _this.moduleUri,
-                  _this.studyProgram
-                );
+                let queryOutcome = selectQueries.selectQueries("SVGqueryOutcome", _this.moduleUri, _this.studyProgram)
                 _this.queryModuleInfo(queryOutcome);
               }
             } else if (id == "nodeLiteratur") {
-              _this.form = "Literature"; // Enable Literature Form
+              //_this.form = "Literature";
               d3.select("#nodeModulKuerzel").classed("selected", true);
               d3.select("#nodeLiteratur").classed("selected", true);
               d3.select("#nodePerson").classed("selected", true);
@@ -243,39 +230,26 @@ export default {
                 .selectAll("marker")
                 .selectAll("path.groupL")
                 .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
-              //Aufruf "queries.js" -> initialer Select (GET) der Literatur
-              if (_this.modLiterature.length == 0 && !_this.newBoolean) {
-                let queryLiterature = selectQueries.selectQueries(
-                  "SVGqueryLiteratur",
-                  _this.moduleUri,
-                  _this.studyProgram
-                );
-                _this.queryModuleInfo(queryLiterature);
-              }
             }
           }
         });
     },
-    //Initiale SPARQL-Abfragen (auf Basis queries.js)
     queryModuleInfo(q) {
       axios
         .post(
-          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query",
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
           q,
           {
-            headers: { "Content-Type": "application/sparql-query" },
+            headers: { "Content-Type": "application/sparql-query" }
           }
         )
-        .then((response) => {
+        .then(response => {
           // JSON responses are automatically parsed.
           this.moduleInfo = response.data.results.bindings;
         })
-        .catch((e) => {
+        .catch(e => {
           this.errors.push(e);
         });
-      //SPARQL-Abfrage Log-Ausgabe
-      //console.log("SVGGraph - queryModule");
-      //console.log(q);
     },
     updateGraphText() {
       let module = d3.select("#textModulkuerzel").select("tspan");
@@ -318,19 +292,14 @@ export default {
         .attr("dx", relaCenSem);
     },
     upG() {
-      //refresh function, set the graph to default
-      //a role must be choosed
       if (this.role > 0) {
-        //set default, make all faded elements as non-faded (colorful)
         d3.select("#layer1")
           .selectAll(".faded")
           .classed("faded", false);
-        //set all elements of relevant group as faded (grey)
         let group = ".group" + this.role;
         d3.select("#layer1")
           .selectAll(group)
           .classed("faded", true);
-        //groupS and groupL as seperate groups should be faded as default
         d3.select("#layer1")
           .selectAll(".groupS")
           .classed("faded", true);
@@ -342,11 +311,10 @@ export default {
           .selectAll(".faded")
           .classed("faded", false);
       }
-    },
+    }
   },
   watch: {
     moduleUri: {
-      // if module choosed, the query for basic data will be sent to fuseki, BasicData-Component as default
       handler(uri) {
         d3.select("#nodes")
           .selectAll("g")
@@ -361,7 +329,7 @@ export default {
         this.modMethods = [];
         this.modLiterature = [];
         this.modTeachers = [];
-      },
+      }
     },
     moduleInfo: {
       handler(newData) {
@@ -372,7 +340,7 @@ export default {
           let mod = "mod" + this.form;
           this[mod] = this.moduleInfo;
         }
-      },
+      }
     },
     modBasicData: {
       handler(newData) {
@@ -382,21 +350,8 @@ export default {
           let strArrLan = newData[0].languages.value.split(" | ");
           newData[0].languages.value = strArrLan;
           this.$emit("modBasicData", newData);
-          if(newData[0].basedOnModuls && newData[0].basedOnModuls.value != "") {
-            let strBasedModuls = newData[0].basedOnModuls.value.split(" | ");
-            let basedModuls = [];
-            for (let a = 0; a < strBasedModuls.length; a++) {
-              let itemModul = strBasedModuls[a].split(" @ ")
-              let obj = { uri: itemModul[0], label: itemModul[1], studyprogram: itemModul[2] }
-              basedModuls.push(obj);
-            }
-            newData[0].basedOnModuls.value = basedModuls;
-            console.log("with basedModul", newData)
-          } else {
-            console.log("no basedModul", newData)
-          }
         }
-      },
+      }
     },
     modOutcomes: {
       handler(newData) {
@@ -413,7 +368,7 @@ export default {
           newData[0].exams.value = exams;
         }
         this.$emit("modOutcomes", newData);
-      },
+      }
     },
     modMethods: {
       handler(newData) {
@@ -429,39 +384,34 @@ export default {
           newData[0].workloadDetails.value = workloadDetails;
         }
         this.$emit("modMethods", newData);
-        //Log
-        //console.log(newData);
-      },
+      }
     },
     modLiterature: {
       handler(v) {
         if (this.modLiterature.length > 0) {
           this.$emit("modLiterature", v);
         }
-        //Log
-        //console.log(v);
-      },
+      }
     },
     modTeachers: {
       handler(v) {
         if (this.modTeachers.length > 0) {
           this.$emit("modTeachers", v);
         }
-      },
+      }
     },
     form: {
       handler(v) {
         this.$emit("formType", v);
-      },
+      }
     },
     role: {
-      //role choosed, graph will be updated (not relevant part will be shown as grey)
       handler(v) {
         this.upG();
         this.styleImportedSVG();
-      },
-    },
-  },
+      }
+    }
+  }
 };
 </script>
 

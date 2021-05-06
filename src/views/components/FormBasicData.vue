@@ -278,7 +278,7 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item md-size-100">
+      <div v-if="!checkInfoStudyPro" class="md-layout-item md-size-100">
         <md-field>
           <label>SPO-relevante Vorraussetzungen</label>
           <md-textarea
@@ -289,6 +289,36 @@
             md-autogrow
           />
           <md-input v-else />
+        </md-field>
+      </div>
+
+      <!--alternative Eigenschaften-->
+      <div v-if="checkInfoStudyPro" class="md-layout-item md-size-100">
+        <md-field>
+          <label>Empfohlene Voraussetzungen</label>
+          <md-textarea
+            v-model="modBasis.eduLevel.value"
+            @change="addChanged('eduLevel')"
+            :disabled="role != 2"
+            md-autogrow
+          />
+        </md-field>
+      </div>
+      <div v-if="checkInfoStudyPro" class="chips md-layout-item md-size-100">
+        <md-field class="md-field xs md-theme-default md-has-value">
+          <label>Basiert auf folgende Module</label>
+          <multiselect
+            v-if="modBasis.basedOnModuls"
+            style="margin-top: 2px"
+            v-model="selectedBased"
+            :options="moduleList"
+            :multiple="true"
+            track-by="uri"
+            :custom-label="customLabel"
+            :disabled="role != 2"
+            @input="addChanged('basedOnModuls')"
+          >
+          </multiselect>
         </md-field>
       </div>
 
@@ -370,6 +400,7 @@ import lodash from "lodash";
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
 import requiredIf from "vuelidate/lib/validators/requiredIf";
+import Multiselect from "vue-multiselect";
 
 export default {
   props: [
@@ -382,8 +413,13 @@ export default {
   ],
   name: "basisData",
   mixins: [validationMixin],
+  components: {
+    Multiselect
+  },
   data() {
     return {
+      selectedBased: [],
+      moduleList: [],
       countModType: 0,
       countCourseMode: 0,
       countLecturer: 0,
@@ -427,26 +463,8 @@ export default {
     };
   },
   mounted() {
-    let query =
-      "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
-      "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
-      "PREFIX thbfbwm: <https://www.th-brandenburg.de/mitarbeiterseiten/fbw/> " +
-      "SELECT DISTINCT ?lecturer ?lecturerLabel " +
-      "WHERE {?lecturer a module:Lecturer; rdfs:label ?lecturerLabel.}";
-    axios
-      .post(
-        "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query",
-        query,
-        {
-          headers: { "Content-Type": "application/sparql-query" }
-        }
-      )
-      .then(response => {
-        this.lecturers = response.data.results.bindings;
-      })
-      .catch(e => {
-        this.errors.push(e);
-      });
+    this.queryLecturer();
+    this.queryModuleList();
   },
   validations: {
     modBasis: {
@@ -522,6 +540,74 @@ export default {
     }
   },
   methods: {
+    queryLecturer() {
+      let query =
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+        "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+        "PREFIX thbfbwm: <https://www.th-brandenburg.de/mitarbeiterseiten/fbw/> " +
+        "SELECT DISTINCT ?lecturer ?lecturerLabel " +
+        "WHERE {?lecturer a module:Lecturer; rdfs:label ?lecturerLabel.}";
+      axios
+        .post(
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
+          query,
+          {
+            headers: { "Content-Type": "application/sparql-query" }
+          }
+        )
+        .then(response => {
+          this.lecturers = response.data.results.bindings;
+        })
+        .catch(e => {
+          this.errors.push(e);
+        });
+    },
+    queryModuleList() {
+      let query =
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+        "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+        "PREFIX schema: <https://schema.org/> " +
+        "SELECT DISTINCT ?module ?label ?studyprogramLabel " +
+        "WHERE { " +
+        "  ?module a module:Module ; " +
+        "  schema:isPartOf ?studyprogram ; " +
+        "          schema:name ?label . " +
+        '     FILTER(lang(?label) = "de")' +
+        '  BIND(REPLACE(STR(?studyprogram), "https://bmake.th-brandenburg.de/module/BWIK", "FBW", "i") AS ?studyprogram1) ' +
+        '  BIND(REPLACE(STR(?studyprogram1), "https://bmake.th-brandenburg.de/module/MWIV", "FBW", "i") AS ?studyprogram2) ' +
+        '  BIND(REPLACE(STR(?studyprogram2), "https://bmake.th-brandenburg.de/module/BBWV", "FBW", "i") AS ?studyprogram3) ' +
+        '  BIND(REPLACE(STR(?studyprogram3), "https://bmake.th-brandenburg.de/module/MBWV", "FBW", "i") AS ?studyprogram4) ' +
+        '  BIND(REPLACE(STR(?studyprogram4), "https://bmake.th-brandenburg.de/module/BIFK", "FBI", "i") AS ?studyprogram5) ' +
+        '  BIND(REPLACE(STR(?studyprogram5), "https://bmake.th-brandenburg.de/module/BACS", "FBI", "i") AS ?studyprogram6) ' +
+        '  BIND(REPLACE(STR(?studyprogram6), "https://bmake.th-brandenburg.de/module/BMZK", "FBI", "i") AS ?studyprogramLabel) ' +
+        " } ORDER BY ?label";
+
+      axios
+        .post(
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
+          query,
+          {
+            headers: { "Content-Type": "application/sparql-query" }
+          }
+        )
+        .then(response => {
+          let list = response.data.results.bindings;
+          for (let a = 0; a < list.length; a++) {
+            let obj = {
+              uri: list[a].module.value,
+              label: list[a].label.value,
+              studyprogram: list[a].studyprogramLabel.value
+            };
+            this.moduleList.push(obj);
+          }
+        })
+        .catch(e => {
+          this.errors.push(e);
+        });
+    },
+    customLabel(option) {
+      return `${option.label} — ${option.studyprogram}`;
+    },
     validateInput() {
       this.$v.$touch();
       if (
@@ -554,7 +640,7 @@ export default {
         this.changedArray.push(item);
       } else {
         let i = this.changedArray.indexOf(item);
-        if (!this.newBoolean) {
+        if (!this.newBoolean && item != "basedOnModuls") {
           let arr = this.insert[i];
           arr.splice(3, 1, this.modBasis[item].value);
           this.insert.splice(i, 1, arr);
@@ -585,7 +671,12 @@ export default {
           this.template[i].o,
           ". "
         );
-        if (i == "pre" || i == "eduUse" || i == "learnTypes") {
+        if (
+          i == "pre" ||
+          i == "eduUse" ||
+          i == "learnTypes" ||
+          i == "eduLevel"
+        ) {
           insArray.push(
             this.template[i].s,
             this.template[i].p,
@@ -594,29 +685,49 @@ export default {
             '"@de . '
           );
         } else {
-          insArray.push(
-            this.template[i].s,
-            this.template[i].p,
-            ' "',
-            this.modBasis[i].value,
-            '". '
-          );
+          if (i != "basedOnModuls") {
+            insArray.push(
+              this.template[i].s,
+              this.template[i].p,
+              ' "',
+              this.modBasis[i].value,
+              '". '
+            );
+          }
         }
       }
 
       this.delete.push(delArray);
-      this.insert.push(insArray);
+      if (insArray.length > 0) {
+        this.insert.push(insArray);
+      }
       this.where.push(delArray);
     },
     updateData() {
       let query = this.prefixes;
       if (!this.newBoolean) {
-        /*if (this.changedArray.includes("duration")) {
-            let i = this.changedArray.indexOf("duration");
-            let d = this.insert[i][3];
-            d = d.replace("1 Semester", "P0.5Y").replace("2 Semester", "P1Y");
-            this.insert[i][3] = d;
-          }*/
+        if (this.changedArray.indexOf("basedOnModuls") > -1) {
+          let insArray = [];
+          let uris = "";
+          let list = this.selectedBased;
+          for (let a = 0; a < list.length; a++) {
+            if (a == list.length - 1) {
+              uris += " <" + list[a]["uri"] + "> . ";
+            } else {
+              uris += " <" + list[a]["uri"] + "> , ";
+            }
+          }
+          if (uris != "") {
+            /* uris += ' "" . ';*/
+            insArray.push(
+              this.template["basedOnModuls"].s,
+              this.template["basedOnModuls"].p,
+              uris
+            );
+            this.insert.push(insArray);
+          }
+        }
+
         if (this.delete.length > 0) {
           query += " DELETE { ";
           this.delete.forEach(function(itemArr) {
@@ -626,18 +737,23 @@ export default {
           });
           query += " } ";
         }
-        query += " INSERT { ";
-        this.insert.forEach(function(itemArr) {
-          if (Array.isArray(itemArr[3])) {
-            let str = itemArr[3].join('", "');
-            itemArr[3] = str;
-          }
-          for (let a = 0; a < itemArr.length; a++) {
-            query += itemArr[a];
-          }
-        });
-        query += " } WHERE { ";
+
+        if (this.insert.length > 0) {
+          query += " INSERT { ";
+          this.insert.forEach(function(itemArr) {
+            if (Array.isArray(itemArr[3])) {
+              let str = itemArr[3].join('", "');
+              itemArr[3] = str;
+            }
+            for (let a = 0; a < itemArr.length; a++) {
+              query += itemArr[a];
+            }
+          });
+          query += " } ";
+        }
+
         if (this.where.length > 0) {
+          query += "  WHERE { ";
           this.where.forEach(function(itemArr) {
             for (let a = 0; a < itemArr.length; a++) {
               query += itemArr[a];
@@ -712,6 +828,30 @@ export default {
             this.modBasis.pre.value +
             '"@de ; ';
         }
+
+        if (this.checkInfoStudyPro) {
+          //empfohlene Voraussetzungen
+          if (this.modBasis.eduLevel.value != "") {
+            query +=
+              ' schema:educationalLevel  "' +
+              this.modBasis.eduLevel.value +
+              '"@de ; ';
+          }
+          //basiert auf Module
+          if (this.selectedBased.length > 0) {
+            let uris = "";
+            let list = this.selectedBased;
+            for (let a = 0; a < list.length; a++) {
+              if (a == list.length - 1) {
+                uris += " <" + list[a]["uri"] + "> ; ";
+              } else {
+                uris += " <" + list[a]["uri"] + "> , ";
+              }
+            }
+            query += " schema:isBasedOn  " + uris;
+          }
+        }
+
         if (!this.checkInfoStudyPro) {
           //Notengewichtung
           gradeCourse = "module:GradingRatio_" + this.code;
@@ -736,19 +876,6 @@ export default {
         query +=
           ' schema:timeRequired  "' + this.modBasis.duration.value + '" ; ';
         query += " schema:isPartOf  module:" + this.studyProgram + " . ";
-
-        /*//Curr Zuordnung
-          query +=
-            curr +
-            ' a  schema:AlignmentObject ;  schema:alignmentType  "Zuordnung zum Curriculum" ; schema:targetName  "' +
-            this.curriculum[this.studyProgram][0] +
-            '" ; schema:targetDescription  "' +
-            this.curriculum[this.studyProgram][1] +
-            '" ; schema:educationalFramework  "' +
-            this.spo[this.studyProgram][0] +
-            '" ; schema:targetURL  "' +
-            this.spo[this.studyProgram][1] +
-            '" . ';*/
 
         //module Type
         let moduleTypeProgCourse =
@@ -991,6 +1118,16 @@ export default {
           p: " schema:coursePrerequisites ",
           o: " ?pre "
         },
+        eduLevel: {
+          s: " <" + this.moduleUri + "> ",
+          p: " schema:educationalLevel ",
+          o: " ?eduLevel "
+        },
+        basedOnModuls: {
+          s: " <" + this.moduleUri + "> ",
+          p: " schema:isBasedOn ",
+          o: " ?basedOnModuls "
+        },
         url: {
           s: " <" + this.moduleUri + "> ",
           p: " schema:url ",
@@ -1016,9 +1153,19 @@ export default {
       if (!Object.keys(this.modBasisOrigin[0]).includes("pre")) {
         this.modBasis[0]["pre"] = { value: "" };
       }
+      if (!Object.keys(this.modBasisOrigin[0]).includes("eduLevel")) {
+        this.modBasis[0]["eduLevel"] = { value: "" };
+      }
+      if (
+        !Object.keys(this.modBasisOrigin[0]).includes("basedOnModuls") ||
+        !this.modBasisOrigin[0].basedOnModuls.value.length > 0
+      ) {
+        this.modBasis[0]["basedOnModuls"] = { value: [] };
+      }
       this.modBasis = this.modBasis[0];
-    },
-    generatePDF() {
+      this.selectedBased = this.modBasis.basedOnModuls.value;
+    }
+    /*generatePDF() {
       const doc = new jsPDF();
       let pdfHead = [];
       let pdfBody = [];
@@ -1120,7 +1267,7 @@ export default {
         .catch(e => {
           this.errors.push(e);
         });
-    }
+    }*/
   },
   watch: {
     modBasisOrigin(v) {
@@ -1152,9 +1299,7 @@ export default {
         let i = this.changedArray.indexOf("modType_name");
         if (!this.newBoolean) {
           let arr = this.insert[i];
-          let v = this.modBasis.modType_name.value;
-          arr.splice(3, 1, this.template.modType_name[v][0]);
-          arr.splice(7, 1, this.template.modType_name[v][1]);
+          arr.splice(3, 1, this.modBasis.modType_name.value);
           this.insert.splice(i, 1, arr);
         }
       }
