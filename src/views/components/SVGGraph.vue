@@ -3,7 +3,7 @@
     id="svgfield"
     :style="{
       border: '1px solid grey',
-      'border-radius': '5px',
+      'border-radius': '5px'
     }"
   ></div>
 </template>
@@ -25,12 +25,12 @@ export default {
       modMethods: [],
       modLiterature: [],
       modTeachers: [],
-      form: "BasicData",
+      form: "BasicData"
     };
   },
   created() {},
   mounted() {
-    d3.xml(this.svgfile).then((xml) => {
+    d3.xml(this.svgfile).then(xml => {
       var importedNode = document.importNode(xml.documentElement, true);
       d3.select("div#svgfield")
         .classed("svg-container", true)
@@ -263,14 +263,14 @@ export default {
           "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query",
           q,
           {
-            headers: { "Content-Type": "application/sparql-query" },
+            headers: { "Content-Type": "application/sparql-query" }
           }
         )
-        .then((response) => {
+        .then(response => {
           // JSON responses are automatically parsed.
           this.moduleInfo = response.data.results.bindings;
         })
-        .catch((e) => {
+        .catch(e => {
           this.errors.push(e);
         });
       //SPARQL-Abfrage Log-Ausgabe
@@ -342,15 +342,23 @@ export default {
           .selectAll(".faded")
           .classed("faded", false);
       }
-    },
+    }
   },
   watch: {
     moduleUri: {
       // if module choosed, the query for basic data will be sent to fuseki, BasicData-Component as default
       handler(uri) {
+        this.upG()
         d3.select("#nodes")
           .selectAll("g")
           .classed("selected", false);
+        d3.select("#layer1")
+          .selectAll("path")
+          .style("stroke-width", 0.2);
+        d3.select("defs")
+          .selectAll("marker")
+          .selectAll("path")
+          .attr("transform", "scale(0.8) rotate(180) translate(12.5,0)");
         this.form = "BasicData";
 
         if (uri != null) {
@@ -365,7 +373,7 @@ export default {
         this.modMethods = [];
         this.modLiterature = [];
         this.modTeachers = [];
-      },
+      }
     },
     moduleInfo: {
       handler(newData) {
@@ -376,7 +384,7 @@ export default {
           let mod = "mod" + this.form;
           this[mod] = this.moduleInfo;
         }
-      },
+      }
     },
     modBasicData: {
       handler(newData) {
@@ -387,7 +395,7 @@ export default {
           newData[0].languages.value = strArrLan;
           this.$emit("modBasicData", newData);
         }
-      },
+      }
     },
     modOutcomes: {
       handler(newData) {
@@ -404,7 +412,7 @@ export default {
           newData[0].exams.value = exams;
         }
         this.$emit("modOutcomes", newData);
-      },
+      }
     },
     modMethods: {
       handler(newData) {
@@ -422,7 +430,7 @@ export default {
         this.$emit("modMethods", newData);
         //Log
         //console.log(newData);
-      },
+      }
     },
     modLiterature: {
       handler(v) {
@@ -431,28 +439,28 @@ export default {
         }
         //Log
         //console.log(v);
-      },
+      }
     },
     modTeachers: {
       handler(v) {
         if (this.modTeachers.length > 0) {
           this.$emit("modTeachers", v);
         }
-      },
+      }
     },
     form: {
       handler(v) {
         this.$emit("formType", v);
-      },
+      }
     },
     role: {
       //role choosed, graph will be updated (not relevant part will be shown as grey)
       handler(v) {
         this.upG();
         this.styleImportedSVG();
-      },
-    },
-  },
+      }
+    }
+  }
 };
 </script>
 
