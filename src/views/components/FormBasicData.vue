@@ -387,16 +387,7 @@
             </div>
             Änderungen gespeichert!
           </div>
-        </transition><!--
-        &lt;!&ndash;<p>{{ modBasis.basedOnModuls.value }}</p>&ndash;&gt;
-        <p>{{ selectedBased }}</p>
-        <p>{{ updateQuery }}</p>
-        <p>changed Array: {{ changedArray }}</p>
-        <p>deleteArray: {{ this.delete }}</p>
-        <p>insertArray: {{ this.insert }}</p>
-        <p>where: {{ this.where }}</p>
-        <p>modBasis: {{ modBasis }}</p>
-        <p>update: {{ updateQuery }}</p>-->
+        </transition>
       </div>
     </form>
   </div>
@@ -819,8 +810,8 @@ export default {
         query += ' module:progrSpecProp_Language  "' + languageCourse + '" ; ';
 
         /*//Curr Zuordnung
-        let curr = "module:Curr_" + this.studyProgram + "_" + this.code;
-        query += " module:eduAlignm_Curr  " + curr + " ; ";*/
+          let curr = "module:Curr_" + this.studyProgram + "_" + this.code;
+          query += " module:eduAlignm_Curr  " + curr + " ; ";*/
         let studySemCourse = "";
         let gradeCourse = "";
 
@@ -1023,7 +1014,7 @@ export default {
 
       axios
         .post(
-          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/update",
+          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/update",
           query,
           {
             headers: { "Content-Type": "application/sparql-update" }
@@ -1233,7 +1224,7 @@ export default {
         " }";
 
       axios
-        .post("http://fbw-sgmwi.th-brandenburg.de:3030/modcat/query", q, {
+        .post("http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query", q, {
           headers: { "Content-Type": "application/sparql-query" }
         })
         .then(response => {

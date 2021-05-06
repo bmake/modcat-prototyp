@@ -14,7 +14,12 @@
               <h1>Modulkatalog @THB</h1>
               <h3>Fachbereich Wirtschaft</h3>
               <div>
-                <Select @module="getModule" @studyProgram="getStudyProgram" @newBoolean="getNewBoolean" @showPopUp="showPopUp = true" />
+                <Select
+                  @module="getModule"
+                  @studyProgram="getStudyProgram"
+                  @newBoolean="getNewBoolean"
+                  @showPopUp="showPopUp = true"
+                />
               </div>
             </div>
           </div>
@@ -91,8 +96,7 @@
               <div
                 v-if="role == 1 || role == 2"
                 style="text-align: right; padding: 1em"
-              >
-              </div>
+              ></div>
               <div
                 v-else
                 class="md-layout md-gutter md-alignment-center-center"
@@ -127,6 +131,7 @@
                     :basicFilled="basicFilled"
                     :modOutcomeOrigin="modOutcome"
                     :modMethodOrigin="modMethod"
+                    :modLiteratureOrigin="modLiter"
                   />
                 </keep-alive>
               </div>
@@ -151,7 +156,7 @@ import FormLiterature from "./components/FormLiterature";
 import FormTeachers from "./components/FormTeachers";
 import FormDynamic from "./components/FormDynamic";
 import NewModulePopUp from "./components/NewModulePopUp";
-import {selectQueries} from "./queries";
+import { selectQueries } from "./queries";
 
 export default {
   components: {
@@ -163,7 +168,7 @@ export default {
     Literature: FormLiterature,
     Teachers: FormTeachers,
     Dynamic: FormDynamic,
-    NewModulePopUp
+    NewModulePopUp,
   },
   name: "index",
   bodyClass: "index-page",
@@ -185,7 +190,7 @@ export default {
       style1: false,
       style2: false,
       style3: false,
-      showPopUp: false
+      showPopUp: false,
     };
   },
   methods: {
@@ -206,11 +211,10 @@ export default {
       this.newBoolean = value;
     },
     changeBasicFill(value) {
-      this.basicFilled= value;
+      this.basicFilled = value;
     },
     getModBasicData(value) {
       this.modBasis = value;
-      console.log(value)
       this.code = value[0].code.value;
     },
     getModOutcomes(value) {
@@ -229,12 +233,20 @@ export default {
       this.form = value;
     },
     generatePDF() {
-      let query = selectQueries.selectQueries("PDF", this.selectedModule, this.studyProgram)
+      let query = selectQueries.selectQueries(
+        "PDF",
+        this.selectedModule,
+        this.studyProgram
+      );
       axios
-        .post("http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query", query, {
-          headers: { "Content-Type": "application/sparql-query" }
-        })
-        .then(response => {
+        .post(
+          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query",
+          query,
+          {
+            headers: { "Content-Type": "application/sparql-query" },
+          }
+        )
+        .then((response) => {
           const res = response.data.results.bindings;
           let pdfHead = [];
           let pdfBody = [];
@@ -243,24 +255,24 @@ export default {
           pdfBody.push(["Modulbezeichnung", res[0].label.value]);
           pdfBody.push([
             "Aufteilung in Lehrveranstaltungen",
-            res[0].learnTypes.value
+            res[0].learnTypes.value,
           ]);
           pdfBody.push(["Dauer des Moduls", res[0].duration.value]);
           pdfBody.push([
             "Zuordnung zum Curriculum",
-            res[0].programName.value + ", " + res[0].modType_name.value
+            res[0].programName.value + ", " + res[0].modType_name.value,
           ]);
           pdfBody.push([
             "Häufigkeit des Angebots von Modulen",
-            res[0].courseMode.value
+            res[0].courseMode.value,
           ]);
           pdfBody.push(["Modulverantwortlicher", res[0].accPersonLabel.value]);
           pdfBody.push(["Dozent/in", res[0].instructorLabel.value]);
           pdfBody.push(["Lehrsprache", res[0].languages.value]);
           pdfBody.push([
             "Voraussetzungen",
-            res[0].pre.value
-          ]);/*+ "basiert auf folgende Module: " + res[0].basedOns.value*/
+            res[0].pre.value,
+          ]); /*+ "basiert auf folgende Module: " + res[0].basedOns.value*/
           pdfBody.push(["ECTS-Credits", res[0].ects.value]);
           pdfBody.push([
             "Gesamtworkload und ihre Zusammensetzung",
@@ -268,7 +280,7 @@ export default {
               res[0].workloadSum.value +
               " Stunden, davon: " +
               "\n" +
-              res[0].workloadDetails.value
+              res[0].workloadDetails.value,
           ]);
           pdfBody.push(["Lehrform/SWS", res[0].swsSum.value]);
           pdfBody.push(["Studien-/Prüfungsleistungen", res[0].exams.value]);
@@ -276,19 +288,19 @@ export default {
           pdfBody.push(["Inhalte", res[0].contents.value]);
           pdfBody.push(["Lehr- und Lernmethoden", res[0].interTypes.value]);
           pdfBody.push(["Literatur", res[0].citations.value]);
-          if(res[0].grade_name) {
+          if (res[0].grade_name) {
             pdfBody.push([
               "Gewichtung der Note in der Gesamtnote",
-              res[0].grade_name.value
+              res[0].grade_name.value,
             ]);
           }
-          if(res[0].eduUse) {
+          if (res[0].eduUse) {
             pdfBody.push(["Verwendbarkeit des Moduls", res[0].eduUse.value]);
           }
-          if(res[0].comment) {
+          if (res[0].comment) {
             pdfBody.push(["Besonderes", res[0].comment.value]);
           }
-          if(res[0].url) {
+          if (res[0].url) {
             pdfBody.push(["URL", res[0].url.value]);
           }
 
@@ -300,11 +312,11 @@ export default {
             styles: { overflow: "linebreak" },
             columnStyles: {
               0: { cellWidth: 50 },
-              1: { cellWidth: 130 }
+              1: { cellWidth: 130 },
             },
             head: pdfHead,
             body: pdfBody,
-            didDrawCell: data => {
+            didDrawCell: (data) => {
               if (
                 data.section === "body" &&
                 data.column.index === 1 &&
@@ -318,15 +330,15 @@ export default {
                   { url: res[0].url.value }
                 );
               }
-            }
+            },
           });
           doc.save(code + ".pdf");
         })
-        .catch(e => {
+        .catch((e) => {
           this.errors.push(e);
         });
-    }
-  }
+    },
+  },
 };
 </script>
 <style src="vue-multiselect/dist/vue-multiselect.min.css">

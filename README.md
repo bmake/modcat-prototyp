@@ -14,9 +14,9 @@ Es wird ein Prototyp für digitale Modulkataloge entwickelt.
 
 ## 2 Prototyp starten
 
-<p>1. Installiere ggf. <a href="https://nodejs.org/en/download/" target="_blank" rel="noopener"> "Node.js" </a>, <a href="https://classic.yarnpkg.com/en/docs/install/" target="_blank" rel="noopener">"Yarn"</a> und <a href="https://git-scm.com/downloads" target="_blank" rel="noopener">"Git"</a>, wenn nicht vorhanden.<p>
+<p>1. Installiere ggf. <a href="https://nodejs.org/en/download/" target="_blank" rel="noopener"> "Node.js" </a>, oder <a href="https://classic.yarnpkg.com/en/docs/install/" target="_blank" rel="noopener">"Yarn"</a>, und <a href="https://git-scm.com/downloads" target="_blank" rel="noopener">"Git"</a>, wenn nicht vorhanden.<p>
 
-<p>2. Klone das Repository auf ein Lokales Verzeichnis mit folgendem Befehl im Terminal <br><code>git clone https://github.com/bmake/modcat-prototyp.git</code></p>
+<p>2. Klone das Repository auf ein Lokales Verzeichnis mit folgendem Befehl im Terminal <br><code>git clone https://github.com/TH-Brandenburg/modcat-prototyp.git</code></p>
 
 <p>3. Gehe in das geklonte Verzeichnis mittels folgendem Befehl im Terminal <code> cd modcat-prototyp/</code></p>
 

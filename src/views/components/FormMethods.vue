@@ -6,7 +6,6 @@
     <form @submit.prevent="validateInput">
       <div>
         <div class="md-layout md-gutter">
-
           <div class="md-layout-item md-size-100">
             <div
               class="alert alert-danger md-layout-item md-size-100"
@@ -175,14 +174,6 @@
                   Änderungen gespeichert!
                 </div>
               </transition>
-              <!--<p>input1 is: {{ inputs1 }}</p>
-              <p>input2 is: {{ inputs2 }}</p>
-              <p>changedArray: {{ changedArray }}</p>
-              <p>delete: {{ this.delete }}</p>
-              <p>insert: {{ insert }}</p>
-              <p>where: {{ where }}</p>
-              <p>update: {{ updateQuery }}</p>
-              <p>modOutcome: {{ modMethod[0] }}</p>-->
             </div>
           </div>
         </div>
@@ -286,8 +277,8 @@ export default {
       this.addChanged("inputs1", oldIndex + 1);
     },
     reorder2({ oldIndex, newIndex }) {
-      const movedItem = this.inputs2.splice((oldIndex - 1), 1)[0];
-      this.inputs2.splice((newIndex - 1), 0, movedItem);
+      const movedItem = this.inputs2.splice(oldIndex - 1, 1)[0];
+      this.inputs2.splice(newIndex - 1, 0, movedItem);
       this.addChanged("inputs2", newIndex);
       this.addChanged("inputs2", oldIndex);
     },
@@ -470,12 +461,16 @@ export default {
 
         query += " } ";
       }
+      
+      //Log
+      //console.log("FormMethods");
+      //console.log(query);
 
       this.updateQuery = query;
 
       axios
         .post(
-          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/update",
+          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/update",
           query,
           {
             headers: { "Content-Type": "application/sparql-update" }
@@ -506,7 +501,7 @@ export default {
         '> schema:name ?label . FILTER(lang(?label) = "de") } ';
       axios
         .post(
-          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
+          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query",
           query,
           {
             headers: { "Content-Type": "application/sparql-query" }
@@ -606,9 +601,13 @@ export default {
         "}";
 
       axios
-        .post("http://fbw-sgmwi.th-brandenburg.de:3030/modcat/query", q, {
-          headers: { "Content-Type": "application/sparql-query" }
-        })
+        .post(
+          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query",
+          q,
+          {
+            headers: { "Content-Type": "application/sparql-query" }
+          }
+        )
         .then(response => {
           let res = response.data.results.bindings;
           pdfHead.push(["Modul-Kurzkennzeichen", res[0].code.value]);
