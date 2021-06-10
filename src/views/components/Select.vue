@@ -52,7 +52,8 @@ export default {
       course: "",
       modules: [],
       labels: [],
-      showList: true
+      showList: true,
+      arrowCounter: 0
     };
   },
   watch: {
@@ -89,7 +90,7 @@ export default {
         "} ORDER BY ?label";
 
       axios
-        .post("http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query", query, {
+        .post("http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query", query, {
           headers: { "Content-Type": "application/sparql-query" }
         })
         .then(response => {
