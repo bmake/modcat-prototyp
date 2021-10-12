@@ -419,6 +419,7 @@ g.selected rect {
 .select .md-field.md-theme-default label {
   color: #2e2e2e !important;
   font-size: large;
+  top: -0.8rem !important;
 }
 
 .select .md-field.md-theme-default .md-menu.md-select input {

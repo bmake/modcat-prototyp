@@ -149,7 +149,8 @@ export default {
   },
   data() {
     return {
-      isbn: "978-1-83867-495-3",
+      //test valut: 978-1-83867-495-3
+      isbn: "",
       prefixes:
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
         "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +

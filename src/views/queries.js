@@ -7,7 +7,7 @@ export const selectQueries = {
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  " +
         "PREFIX module: <https://bmake.th-brandenburg.de/module/>  " +
         "PREFIX schema: <https://schema.org/>  " +
-        "SELECT DISTINCT ?code ?label ?accPerson ?duration ?semester ?modType_name ?grade_name ?learnTypes ?eduUse ?swsSum ?ects ?studysem ?courseMode ?pre ?basedOnModuls ?eduLevel ?url ?comment ?languages" +
+        "SELECT DISTINCT ?code ?label ?accPerson ?accPersonLabel ?duration ?semester ?modType_name ?grade_name ?learnTypes ?eduUse ?swsSum ?ects ?studysem ?courseMode ?pre ?basedOnModuls ?url ?comment ?languages" +
         " WHERE {  " +
         "<" +
         moduleUri +
@@ -16,9 +16,9 @@ export const selectQueries = {
         "         schema:numberOfCredits ?ects ;  " +
         "         schema:timeRequired ?duration ;  " +
         "         schema:hasCourseInstance ?semester ;  " +
-        "         schema:accountablePerson ?accPerson ; " +
-        "         schema:coursePrerequisites ?pre .  " +
-        ' FILTER(lang(?label) = "de" && lang(?pre) = "de") ' +
+        "         schema:accountablePerson ?accPerson . " +
+        "   ?accPerson rdfs:label ?accPersonLabel .  " +
+        ' FILTER(lang(?label) = "de") ' +
         "   module:ModuleType_" +
         studyProgram +
         "_" +
@@ -30,6 +30,14 @@ export const selectQueries = {
         code +
         " schema:value ?swsSum . " +
         "   ?semester schema:courseMode ?courseMode .  " +
+        " OPTIONAL { " +
+        '  SELECT (GROUP_CONCAT(?cpre; separator="/") as ?pre) ' +
+        "  WHERE { <" +
+        moduleUri +
+        "> schema:coursePrerequisites ?cpre . " +
+        ' FILTER(lang(?cpre) != "en") ' +
+        "  } " +
+        "} " +
         " OPTIONAL { " +
         '  SELECT (GROUP_CONCAT(?learnType; separator=" | ") as ?learnTypes) ' +
         "  WHERE { <" +
@@ -61,21 +69,16 @@ export const selectQueries = {
         ">  schema:isBasedOn ?basedOn . " +
         " ?basedOn schema:name ?basedOnModulLabel ;   " +
         "          schema:isPartOf ?studyprogram .   " +
+        "  ?studyprogram  schema:provider  ?department  " +
         ' FILTER(lang(?basedOnModulLabel) = "de") ' +
-        '  BIND(REPLACE(STR(?studyprogram), "https://bmake.th-brandenburg.de/module/BWIK", "FBW", "i") AS ?studyprogram1)  ' +
-        '  BIND(REPLACE(STR(?studyprogram1), "https://bmake.th-brandenburg.de/module/MWIV", "FBW", "i") AS ?studyprogram2)  ' +
-        '  BIND(REPLACE(STR(?studyprogram2), "https://bmake.th-brandenburg.de/module/BBWV", "FBW", "i") AS ?studyprogram3)  ' +
-        '  BIND(REPLACE(STR(?studyprogram3), "https://bmake.th-brandenburg.de/module/MBWV", "FBW", "i") AS ?studyprogram4)  ' +
-        '  BIND(REPLACE(STR(?studyprogram4), "https://bmake.th-brandenburg.de/module/BIFK", "FBI", "i") AS ?studyprogram5)  ' +
-        '  BIND(REPLACE(STR(?studyprogram5), "https://bmake.th-brandenburg.de/module/BACS", "FBI", "i") AS ?studyprogram6)  ' +
-        '  BIND(REPLACE(STR(?studyprogram6), "https://bmake.th-brandenburg.de/module/BMZK", "FBI", "i") AS ?studyprogramLabel)  ' +
+        '  BIND(SUBSTR(STR(?department), 44) AS ?studyprogramLabel)   ' +
         '  BIND(CONCAT(STR(?basedOn), " @ ", ?basedOnModulLabel, " @ ", ?studyprogramLabel) as ?basedOnModul) ' +
         "   } " +
         " } " +
-        " OPTIONAL { <" +
+        /*" OPTIONAL { <" +
         moduleUri +
         ">  schema:educationalLevel ?eduLevel . " +
-        " } " +
+        " } " +*/
         " OPTIONAL { <" +
         moduleUri +
         ">  schema:url ?url . " +

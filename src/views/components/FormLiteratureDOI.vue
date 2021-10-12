@@ -232,7 +232,8 @@ export default {
   },
   data() {
     return {
-      doi: "https://doi.org/10.1257/jep.29.2.213",
+      // test value: https://doi.org/10.1257/jep.29.2.213
+      doi: "",
       prefixes:
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
         "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
@@ -243,6 +244,7 @@ export default {
       showPopUp: false,
       authorIndexPopUp: 0,
       existingAuthors: [],
+      updateQuery:""
     };
   },
   computed: {

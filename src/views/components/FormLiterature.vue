@@ -37,12 +37,12 @@
         >
           <!-- Ausgabe der SPARQL-Daten in Inputs -->
           <div class="md-size-100">
-            <!-- 
-               <div> 
-                 <md-input v-model="modLiterature[0].titel.value"/> 
+            <!--
+               <div>
+                 <md-input v-model="modLiterature[0].titel.value"/>
                </div>-->
 
-            <!-- Literatur-Block (Zusammenfassung) 
+            <!-- Literatur-Block (Zusammenfassung)
             v-if="cleanedLiterature[index].hasOwnProperty('publisherName')">
             -->
             <dl
@@ -391,6 +391,7 @@ export default {
       insertQuery: null,
       isHidden: true,
       deleteLitRef: "",
+      updateQuery: ""
     };
   },
   computed: {
@@ -538,9 +539,9 @@ export default {
     deleteLiteratureRef(litUri) {
       //log
       /*
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
-      PREFIX module: <https://bmake.th-brandenburg.de/module/> 
-      PREFIX schema: <https://schema.org/>   
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX module: <https://bmake.th-brandenburg.de/module/>
+      PREFIX schema: <https://schema.org/>
       DELETE { module:GPMO schema:citation <http://isbn-international.org/13124344342553311>. }
       WHERE {  }
       */
@@ -570,6 +571,8 @@ export default {
       // WHERE Part der Query
       query += " WHERE { ";
       query += " } "; // WHERE Ende
+
+      this.updateQuery = query
 
       // für SPARQL-DataUpdate
       axios

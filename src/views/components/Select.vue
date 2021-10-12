@@ -4,13 +4,7 @@
       <md-field>
         <label>Studiengang</label>
         <md-select v-model="studyProgram" name="studyProgram" id="studyProgram">
-          <md-option value="BWIK">Wirtschaftsinformatik (B.Sc.)</md-option>
-          <md-option value="MWIV">Wirtschaftsinformatik (M.Sc.)</md-option>
-          <md-option value="BBWV">Betriebswirtschaftslehre (B.Sc.)</md-option>
-          <md-option value="MBWV">Betriebswirtschaftslehre (M.Sc.)</md-option>
-          <md-option value="BIFK">Informatik Bachelor</md-option>
-          <md-option value="BACS">Applied Computer Science (B.Sc.)</md-option>
-          <md-option value="BMZK">Medizininformatik (B.Sc.)</md-option>
+          <md-option v-for="(sp, index) in studyProgramList" :value="sp.studyprogramID.value" v-bind:key="index">{{ sp.studyProgramName.value }}</md-option>
         </md-select>
       </md-field>
     </div>
@@ -35,19 +29,18 @@
           >
         </div>
       </md-autocomplete>
-
     </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-
 export default {
   name: "Select",
   data() {
     return {
       moduleList: [],
+      studyProgramList: [],
       studyProgram: "",
       course: "",
       modules: [],
@@ -55,6 +48,9 @@ export default {
       showList: true,
       arrowCounter: 0
     };
+  },
+  mounted() {
+    this.queryStudyProgram();
   },
   watch: {
     course(v) {
@@ -74,6 +70,33 @@ export default {
     }
   },
   methods: {
+    queryStudyProgram() {
+      let query =
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+        "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+        "PREFIX schema: <https://schema.org/> " +
+        "SELECT DISTINCT ?studyprogramID ?studyProgramName  " +
+        "WHERE { " +
+        "  ?studyProgram a module:StudyProgram ; " +
+        "          schema:name ?studyProgramName . " +
+        '  FILTER(lang(?studyProgramName) = "de") ' +
+        "  BIND(SUBSTR(STR(?studyProgram), 40) AS ?studyprogramID) " +
+        "} ORDER BY ?studyProgramName";
+      axios
+        .post(
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
+          query,
+          {
+            headers: { "Content-Type": "application/sparql-query" }
+          }
+        )
+        .then(response => {
+          this.studyProgramList = response.data.results.bindings;
+        })
+        .catch(e => {
+          this.errors.push(e);
+        });
+    },
     queryModuleList(sp) {
       let query =
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
@@ -88,11 +111,14 @@ export default {
         "          schema:name ?label. " +
         '          FILTER(lang(?label) = "de")' +
         "} ORDER BY ?label";
-
       axios
-        .post("http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query", query, {
-          headers: { "Content-Type": "application/sparql-query" }
-        })
+        .post(
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
+          query,
+          {
+            headers: { "Content-Type": "application/sparql-query" }
+          }
+        )
         .then(response => {
           this.moduleList = response.data.results.bindings;
           for (let a = 0; a < this.moduleList.length; a++) {

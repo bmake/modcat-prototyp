@@ -127,7 +127,6 @@ export default {
   methods: {
     deleteRow(index, module) {
             var idx = this.modules.indexOf(module);
-            console.log(idx, index);
             if (idx > -1) {
                 this.modules.splice(idx, 1);
             }
@@ -165,7 +164,6 @@ export default {
     },
     getModBasicData(value) {
       this.modBasis = value;
-      console.log(value)
       this.code = value[0].code.value;
     },
     getModOutcomes(value) {
