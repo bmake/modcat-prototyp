@@ -23,7 +23,7 @@ Vue.config.errorHandler = (err, vm, info) => {
   if (process.env.NODE_ENV !== 'production') {
     // Show any error but this one
     if (err.message !== "undefined is not an object (evaluating 'this.$el.validity.badInput')") {
-      console.error(err);
+      //console.error(err);
     }
   }
 };
