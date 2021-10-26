@@ -1,21 +1,3 @@
-<!-- <template>
-  <span>{{ message }}</span>
-</template>
-
-<script>
-  export default {
-    data () {
-      return {
-        message: 'hello!'
-      }
-    },
-    created () {
-      this.message = 'bye!'
-    }
-  }
-</script>
--->
-
 <template>
   <div class="wrapper">
     <div class="header-filter" style="background-color: #FF8F00;">
@@ -39,79 +21,88 @@
     <div class="main main-raised">
       <div style="text-align: center; margin-bottom:10px; padding-top: 3em">
         <h3>
-          <b>Bitte wählen Sie Ihren Fachbereich</b>
+          <b>Bitte wählen Sie Ihre Filter auf der linken Seite aus um die Tabelle einzuschränken.</b>
         </h3>
       </div>
 
       <div class="section section-examples">
-        <div class="container-fluid text-center">
+        <div class="container-fluid text-left" style="margin-left:100px;">
           <div class="md-layout">
-            <div class="svg md-layout-item">
-              <SVGGraphTHB>
-              </SVGGraphTHB>
-            </div>
+            <div class="md-layout-item">
+              <h4><b>Wählen Sie die gewünschten Fachbereiche</b></h4>
+                  <md-checkbox v-model="array" value="1">Fachbereich Wirtschaft</md-checkbox>
+                  <md-checkbox v-model="array" value="2">Fachbereich Informatik</md-checkbox>
+                  <md-checkbox v-model="array" value="3">Fachbereich Technik</md-checkbox>
+            
+              <h4><b>Wählen Sie Ihren gewünschten Studiengang</b></h4>
+                  <md-field style="width: 500px">
+                    <label for="course">Studiengang</label>   
+                    <md-select v-model="cou" name="course" id="course" >
+                      <md-option value="Betriebswirtschaft B.Sc.">Betriebswirtschaft B.Sc.</md-option>
+                      <md-option value="Betriebswirtschaft M.Sc.">Betriebswirtschaft M.Sc.</md-option>
+                    </md-select>
+                  </md-field>
+
+              <h4><b>Wählen Sie ein Modultyp</b></h4>
+                  <md-radio v-model="radio" :value="objA">Pflicht</md-radio>
+                  <md-radio v-model="radio" :value="objB">Wahl</md-radio>
+                  <md-radio v-model="radio" :value="objC">Studium Generale</md-radio>
 
 
-      <div class="md-layout-item">
-        <div>
-          <div id="app" v-on:click="lecturers = !lecturers" class="control">
-      <button>SVG Lehrpersonen</button>
-  </div>
-  <div id="app" v-on:click="courses = !courses" class="control">
-      <button>SVG Studiengänge</button>
-  </div>
+              <h4><b>Wählen Sie die Lehrperson</b></h4>
+                  <md-field style="width: 500px">
+                    <label for="lecturer">Lehrperson</label>   
+                    <md-select v-model="lec" name="lecturer" id="lecturer" >
+                      <md-option value="Meister">Prof. Vera G. Meister</md-option>
+                      <md-option value="Johannsen">Prof. Andreas Johannsen</md-option>
+                    </md-select>
+                  </md-field>
 
-    <div v-if="lecturers" id="hide">
+              <h4><b>Wählen Sie die Lehrsprache</b></h4>
+                  <md-checkbox v-model="array1" value="1">deutsch</md-checkbox>
+                  <md-checkbox v-model="array1" value="2">englisch</md-checkbox>
+                  <md-checkbox v-model="array1" value="3">andere</md-checkbox>
 
-            <table id="mods">
-                <tr>
-                 <th>DozentInn</th>
-                 <th>Fachrichtung</th>
-                 <th>Aktion</th>
-               </tr>
-                <tr v-for="(module, k) in modules" :key="k">
-                 <td>
-                 </td>
-                 <td>
-                 </td>
-                 <td scope="row" class="trashIconContainer">
-                     <i class="far fa-trash-alt" @click="deleteRow(k, module)"></i>
-                 </td>
-               </tr>
-               <tr>
-                 <td class="fas fa-plus-circle" @click="addNewRow">Add</td>
-               </tr>
-              </table>
-    </div>
+              <h4><b>Wählen Sie die Lehr-Lernform</b></h4>
+                  <md-checkbox v-model="array2" value="1">Problem Based Learning</md-checkbox>
+                  <md-checkbox v-model="array2" value="2">Vortragend</md-checkbox>
+                  <md-checkbox v-model="array2" value="3">Projektarbeit</md-checkbox>
+        
+              <h4><b>Wählen Sie die Prüfungsform</b></h4>
+                  <md-checkbox v-model="array3" value="1">Schriftlich</md-checkbox>
+                  <md-checkbox v-model="array3" value="2">Mündlich</md-checkbox>
+                  <md-checkbox v-model="array3" value="3">Projekt</md-checkbox>
 
-      <div v-if="courses" id="hide">
+              <h4><b>Wählen Sie die Kompetenzstufe</b></h4>
+                  <md-checkbox v-model="array4" value="1">Anwendung</md-checkbox>
+                  <md-checkbox v-model="array4" value="2">Orientierung</md-checkbox>
+                  <md-checkbox v-model="array4" value="3">Wiedergabe</md-checkbox>
 
-            <table id="mods">
-                <tr>
-                 <th>Fachbereich</th>
-                 <th>Studiengang</th>
-                 <th>Abschluss</th>
-                 <th>Aktion</th>
-               </tr>
-                <tr v-for="(module, k) in modules" :key="k">
-                 <td>
-                 </td>
-                 <td>
-                 </td>
-                 <td>
-                 </td>
-                 <td scope="row" class="trashIconContainer">
-                     <i class="far fa-trash-alt" @click="deleteRow(k, module)"></i>
-                 </td>
-               </tr>
-               <tr>
-                 <td class="fas fa-plus-circle" @click="addNewRow">Add</td>
-               </tr>
-              </table>
-    </div>
+              <h4><b>Wählen Sie die Kompetenzziele</b></h4>
+                  <md-checkbox v-model="array5" value="1">Soziale</md-checkbox>
+                  <md-checkbox v-model="array5" value="2">Personale</md-checkbox>
+                  <md-checkbox v-model="array5" value="3">Technische</md-checkbox>
+          </div>
+        
+               <div class="md-layout-item" style="padding-right:105px; margin-left: -200px">
+                  <md-table v-model="searched" md-sort="name5" md-sort-order="asc" md-card md-fixed-header style="height: 1000px" >
+                        <md-table-toolbar>
+                          <div class="md-toolbar-section-start">
+                            <h1 class="md-title">Users</h1>
+                          </div>
 
+                          <md-field md-clearable class="md-toolbar-section-end">
+                            <md-input placeholder="Suchfeld..." v-model="search" @input="searchOnTable" />
+                          </md-field>
+                        </md-table-toolbar>
 
-            </div>
+                        <md-table-row slot="md-table-row" slot-scope="{ item }">
+                          <md-table-cell md-label="Modultitel" md-sort-by="name">{{ item.name }}</md-table-cell>
+                          <md-table-cell md-label="Studiengang" md-sort-by="email">{{ item.email }}</md-table-cell>
+                          <md-table-cell md-label="FB" md-sort-by="gender">{{ item.gender }}</md-table-cell>
+                          <md-table-cell md-label="Lehrperson" md-sort-by="title">{{ item.title }}</md-table-cell>
+                        </md-table-row>
+                      </md-table>   
             </div>
           </div>
         </div>
@@ -121,40 +112,131 @@
 </template>
 
 <script>
-import SVGGraphTHB from "./components/SVGGraphTHB";
 import axios from "axios";
-import jsPDF from "jspdf";
 import "jspdf-autotable";
 
-import {selectQueries} from "./queries";
+  const toLower = text => {
+    return text.toString().toLowerCase()
+  }
+
+  const searchByName = (items, term) => {
+    if (term) {
+      return items.filter(item => toLower(item.name).includes(toLower(term)))
+    }
+
+    return items
+  }
 
 export default {
   components: {
-    SVGGraphTHB
+    
   },
   name: "index",
   bodyClass: "index-page",
   props: {},
+  name: 'RegularCheckboxes',
+  check: 'RegularRadio',
+  name5: 'TableSearch',
+
   data() {
 
     return {
-
-       modules: [{
+      search: null,
+      searched: [],
+      users: [
+        {
+          id: 1,
+          name: "Enterprise Knowledge Enginering",
+          email: "WI Master",
+          gender: "FBW",
+          title: "Prof. Vera Meister"
+        },
+                {
+          id: 2,
+          name: "Betriebssysteme",
+          email: "WI Master",
+          gender: "FBW",
+          title: "Prof. Rother"
+        },
+                {
+          id: 3,
+          name: "Mathe 1",
+          email: "WI Bachelor",
+          gender: "FBW",
+          title: "Prof. Andreas Johannsen"
+        },
+                {
+          id: 1,
+          name: "Prozessmodellierung",
+          email: "WI Master",
+          gender: "FBW",
+          title: "Prof. Vera Meister"
+        },
+                {
+          id: 2,
+          name: "Design Thinking",
+          email: "WI Master",
+          gender: "FBW",
+          title: "Prof. Jochen Scheeg"
+        },
+                {
+          id: 3,
+          name: "Projektmanagement",
+          email: "WI Bachelor",
+          gender: "FBW",
+          title: "Prof. Andreas Johannsen"
+        },
+        {
+          id: 1,
+          name: "Mathe 2",
+          email: "WI Master",
+          gender: "FBW",
+          title: "Prof. Vera Meister"
+        },
+                {
+          id: 2,
+          name: "Mathe 3",
+          email: "WI Master",
+          gender: "FBW",
+          title: "Prof. Jochen Scheeg"
+        },
+                {
+          id: 3,
+          name: "Statistik",
+          email: "WI Bachelor",
+          gender: "FBW",
+          title: "Prof. Andreas Johannsen"
+        },
+      ],
+      modules: [{
                 studiengang: '',
                 art: '',
                 modul: '',
                 dozentinnen: '',
                 aktion: ''
             }],
-         lecturers: false,
-         courses: false
-
-      
+      array: [],
+      array1: [],
+      array2: [],
+      array4: [],
+      array5: [],
+      objA: { check: 'Pflicht' },
+      objB: { check: 'Wahl' },
+      objC: { check: 'SG' },
+      lecturers: false,
+      courses: false,
+      lecturerList: [],
+      studyProgram: "",
+      course: "",
+      labels: [],
+      showList: true,
+      arrowCounter: 0
     };
   },
   methods: {
     deleteRow(index, module) {
             var idx = this.modules.indexOf(module);
+            console.log(idx, index);
             if (idx > -1) {
                 this.modules.splice(idx, 1);
             }
@@ -169,6 +251,73 @@ export default {
                 line_total: 0
             });
         },
+
+    
+    watch: {
+    course(v) {
+      this.showList = true;
+      let i = this.labels.indexOf(v);
+      let value = this.modules[i];
+      this.$emit("module", value);
+      this.$emit("lecturerList", this.studyProgram);
+      this.$emit("newBoolean", false);
+    },
+    lecturerList(v) {
+      this.course = "";
+      this.modules = [];
+      this.labels = [];
+      this.showList = true;
+      this.queryLecturerList(v);
+    }
+  },
+methods: {
+    queryLecturerList() {
+      let spquery =
+        "prefix module: <https://bmake.th-brandenburg.de/module/> " +
+        "prefix fbw: <https://www.th-brandenburg.de/mitarbeiterseiten/fbw/> " +
+        "prefix fbt: <https://www.th-brandenburg.de/mitarbeiterseiten/fbt/> " +
+        "prefix fbi: <https://www.th-brandenburg.de/mitarbeiterseiten/fbi/> " +
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+        "PREFIX fb: <http://rdf.freebase.com/ns/> " +
+        "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
+        "PREFIX sc: <http://purl.org/science/owl/sciencecommons/> " +
+        "prefix schema: <https://schema.org/> " +
+        "SELECT DISTINCT ?lecturers ?fachbereich " +
+        "WHERE { " +
+        "?fb schema:provider ?fachbereich . " +
+        "OPTIONAL { ?a schema:isPartOf ?p . } " +
+        "optional { ?a schema:accountablePerson ?lecturers . } " +
+        "} " +
+        "limit 100 ";
+
+      axios
+        .post("http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query", spquery, {
+          headers: { "Content-Type": "application/sparql-query" }
+        })
+        .then(response => {
+          this.lecturerList = response.data.results.bindings;
+          for (let a = 0; a < this.lecturerList.length; a++) {
+            this.lecturers.push(this.lecturerList[a].lecturers.value);
+            this.fachbereich.push(this.lecturerList[a].fachbereich.value);
+          }
+          console.log(response);
+        })
+        .catch(e => {
+          this.errors.push(e);
+        });
+    }
+  },
+
+        newUser () {
+        window.alert('Noop')
+      },
+      searchOnTable () {
+        this.searched = searchByName(this.users, this.search)
+      }
+    },
+    created () {
+      this.searched = this.users
+    },
 
 
     changeShowPopUp(value) {
@@ -192,6 +341,7 @@ export default {
     },
     getModBasicData(value) {
       this.modBasis = value;
+      console.log(value)
       this.code = value[0].code.value;
     },
     getModOutcomes(value) {
@@ -209,106 +359,7 @@ export default {
     getFormType(value) {
       this.form = value;
     },
-    generatePDF() {
-      let query = selectQueries.selectQueries("PDF", this.selectedModule, this.studyProgram)
-      axios
-        .post("http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query", query, {
-          headers: { "Content-Type": "application/sparql-query" }
-        })
-        .then(response => {
-          const res = response.data.results.bindings;
-          let pdfHead = [];
-          let pdfBody = [];
-          let code = res[0].code.value;
-          pdfHead.push(["Modul-Kurzkennzeichen", code]);
-          pdfBody.push(["Modulbezeichnung", res[0].label.value]);
-          pdfBody.push([
-            "Aufteilung in Lehrveranstaltungen",
-            res[0].learnTypes.value
-          ]);
-          pdfBody.push(["Dauer des Moduls", res[0].duration.value]);
-          pdfBody.push([
-            "Zuordnung zum Curriculum",
-            res[0].programName.value + ", " + res[0].modType_name.value
-          ]);
-          pdfBody.push([
-            "Häufigkeit des Angebots von Modulen",
-            res[0].courseMode.value
-          ]);
-          pdfBody.push(["Modulverantwortlicher", res[0].accPersonLabel.value]);
-          pdfBody.push(["Dozent/in", res[0].instructorLabel.value]);
-          pdfBody.push(["Lehrsprache", res[0].languages.value]);
-          pdfBody.push([
-            "Voraussetzungen",
-            res[0].pre.value
-          ]);/*+ "basiert auf folgende Module: " + res[0].basedOns.value*/
-          pdfBody.push(["ECTS-Credits", res[0].ects.value]);
-          pdfBody.push([
-            "Gesamtworkload und ihre Zusammensetzung",
-            "Gesamt: " +
-              res[0].workloadSum.value +
-              " Stunden, davon: " +
-              "\n" +
-              res[0].workloadDetails.value
-          ]);
-          pdfBody.push(["Lehrform/SWS", res[0].swsSum.value]);
-          pdfBody.push(["Studien-/Prüfungsleistungen", res[0].exams.value]);
-          pdfBody.push(["Lernergebnisse", res[0].learnResults.value]);
-          pdfBody.push(["Inhalte", res[0].contents.value]);
-          pdfBody.push(["Lehr- und Lernmethoden", res[0].interTypes.value]);
-          pdfBody.push(["Literatur", res[0].citations.value]);
-          if(res[0].grade_name) {
-            pdfBody.push([
-              "Gewichtung der Note in der Gesamtnote",
-              res[0].grade_name.value
-            ]);
-          }
-          if(res[0].eduUse) {
-            pdfBody.push(["Verwendbarkeit des Moduls", res[0].eduUse.value]);
-          }
-          if(res[0].comment) {
-            pdfBody.push(["Besonderes", res[0].comment.value]);
-          }
-          if(res[0].url) {
-            pdfBody.push(["URL", res[0].url.value]);
-          }
-
-          const doc = new jsPDF();
-
-          //this.pdfBody.push(["URL", pdf.textWithLink(res[0].url.value, {url: 'https://www.google.com/'})]);
-
-          doc.autoTable({
-            styles: { overflow: "linebreak" },
-            columnStyles: {
-              0: { cellWidth: 50 },
-              1: { cellWidth: 130 }
-            },
-            head: pdfHead,
-            body: pdfBody,
-            didDrawCell: data => {
-              if (
-                data.section === "body" &&
-                data.column.index === 1 &&
-                data.row.index === 20
-              ) {
-                doc.link(
-                  data.cell.x + 2,
-                  data.cell.y + 2,
-                  data.cell.width - 3,
-                  data.cell.height - 4,
-                  { url: res[0].url.value }
-                );
-              }
-            }
-          });
-          doc.save(code + ".pdf");
-        })
-        .catch(e => {
-          this.errors.push(e);
-        });
-    }
-  }
-};
+  };
 </script>
 <style lang="scss">
 .faded {
