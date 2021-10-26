@@ -60,7 +60,7 @@
                       >
                     </li>
                     <li class="description">
-                      <div to="/Browsing"><b>Anschauen</b></div>
+                      <router-link to="/Browsing"><b>Anschauen</b></router-link>
                     </li>
                   </ul>
                 </div>
@@ -77,9 +77,7 @@
                       >
                     </li>
                     <li class="description">
-                      <div to="/Dokumentieren"
-                        ><b>Anschauen</b></div
-                      >
+                      <router-link to="/Dokumentieren"><b>Anschauen</b></router-link>
                     </li>
                   </ul>
                 </div>

@@ -21,9 +21,12 @@
     <div class="main main-raised">
       <div style="text-align: center; margin-bottom:10px; padding-top: 3em">
         <h3>
-          <b>Hier wird die Einstiegsseite des Browsings die weiterführenden Optionen Suche, Filter, Wissengraph und Report bieten.
-</b>
+          Hier wird die weiterführende Optionen Reports (Berichte und Übersichten konfigurieren und ausgeben) angeboten.
+          <b>Wählen Sie einen Einstieg</b>
         </h3>
+
+        <!-- ToDo 4 Zeilen Navigation zu den weiterführenden Optionen-->
+
       </div>      
     </div>
   </div>  
