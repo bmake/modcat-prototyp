@@ -47,7 +47,7 @@
 
                           </div> ---->
               <div class="cards">
-                <!--to activate the linking fnuction of the card, change '<div>' to '<router-link>'-->
+
                 <div class="columns md-layout-item">
                   <ul class="topic">
                     <li class="header">
@@ -60,11 +60,11 @@
                       >
                     </li>
                     <li class="description">
-                      <div to="/Browsing"><b>Anschauen</b></div>
+                      <router-link to="/Browsing"><b>Anschauen</b></router-link>
                     </li>
                   </ul>
                 </div>
-
+                <!--to activate the linking fnuction of the card, change '<div>' to '<router-link>'-->
                 <div class="columns md-layout-item">
                   <ul class="topic">
                     <li class="header">
