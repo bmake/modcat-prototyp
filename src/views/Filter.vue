@@ -95,6 +95,8 @@
 </template>
 
 <script>
+/* eslint-disable */ //to ignore all warnings in a file
+
 import axios from "axios";
 import "jspdf-autotable";
 import BrowsingHeader from '@/views/components/BrowsingHeader.vue';

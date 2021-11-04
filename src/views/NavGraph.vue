@@ -4,19 +4,22 @@
     <div class="main main-raised">
       <div style="text-align: center; margin-bottom:10px; padding-top: 3em">
         <h3>
-          <b>Hier wird die weiterführende Optionen Navigation mit Wissengraph angeboten.</b>
+          <b>
+            Hier wird die weiterführende Optionen Navigation mit Wissengraph
+            angeboten.
+          </b>
         </h3>
-      </div>      
+      </div>
     </div>
-  </div>  
+  </div>
 </template>
 
 <script>
-import BrowsingHeader from '@/views/components/BrowsingHeader.vue'
+import BrowsingHeader from "@/views/components/BrowsingHeader.vue";
 
 export default {
-    components: {
-      BrowsingHeader
-    }
-}
+  components: {
+    BrowsingHeader
+  }
+};
 </script>

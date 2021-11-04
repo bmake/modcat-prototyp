@@ -6,11 +6,11 @@
 </template>
 
 <script>
-import BrowsingHeader from '@/views/components/BrowsingHeader.vue'
+import BrowsingHeader from "@/views/components/BrowsingHeader.vue";
 
 export default {
-    components: {
-      BrowsingHeader
-    }
-}
+  components: {
+    BrowsingHeader
+  }
+};
 </script>
