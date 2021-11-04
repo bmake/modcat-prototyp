@@ -1,30 +1,68 @@
 <template>
   <div class="wrapper">
-    <div class="header-filter" style="background-color: #FF8F00;">
-      <div class="md-layout">
-        <div class="md-layout-item">
-          <div>
-            <div class="brand" style="margin-bottom: 3em">
-              <img
-                src="../../img/logo.svg"
-                class="img"
-                width="10%"
-                height="auto"
-              />
-              <h1>Modulkatalog @THB</h1>
-              <h3>Browsen Sie durch alle Module der THB</h3>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <BrowsingHeader />
     <div class="main main-raised">
-      <div style="text-align: center; margin-bottom:10px; padding-top: 3em">
-        <h3>
-          <b>Hier wird die Einstiegsseite des Browsings die weiterführenden Optionen Suche, Filter, Wissengraph und Report bieten.
-</b>
-        </h3>
+      <div style="text-align: center; margin-bottom:10px; padding-top: 1em; padding-bottom: 1em">
+        <h4>
+          <b>Wählen Sie einen Einstieg</b>
+        </h4>
+        <md-list-item class="padded">
+          <md-avatar>
+            <img src="../assets/imgBrowseIcons/filterIcon.svg">
+          </md-avatar>
+          <md-field class="md-size-10"><!--  wird nicht schmaler!? -->
+            <md-input placeholder="Suchbegriff(e) eingeben"></md-input>
+            <md-icon>search</md-icon>
+          </md-field>
+          <md-button class="md-raised red">Suche</md-button>
+        </md-list-item>
+        <md-list-item class="padded">
+          <md-avatar>
+            <img src="../assets/imgBrowseIcons/searchIcon.svg">
+          </md-avatar>
+          Nach Fachbereichen, Studiengängen, Lehrpersonen, etc. filtern
+          <md-button class="md-raised red">Filtern</md-button>
+        </md-list-item>
+        <md-list-item class="padded">
+          <md-avatar>
+            <img src="../assets/imgBrowseIcons/graphIcon.svg">
+          </md-avatar>
+          Über den Wissensgraphen frei navigieren
+          <md-button class="md-raised red">Navigation</md-button>
+        </md-list-item>
+        <md-list-item class="padded">
+          <md-avatar>
+            <img src="../assets/imgBrowseIcons/reportIcon.svg">
+          </md-avatar>
+          Berichte und Übersichten konfigurieren und ausgeben
+          <md-button class="md-raised red">Report</md-button>
+        </md-list-item>
+
       </div>      
     </div>
   </div>  
 </template>
+
+<script>
+import BrowsingHeader from '@/views/components/BrowsingHeader.vue'
+
+export default {
+  components: {
+    BrowsingHeader
+  }
+}
+</script>
+
+<style>
+
+.md-button.red {
+  background-color: #cc0a2e !important;
+  max-width: 100px;
+}
+
+.md-list-item.padded {
+  padding-left: 6em;
+  padding-right: 4em;
+}
+
+</style>
