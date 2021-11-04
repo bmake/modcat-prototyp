@@ -5,39 +5,52 @@
       <div
         style="text-align: center; margin-bottom:10px; padding-top: 1em; padding-bottom: 1em"
       >
-        <h4>
+        <h3>
           <b>Wählen Sie einen Einstieg</b>
-        </h4>
+        </h3>
+        <!-- Suche -->
         <md-list-item class="padded">
           <md-avatar>
             <img src="../assets/imgBrowseIcons/searchIcon.svg" />
           </md-avatar>
           <md-field style="max-width: 25em">
             <md-input placeholder="Suchbegriff(e) eingeben"></md-input>
+            <!-- ToDo Eingabe übergeben, enter=absenden, escapen? -->
             <md-icon>search</md-icon>
           </md-field>
-          <md-button class="md-raised red">Suche</md-button>
+          <md-button class="md-raised red" to="/browsing/search">
+            Suche
+          </md-button>
         </md-list-item>
+        <!-- Filter -->
         <md-list-item class="padded">
           <md-avatar>
             <img src="../assets/imgBrowseIcons/filterIcon.svg" />
           </md-avatar>
           Nach Fachbereichen, Studiengängen, Lehrpersonen, etc. filtern
-          <md-button class="md-raised red">Filtern</md-button>
+          <md-button class="md-raised red" to="/browsing/filter">
+            Filtern
+          </md-button>
         </md-list-item>
+        <!-- Wissengraph -->
         <md-list-item class="padded">
           <md-avatar>
             <img src="../assets/imgBrowseIcons/graphIcon.svg" />
           </md-avatar>
           Über den Wissensgraphen frei navigieren
-          <md-button class="md-raised red">Navigation</md-button>
+          <md-button class="md-raised red" to="/browsing/navgraph">
+            Navigation
+          </md-button>
         </md-list-item>
+        <!-- Report -->
         <md-list-item class="padded">
           <md-avatar>
             <img src="../assets/imgBrowseIcons/reportIcon.svg" />
           </md-avatar>
           Berichte und Übersichten konfigurieren und ausgeben
-          <md-button class="md-raised red">Report</md-button>
+          <md-button class="md-raised red" to="/browsing/report">
+            Report
+          </md-button>
         </md-list-item>
       </div>
     </div>
@@ -57,6 +70,7 @@ export default {
 <style>
 .md-button.red {
   background-color: #cc0a2e !important;
+  color: white !important;
   max-width: 100px;
 }
 
