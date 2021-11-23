@@ -11,7 +11,7 @@
         <!-- Suche -->
         <md-list-item class="padded">
           <md-avatar>
-            <img src="../assets/imgBrowseIcons/searchIcon.svg" />
+            <img src="../assets/img/searchIcon.svg" />
           </md-avatar>
           <md-field style="max-width: 25em">
             <md-input placeholder="Suchbegriff(e) eingeben"></md-input>
@@ -25,7 +25,7 @@
         <!-- Filter -->
         <md-list-item class="padded">
           <md-avatar>
-            <img src="../assets/imgBrowseIcons/filterIcon.svg" />
+            <img src="../assets/img/filterIcon.svg" />
           </md-avatar>
           Nach Fachbereichen, Studiengängen, Lehrpersonen, etc. filtern
           <md-button class="md-raised red" to="/browsing/filter">
@@ -35,7 +35,7 @@
         <!-- Wissengraph -->
         <md-list-item class="padded">
           <md-avatar>
-            <img src="../assets/imgBrowseIcons/graphIcon.svg" />
+            <img src="../assets/img/graphIcon.svg" />
           </md-avatar>
           Über den Wissensgraphen frei navigieren
           <md-button class="md-raised red" to="/browsing/navgraph">
@@ -45,7 +45,7 @@
         <!-- Report -->
         <md-list-item class="padded">
           <md-avatar>
-            <img src="../assets/imgBrowseIcons/reportIcon.svg" />
+            <img src="../assets/img/reportIcon.svg" />
           </md-avatar>
           Berichte und Übersichten konfigurieren und ausgeben
           <md-button class="md-raised red" to="/browsing/report">

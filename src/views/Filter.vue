@@ -10,7 +10,7 @@
                 class="img"
                 width="10%"
                 height="auto"
-              >
+              />
               <h1>Modulkatalog @THB</h1>
               <h3>Browsen Sie durch alle Module der THB</h3>
             </div>
@@ -30,86 +30,125 @@
           <div class="md-layout">
             <div class="md-layout-item">
               <h4><b>Fachbereiche</b></h4>
-                  <md-checkbox v-model="array" value="1">Fachbereich Wirtschaft</md-checkbox>
-                  <md-checkbox v-model="array" value="2">Fachbereich Informatik</md-checkbox>
-                  <md-checkbox v-model="array" value="3">Fachbereich Technik</md-checkbox>
-            
+              <md-checkbox v-model="array" value="1"
+                >Fachbereich Wirtschaft</md-checkbox
+              >
+              <md-checkbox v-model="array" value="2"
+                >Fachbereich Informatik</md-checkbox
+              >
+              <md-checkbox v-model="array" value="3"
+                >Fachbereich Technik</md-checkbox
+              >
+
               <h4><b>Studiengang</b></h4>
-                  <md-field style="width: 500px">
-                    <label for="course">Studiengang</label>   
-                    <md-select v-model="cou" name="course" id="course" >
-                      <md-option value="Betriebswirtschaft B.Sc.">Betriebswirtschaft B.Sc.</md-option>
-                      <md-option value="Betriebswirtschaft M.Sc.">Betriebswirtschaft M.Sc.</md-option>
-                    </md-select>
-                  </md-field>
+              <md-field style="width: 500px">
+                <label for="course">Studiengang</label>
+                <md-select v-model="cou" name="course" id="course">
+                  <md-option value="Betriebswirtschaft B.Sc."
+                    >Betriebswirtschaft B.Sc.</md-option
+                  >
+                  <md-option value="Betriebswirtschaft M.Sc."
+                    >Betriebswirtschaft M.Sc.</md-option
+                  >
+                </md-select>
+              </md-field>
 
               <h4><b>Modultyp</b></h4>
-                  <md-radio v-model="radio" :value="objA">Pflicht</md-radio>
-                  <md-radio v-model="radio" :value="objB">Wahlpflicht</md-radio>
-                  <md-radio v-model="radio" :value="objC">Studium Generale</md-radio>
-
+              <md-radio v-model="radio" :value="objA">Pflicht</md-radio>
+              <md-radio v-model="radio" :value="objB">Wahlpflicht</md-radio>
+              <md-radio v-model="radio" :value="objC"
+                >Studium Generale</md-radio
+              >
 
               <h4><b>Lehrperson</b></h4>
-                  <md-field style="width: 500px">
-                    <label for="lecturer">Lehrperson</label>   
-                    <md-select v-model="lec" name="lecturer" id="lecturer" >
-                      <md-option value="Meister">Prof. Vera G. Meister</md-option>
-                      <md-option value="Johannsen">Prof. Andreas Johannsen</md-option>
-                    </md-select>
-                  </md-field>
+              <md-field style="width: 500px">
+                <label for="lecturer">Lehrperson</label>
+                <md-select v-model="lec" name="lecturer" id="lecturer">
+                  <md-option value="Meister">Prof. Vera G. Meister</md-option>
+                  <md-option value="Johannsen"
+                    >Prof. Andreas Johannsen</md-option
+                  >
+                </md-select>
+              </md-field>
 
               <h4><b>Lehrsprache</b></h4>
-                  <md-checkbox v-model="array1" value="1">deutsch</md-checkbox>
-                  <md-checkbox v-model="array1" value="2">englisch</md-checkbox>
-                  <md-checkbox v-model="array1" value="3">andere</md-checkbox>
+              <md-checkbox v-model="array1" value="1">deutsch</md-checkbox>
+              <md-checkbox v-model="array1" value="2">englisch</md-checkbox>
+              <md-checkbox v-model="array1" value="3">andere</md-checkbox>
 
               <h4><b>Lehr-Lernform</b></h4>
-                  <md-checkbox v-model="array2" value="1">Problem Based Learning</md-checkbox>
-                  <md-checkbox v-model="array2" value="2">Vortragend</md-checkbox>
-                  <md-checkbox v-model="array2" value="3">Projektarbeit</md-checkbox>
-        
+              <md-checkbox v-model="array2" value="1"
+                >Problem Based Learning</md-checkbox
+              >
+              <md-checkbox v-model="array2" value="2">Vortragend</md-checkbox>
+              <md-checkbox v-model="array2" value="3"
+                >Projektarbeit</md-checkbox
+              >
+
               <h4><b>Prüfungsform</b></h4>
-                  <md-checkbox v-model="array3" value="1">Schriftlich</md-checkbox>
-                  <md-checkbox v-model="array3" value="2">Mündlich</md-checkbox>
-                  <md-checkbox v-model="array3" value="3">Projekt</md-checkbox>
+              <md-checkbox v-model="array3" value="1">Schriftlich</md-checkbox>
+              <md-checkbox v-model="array3" value="2">Mündlich</md-checkbox>
+              <md-checkbox v-model="array3" value="3">Projekt</md-checkbox>
 
               <h4><b>Kompetenzziele</b></h4>
-                  <md-checkbox v-model="array5" value="1">Soziale</md-checkbox>
-                  <md-checkbox v-model="array5" value="2">Personale</md-checkbox>
-                  <md-checkbox v-model="array5" value="3">Technische</md-checkbox>
+              <md-checkbox v-model="array5" value="1">Soziale</md-checkbox>
+              <md-checkbox v-model="array5" value="2">Personale</md-checkbox>
+              <md-checkbox v-model="array5" value="3">Technische</md-checkbox>
 
               <h4><b>Kompetenzstufe</b></h4>
-                  <md-checkbox v-model="array4" value="1">Anwendung</md-checkbox>
-                  <md-checkbox v-model="array4" value="2">Orientierung</md-checkbox>
-                  <md-checkbox v-model="array4" value="3">Wiedergabe</md-checkbox>
+              <md-checkbox v-model="array4" value="1">Anwendung</md-checkbox>
+              <md-checkbox v-model="array4" value="2">Orientierung</md-checkbox>
+              <md-checkbox v-model="array4" value="3">Wiedergabe</md-checkbox>
+            </div>
 
-          </div>
-        
-               <div class="md-layout-item" style="padding-right:105px; margin-left: -200px">
-                  <md-table v-model="searched" md-sort="name5" md-sort-order="asc" md-card md-fixed-header style="height: 800px" >
-                        <md-table-toolbar>
-                          <div class="md-toolbar-section-start">
-                            <h1 class="md-title">Users</h1>
-                          </div>
+            <div
+              class="md-layout-item"
+              style="padding-right:105px; margin-left: -200px"
+            >
+              <md-table
+                v-model="searched"
+                md-sort="name5"
+                md-sort-order="asc"
+                md-card
+                md-fixed-header
+                style="height: 800px"
+              >
+                <md-table-toolbar>
+                  <div class="md-toolbar-section-start">
+                    <h1 class="md-title">Users</h1>
+                  </div>
 
-                          <md-field md-clearable class="md-toolbar-section-end">
-                            <md-input placeholder="Suchfeld..." v-model="search" @input="searchOnTable" />
-                          </md-field>
-                        </md-table-toolbar>
+                  <md-field md-clearable class="md-toolbar-section-end">
+                    <md-input
+                      placeholder="Suchfeld..."
+                      v-model="search"
+                      @input="searchOnTable"
+                    />
+                  </md-field>
+                </md-table-toolbar>
 
-                        <md-table-row slot="md-table-row" slot-scope="{ item }">
-                          <md-table-cell md-label="Modultitel" md-sort-by="name">{{ item.name }}</md-table-cell>
-                          <md-table-cell md-label="Studiengang" md-sort-by="email">{{ item.email }}</md-table-cell>
-                          <md-table-cell md-label="FB" md-sort-by="gender">{{ item.gender }}</md-table-cell>
-                          <md-table-cell md-label="Lehrperson" md-sort-by="title">{{ item.title }}</md-table-cell>
-                        </md-table-row>
-                        <md-table-pagination
-                          :md-page-size="2"
-                          :md-page-options="[1,2,3,4,5,6]"
-                          :md-update="search"
-                          :md-data="users"
-                          :md-paginated-data.sync="searched" />
-                        </md-table>
+                <md-table-row slot="md-table-row" slot-scope="{ item }">
+                  <md-table-cell md-label="Modultitel" md-sort-by="name">{{
+                    item.name
+                  }}</md-table-cell>
+                  <md-table-cell md-label="Studiengang" md-sort-by="email">{{
+                    item.email
+                  }}</md-table-cell>
+                  <md-table-cell md-label="FB" md-sort-by="gender">{{
+                    item.gender
+                  }}</md-table-cell>
+                  <md-table-cell md-label="Lehrperson" md-sort-by="title">{{
+                    item.title
+                  }}</md-table-cell>
+                </md-table-row>
+                <md-table-pagination
+                  :md-page-size="2"
+                  :md-page-options="[1, 2, 3, 4, 5, 6]"
+                  :md-update="search"
+                  :md-data="users"
+                  :md-paginated-data.sync="searched"
+                />
+              </md-table>
             </div>
           </div>
         </div>
@@ -122,32 +161,29 @@
 import axios from "axios";
 import "jspdf-autotable";
 
-  const toLower = text => {
-    return text.toString().toLowerCase()
+const toLower = text => {
+  return text.toString().toLowerCase();
+};
+
+const searchByName = (items, term) => {
+  if (term) {
+    return items.filter(item => toLower(item.name).includes(toLower(term)));
   }
 
-  const searchByName = (items, term) => {
-    if (term) {
-      return items.filter(item => toLower(item.name).includes(toLower(term)))
-    }
-
-    return items
-  }
+  return items;
+};
 
 export default {
-  components: {
-    
-  },
+  components: {},
   name: "index",
-  name2: 'TablePagination',
+  name2: "TablePagination",
   bodyClass: "index-page",
   props: {},
-  name3: 'RegularCheckboxes',
-  check: 'RegularRadio',
-  name4: 'TableSearch',
+  name3: "RegularCheckboxes",
+  check: "RegularRadio",
+  name4: "TableSearch",
 
   data() {
-
     return {
       search: null,
       searched: [],
@@ -159,35 +195,35 @@ export default {
           gender: "FBW",
           title: "Prof. Vera Meister"
         },
-                {
+        {
           id: 2,
           name: "Betriebssysteme",
           email: "WI Master",
           gender: "FBW",
           title: "Prof. Rother"
         },
-                {
+        {
           id: 3,
           name: "Mathe 1",
           email: "WI Bachelor",
           gender: "FBW",
           title: "Prof. Andreas Johannsen"
         },
-                {
+        {
           id: 4,
           name: "Prozessmodellierung",
           email: "WI Master",
           gender: "FBW",
           title: "Prof. Vera Meister"
         },
-                {
+        {
           id: 5,
           name: "Design Thinking",
           email: "WI Master",
           gender: "FBW",
           title: "Prof. Jochen Scheeg"
         },
-                {
+        {
           id: 6,
           name: "Projektmanagement",
           email: "WI Bachelor",
@@ -201,37 +237,39 @@ export default {
           gender: "FBW",
           title: "Prof. Vera Meister"
         },
-                {
+        {
           id: 8,
           name: "Mathe 3",
           email: "WI Master",
           gender: "FBW",
           title: "Prof. Jochen Scheeg"
         },
-                {
+        {
           id: 9,
           name: "Statistik",
           email: "WI Bachelor",
           gender: "FBW",
           title: "Prof. Andreas Johannsen"
-        },
+        }
       ],
 
-      modules: [{
-                studiengang: '',
-                art: '',
-                modul: '',
-                dozentinnen: '',
-                aktion: ''
-            }],
+      modules: [
+        {
+          studiengang: "",
+          art: "",
+          modul: "",
+          dozentinnen: "",
+          aktion: ""
+        }
+      ],
       array: [],
       array1: [],
       array2: [],
       array4: [],
       array5: [],
-      objA: { check: 'Pflicht' },
-      objB: { check: 'Wahl' },
-      objC: { check: 'SG' },
+      objA: { check: "Pflicht" },
+      objB: { check: "Wahl" },
+      objC: { check: "SG" },
       lecturers: false,
       courses: false,
       lecturerList: [],
@@ -243,96 +281,92 @@ export default {
     };
   },
 
-methods: {
+  methods: {
+    deleteRow(index, module) {
+      var idx = this.modules.indexOf(module);
+      if (idx > -1) {
+        this.modules.splice(idx, 1);
+      }
+      this.calculateTotal();
+    },
+    addNewRow() {
+      this.modules.push({
+        product_no: "",
+        product_name: "",
+        product_price: "",
+        product_qty: "",
+        line_total: 0
+      });
+    },
 
-      deleteRow(index, module) {
-            var idx = this.modules.indexOf(module);
-            console.log(idx, index);
-            if (idx > -1) {
-                this.modules.splice(idx, 1);
-            }
-            this.calculateTotal();
-        },
-        addNewRow() {
-            this.modules.push({
-                product_no: '',
-                product_name: '',
-                product_price: '',
-                product_qty: '',
-                line_total: 0
-            });
-        },
-       
-    
     watch: {
-    course(v) {
-      this.showList = true;
-      let i = this.labels.indexOf(v);
-      let value = this.modules[i];
-      this.$emit("module", value);
-      this.$emit("lecturerList", this.studyProgram);
-      this.$emit("newBoolean", false);
-    },
-    lecturerList(v) {
-      this.course = "";
-      this.modules = [];
-      this.labels = [];
-      this.showList = true;
-      this.queryLecturerList(v);
-    },
-  },
-
-        newUser () {
-        window.alert('Noop')
+      course(v) {
+        this.showList = true;
+        let i = this.labels.indexOf(v);
+        let value = this.modules[i];
+        this.$emit("module", value);
+        this.$emit("lecturerList", this.studyProgram);
+        this.$emit("newBoolean", false);
       },
-      searchOnTable () {
-        this.searched = searchByName(this.users, this.search)
+      lecturerList(v) {
+        this.course = "";
+        this.modules = [];
+        this.labels = [];
+        this.showList = true;
+        this.queryLecturerList(v);
       }
     },
-    created () {
-      this.searched = this.users
-    },
 
-    changeShowPopUp(value) {
-      this.showPopUp = value;
+    newUser() {
+      window.alert("Noop");
     },
-    getModule(value) {
-      this.selectedModule = value;
-      this.basicFilled = false;
-    },
-    getStudyProgram(value) {
-      this.studyProgram = value;
-    },
-    getCode(value) {
-      this.code = value;
-    },
-    getNewBoolean(value) {
-      this.newBoolean = value;
-    },
-    changeBasicFill(value) {
-      this.basicFilled= value;
-    },
-    getModBasicData(value) {
-      this.modBasis = value;
-      console.log(value)
-      this.code = value[0].code.value;
-    },
-    getModOutcomes(value) {
-      this.modOutcome = value;
-    },
-    getModMethod(value) {
-      this.modMethod = value;
-    },
-    getModLiter(value) {
-      this.modLiter = value;
-    },
-    getModTeacher(value) {
-      this.modTeacher = value;
-    },
-    getFormType(value) {
-      this.form = value;
-    },
-  };
+    searchOnTable() {
+      this.searched = searchByName(this.users, this.search);
+    }
+  },
+  created() {
+    this.searched = this.users;
+  },
+
+  changeShowPopUp(value) {
+    this.showPopUp = value;
+  },
+  getModule(value) {
+    this.selectedModule = value;
+    this.basicFilled = false;
+  },
+  getStudyProgram(value) {
+    this.studyProgram = value;
+  },
+  getCode(value) {
+    this.code = value;
+  },
+  getNewBoolean(value) {
+    this.newBoolean = value;
+  },
+  changeBasicFill(value) {
+    this.basicFilled = value;
+  },
+  getModBasicData(value) {
+    this.modBasis = value;
+    this.code = value[0].code.value;
+  },
+  getModOutcomes(value) {
+    this.modOutcome = value;
+  },
+  getModMethod(value) {
+    this.modMethod = value;
+  },
+  getModLiter(value) {
+    this.modLiter = value;
+  },
+  getModTeacher(value) {
+    this.modTeacher = value;
+  },
+  getFormType(value) {
+    this.form = value;
+  }
+};
 </script>
 <style lang="scss">
 .faded {
@@ -481,14 +515,19 @@ span.md-highlight-text-match {
   width: 93%;
 }
 
-#mods td, #mods th {
+#mods td,
+#mods th {
   border: 1px solid #ddd;
   padding: 8px;
 }
 
-#mods tr:nth-child(even){background-color: #f2f2f2;}
+#mods tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
 
-#mods tr:hover {background-color: #ddd;}
+#mods tr:hover {
+  background-color: #ddd;
+}
 
 #mods th {
   padding-top: 12px;

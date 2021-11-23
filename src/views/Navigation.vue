@@ -6,7 +6,7 @@
     >
       <div class="md-layout">
         <div class="md-layout-item">
-          <div>
+          <div class="index-page">
             <div class="brand">
               <img
                 src="../../img/logo.svg"
@@ -15,9 +15,6 @@
                 height="auto"
               />
               <h1 style="color: white">Modulkatalog @THB</h1>
-              <h3 style="color: white; margin-bottom: 70px">
-                Fachbereich Wirtschaft
-              </h3>
             </div>
           </div>
         </div>
@@ -176,23 +173,18 @@ export default {
   font-size: 20px;
 }
 
+.header-filter {
+  padding: 12% !important;
+}
+
+.brand h3 {
+  margin-top: 0 !important;
+}
+
 @media only screen and (max-width: 600px) {
   .columns {
     width: 100%;
   }
-}
-
-.faded {
-  opacity: 0.2 !important;
-  transition: 0.3s opacity !important;
-}
-.highlight {
-  opacity: 1 !important;
-}
-
-g.selected rect {
-  stroke: #ffc107 !important;
-  stroke-width: 2px !important;
 }
 
 .md-button.choosed {
@@ -205,14 +197,6 @@ g.selected rect {
 #download:hover {
   background-color: #fcdd86 !important;
   background-color: #ea80fc;
-}
-
-.header-filter {
-  padding: 5%;
-}
-
-.brand h3 {
-  margin-top: 0 !important;
 }
 
 @media all and (min-width: 991px) {
