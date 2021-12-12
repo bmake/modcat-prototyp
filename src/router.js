@@ -15,6 +15,11 @@ import Filter from "./views/Filter";
 import NavGraph from "./views/NavGraph";
 import Report from "./views/Report.vue";
 import Modul from "./views/Modul.vue";
+import ModuleOverview from "./views/Browsing/ModuleOverview";
+import ModuleBase from "./views/Browsing/ModuleBase";
+import ModuleOutcome from "./views/Browsing/ModuleOutcome";
+import ModuleMethod from "./views/Browsing/ModuleMethod";
+import ModuleLiterature from "./views/Browsing/ModuleLiterature";
 
 
 Vue.use(Router);
@@ -97,6 +102,38 @@ export default new Router({
       path: "/browsing/modul/:code",
       name: "modul",
       components: { default: Modul, header:  '', footer: MainFooter },
+      //nested routes
+      children: [
+        {
+          // ModuleOverview will be rendered inside User's <router-view>
+          // when /browsing/:code is matched
+          path: '',
+          name: 'modul',
+          component: ModuleOverview
+        },
+        {
+          path: 'Rahmendaten',
+          name: 'base',
+          component: ModuleBase
+        },
+        {
+          // ModuleOutcome will be rendered inside User's <router-view>
+          // when /browsing/:code/didaktik is matched
+          path: 'didaktik',
+          name: 'outcome',
+          component: ModuleOutcome
+        },
+        {
+          path: 'methodik',
+          name: 'method',
+          component: ModuleMethod
+        },
+        {
+          path: 'literatur',
+          name: 'literature',
+          component: ModuleLiterature
+        }
+      ],
       props: {
         header: { colorOnScroll: 400 },
         footer: { backgroundColor: "black" }
