@@ -1,5 +1,10 @@
 import Vue from "vue";
 import Router from "vue-router";
+import Index from "./views/Index.vue";
+import Landing from "./views/Landing.vue";
+import Login from "./views/Login.vue";
+import Profile from "./views/Profile.vue";
+import MainNavbar from "./layout/MainNavbar.vue";
 import MainFooter from "./layout/MainFooter.vue";
 import Starter from "./views/Starter";
 import Navigation from "./views/Navigation";
@@ -9,6 +14,7 @@ import Search from "./views/Search.vue";
 import Filter from "./views/Filter";
 import NavGraph from "./views/NavGraph";
 import Report from "./views/Report.vue";
+import Modul from "./views/Modul.vue";
 
 
 Vue.use(Router);
@@ -82,6 +88,15 @@ export default new Router({
       path: "/browsing/report",
       name: "report",
       components: { default: Report, header:  '', footer: MainFooter },
+      props: {
+        header: { colorOnScroll: 400 },
+        footer: { backgroundColor: "black" }
+      }
+    },
+    {
+      path: "/browsing/modul/:code",
+      name: "modul",
+      components: { default: Modul, header:  '', footer: MainFooter },
       props: {
         header: { colorOnScroll: 400 },
         footer: { backgroundColor: "black" }

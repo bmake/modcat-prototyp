@@ -1,23 +1,6 @@
 <template>
   <div class="wrapper">
-    <div class="header-filter" style="background-color: #FF8F00;">
-      <div class="md-layout">
-        <div class="md-layout-item">
-          <div>
-            <div class="brand" style="margin-bottom: 3em">
-              <img
-                src="../../img/logo.svg"
-                class="img"
-                width="10%"
-                height="auto"
-              />
-              <h1>Modulkatalog @THB</h1>
-              <h3>Browsen Sie durch alle Module der THB</h3>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <BrowsingHeader />
     <div class="main main-raised">
       <div style="text-align: center; margin-bottom:10px; padding-top: 3em">
         <h3>
@@ -128,9 +111,9 @@
                 </md-table-toolbar>
 
                 <md-table-row slot="md-table-row" slot-scope="{ item }">
-                  <md-table-cell md-label="Modultitel" md-sort-by="name">{{
-                    item.name
-                  }}</md-table-cell>
+                  <md-table-cell md-label="Modultitel" md-sort-by="name">
+                    <router-link to="/browsing/modul/AlgoDat">AlgoDat</router-link>
+                  </md-table-cell>
                   <md-table-cell md-label="Studiengang" md-sort-by="email">{{
                     item.email
                   }}</md-table-cell>
@@ -160,6 +143,7 @@
 <script>
 import axios from "axios";
 import "jspdf-autotable";
+import BrowsingHeader from "@/views/components/BrowsingHeader.vue";
 
 const toLower = text => {
   return text.toString().toLowerCase();
@@ -174,7 +158,9 @@ const searchByName = (items, term) => {
 };
 
 export default {
-  components: {},
+  components: {
+    BrowsingHeader
+  },
   name: "index",
   name2: "TablePagination",
   bodyClass: "index-page",
