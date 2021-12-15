@@ -100,7 +100,6 @@ export default new Router({
     },
     {
       path: "/browsing/modul/:code",
-      name: "modul",
       components: { default: Modul, header:  '', footer: MainFooter },
       //nested routes
       children: [
