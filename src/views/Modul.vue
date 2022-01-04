@@ -4,11 +4,11 @@
     <div class="main main-raised">
       <div style="text-align: center; margin-bottom:10px; padding-top: 3em">
         <h3>
-          <b>Modulbeschreibung: </b><router-link :to="{ name: 'modul', params: { code: $route.params.code }}">Code {{ $route.params.code }}</router-link>
+          <b>Modulbeschreibung: </b><router-link :to="{ name: 'modul', params: { code: $route.params.code }}">{{ info[0].label.value }}</router-link>
         </h3>
         <h3>
-          <b>Studiengang: </b><router-link to="/#">WI Bachelor </router-link>
-          <b>Fachbereich: </b><router-link to="/#">Wirtschaft</router-link>
+          <b>Studiengang: </b><router-link to="/#">{{ info[0].studyProgramName.value }} </router-link>
+          <b>Fachbereich: </b><router-link to="/#">ToDo</router-link>
 
         </h3>
       </div>
@@ -16,15 +16,85 @@
       <router-view></router-view>
 
     </div>
+
+    <div class="testAxios">
+      {{ info }}
+    </div>
   </div>
 </template>
 
 <script>
 import BrowsingHeader from "@/views/components/BrowsingHeader.vue";
+import axios from "axios";
 
 export default {
   components: {
     BrowsingHeader
+  },
+  data() {
+    return {
+      info: null,
+      loading: true,
+      errored: false,
+      code: this.$route.params.code
+    }
+  },
+  mounted() {
+    this.queryModul(this.code);
+  },
+  methods: {
+    querySparql(query) {
+      //fragt per Axios query, speichert in info, loading und errored zur Kontrolle
+      axios
+        .post(
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
+          query,
+          {
+            headers: { "Content-Type": "application/sparql-query" }
+          }
+        )
+        .then(response => {
+          this.info = response.data.results.bindings;
+        })
+        .catch(e => {
+          this.errors.push(e);
+          console.log(error)
+          this.errored = true
+        })
+        .finally(() => this.loading = false)
+        ;
+    },
+    queryModul(code) {
+      //aus Modulkürzel den Titel, Studiengang und Fachbereich
+      //ToDO: Fachbereich
+      let modifiedCode = '"' + code + '"';
+
+      let query =
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " + 
+        "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+        "PREFIX fbw: <https://www.th-brandenburg.de/mitarbeiterseiten/fbw/> " +
+        "PREFIX fbi: <https://www.th-brandenburg.de/mitarbeiterseiten/fbi/> " +
+        "PREFIX fbt: <https://www.th-brandenburg.de/mitarbeiterseiten/fbt/> " +
+        "PREFIX schema: <https://schema.org/> " +
+  
+        "SELECT DISTINCT ?url ?label ?studyProgram ?studyProgramName " +
+        "WHERE { " +
+	      //Modul
+  	    '?url  schema:courseCode ' + modifiedCode + ' . ' +
+        "?url a module:Module ; " +
+        //Modultitel
+        "    schema:name ?label; " +
+        "  schema:isPartOf ?studyProgram . " +
+
+        //Studiengang
+        "?studyProgram a module:StudyProgram ; " +
+        "  schema:name ?studyProgramName . " +
+      
+        'FILTER(lang(?label) = "de") ' +
+        'FILTER(lang(?studyProgramName) = "de") ' +
+        "}";
+      this.querySparql(query);
+    }
   }
 };
 </script>
