@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <md-content style="border-color: #92d050">
-      <div>
+      <div style="width: 100%">
         <h3 style="color: #92d050"><b>Methodik</b></h3>
         <b>Lehr- und Lernformen:</b>
         <ul id="forms">
@@ -9,8 +9,15 @@
             {{ forms }}
           </li>
         </ul>
-        <hr  style="height:2px; border-width:0; color:gray; background-color: #92d050; width: 100%">
-        <b>Aufteilung der Workload:</b> {{ resultMethod[0].workloadDetails.value }}<br/>
+        <md-divider/>
+        <b>Workload:</b> {{ resultMethod[0].workloadSum.value }} Stunden<br/>
+        <md-divider/>
+        <b>Aufteilung der Workload:</b><br/>
+        <ul id="">
+          <li v-for="workload in (resultMethod[0].workloadDetails.value.split('|'))" :key="workload">
+            {{ workload }}
+          </li>
+        </ul>
       </div>
     </md-content>
   </div>
@@ -55,7 +62,6 @@ export default {
         ;
     },
     queryMethod(code) {
-      console.log("m1.1");
       let query =
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
         "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
@@ -89,7 +95,7 @@ export default {
         "      schema:valueReference ?workload . " +
         "      ?workload schema:name ?workloadName ; " +
         "                schema:value ?workloadValue . " +
-        '      BIND(CONCAT(?workloadName, " @ ", STR(?workloadValue)) as ?workloadDetail) ' +
+        '      BIND(CONCAT(?workloadName, ": ", STR(?workloadValue), " Stunden") as ?workloadDetail) ' +
         "    } ORDER BY ?workload " +
         "}" +
         "  } " +
