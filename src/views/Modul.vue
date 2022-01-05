@@ -14,11 +14,6 @@
       </div>
       <!-- nested routing -->
       <router-view></router-view>
-
-    </div>
-
-    <div class="testAxios">
-      {{ info }}
     </div>
   </div>
 </template>
@@ -57,9 +52,10 @@ export default {
           this.info = response.data.results.bindings;
         })
         .catch(e => {
+          this.errored = true;
           this.errors.push(e);
-          console.log(error)
-          this.errored = true
+          console.log(error);
+          
         })
         .finally(() => this.loading = false)
         ;
