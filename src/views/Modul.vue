@@ -8,7 +8,7 @@
         </h3>
         <h3>
           <b>Studiengang: </b><router-link to="/#">{{ info[0].studyProgramName.value }} </router-link>
-          <b>Fachbereich: </b><router-link to="/#">ToDo</router-link>
+          <b>Fachbereich: </b><router-link to="/#">{{ info[0].FBcode.value }}</router-link>
 
         </h3>
       </div>
@@ -62,7 +62,6 @@ export default {
     },
     queryModul(code) {
       //aus Modulkürzel den Titel, Studiengang und Fachbereich
-      //ToDO: Fachbereich
       let modifiedCode = '"' + code + '"';
 
       let query =
@@ -73,22 +72,27 @@ export default {
         "PREFIX fbt: <https://www.th-brandenburg.de/mitarbeiterseiten/fbt/> " +
         "PREFIX schema: <https://schema.org/> " +
   
-        "SELECT DISTINCT ?url ?label ?studyProgram ?studyProgramName " +
-        "WHERE { " +
+        "SELECT DISTINCT ?url ?label ?studyProgramName ?FBcode" +
+        " WHERE { " +
 	      //Modul
   	    '?url  schema:courseCode ' + modifiedCode + ' . ' +
         "?url a module:Module ; " +
         //Modultitel
         "    schema:name ?label; " +
         "  schema:isPartOf ?studyProgram . " +
+        'FILTER(lang(?label) = "de") ' +
 
         //Studiengang
         "?studyProgram a module:StudyProgram ; " +
         "  schema:name ?studyProgramName . " +
-      
-        'FILTER(lang(?label) = "de") ' +
         'FILTER(lang(?studyProgramName) = "de") ' +
+
+        //Fachbereich
+        "?studyProgram schema:provider ?department ." +
+        "?department rdfs:label ?FBcode ;" + //Kürzel wie FBW
+        "        rdfs:name ?name." + //vollständiger Name
         "}";
+        console.log(query);
       this.querySparql(query);
     }
   }
