@@ -92,7 +92,7 @@ export default {
         "?department rdfs:label ?FBcode ;" + //Kürzel wie FBW
         "        rdfs:name ?name." + //vollständiger Name
         "}";
-        console.log(query);
+        
       this.querySparql(query);
     }
   }

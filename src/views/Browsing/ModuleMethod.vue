@@ -13,7 +13,7 @@
         <b>Workload:</b> {{ resultMethod[0].workloadSum.value }} Stunden<br/>
         <md-divider/>
         <b>Aufteilung der Workload:</b><br/>
-        <ul id="">
+        <ul id="workload">
           <li v-for="workload in (resultMethod[0].workloadDetails.value.split('|'))" :key="workload">
             {{ workload }}
           </li>
@@ -100,7 +100,6 @@ export default {
         "}" +
         "  } " +
         "}";
-        console.log(query);
       this.querySparql(query);
     }
   }
