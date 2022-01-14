@@ -1,40 +1,61 @@
 <template>
   <div class="wrapper">
     <md-content style="border-color: #92d050">
-          <div>
-            <h3 style="color: #92d050;"><b>Didaktik</b></h3>
-            
-            <div>
-              <b>Lernziele nach Kompetenzarten und -stufen: </b>
-              <!-- verursacht unkontrollierte Breite
-              <md-list>
-                <md-list-item v-for="gb in (resultOutcome[0].learnBlooms.value.split('|'))" :key="gb">
-                  {{ gb }}
-                </md-list-item>
-              </md-list> -->
-              <ul id="goalsAndBlooms">
-                <li v-for="gb in (resultOutcome[0].learnBlooms.value.split('|'))" :key="gb">
-                  {{ gb }}
-                </li>
-              </ul>
-            </div>
-            <div>test123</div>
-            <md-divider/>
-            <b>Strukturierte Lerninhalte: </b>
-            <ul id="contents">
-              <li v-for="co in (resultOutcome[0].contents.value.split('|'))" :key="co">
-                {{ co }}
-              </li>
-            </ul>
-            <md-divider/>
-            <b>Prüfungsleistungen: </b>
-            <ul id="exams">
-              <li v-for="ex in (resultOutcome[0].exams.value.split('|'))" :key="ex">
-                {{ ex }}
+      <div>
+        <h3 style="color: #92d050;"><b>Didaktik</b></h3>
+        <div class="container">
+          <!-- Left content -->
+          <div class="container__half">
+            <b>Lernziele nach Kompetenzarten und -stufen: </b>
+            <!-- verursacht unkontrollierte Breite
+            <md-list>
+              <md-list-item v-for="gb in (resultOutcome[0].learnBlooms.value.split('|'))" :key="gb">
+                {{ gb }}
+              </md-list-item>
+            </md-list> -->
+            <ul id="goalsAndBlooms">
+              <li
+                v-for="gb in resultOutcome[0].learnBlooms.value.split('|')"
+                :key="gb"
+              >
+                {{ gb }}
               </li>
             </ul>
           </div>
-        </md-content>
+
+          <!-- Right content -->
+          <div class="container__half">
+            <b>Sozialkompetenz</b>
+            <md-divider
+              style="height:2px; border-width:0; color: #92d050; background-color: #92d050"
+            />
+            <b>Personalkompetenz</b>
+          </div>
+        </div>
+
+        <md-divider
+          style="height:2px; border-width:0; color: #92d050; background-color: #92d050"
+        />
+        <b>Strukturierte Lerninhalte: </b>
+        <ul id="contents">
+          <li
+            v-for="co in resultOutcome[0].contents.value.split('|')"
+            :key="co"
+          >
+            {{ co }}
+          </li>
+        </ul>
+        <md-divider
+          style="height:2px; border-width:0; color: #92d050; background-color: #92d050"
+        />
+        <b>Prüfungsleistungen: </b>
+        <ul id="exams">
+          <li v-for="ex in resultOutcome[0].exams.value.split('|')" :key="ex">
+            {{ ex }}
+          </li>
+        </ul>
+      </div>
+    </md-content>
   </div>
 </template>
 
@@ -48,7 +69,7 @@ export default {
       loading: true,
       errored: false,
       code: this.$route.params.code
-    }
+    };
   },
   mounted() {
     this.queryOutcome(this.code);
@@ -71,10 +92,8 @@ export default {
           this.errored = true;
           this.errors.push(e);
           console.log(error);
-          
         })
-        .finally(() => this.loading = false)
-        ;
+        .finally(() => (this.loading = false));
     },
     queryOutcome(code) {
       let query =
@@ -83,10 +102,11 @@ export default {
         "PREFIX schema: <https://schema.org/> " +
         "SELECT DISTINCT ?code ?learnBlooms ?contents ?exams" +
         " WHERE {  " +
-	      "  module:" + code + " schema:courseCode ?code ;" +
-		    "    schema:name ?label ." +
+        "  module:" +
+        code +
+        " schema:courseCode ?code ;" +
+        "    schema:name ?label ." +
         'FILTER(lang(?label) = "de") ' +
-  
         // Lernergebnisse, Kompetenzen, Bloomsche Taxonomie
         "OPTIONAL { " +
         'SELECT (GROUP_CONCAT(?comNames; separator=" | ") as ?learnBlooms) ' +
@@ -97,37 +117,43 @@ export default {
         "      WHERE {" +
         "        SELECT ?learnResult ?position ?bname" +
         "        WHERE {" +
-        "          module:LResults_" + code + " schema:itemListElement ?resList ." +
+        "          module:LResults_" +
+        code +
+        " schema:itemListElement ?resList ." +
         "          ?resList schema:description ?learnResult ;" +
         "              schema:position ?position ." +
         "          ?resList schema:additionalType ?addList ." +
         "           ?addList schema:name ?bname." +
-        '            FILTER(lang(?bname) = "de") '+
+        '            FILTER(lang(?bname) = "de") ' +
         "        } GROUP BY ?learnResult ?position ?bname ORDER BY DESC(?bname)" +
         "      } GROUP BY ?learnResult ?position  ORDER BY ?position" +
         "      }" +
         " } " +
-  	    " } " +
-          // Prüfungsleistungen
+        " } " +
+        // Prüfungsleistungen
         "OPTIONAL { " +
         '  SELECT (GROUP_CONCAT(?examName; separator=" | ") as ?exams) ' +
         "    WHERE {" +
-        "      module:Exam_" + code + " schema:itemListElement ?exam ." +
+        "      module:Exam_" +
+        code +
+        " schema:itemListElement ?exam ." +
         "      ?exam schema:name ?examName ;" +
         "          schema:position ?examPos ." +
         "    } ORDER BY ?examPos" +
         "} " +
-          // Inhaltselemente
+        // Inhaltselemente
         "OPTIONAL { " +
         '    SELECT (GROUP_CONCAT(?contentName; separator=" | ") as ?contents)' +
         "    WHERE {" +
-        "      module:Content_" + code +" schema:itemListElement ?content ." +
+        "      module:Content_" +
+        code +
+        " schema:itemListElement ?content ." +
         "      ?content schema:name ?contentName ;" +
         "            schema:position ?contentPos ." +
         "    } ORDER BY ?contentPos" +
         "} " +
         "}";
-        console.log(query);
+      console.log(query);
       this.querySparql(query);
     }
   }
@@ -144,5 +170,13 @@ export default {
   border-style: solid;
   margin: 2px;
   padding: 5px;
+}
+
+.container {
+  display: flex;
+}
+
+.container__half {
+  flex: 1;
 }
 </style>
