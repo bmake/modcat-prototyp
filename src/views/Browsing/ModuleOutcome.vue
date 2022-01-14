@@ -3,12 +3,22 @@
     <md-content style="border-color: #92d050">
           <div>
             <h3 style="color: #92d050;"><b>Didaktik</b></h3>
-            <b>Lernziele nach Kompetenzarten und -stufen: </b>
-            <ul id="goalsAndBlooms">
-              <li v-for="gb in (resultOutcome[0].learnBlooms.value.split('|'))" :key="gb">
-                {{ gb }}
-              </li>
-            </ul>
+            
+            <div>
+              <b>Lernziele nach Kompetenzarten und -stufen: </b>
+              <!-- verursacht unkontrollierte Breite
+              <md-list>
+                <md-list-item v-for="gb in (resultOutcome[0].learnBlooms.value.split('|'))" :key="gb">
+                  {{ gb }}
+                </md-list-item>
+              </md-list> -->
+              <ul id="goalsAndBlooms">
+                <li v-for="gb in (resultOutcome[0].learnBlooms.value.split('|'))" :key="gb">
+                  {{ gb }}
+                </li>
+              </ul>
+            </div>
+            <div>test123</div>
             <md-divider/>
             <b>Strukturierte Lerninhalte: </b>
             <ul id="contents">
@@ -83,15 +93,17 @@ export default {
         "WHERE { " +
         '	SELECT (CONCAT(?learnResult, " @ ", COALESCE(?comName1, "")) as ?comNames) ' +
         "	WHERE { " +
-        '      SELECT ?learnResult (GROUP_CONCAT(?addList; separator=" @ ") as ?comName1)' +
+        '      SELECT ?learnResult (GROUP_CONCAT(?bname; separator=" @ ") as ?comName1)' +
         "      WHERE {" +
-        "        SELECT ?learnResult ?position ?addList" +
+        "        SELECT ?learnResult ?position ?bname" +
         "        WHERE {" +
         "          module:LResults_" + code + " schema:itemListElement ?resList ." +
         "          ?resList schema:description ?learnResult ;" +
         "              schema:position ?position ." +
         "          ?resList schema:additionalType ?addList ." +
-        "        } GROUP BY ?learnResult ?position ?addList ORDER BY DESC(?addList)" +
+        "           ?addList schema:name ?bname." +
+        '            FILTER(lang(?bname) = "de") '+
+        "        } GROUP BY ?learnResult ?position ?bname ORDER BY DESC(?bname)" +
         "      } GROUP BY ?learnResult ?position  ORDER BY ?position" +
         "      }" +
         " } " +
