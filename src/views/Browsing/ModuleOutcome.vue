@@ -2,10 +2,11 @@
   <div class="wrapper">
     <md-content style="border-color: #92d050">
       <div>
-        <h3 style="color: #92d050;"><b>Didaktik</b></h3>
+        
         <div class="container">
           <!-- Left content -->
-          <div class="container__half">
+          <div class="container__half" style="border-right: solid 2px #92d050;">
+            <h3 style="color: #92d050;"><b>Didaktik</b></h3>
             <b>Lernziele nach Kompetenzarten und -stufen: </b>
             <!-- verursacht unkontrollierte Breite
             <md-list>
@@ -18,7 +19,15 @@
                 v-for="gb in resultOutcome[0].learnBlooms.value.split('|')"
                 :key="gb"
               >
-                {{ gb }}
+                {{ gb.split('@')[0] }}
+              <ul>
+                <li
+                  v-for="bloom in (gb.substring(gb.indexOf('@') + 1)).split('@')"
+                  :key="bloom"
+                >
+                  {{ bloom }}
+                </li>
+              </ul>
               </li>
             </ul>
           </div>
