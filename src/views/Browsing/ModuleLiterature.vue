@@ -1,27 +1,40 @@
 <template>
   <div class="wrapper">
     <md-content style="border-color: #a5a5a5">
-          <div>
-            <h3 style="color: #a5a5a5"><b>Literatur</b></h3>
-            <p
-              v-for="(obj,index) in resultLiterature"
-              :key="index"
-              style="border-top: solid 2px #a5a5a5;"
-            >
-              test              
-            </p>
+      <div>
+        <h3 style="color: #a5a5a5"><b>Literatur</b></h3>
+        <p
+          v-for="(obj,index) in resultLiterature"
+          :key="index"
+        >
 
-            
-            
-          </div>
-        </md-content>
+          <Accordion class="mb-4">
+            <template v-slot:title>
+              <span class="font-semibold text-xl">{{ obj.titel.value }}</span>
+            </template>
+            <template v-slot:content>
+              <p>
+                <b>Lorem</b>, ipsum dolor sit amet consectetur adipisicing elit. Quia,
+                porro. Non a excepturi, voluptatibus ipsam magnam, eligendi,
+                accusantium ipsa quae quis praesentium voluptate saepe ullam sint ea
+                itaque consectetur impedit?
+              </p>
+            </template>
+          </Accordion>            
+        </p>
+      </div>
+    </md-content>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import Accordion from "@/views/Browsing/Accordion.vue";
 
 export default {
+  components: {
+    Accordion
+  },
   data() {
     return {
       resultLiterature: null,
