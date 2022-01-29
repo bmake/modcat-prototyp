@@ -1,23 +1,35 @@
 <template>
+  <!-- Das Feature Literatur(abfragen) ist nur durch ein studentisches Projekt erkundet wurden und
+    nicht vollständig/in einem extrem frühen Status. Auch die Datenbasis ist unzuverlässig strukturiert.
+    Bis auf der Datenebene weitergearbeitet wurde, soll hier nicht weiterentwickelt werden.
+    
+    Diese Seite ist nur grob vorgestaltet, um die Abfrage von Literaturdaten zu zeigen. Wegen der
+    uneinheitlichen Informationen werden (bisher) nur die scheinbar einfachen Dinge (Autor, Titel,
+    Verlag) angezeigt, aber in Abfrage und Antwort sind häufig noch weitere Daten (isbn, autorProfilLink,
+    pageStart, pageEnd) enthalten. Bei mehreren Autoren kommt es scheinbar zu Dopplungen. -->
   <div class="wrapper">
     <md-content style="border-color: #a5a5a5">
       <div>
         <h3 style="color: #a5a5a5"><b>Literatur</b></h3>
+        <!-- Je Zeile der Antwort wird einmal iteriert. Vielleicht entsteht hier ein Problem für Literatur mit
+        mehreren Autoren. -->
         <p
           v-for="(obj,index) in resultLiterature"
           :key="index"
         >
-
+          <!-- Diese Komponente generiert einen Button mit dem Titel der Literatur, welcher bei Anklicken die
+          einfachen Daten anzeigt oder versteckt. Es ist (noch) kein Indikator (toogle-Dreieck) vorhanden, der
+          dies anzeigt.
+          Conditional Rendering könnte ein Lösungsansatz für unvollständige Daten sein.-->
           <Accordion class="mb-4">
             <template v-slot:title>
               <span class="font-semibold text-xl">{{ obj.titel.value }}</span>
             </template>
             <template v-slot:content>
               <p>
-                <b>Lorem</b>, ipsum dolor sit amet consectetur adipisicing elit. Quia,
-                porro. Non a excepturi, voluptatibus ipsam magnam, eligendi,
-                accusantium ipsa quae quis praesentium voluptate saepe ullam sint ea
-                itaque consectetur impedit?
+                <b>Autor:</b> {{ obj.autorVorname.value }} {{ obj.autorNachname.value }}<br>
+                <b>Titel:</b> {{ obj.titel.value }}<br>
+                <b>Verlag:</b> {{ obj.publisherName.value }} ({{ obj.datePublished.value }}) <br>
               </p>
             </template>
           </Accordion>            
@@ -48,7 +60,7 @@ export default {
   },
   methods: {
     querySparql(query) {
-      //fragt per Axios query, speichert in resultMethod, loading und errored zur Kontrolle
+      //fragt per Axios query, speichert in resultLiterature, loading und errored zur Kontrolle
       axios
         .post(
           "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
@@ -68,6 +80,7 @@ export default {
         .finally(() => (this.loading = false));
     },
     queryLiterature(code) {
+      //angepasst aus queries.js
       let query =
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
         "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
