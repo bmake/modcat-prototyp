@@ -7,7 +7,7 @@
         
         <div class="goals">
           <h4>Lernziele</h4>
-          <h5 v-if="(resultCompetenceSubjectmatter !== null)">Fachkompetenz</h5>
+          <h5 v-if="(resultCompetenceSubjectmatter  != 0)">Fachkompetenz</h5>
             <ul id="goalsAndBlooms">
               <li
                 v-for="(blooms, index) in resultCompetenceSubjectmatter"
@@ -17,7 +17,7 @@
               </li>
             </ul>
 
-          <h5>Persönliche Kompetenz</h5>
+          <h5 v-if="(resultCompetenceSelf.length != 0)">Persönliche Kompetenz</h5>
             <ul id="goalsSelf">
               <li
                 v-for="(blooms, index) in resultCompetenceSelf"
@@ -27,7 +27,7 @@
               </li>
             </ul>
 
-          <h5>Sozialkompetenz</h5>
+          <h5 v-if="(resultCompetenceSocial  != 0)">Sozialkompetenz</h5>
             <ul id="goalsSocial">
               <li
                 v-for="(blooms, index) in resultCompetenceSocial"
@@ -90,10 +90,7 @@ export default {
   },
   mounted() {
     this.queryOutcome(this.code);
-    this.queryGoalsSubjectmatter(this.code);
-    this.queryGoalsSelf(this.code);
-    this.queryGoalsSocial(this.code);
-    
+    this.queryGoals();
   },
   beforeUpdate() {
     this.cleanSubjectmatterArray();
@@ -131,29 +128,7 @@ export default {
         " schema:courseCode ?code ;" +
         "    schema:name ?label ." +
         'FILTER(lang(?label) = "de") ' +
-        // Lernergebnisse, Kompetenzen, Bloomsche Taxonomie
-        "OPTIONAL { " +
-        'SELECT (GROUP_CONCAT(?comNames; separator=" | ") as ?learnBlooms) ' +
-        "WHERE { " +
-        '	SELECT (CONCAT(?learnResult, " @ ", COALESCE(?comName1, "")) as ?comNames) ' +
-        "	WHERE { " +
-        '      SELECT ?learnResult (GROUP_CONCAT(?bname; separator=" @ ") as ?comName1)' +
-        "      WHERE {" +
-        "        SELECT ?learnResult ?position ?bname" +
-        "        WHERE {" +
-        "          module:LResults_" +
-        code +
-        " schema:itemListElement ?resList ." +
-        "          ?resList schema:description ?learnResult ;" +
-        "              schema:position ?position ." +
-        "          ?resList schema:additionalType ?addList ." +
-        "           ?addList schema:name ?bname." +
-        '            FILTER(lang(?bname) = "de") ' +
-        "        } GROUP BY ?learnResult ?position ?bname ORDER BY DESC(?bname)" +
-        "      } GROUP BY ?learnResult ?position  ORDER BY ?position" +
-        "      }" +
-        " } " +
-        " } " +
+        
         // Prüfungsleistungen
         "OPTIONAL { " +
         '  SELECT (GROUP_CONCAT(?examName; separator=" | ") as ?exams) ' +
@@ -179,6 +154,11 @@ export default {
         "}";
       //console.log(query);
       this.querySparql(query);
+    },
+    queryGoals() {
+      this.queryGoalsSubjectmatter(this.code);
+      this.queryGoalsSelf(this.code);
+      this.queryGoalsSocial(this.code);
     },
     //3 very similar methods, can be optimised
     queryGoalsSubjectmatter(code) {
