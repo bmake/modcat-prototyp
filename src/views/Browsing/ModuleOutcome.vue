@@ -92,9 +92,6 @@ export default {
     this.queryOutcome(this.code);
     this.queryGoals();
   },
-  beforeUpdate() {
-    this.cleanSubjectmatterArray();
-  },
   methods: {
     querySparql(query) {
       //fragt per Axios query, speichert in resultOutcome, loading und errored zur Kontrolle
@@ -182,7 +179,7 @@ export default {
         "                  ?resList schema:additionalType ?addList ;" +
         "                          schema:additionalType module:SubjectMatterCompetence." +
         "            ?addList schema:name ?bname." +
-        '    FILTER(lang(?bname) = "de") ' +     
+        '    FILTER(lang(?bname) = "de" && STR(?bname) != "Fachkompetenz") ' +
         "}";
 
       axios
@@ -277,16 +274,6 @@ export default {
         .catch(e => {
           this.errors.push(e);
         });
-    },
-    cleanSubjectmatterArray() {
-      let cleanArray = [];
-      for (let index = 0; index < this.resultCompetenceSubjectmatter.length; index++) {
-        const element = this.resultCompetenceSubjectmatter[index];
-        if (element.bname.value != "Fachkompetenz") {
-          cleanArray.push(element);
-        }
-      }
-      this.resultCompetenceSubjectmatter = cleanArray;
     }
   }
 };
