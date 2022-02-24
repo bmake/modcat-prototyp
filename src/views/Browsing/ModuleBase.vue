@@ -1,17 +1,49 @@
 <template>
   <div class="wrapper">
     <md-content style="border-color: #0070c0">
-      <div>
+      <div style="width: 100%">
         <h3 style="color: #0070c0"><b>Rahmendaten</b></h3>
         
         <h4>Aktuelle Studien- und Prüfungsordnung (SPO)</h4>
+        <a :href="resultBase[0].spolink.value" target="_blank">
+          {{ resultBase[0].sponame.value }}
+        </a> <br>
         <md-divider
             style="height:2px; border-width:0; color: #92d050; background-color: #0070c0"
           />
 
-        <h4>Alle SPO-relevanten Daten</h4>
+        <h4>SPO-relevante Daten</h4>
+        <b>Typ:</b> {{ resultBase[0].modType_name.value }} <br>
+        <b>Rhythmus:</b> {{ resultBase[0].courseMode.value }} <br>
+        <b>Dauer:</b> {{ resultBase[0].duration.value }} <br>
+        <b>ECTS:</b> {{ resultBase[0].ects.value }} <br>
+        <b>SWS:</b> {{ resultBase[0].swsSum.value }} <br>
+        <div v-if="(resultBase[0].eduUse.value != '')"><b>Zweck:</b> {{ resultBase[0].eduUse.value }} <br></div>
+        <div v-if="resultBase[0].pre.value != ''"><b>Vorraussetzung:</b> {{ resultBase[0].pre.value }} <br></div>
+        
+        <md-divider
+            style="height:2px; border-width:0; color: #92d050; background-color: #0070c0"
+          />
+
         <h4>Modulverantwortliche und Lehrende</h4>
-        <h4>Webseite und sonstige Informationen</h4>
+        <b>Verantwortlich: </b>
+        <a :href="resultBase[0].accPerson.value" target="_blank">
+          {{ resultBase[0].accPersonLabel.value }}
+        </a> <br>
+        <md-divider
+            style="height:2px; border-width:0; color: #92d050; background-color: #0070c0"
+          />
+
+        <h4>Weitere Informationen</h4>       
+        <b>Lehrveranstaltungen:</b> {{ resultBase[0].learnTypes.value }} <br>
+        <div v-if="(resultBase[0].comment.value != '')"><b>Kommentar:</b> {{ resultBase[0].comment.value }} <br></div>
+        <b>Sprache(n):</b> {{ resultBase[0].languages.value }} <br>
+        <b>Notenanteil:</b> {{ resultBase[0].grade_name.value }} <br>
+        <b>Website:</b>
+        <a :href="resultBase[0].url.value" target="_blank">
+          {{ resultBase[0].url.value }}
+        </a> <br>
+
       </div>
       
 
@@ -88,7 +120,7 @@ export default {
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  " +
         "PREFIX module: <https://bmake.th-brandenburg.de/module/>  " +
         "PREFIX schema: <https://schema.org/>  " +
-        "SELECT DISTINCT ?code ?label ?accPerson ?accPersonLabel ?duration ?semester ?modType_name ?grade_name ?learnTypes ?eduUse ?swsSum ?ects ?studysem ?courseMode ?pre ?basedOnModuls ?url ?comment ?languages" +
+        "SELECT DISTINCT ?code ?label ?accPerson ?accPersonLabel ?duration ?semester ?modType_name ?grade_name ?learnTypes ?eduUse ?swsSum ?ects ?studysem ?courseMode ?pre ?basedOnModuls ?url ?comment ?languages ?sponame ?spolink" +
         " WHERE {  " +
         "<" +
         moduleUri +
@@ -131,18 +163,18 @@ export default {
         ' FILTER(lang(?cpre) != "en") ' +
         "  } " +
         "} " +
-          // Alle Lehrformen in einem String zu fügen, getrennt durch ' | '
+          // Alle Lehrformen in einem String zu fügen, getrennt durch ' , '
         " OPTIONAL { " +
-        '  SELECT (GROUP_CONCAT(?learnType; separator=" | ") as ?learnTypes) ' +
+        '  SELECT (GROUP_CONCAT(?learnType; separator=", ") as ?learnTypes) ' +
         "  WHERE { <" +
         moduleUri +
         "> schema:interactivityType ?learnType . " +
         ' FILTER(lang(?learnType) = "de") ' +
         "  } " +
         "} " +
-          // Alle Sprachen in einem String zu fügen, getrennt durch ' | '
+          // Alle Sprachen in einem String zu fügen, getrennt durch ' , '
         " OPTIONAL { " +
-        '  SELECT (GROUP_CONCAT(?lan; separator=" | ") as ?languages) ' +
+        '  SELECT (GROUP_CONCAT(?lan; separator=", ") as ?languages) ' +
         "    WHERE { " +
         "      module:Language_" +
         studyProgram +
@@ -198,6 +230,14 @@ export default {
         code +
         " schema:value ?studysem . " +
         "  } " +
+        "OPTIONAL { " +
+        //Studienordnung (SPO) Name und Link
+        "  module:" +
+        studyProgram +
+        " schema:subjectOf ?spocode ." +
+  	    "  ?spocode schema:url ?spolink;" +
+        "   	   schema:name ?sponame." +
+        "}" +
         " } ";
 
       //console.log(query);
@@ -232,5 +272,8 @@ export default {
   border-style: solid;
   margin: 2px;
   padding: 5px;
+}
+h4 {
+  color: #0070c0;
 }
 </style>
