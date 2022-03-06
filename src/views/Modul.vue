@@ -7,7 +7,7 @@
           <b>Modulbeschreibung: </b><router-link :to="{ name: 'modul', params: { code: $route.params.code }}">{{ info[0].label.value }}</router-link>
         </h3>
         <h3>
-          <b>Studiengang: </b><router-link to="/#">{{ info[0].studyProgramName.value }} </router-link>
+          <b>Studiengang: </b><router-link to="/#" v-for="(stud, id) in info" :key="id">{{ info[id].studyProgramName.value }} </router-link>       
           <b>Fachbereich: </b><router-link to="/#">{{ info[0].FBcode.value }}</router-link>
 
         </h3>
@@ -92,6 +92,8 @@ export default {
         "?department rdfs:label ?FBcode ;" + //Kürzel wie FBW
         "        rdfs:name ?name." + //vollständiger Name
         "}";
+
+        //console.log(query);
         
       this.querySparql(query);
     }

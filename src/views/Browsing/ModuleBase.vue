@@ -1,7 +1,50 @@
 <template>
   <div class="wrapper">
     <md-content style="border-color: #0070c0">
-      <div style="width: 100%">
+      <!-- Nach FB Wirtschaft oder Informatik werden unterschiedliche Templates angewählt,
+        da das zurückgegebene json mit teils fehlenden keys aufgebaut ist. Es sollte eine
+        elegantere Lösung mit durchsuchen geben, die bestimmt, ob ein einzelnes {{}} ge-
+        nutzt werden kann. So ist der Code recht redundant. -->
+      <div v-if="resultSubQ1[0].FBcode.value == 'FBI'" style="width: 100%">
+        <h3 style="color: #0070c0"><b>Rahmendaten</b></h3>
+        
+        <h4>Aktuelle Studien- und Prüfungsordnung (SPO)</h4>
+        <a :href="resultBase[0].spolink.value" target="_blank">
+          {{ resultBase[0].sponame.value }}
+        </a> <br>
+        <md-divider
+            style="height:2px; border-width:0; color: #92d050; background-color: #0070c0"
+          />
+
+        <h4>SPO-relevante Daten</h4>
+        <b>Typ:</b> {{ resultBase[0].modType_name.value }} <br>
+        <b>SWS:</b> {{ resultBase[0].swsSum.value }} <br>
+        <b>Rhythmus:</b> {{ resultBase[0].courseMode.value }} <br>
+        <b>Dauer:</b> {{ resultBase[0].duration.value }} <br>
+        <b>Semester:</b> {{ resultBase[0].studysem.value }} <br>
+        <b>ECTS:</b> {{ resultBase[0].ects.value }} <br>
+        <div v-if="resultBase[0].pre.value != ''"><b>Vorraussetzung:</b> {{ resultBase[0].pre.value }} <br></div>
+        
+        <md-divider
+            style="height:2px; border-width:0; color: #92d050; background-color: #0070c0"
+          />
+
+        <h4>Modulverantwortliche und Lehrende</h4>
+        <b>Verantwortlich: </b>
+        <a :href="resultBase[0].accPerson.value" target="_blank">
+          {{ resultBase[0].accPersonLabel.value }}
+        </a> <br>
+        <md-divider
+            style="height:2px; border-width:0; color: #92d050; background-color: #0070c0"
+          />
+
+        <h4>Weitere Informationen</h4>       
+        <b>Lehrveranstaltungen:</b> {{ resultBase[0].learnTypes.value }} <br>
+        <!-- comment könnte vorhanden sein -->
+        <b>Sprache(n):</b> {{ resultBase[0].languages.value }} <br>
+      </div>
+      
+      <div v-if="resultSubQ1[0].FBcode.value == 'FBW'" style="width: 100%">
         <h3 style="color: #0070c0"><b>Rahmendaten</b></h3>
         
         <h4>Aktuelle Studien- und Prüfungsordnung (SPO)</h4>
@@ -29,7 +72,7 @@
         <b>Verantwortlich: </b>
         <a :href="resultBase[0].accPerson.value" target="_blank">
           {{ resultBase[0].accPersonLabel.value }}
-        </a> <br>
+        </a>
         <md-divider
             style="height:2px; border-width:0; color: #92d050; background-color: #0070c0"
           />
@@ -43,11 +86,7 @@
         <a :href="resultBase[0].url.value" target="_blank">
           {{ resultBase[0].url.value }}
         </a> <br>
-
       </div>
-      
-
-      
     </md-content>
   </div>
 </template>
@@ -59,6 +98,7 @@ export default {
   data() {
     return {
       resultBase: null,
+      resultSubQ1: null,
       loading: true,
       errored: false,
       code: this.$route.params.code,
@@ -81,16 +121,16 @@ export default {
           }
         )
         .then(response => {
-          this.resultBase = response.data.results.bindings;
-          this.moduleUri = this.resultBase[0].uri.value;
-          this.studyProgram = this.resultBase[0].studyProgram.value;
+          this.resultSubQ1 = response.data.results.bindings;
+          this.moduleUri = this.resultSubQ1[0].uri.value;
+          //Problem: mehrere Studiengänge möglich, nur erster behandelt
+          this.studyProgram = this.resultSubQ1[0].studyProgram.value;
 
           //axios ist asychron, deswegen hier nächste query
           this.queryBase(this.code, this.moduleUri, this.studyProgram);
         })
         .catch(e => {
           this.errored = true;
-          this.errors.push(e);
           console.log(error);
           
         })
@@ -102,12 +142,16 @@ export default {
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
         "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
         "PREFIX schema: <https://schema.org/> " +
-        "SELECT DISTINCT ?uri ?label ?studyProgram " +
+        "SELECT DISTINCT ?uri ?label ?studyProgram ?FBcode " +
         "WHERE { " +
         '  ?uri schema:courseCode "' + code + '" ; ' +
         "    schema:name ?label ;" +
         "      schema:isPartOf ?studyProgram." +
         '    FILTER(lang(?label) = "de")' +
+        //Fachbereich
+        "?studyProgram schema:provider ?department ." +
+        "?department rdfs:label ?FBcode ;" + //Kürzel wie FBW
+        "        rdfs:name ?name." + //vollständiger Name
         "}";
 
       this.querySparqlQ1(subQ1);
