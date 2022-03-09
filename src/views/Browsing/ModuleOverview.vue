@@ -6,10 +6,15 @@
           <div>
             <h4 style="color: #0070c0"><b>Rahmendaten</b></h4>
             <p>
-              Aktuelle Studien- und Prüfungsordnung (SPO)<br/>
-              Alle SPO-relevanten Daten<br/>
-              Modulverantwortliche und Lehrende<br/>
-              Webseite und sonstige Informationen<br/>
+              <a :href="result[0].spolink.value" target="_blank">
+                Aktuelle Studien- und Prüfungsordnung (SPO)
+              </a> <br>
+              SPO-relevanten Daten <br>
+              <b>ECTS:</b> {{ result[0].ects.value }} <br>
+              <b>Verantwortlich: </b>
+              <a :href="result[0].accPerson.value" target="_blank">
+                {{ result[0].accPersonLabel.value }}
+              </a>
             </p>
             <router-link :to="{ name: 'base', params: { code: $route.params.code }}"><b>Anschauen</b></router-link>
           </div>
@@ -20,7 +25,7 @@
             <p>
               Lernziele nach Kompetenzarten und -stufen<br/>
               Strukturierte Lerninhalte<br/>
-              Prüfungsleistungen<br/>
+              <b>Prüfungsleistungen:</b> {{ result[0].exams.value }}<br/>
             </p>
             <router-link :to="{ name: 'outcome', params: { code: $route.params.code }}"><b>Anschauen</b></router-link>
           </div>
@@ -31,8 +36,8 @@
           <div>
             <h4 style="color: #92d050"><b>Methodik</b></h4>
             <p>
-              <b>Lehr- und Lernformen:</b> {{ resultMethod[0].interTypes.value }}<br/>
-              <b>Aufteilung der Workload:</b> {{ resultMethod[0].workloadDetails.value }}<br/>
+              <b>Lehr- und Lernformen:</b> {{ result[0].interTypes.value }}<br/>
+              <b>Aufteilung der Workload:</b> {{ result[0].workloadDetails.value }}<br/>
             </p>
             <router-link :to="{ name: 'method', params: { code: $route.params.code }}"><b>Anschauen</b></router-link>
           </div>
@@ -59,7 +64,7 @@ import axios from "axios";
 export default {
   data() {
     return {
-      resultMethod: null,
+      result: null,
       loading: true,
       errored: false,
       code: this.$route.params.code
@@ -70,7 +75,7 @@ export default {
   },
   methods: {
     querySparql(query) {
-      //fragt per Axios query, speichert in resultMethod, loading und errored zur Kontrolle
+      //fragt per Axios query, speichert in result, loading und errored zur Kontrolle
       axios
         .post(
           "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
@@ -80,11 +85,10 @@ export default {
           }
         )
         .then(response => {
-          this.resultMethod = response.data.results.bindings;
+          this.result = response.data.results.bindings;
         })
         .catch(e => {
           this.errored = true;
-          this.errors.push(e);
           console.log(error);
           
         })
@@ -96,16 +100,34 @@ export default {
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
         "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
         "PREFIX schema: <https://schema.org/> " +
-        "SELECT DISTINCT ?code ?label ?interTypes ?workloadSum ?workloadDetails " +
+        "SELECT DISTINCT ?code ?label ?exams ?interTypes ?workloadSum ?workloadDetails ?studyProgram ?spolink ?accPerson ?accPersonLabel ?ects ?url " +
         "WHERE { " +
         "  module:" +
         code +
         " schema:courseCode ?code ; " +
-        "         schema:name ?label .  " +
+        "         schema:name ?label ;  " +
+        "      schema:isPartOf ?studyProgram ; " +
+          // ECTS
+        "         schema:numberOfCredits ?ects ;  " +
+          // Modulverantwortliche (URI)
+        "         schema:accountablePerson ?accPerson . " +
+          // Modulverantwortliche Label (Prof. Dr....)
+        "   ?accPerson rdfs:label ?accPersonLabel .  " +
         'FILTER(lang(?label) = "de")' +
+        // Prüfungsleistungen
+        "OPTIONAL { " +
+        '  SELECT (GROUP_CONCAT(?examName; separator=", ") as ?exams) ' +
+        "    WHERE {" +
+        "      module:Exam_" +
+        code +
+        " schema:itemListElement ?exam ." +
+        "      ?exam schema:name ?examName ;" +
+        "          schema:position ?examPos ." +
+        "    } ORDER BY ?examPos" +
+        "} " +
           // Lehr- und Lernmethode
         "  OPTIONAL { " +
-        '    SELECT (GROUP_CONCAT(?teachingFormName; separator=" | ") as ?interTypes) ' +
+        '    SELECT (GROUP_CONCAT(?teachingFormName; separator=", ") as ?interTypes) ' +
         "    WHERE { " +
         " module:TeachingForms_" +
         code +
@@ -114,9 +136,20 @@ export default {
         "       schema:position ?teachingFormPos . " +
         "    } ORDER BY ?teachingFormPos " +
         "  } " +
+        //URL des Moduls
+        " OPTIONAL { <" +
+        code +
+        ">  schema:url ?url . " +
+        " } " +
+        "OPTIONAL { " +
+        //Studienordnung (SPO) Name und Link
+        "  ?studyProgram" +
+        " schema:subjectOf ?spocode ." +
+  	    "  ?spocode schema:url ?spolink." +
+        "}" +
         "  OPTIONAL { " +
           // Gesamtworkload, Workload-Komponente in Stunden
-        'SELECT (SUM(?workloadValue) as ?workloadSum) (GROUP_CONCAT(?workloadDetail; separator=" | ") as ?workloadDetails) ' +
+        'SELECT (SUM(?workloadValue) as ?workloadSum) (GROUP_CONCAT(?workloadDetail; separator=", ") as ?workloadDetails) ' +
         "WHERE { " +
         "  SELECT DISTINCT * " +
         "  WHERE { " +
@@ -125,12 +158,12 @@ export default {
         "      schema:valueReference ?workload . " +
         "      ?workload schema:name ?workloadName ; " +
         "                schema:value ?workloadValue . " +
-        '      BIND(CONCAT(?workloadName, " @ ", STR(?workloadValue)) as ?workloadDetail) ' +
+        '      BIND(CONCAT(?workloadName, " ", STR(?workloadValue)," h") as ?workloadDetail) ' +
         "    } ORDER BY ?workload " +
         "}" +
         "  } " +
         "}";
-        //debug:  console.log(query);
+        console.log(query);
       this.querySparql(query);
     }
   }
