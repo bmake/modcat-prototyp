@@ -163,7 +163,7 @@ export default {
         "}" +
         "  } " +
         "}";
-        console.log(query);
+        //console.log(query);
       this.querySparql(query);
     }
   }

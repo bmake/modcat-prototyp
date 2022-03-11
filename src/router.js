@@ -20,11 +20,13 @@ import ModuleBase from "./views/Browsing/ModuleBase";
 import ModuleOutcome from "./views/Browsing/ModuleOutcome";
 import ModuleMethod from "./views/Browsing/ModuleMethod";
 import ModuleLiterature from "./views/Browsing/ModuleLiterature";
+import NotFound from "./views/Browsing/NotFound";
 
 
 Vue.use(Router);
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: "/",
@@ -137,6 +139,11 @@ export default new Router({
         header: { colorOnScroll: 400 },
         footer: { backgroundColor: "black" }
       }
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "NotFound",
+      components: { default: NotFound, header:  '', footer: MainFooter }
     }
   ],
   scrollBehavior: to => {

@@ -50,15 +50,20 @@ export default {
         )
         .then(response => {
           this.info = response.data.results.bindings;
+
+          //redirect to 404, if no module for :code
+          if (this.info.length < 1) {
+            this.$router.push({ name: 'NotFound' });
+          }
         })
         .catch(e => {
           this.errored = true;
-          this.errors.push(e);
           console.log(error);
           
         })
         .finally(() => this.loading = false)
         ;
+        
     },
     queryModul(code) {
       //aus Modulkürzel den Titel, Studiengang und Fachbereich
