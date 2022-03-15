@@ -170,7 +170,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .faded {
   opacity: 0.2 !important;
   transition: 0.3s opacity !important;
