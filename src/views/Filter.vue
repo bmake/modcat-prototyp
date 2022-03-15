@@ -19,138 +19,209 @@
       </div>
     </div>
     <div class="main main-raised">
-      <div style="text-align: center; margin-bottom:10px; padding-top: 3em">
+      <div style="text-align: center; padding-top: 3em">
         <h3>
           <b>Bitte wählen Sie Ihre Filter</b>
         </h3>
       </div>
 
-      <div class="section section-examples">
-        <div class="container-fluid text-left" style="margin-left:100px;">
-          <div class="md-layout">
-            <div class="md-layout-item">
-              <h4><b>Fachbereiche</b></h4>
-              <md-checkbox v-model="array" value="1"
-                >Fachbereich Wirtschaft</md-checkbox
-              >
-              <md-checkbox v-model="array" value="2"
-                >Fachbereich Informatik</md-checkbox
-              >
-              <md-checkbox v-model="array" value="3"
-                >Fachbereich Technik</md-checkbox
-              >
+      <div class="md-layout md-gutter" style="margin-left:3%; margin-right:3%;">
+        <div class="md-layout-item md-size-40" style="padding-top: 50px">
+          <h4><b>Fachbereiche</b></h4>
+          <md-checkbox
+            v-model="department"
+            value="https://bmake.th-brandenburg.de/module/THB_FBW"
+            >Fachbereich Wirtschaft</md-checkbox
+          ><!--:disabled="selectedStudyProgram != '' "-->
+          <md-checkbox
+            v-model="department"
+            value="https://bmake.th-brandenburg.de/module/THB_FBI"
+            >Fachbereich Informatik</md-checkbox
+          >
+          <md-checkbox
+            v-model="department"
+            value="https://bmake.th-brandenburg.de/module/THB_FBT"
+            >Fachbereich Technik</md-checkbox
+          >
 
-              <h4><b>Studiengang</b></h4>
-              <md-field style="width: 500px">
-                <label for="course">Studiengang</label>
-                <md-select v-model="cou" name="course" id="course">
-                  <md-option value="Betriebswirtschaft B.Sc."
-                    >Betriebswirtschaft B.Sc.</md-option
-                  >
-                  <md-option value="Betriebswirtschaft M.Sc."
-                    >Betriebswirtschaft M.Sc.</md-option
-                  >
-                </md-select>
-              </md-field>
-
-              <h4><b>Modultyp</b></h4>
-              <md-radio v-model="radio" :value="objA">Pflicht</md-radio>
-              <md-radio v-model="radio" :value="objB">Wahlpflicht</md-radio>
-              <md-radio v-model="radio" :value="objC"
-                >Studium Generale</md-radio
-              >
-
-              <h4><b>Lehrperson</b></h4>
-              <md-field style="width: 500px">
-                <label for="lecturer">Lehrperson</label>
-                <md-select v-model="lec" name="lecturer" id="lecturer">
-                  <md-option value="Meister">Prof. Vera G. Meister</md-option>
-                  <md-option value="Johannsen"
-                    >Prof. Andreas Johannsen</md-option
-                  >
-                </md-select>
-              </md-field>
-
-              <h4><b>Lehrsprache</b></h4>
-              <md-checkbox v-model="array1" value="1">deutsch</md-checkbox>
-              <md-checkbox v-model="array1" value="2">englisch</md-checkbox>
-              <md-checkbox v-model="array1" value="3">andere</md-checkbox>
-
-              <h4><b>Lehr-Lernform</b></h4>
-              <md-checkbox v-model="array2" value="1"
-                >Problem Based Learning</md-checkbox
-              >
-              <md-checkbox v-model="array2" value="2">Vortragend</md-checkbox>
-              <md-checkbox v-model="array2" value="3"
-                >Projektarbeit</md-checkbox
-              >
-
-              <h4><b>Prüfungsform</b></h4>
-              <md-checkbox v-model="array3" value="1">Schriftlich</md-checkbox>
-              <md-checkbox v-model="array3" value="2">Mündlich</md-checkbox>
-              <md-checkbox v-model="array3" value="3">Projekt</md-checkbox>
-
-              <h4><b>Kompetenzziele</b></h4>
-              <md-checkbox v-model="array5" value="1">Soziale</md-checkbox>
-              <md-checkbox v-model="array5" value="2">Personale</md-checkbox>
-              <md-checkbox v-model="array5" value="3">Technische</md-checkbox>
-
-              <h4><b>Kompetenzstufe</b></h4>
-              <md-checkbox v-model="array4" value="1">Anwendung</md-checkbox>
-              <md-checkbox v-model="array4" value="2">Orientierung</md-checkbox>
-              <md-checkbox v-model="array4" value="3">Wiedergabe</md-checkbox>
-            </div>
-
-            <div
-              class="md-layout-item"
-              style="padding-right:105px; margin-left: -200px"
+          <h4><b>Studiengang</b></h4>
+          <md-field>
+            <label>Studiengang</label>
+            <md-select
+              v-model="selectedStudyProgram"
+              name="studyProgram"
+              id="studyProgram"
             >
-              <md-table
-                v-model="searched"
-                md-sort="name5"
-                md-sort-order="asc"
-                md-card
-                md-fixed-header
-                style="height: 800px"
+              <md-option
+                v-for="(sp, index) in studyProgramList"
+                :value="sp.studyprogramID.value"
+                v-bind:key="index"
+                >{{ sp.studyProgramName.value }}</md-option
               >
-                <md-table-toolbar>
-                  <div class="md-toolbar-section-start">
-                    <h1 class="md-title">Users</h1>
-                  </div>
+            </md-select>
+          </md-field>
 
-                  <md-field md-clearable class="md-toolbar-section-end">
-                    <md-input
-                      placeholder="Suchfeld..."
-                      v-model="search"
-                      @input="searchOnTable"
-                    />
-                  </md-field>
-                </md-table-toolbar>
+          <h4><b>Modultyp</b></h4>
+          <md-checkbox v-model="moduleType" value="Pflichtmodul">Pflicht</md-checkbox>
+          <md-checkbox v-model="moduleType" value="Wahlpflichtmodul"
+            >Wahlpflicht</md-checkbox
+          >
+          <md-checkbox v-model="moduleType" value="Generale"
+            >Studium Generale</md-checkbox
+          >
+          <md-checkbox v-model="moduleType" value="Profilmodul"
+            >Profilmodul</md-checkbox
+          >
 
-                <md-table-row slot="md-table-row" slot-scope="{ item }">
-                  <md-table-cell md-label="Modultitel" md-sort-by="name">{{
-                    item.name
-                  }}</md-table-cell>
-                  <md-table-cell md-label="Studiengang" md-sort-by="email">{{
-                    item.email
-                  }}</md-table-cell>
-                  <md-table-cell md-label="FB" md-sort-by="gender">{{
-                    item.gender
-                  }}</md-table-cell>
-                  <md-table-cell md-label="Lehrperson" md-sort-by="title">{{
-                    item.title
-                  }}</md-table-cell>
-                </md-table-row>
-                <md-table-pagination
-                  :md-page-size="2"
-                  :md-page-options="[1, 2, 3, 4, 5, 6]"
-                  :md-update="search"
-                  :md-data="users"
-                  :md-paginated-data.sync="searched"
-                />
-              </md-table>
+          <h4><b>Lehrperson</b></h4>
+          <md-autocomplete
+            v-model="selectedLecturer"
+            :md-options="lecturerLabels"
+            class="xs"
+          >
+            <div slot="md-autocomplete-item" slot-scope="{ item, term }">
+              <md-highlight-text :md-term="term">{{ item }}</md-highlight-text>
             </div>
-          </div>
+          </md-autocomplete>
+
+          <h4><b>Lehrsprache</b></h4>
+          <md-checkbox v-model="language" value="de">deutsch</md-checkbox>
+          <md-checkbox v-model="language" value="en">englisch</md-checkbox>
+          <md-checkbox v-model="language" value="andere">andere</md-checkbox>
+
+          <!--<h4><b>Lehr- Lernform</b></h4>
+          <md-checkbox v-model="learnTypes" value="1"
+            >Problem Based Learning</md-checkbox
+          >
+          <md-checkbox v-model="learnTypes" value="2"
+            >Vortragend</md-checkbox
+          >
+          <md-checkbox v-model="learnTypes" value="3"
+            >Projektarbeit</md-checkbox
+          >
+
+          <h4><b>Prüfungsform</b></h4>
+          <md-checkbox v-model="exams" value="1">Schriftlich</md-checkbox>
+          <md-checkbox v-model="exams" value="2">Mündlich</md-checkbox>
+          <md-checkbox v-model="exams" value="3">Projekt</md-checkbox>-->
+
+          <h4><b>Kompetenzziele</b></h4>
+          <md-checkbox v-model="competence" value="SubjectMatterCompetence"
+            >Fachkompetenz</md-checkbox
+          >
+          <md-checkbox v-model="competence" value="SocialCompetence"
+            >Sozialkompetenz</md-checkbox
+          >
+          <md-checkbox v-model="competence" value="SelfCompetence"
+            >Selbstkompetenz</md-checkbox
+          >
+
+          <h4><b>Kompetenzstufe</b></h4>
+          <md-checkbox
+            v-model="bloomTax"
+            value="BloomTax_Remember"
+            :disabled="!competence.includes('SubjectMatterCompetence')"
+            >Erinnern</md-checkbox
+          >
+          <md-checkbox
+            v-model="bloomTax"
+            value="BloomTax_Understand"
+            :disabled="!competence.includes('SubjectMatterCompetence')"
+            >Verstehen</md-checkbox
+          >
+          <md-checkbox
+            v-model="bloomTax"
+            value="BloomTax_Apply"
+            :disabled="!competence.includes('SubjectMatterCompetence')"
+            >Anwenden</md-checkbox
+          >
+          <md-checkbox
+            v-model="bloomTax"
+            value="BloomTax_Analyze"
+            :disabled="!competence.includes('SubjectMatterCompetence')"
+            >Analysieren</md-checkbox
+          >
+          <md-checkbox
+            v-model="bloomTax"
+            value="BloomTax_Evaluate"
+            :disabled="!competence.includes('SubjectMatterCompetence')"
+            >Evaluieren</md-checkbox
+          >
+          <md-checkbox
+            v-model="bloomTax"
+            value="BloomTax_Create"
+            :disabled="!competence.includes('SubjectMatterCompetence')"
+            >Erschaffen</md-checkbox
+          >
+        </div>
+
+        <div class="md-layout-item md-size-60">
+          <md-card>
+            <p
+              style="padding-top: 2%; padding-left: 2%; color: black !important;"
+            >
+              {{ toBePaged.length }} Module werden angezeigt
+            </p>
+            <md-table
+              v-model="pageItems"
+              md-sort="label.value"
+              md-sort-order="asc"
+            >
+              <md-table-toolbar style="padding-top: 0 !important;">
+                <!--<div class="md-toolbar-section-start"></div>-->
+                <md-field md-clearable class="md-toolbar-section-end">
+                  <md-input
+                    placeholder="Suchfeld..."
+                    v-model="search"
+                    @input="searchOnTable"
+                  />
+                </md-field>
+              </md-table-toolbar>
+
+              <md-table-row slot="md-table-row" slot-scope="{ item }">
+                <md-table-cell
+                  md-label="Modultitel"
+                  md-sort-by="label.value"
+                  style="width: 38%"
+                  >{{ item.label.value }}</md-table-cell
+                >
+                <md-table-cell
+                  md-label="Studiengang"
+                  md-sort-by="studyprogramLabel.value"
+                  style="width: 22%"
+                  >{{ item.studyprogramLabel.value }}</md-table-cell
+                >
+                <md-table-cell
+                  md-label="FB"
+                  md-sort-by="departmentLabel.value"
+                  style="width: 10%"
+                  >{{ item.departmentLabel.value }}</md-table-cell
+                >
+                <md-table-cell
+                  md-label="Lehrperson"
+                  md-sort-by="lecturerLabel.value"
+                  style="width: 30%"
+                  >{{ item.lecturerLabel.value }}</md-table-cell
+                >
+              </md-table-row>
+            </md-table>
+            <pagination
+              type="warning"
+              v-model="colorPagination"
+              :page-count="pageCount"
+              style="padding-top: 10px; padding-bottom: 10px; padding-left: 40%"
+            >
+            </pagination>
+          </md-card>
+          <!--<p>filters: {{ filters }}</p>
+          <p>department: {{ department }}</p>
+          <p>selectedStudyProgram: {{ selectedStudyProgram }}</p>
+          <p>moduleType: {{ moduleType }}</p>
+          <p>selectedLecturer: {{ selectedLecturer }}</p>
+          <p>language: {{ language }}</p>
+          <p>competence: {{ competence }}</p>
+          <p>bloomTax: {{ bloomTax }}</p>
+          <p>competenceBloom: {{ competenceBloom }}</p>-->
         </div>
       </div>
     </div>
@@ -160,6 +231,7 @@
 <script>
 import axios from "axios";
 import "jspdf-autotable";
+import Pagination from "../components/Pagination";
 
 const toLower = text => {
   return text.toString().toLowerCase();
@@ -167,14 +239,15 @@ const toLower = text => {
 
 const searchByName = (items, term) => {
   if (term) {
-    return items.filter(item => toLower(item.name).includes(toLower(term)));
+    return items.filter(item =>
+      toLower(item.label.value).includes(toLower(term))
+    );
   }
-
   return items;
 };
 
 export default {
-  components: {},
+  components: { Pagination },
   name: "index",
   name2: "TablePagination",
   bodyClass: "index-page",
@@ -186,221 +259,346 @@ export default {
   data() {
     return {
       search: null,
-      searched: [],
-      users: [
-        {
-          id: 1,
-          name: "Enterprise Knowledge Enginering",
-          email: "WI Master",
-          gender: "FBW",
-          title: "Prof. Vera Meister"
-        },
-        {
-          id: 2,
-          name: "Betriebssysteme",
-          email: "WI Master",
-          gender: "FBW",
-          title: "Prof. Rother"
-        },
-        {
-          id: 3,
-          name: "Mathe 1",
-          email: "WI Bachelor",
-          gender: "FBW",
-          title: "Prof. Andreas Johannsen"
-        },
-        {
-          id: 4,
-          name: "Prozessmodellierung",
-          email: "WI Master",
-          gender: "FBW",
-          title: "Prof. Vera Meister"
-        },
-        {
-          id: 5,
-          name: "Design Thinking",
-          email: "WI Master",
-          gender: "FBW",
-          title: "Prof. Jochen Scheeg"
-        },
-        {
-          id: 6,
-          name: "Projektmanagement",
-          email: "WI Bachelor",
-          gender: "FBW",
-          title: "Prof. Andreas Johannsen"
-        },
-        {
-          id: 7,
-          name: "Mathe 2",
-          email: "WI Master",
-          gender: "FBW",
-          title: "Prof. Vera Meister"
-        },
-        {
-          id: 8,
-          name: "Mathe 3",
-          email: "WI Master",
-          gender: "FBW",
-          title: "Prof. Jochen Scheeg"
-        },
-        {
-          id: 9,
-          name: "Statistik",
-          email: "WI Bachelor",
-          gender: "FBW",
-          title: "Prof. Andreas Johannsen"
-        }
-      ],
-
-      modules: [
-        {
-          studiengang: "",
-          art: "",
-          modul: "",
-          dozentinnen: "",
-          aktion: ""
-        }
-      ],
-      array: [],
-      array1: [],
-      array2: [],
-      array4: [],
-      array5: [],
-      objA: { check: "Pflicht" },
-      objB: { check: "Wahl" },
-      objC: { check: "SG" },
-      lecturers: false,
+      size: 10,
+      pageCount: 0,
+      pageItems: [],
+      toBeSearched: [],
+      toBePaged: [],
+      moduleList: [],
+      studyProgramList: [],
+      lecturers: [],
+      lecturerLabels: [],
+      department: "",
+      selectedLecturer: "",
+      selectedStudyProgram: "",
+      moduleType: "",
+      language: [],
+      learnTypes: [],
+      exams: [],
+      competence: [],
+      bloomTax: [],
+      colorPagination: 1,
       courses: false,
-      lecturerList: [],
       studyProgram: "",
       course: "",
       labels: [],
       showList: true,
-      arrowCounter: 0
+      arrowCounter: 0,
+      moduleQuery1:
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  " +
+        "PREFIX module: <https://bmake.th-brandenburg.de/module/>   " +
+        "PREFIX schema: <https://schema.org/>   " +
+        "SELECT DISTINCT ?moduleID ?label ?studyprogramLabel ?departmentLabel ?lecturerLabel " +
+        "WHERE {   " +
+        "  ?moduleID a module:Module ;   " +
+        "            schema:isPartOf ?studyprogram ;   " +
+        "            schema:accountablePerson ?lecturer; " +
+        "            module:progrSpecProp_ModuleType ?moduleTypeCode ; " +
+        "            module:progrSpecProp_Language ?languageCode ; " +
+        "            module:about_LResults ?LResultsCode ; " +
+        "            schema:name ?label .   " +
+        '  FILTER(lang(?label) = "de")   ' +
+        "  ?lecturer rdfs:label ?lecturerLabel .   " +
+        "  ?studyprogram schema:name ?studyprogramLabel .   " +
+        '  FILTER(lang(?studyprogramLabel) = "de")   ' +
+        "  ?studyprogram  schema:provider  ?department . " +
+        "  ?department rdfs:label ?departmentLabel . " +
+        "  ?moduleTypeCode schema:valueReference ?moduleTypeValue . " +
+        "  ?moduleTypeValue schema:value ?moduleType . " +
+        "  ?languageCode schema:valueReference ?languageValue . " +
+        "  ?languageValue schema:value ?language . " +
+        "  ?LResultsCode schema:itemListElement ?LResultList . " +
+        "  ?LResultList schema:additionalType ?competence . ",
+      moduleQuery2: " } ORDER BY ?label ",
+      competenceBloom: [],
+      filters: [null, null, null, null, null, null, null]
     };
   },
 
   methods: {
-    deleteRow(index, module) {
-      var idx = this.modules.indexOf(module);
-      if (idx > -1) {
-        this.modules.splice(idx, 1);
-      }
-      this.calculateTotal();
-    },
-    addNewRow() {
-      this.modules.push({
-        product_no: "",
-        product_name: "",
-        product_price: "",
-        product_qty: "",
-        line_total: 0
-      });
-    },
-
-    watch: {
-      course(v) {
-        this.showList = true;
-        let i = this.labels.indexOf(v);
-        let value = this.modules[i];
-        this.$emit("module", value);
-        this.$emit("lecturerList", this.studyProgram);
-        this.$emit("newBoolean", false);
-      },
-      lecturerList(v) {
-        this.course = "";
-        this.modules = [];
-        this.labels = [];
-        this.showList = true;
-        this.queryLecturerList(v);
-      }
-    },
-
-    newUser() {
-      window.alert("Noop");
-    },
+    /*getPagination(value) {
+      this.toBeSearched = value.pageItems
+      this.pageItems = value.pageItems
+    },*/
     searchOnTable() {
-      this.searched = searchByName(this.users, this.search);
+      if (this.search != null && this.search != "") {
+        this.colorPagination = 1;
+        let searchResults = searchByName(this.toBeSearched, this.search);
+        this.toBePaged = searchResults;
+        this.pageItems = searchResults.slice(
+          (this.colorPagination - 1) * this.size,
+          this.colorPagination * this.size
+        );
+        this.pageCount = Math.ceil(this.toBePaged.length / this.size);
+      } else {
+        this.colorPagination = 1;
+        this.toBePaged = this.moduleList;
+        this.pageItems = this.moduleList.slice(
+          (this.colorPagination - 1) * this.size,
+          this.colorPagination * this.size
+        );
+        this.pageCount = Math.ceil(this.toBePaged.length / this.size);
+      }
+    },
+    queryLecturer() {
+      let query =
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+        "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+        "PREFIX thbfbwm: <https://www.th-brandenburg.de/mitarbeiterseiten/fbw/> " +
+        "SELECT DISTINCT ?lecturer ?lecturerLabel " +
+        "WHERE {?lecturer a module:Lecturer; rdfs:label ?lecturerLabel.} ORDER BY ?lecturer";
+      axios
+        .post(
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
+          query,
+          {
+            headers: { "Content-Type": "application/sparql-query" }
+          }
+        )
+        .then(response => {
+          let lecs = response.data.results.bindings;
+          for (let a = 0; a < lecs.length; a++) {
+            this.lecturers.push(lecs[a].lecturer.value);
+            this.lecturerLabels.push(lecs[a].lecturerLabel.value);
+          }
+        })
+        .catch(e => {
+          this.errors.push(e);
+        });
+    },
+    queryStudyProgram() {
+      let query1 =
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+        "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+        "PREFIX schema: <https://schema.org/> " +
+        "SELECT DISTINCT ?studyprogramID ?studyProgramName  " +
+        "WHERE { " +
+        "  ?studyProgram a module:StudyProgram ; " +
+        "          schema:name ?studyProgramName ; " +
+        "          schema:provider ?department . " +
+        '  FILTER(lang(?studyProgramName) = "de") ' +
+        "  BIND(STR(?studyProgram) AS ?studyprogramID) ";
+
+      if (this.department != "" && this.department != null) {
+        query1 =
+          query1 + '  FILTER(STR(?department) = "' + this.department + '")  ';
+      }
+
+      let query2 = "} ORDER BY ?studyProgramName";
+      let query = query1 + query2;
+      axios
+        .post(
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
+          query,
+          {
+            headers: { "Content-Type": "application/sparql-query" }
+          }
+        )
+        .then(response => {
+          this.studyProgramList = response.data.results.bindings;
+        })
+        .catch(e => {
+          this.errors.push(e);
+        });
+    },
+    queryModuleList(query) {
+      axios
+        .post(
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
+          query,
+          {
+            headers: { "Content-Type": "application/sparql-query" }
+          }
+        )
+        .then(response => {
+          //let list = response.data.results.bindings;
+          this.moduleList = response.data.results.bindings;
+          /*for (let a = 0; a < list.length; a++) {
+            let obj = {
+              uri: list[a].module.value,
+              label: list[a].label.value,
+              studyprogram: list[a].studyprogramLabel.value
+            };
+            this.moduleList.push(obj);
+          }*/
+          this.toBePaged = this.moduleList;
+          this.pageCount = Math.ceil(this.moduleList.length / this.size);
+          this.pageItems = this.toBePaged.slice(0, this.size);
+          this.toBeSearched = this.moduleList;
+        })
+        .catch(e => {
+          this.errors.push(e);
+        });
     }
   },
-  created() {
-    this.searched = this.users;
+  watch: {
+    colorPagination(v) {
+      this.pageItems = this.toBePaged.slice((v - 1) * this.size, v * this.size);
+      //this.toBeSearched = this.moduleList.slice((v - 1) * this.size, v * this.size);
+    },
+    department(v) {
+      this.selectedStudyProgram = "";
+      this.queryStudyProgram();
+      if(v != "" && v != null) {
+        //let query = this.moduleQuery1 + ' FILTER(STR(?department) = "' + v + '") ' + this.moduleQuery2;
+        this.filters.splice(0, 1, ' FILTER(STR(?department) = "' + v + '")  ');
+        // [0] = ' FILTER(STR(?department) = "' + v + '")  ';
+        //this.queryModuleList(query)
+      } else {
+        this.filters.splice(0, 1, null);
+      }
+    },
+    selectedStudyProgram(v) {
+      if(v != "" && v != null) {
+        this.filters.splice(1, 1, ' FILTER(STR(?studyprogram) = "' + v + '")  ');
+      } else {
+        this.filters.splice(1, 1, null);
+      }
+    },
+    moduleType(v) {
+      if(v != "" && v != null) {
+        this.filters.splice(2, 1, ' FILTER REGEX(?moduleType, "' + v + '")  ');
+      } else {
+        this.filters.splice(2, 1, null);
+      }
+    },
+    selectedLecturer(v) {
+      if(v != "" && v != null) {
+        let i = this.lecturerLabels.indexOf(v);
+        if(i > 0) {
+          let value = this.lecturers[i];
+          this.filters.splice(3, 1, ' FILTER(STR(?lecturer) = "' + value + '")  ');
+        }
+      } else {
+        this.filters.splice(3, 1, null);
+      }
+    },
+    language(v) {
+      if(v.length > 0) {
+        let arr = [];
+        for (let a = 0; a < v.length; a++) {
+          if (v[a] == "andere") {
+            arr[a] = ' (?language != "de" && ?language != "en") ';
+          } else {
+            arr[a] = ' (?language = "'+ v[a] +'") '
+          }
+        }
+        let filStr = ' FILTER (' + arr.join(' || ') + ')  ';
+        this.filters.splice(4, 1, filStr);
+      } else {
+        this.filters.splice(4, 1, null);
+      }
+    },
+    competence(v) {
+      if(v.length > 0) {
+        this.competenceBloom = new Set()
+        for (let a = 0; a < v.length; a++) {
+          this.competenceBloom.add(v[a]);
+        }
+        if(this.bloomTax.length > 0 && v.includes("SubjectMatterCompetence")) {
+          for (let b = 0; b < this.bloomTax.length; b++) {
+            this.competenceBloom.add(this.bloomTax[b]);
+          }
+        }
+      console.log("comBloom1", this.competenceBloom)
+        if(this.bloomTax.length > 0 && v.includes("SubjectMatterCompetence")) {
+          this.competenceBloom.delete("SubjectMatterCompetence")
+        }
+        console.log("comBloom2", this.competenceBloom)
+        let arr = [];
+        this.competenceBloom.forEach (function(value) {
+          arr.push(' STR(?competence) = "https://bmake.th-brandenburg.de/module/' + value + '" ' )
+        })
+        let filStr = ' FILTER (' + arr.join(' || ') + ')  ';
+        this.filters.splice(5, 1, filStr);
+      } else {
+        this.filters.splice(5, 1, null);
+      }
+    },
+    bloomTax(v) {
+      if(v.length > 0 ) {
+        this.competenceBloom = new Set()
+        for (let a = 0; a < v.length; a++) {
+          this.competenceBloom.add(v[a]);
+        }
+        for (let b = 0; b < this.competence.length; b++) {
+          this.competenceBloom.add(this.competence[b]);
+        }
+        console.log("comBloom3", this.competenceBloom)
+        if(this.competenceBloom.has("SubjectMatterCompetence")) {
+          this.competenceBloom.delete("SubjectMatterCompetence")
+        }
+        console.log("comBloom4", this.competenceBloom)
+        let arr = [];
+        this.competenceBloom.forEach (function(value) {
+          arr.push(' STR(?competence) = "https://bmake.th-brandenburg.de/module/' + value + '" ' )
+        })
+        let filStr = ' FILTER (' + arr.join(' || ') + ')  ';
+        this.filters.splice(5, 1, filStr);
+      } else if (this.competence.length > 0) {
+        this.competenceBloom = new Set()
+        for (let a = 0; a < this.competence.length; a++) {
+          this.competenceBloom.add(this.competence[a]);
+        }
+        let arr = [];
+        this.competenceBloom.forEach (function(value) {
+          arr.push(' STR(?competence) = "https://bmake.th-brandenburg.de/module/' + value + '" ' )
+        })
+        let filStr = ' FILTER (' + arr.join(' || ') + ')  ';
+        this.filters.splice(5, 1, filStr);
+      } else {
+        this.filters.splice(5, 1, null);
+      }
+    },
+    filters(v) {
+      let filStr = "";
+      for (let a = 0; a < v.length; a++) {
+        if (v[a] != "" && v[a] != null) {
+          filStr = filStr + v[a];
+        }
+      }
+      let query = this.moduleQuery1 + filStr + this.moduleQuery2;
+      console.log(query)
+      this.queryModuleList(query)
+    }
+    /*search(v){
+      if (v == null || v == "") {
+        console.log("test")
+        this.toBePaged = this.moduleList;
+        this.colorPagination = 1;
+      }
+    }*/
   },
-
-  changeShowPopUp(value) {
-    this.showPopUp = value;
-  },
-  getModule(value) {
-    this.selectedModule = value;
-    this.basicFilled = false;
-  },
-  getStudyProgram(value) {
-    this.studyProgram = value;
-  },
-  getCode(value) {
-    this.code = value;
-  },
-  getNewBoolean(value) {
-    this.newBoolean = value;
-  },
-  changeBasicFill(value) {
-    this.basicFilled = value;
-  },
-  getModBasicData(value) {
-    this.modBasis = value;
-    this.code = value[0].code.value;
-  },
-  getModOutcomes(value) {
-    this.modOutcome = value;
-  },
-  getModMethod(value) {
-    this.modMethod = value;
-  },
-  getModLiter(value) {
-    this.modLiter = value;
-  },
-  getModTeacher(value) {
-    this.modTeacher = value;
-  },
-  getFormType(value) {
-    this.form = value;
+  mounted() {
+    //this.searched = this.users;
+    let query = this.moduleQuery1 + this.moduleQuery2;
+    this.queryLecturer();
+    this.queryStudyProgram();
+    this.queryModuleList(query);
   }
 };
 </script>
 <style lang="scss">
-.faded {
-  opacity: 0.2 !important;
-  transition: 0.3s opacity !important;
-}
-.highlight {
-  opacity: 1 !important;
-}
+/*.md-table.md-theme-default .md-table-content {
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+}*/
 
-g.selected rect {
-  stroke: #ffc107 !important;
-  stroke-width: 2px !important;
-}
-
-.md-button.choosed {
-  background-color: #ea80fc !important;
-}
-
-#download {
+/*#download {
   background-color: #fff9c4 !important;
 }
 #download:hover {
   background-color: #fcdd86 !important;
   background-color: #ea80fc;
-}
+}*/
 
-.header-filter {
+/*.header-filter {
   padding: 5%;
-}
+}*/
 
-.brand h3 {
+/*.brand h3 {
   margin-top: 0 !important;
-}
+}*/
 
 @media all and (min-width: 991px) {
   .btn-container {
