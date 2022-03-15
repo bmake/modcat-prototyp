@@ -488,11 +488,9 @@ export default {
             this.competenceBloom.add(this.bloomTax[b]);
           }
         }
-      console.log("comBloom1", this.competenceBloom)
         if(this.bloomTax.length > 0 && v.includes("SubjectMatterCompetence")) {
           this.competenceBloom.delete("SubjectMatterCompetence")
         }
-        console.log("comBloom2", this.competenceBloom)
         let arr = [];
         this.competenceBloom.forEach (function(value) {
           arr.push(' STR(?competence) = "https://bmake.th-brandenburg.de/module/' + value + '" ' )
@@ -512,11 +510,9 @@ export default {
         for (let b = 0; b < this.competence.length; b++) {
           this.competenceBloom.add(this.competence[b]);
         }
-        console.log("comBloom3", this.competenceBloom)
         if(this.competenceBloom.has("SubjectMatterCompetence")) {
           this.competenceBloom.delete("SubjectMatterCompetence")
         }
-        console.log("comBloom4", this.competenceBloom)
         let arr = [];
         this.competenceBloom.forEach (function(value) {
           arr.push(' STR(?competence) = "https://bmake.th-brandenburg.de/module/' + value + '" ' )
@@ -546,12 +542,10 @@ export default {
         }
       }
       let query = this.moduleQuery1 + filStr + this.moduleQuery2;
-      console.log(query)
       this.queryModuleList(query)
     }
     /*search(v){
       if (v == null || v == "") {
-        console.log("test")
         this.toBePaged = this.moduleList;
         this.colorPagination = 1;
       }
