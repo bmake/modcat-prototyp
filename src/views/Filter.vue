@@ -166,7 +166,7 @@
                   md-label="Modultitel"
                   md-sort-by="label.value"
                   style="width: 38%"
-                  ><router-link :to="'/browsing/modul' + item.moduleID.value.substring(38)">{{ item.label.value }}</router-link></md-table-cell
+                  ><router-link :to="{ name: 'modul', params: { code: item.moduleID.value.substring(39) }}">{{ item.label.value }}</router-link></md-table-cell
                 >
                 <md-table-cell
                   md-label="Studiengang"

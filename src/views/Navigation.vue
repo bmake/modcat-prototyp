@@ -27,24 +27,7 @@
         <div class="section section-examples">
           <div class="container-fluid text-center">
             <div class="md-layout">
-              <!----
-                          <div class="box md-layout-item">
-                              <h2 class="header" style="background-color:#4CAF50"><b>{{ browsen }}</b></h2>
-                              <h4>Suchen und finden Sie beliebige Daten und Auswertungen zu unseren Modulen – ganz ohne Anmeldung.</h4>
-                          </div>
-
-                          <div class="box md-layout-item">
-                              <h2 class="header" style="background-color:#4CAF50"><b>{{ dokumentieren }}</b></h2>
-                              <a>Dokumentieren Sie die Ihnen zugeordneten Module – melden Sie sich dafür mit Ihrem THB-Account an.</a>                              
-                          </div>
-
-                          <div class="box md-layout-item">
-                              <h2 class="header" style="background-color:#4CAF50"><b>{{ editieren }}</b></h2>
-                              <a>Aktualisieren Sie die von Ihnen verantworteten Module. Dafür benötigen Sie zusätzliche Schreibrechte.</a>                              
-
-                          </div> ---->
               <div class="cards">
-
                 <div class="columns md-layout-item">
                   <ul class="topic">
                     <li class="header">
@@ -57,7 +40,7 @@
                       >
                     </li>
                     <li class="description">
-                      <router-link to="/Browsing"><b>Anschauen</b></router-link>
+                      <router-link :to="{ name: 'browsing'}"><b>Anschauen</b></router-link>
                     </li>
                   </ul>
                 </div>
@@ -74,7 +57,7 @@
                       >
                     </li>
                     <li class="description">
-                      <router-link to="/Dokumentieren"><b>Anschauen</b></router-link>
+                      <router-link :to="{ name: 'dokumentieren'}"><b>Anschauen</b></router-link>
                     </li>
                   </ul>
                 </div>
@@ -91,7 +74,7 @@
                       >
                     </li>
                     <li class="description">
-                      <router-link to="/Starter"><b>Anschauen</b></router-link>
+                      <router-link :to="{ name: 'starter'}"><b>Anschauen</b></router-link>
                     </li>
                   </ul>
                 </div>

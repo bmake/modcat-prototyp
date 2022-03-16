@@ -102,7 +102,6 @@ export default new Router({
     },
     {
       path: "/browsing/modul/:code",
-      name: "course",
       components: { default: Modul, header:  '', footer: MainFooter },
       //nested routes
       children: [

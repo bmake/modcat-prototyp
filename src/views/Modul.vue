@@ -58,7 +58,6 @@ export default {
         })
         .catch(e => {
           this.errored = true;
-          console.log(error);
           
         })
         .finally(() => this.loading = false)
