@@ -1,56 +1,11 @@
 <template>
   <div class="wrapper">
     <md-content style="border-color: #0070c0">
-      <!-- Nach FB Wirtschaft oder Informatik werden unterschiedliche Templates angewählt,
-        da das zurückgegebene json mit teils fehlenden keys aufgebaut ist. Es sollte eine
-        elegantere Lösung mit durchsuchen geben, die bestimmt, ob ein einzelnes {{}} ge-
-        nutzt werden kann. So ist der Code recht redundant. -->
-      <div v-if="resultSubQ1[0].FBcode.value == 'FBI'" style="width: 100%">
-        <h3 style="color: #0070c0"><b>Rahmendaten</b></h3>
-        
+      <div style="width: 100%">
         <h4>Aktuelle Studien- und Prüfungsordnung (SPO)</h4>
-        <a :href="resultBase[0].spolink.value" target="_blank">
+        <div v-if="Object.keys(this.resultBase[0]).includes('spolink') && Object.keys(this.resultBase[0]).includes('sponame')"><a :href="resultBase[0].spolink.value" target="_blank">
           {{ resultBase[0].sponame.value }}
-        </a> <br>
-        <md-divider
-            style="height:2px; border-width:0; color: #92d050; background-color: #0070c0"
-          />
-
-        <h4>SPO-relevante Daten</h4>
-        <b>Typ:</b> {{ resultBase[0].modType_name.value }} <br>
-        <b>SWS:</b> {{ resultBase[0].swsSum.value }} <br>
-        <b>Rhythmus:</b> {{ resultBase[0].courseMode.value }} <br>
-        <b>Dauer:</b> {{ resultBase[0].duration.value }} <br>
-        <b>Semester:</b> {{ resultBase[0].studysem.value }} <br>
-        <b>ECTS:</b> {{ resultBase[0].ects.value }} <br>
-        <div v-if="resultBase[0].pre.value != ''"><b>Vorraussetzung:</b> {{ resultBase[0].pre.value }} <br></div>
-        
-        <md-divider
-            style="height:2px; border-width:0; color: #92d050; background-color: #0070c0"
-          />
-
-        <h4>Modulverantwortliche und Lehrende</h4>
-        <b>Verantwortlich: </b>
-        <a :href="resultBase[0].accPerson.value" target="_blank">
-          {{ resultBase[0].accPersonLabel.value }}
-        </a> <br>
-        <md-divider
-            style="height:2px; border-width:0; color: #92d050; background-color: #0070c0"
-          />
-
-        <h4>Weitere Informationen</h4>       
-        <b>Lehrveranstaltungen:</b> {{ resultBase[0].learnTypes.value }} <br>
-        <!-- comment könnte vorhanden sein -->
-        <b>Sprache(n):</b> {{ resultBase[0].languages.value }} <br>
-      </div>
-      
-      <div v-if="resultSubQ1[0].FBcode.value == 'FBW'" style="width: 100%">
-        <h3 style="color: #0070c0"><b>Rahmendaten</b></h3>
-        
-        <h4>Aktuelle Studien- und Prüfungsordnung (SPO)</h4>
-        <a :href="resultBase[0].spolink.value" target="_blank">
-          {{ resultBase[0].sponame.value }}
-        </a> <br>
+        </a> <br></div>
         <md-divider
             style="height:2px; border-width:0; color: #92d050; background-color: #0070c0"
           />
@@ -59,11 +14,12 @@
         <b>Typ:</b> {{ resultBase[0].modType_name.value }} <br>
         <b>Rhythmus:</b> {{ resultBase[0].courseMode.value }} <br>
         <b>Dauer:</b> {{ resultBase[0].duration.value }} <br>
+        <div v-if="Object.keys(this.resultBase[0]).includes('studysem')"><b>Semester:</b> {{ resultBase[0].studysem.value }} <br></div>
         <b>ECTS:</b> {{ resultBase[0].ects.value }} <br>
         <b>SWS:</b> {{ resultBase[0].swsSum.value }} <br>
-        <div v-if="(resultBase[0].eduUse.value != '')"><b>Zweck:</b> {{ resultBase[0].eduUse.value }} <br></div>
-        <div v-if="resultBase[0].pre.value != ''"><b>Vorraussetzung:</b> {{ resultBase[0].pre.value }} <br></div>
-        
+        <div v-if="(Object.keys(this.resultBase[0]).includes('eduUse') && resultBase[0].eduUse.value != '')"><b>Zweck:</b> {{ resultBase[0].eduUse.value }} <br></div>
+        <div v-if="Object.keys(this.resultBase[0]).includes('pre') && resultBase[0].pre.value != ''"><b>Vorraussetzung:</b> {{ resultBase[0].pre.value }} <br></div>
+        <div v-if="Object.keys(this.resultBase[0]).includes('basedOnModuls')"><b>Voraussetzung:</b> {{ resultBase[0].basedOnModuls.value }}</div>
         <md-divider
             style="height:2px; border-width:0; color: #92d050; background-color: #0070c0"
           />
@@ -77,15 +33,17 @@
             style="height:2px; border-width:0; color: #92d050; background-color: #0070c0"
           />
 
-        <h4>Weitere Informationen</h4>       
-        <b>Lehrveranstaltungen:</b> {{ resultBase[0].learnTypes.value }} <br>
-        <div v-if="(resultBase[0].comment.value != '')"><b>Kommentar:</b> {{ resultBase[0].comment.value }} <br></div>
-        <b>Sprache(n):</b> {{ resultBase[0].languages.value }} <br>
-        <b>Notenanteil:</b> {{ resultBase[0].grade_name.value }} <br>
-        <b>Website:</b>
-        <a :href="resultBase[0].url.value" target="_blank">
-          {{ resultBase[0].url.value }}
-        </a> <br>
+        <h4>Weitere Informationen</h4>
+        <div v-if="Object.keys(this.resultBase[0]).includes('learnTypes')"><b>Lehrveranstaltungen:</b> {{ resultBase[0].learnTypes.value }} <br></div>
+        <div v-if="(Object.keys(this.resultBase[0]).includes('comment') && resultBase[0].comment.value != '')"><b>Kommentar:</b> {{ resultBase[0].comment.value }} <br></div>
+        <div v-if="Object.keys(this.resultBase[0]).includes('languages')"><b>Sprache(n):</b> {{ resultBase[0].languages.value }} <br></div>
+        <div v-if="Object.keys(this.resultBase[0]).includes('grade_name')"><b>Notenanteil:</b> {{ resultBase[0].grade_name.value }} <br></div>
+        <div v-if="Object.keys(this.resultBase[0]).includes('url')">
+          <b>Website:</b>
+          <a :href="resultBase[0].url.value" target="_blank">
+            {{ resultBase[0].url.value }}
+          </a> <br>
+        </div>
       </div>
     </md-content>
   </div>
@@ -306,7 +264,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .md-content {
   width: 100%;
   display: inline-flex;
