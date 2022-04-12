@@ -19,7 +19,12 @@
         <b>SWS:</b> {{ resultBase[0].swsSum.value }} <br>
         <div v-if="(Object.keys(this.resultBase[0]).includes('eduUse') && resultBase[0].eduUse.value != '')"><b>Zweck:</b> {{ resultBase[0].eduUse.value }} <br></div>
         <div v-if="Object.keys(this.resultBase[0]).includes('pre') && resultBase[0].pre.value != ''"><b>Vorraussetzung:</b> {{ resultBase[0].pre.value }} <br></div>
-        <div v-if="Object.keys(this.resultBase[0]).includes('basedOnModuls')"><b>Voraussetzung:</b> {{ resultBase[0].basedOnModuls.value }}</div>
+        <div v-if="Object.keys(this.resultBase[0]).includes('basedOnModulLabel') && Object.keys(this.resultBase[0]).includes('basedOn')">
+          <b>Voraussetzung:</b>
+          <router-link :to="resultBase[0].basedUrl.value">
+            {{ resultBase[0].basedOnModulLabel.value }}
+          </router-link>
+        </div>
         <md-divider
             style="height:2px; border-width:0; color: #92d050; background-color: #0070c0"
           />
@@ -122,7 +127,7 @@ export default {
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  " +
         "PREFIX module: <https://bmake.th-brandenburg.de/module/>  " +
         "PREFIX schema: <https://schema.org/>  " +
-        "SELECT DISTINCT ?code ?label ?accPerson ?accPersonLabel ?duration ?semester ?modType_name ?grade_name ?learnTypes ?eduUse ?swsSum ?ects ?studysem ?courseMode ?pre ?basedOnModuls ?url ?comment ?languages ?sponame ?spolink" +
+        "SELECT DISTINCT ?code ?label ?accPerson ?accPersonLabel ?duration ?semester ?modType_name ?grade_name ?learnTypes ?eduUse ?swsSum ?ects ?studysem ?courseMode ?pre ?basedOn ?basedOnModulLabel ?basedCode ?basedUrl ?url ?comment ?languages ?sponame ?spolink" +
         " WHERE {  " +
         "<" +
         moduleUri +
@@ -193,19 +198,14 @@ export default {
         " } " +
           // Alle Module (URI) bei "basiert auf", getrennt durch ' | '
         " OPTIONAL { " +
-        ' SELECT (GROUP_CONCAT(DISTINCT ?basedOnModul; separator=" | ") as ?basedOnModuls) ' +
-        "    WHERE { " +
+        // Vorausgesetztes Modul
         "<" +
         moduleUri +
         ">  schema:isBasedOn ?basedOn . " +
-          // Abhängigkeit zwischen Modulen und Fachbereichen abzufragen
-        " ?basedOn schema:name ?basedOnModulLabel ;   " +
-        "          schema:isPartOf ?studyprogram .   " +
-        "  ?studyprogram  schema:provider  ?department  " +
+        " ?basedOn schema:name ?basedOnModulLabel . " +
         ' FILTER(lang(?basedOnModulLabel) = "de") ' +
-        "  BIND(SUBSTR(STR(?department), 44) AS ?studyprogramLabel)   " +
-        '  BIND(CONCAT(STR(?basedOn), " @ ", ?basedOnModulLabel, " @ ", ?studyprogramLabel) as ?basedOnModul) ' +
-        "   } " +
+        'BIND(replace(str(?basedOn), str(module:), "") as ?basedCode) ' +
+        'BIND(concat("/browsing/modul/", replace(str(?basedOn), str(module:), "")) as ?basedUrl) ' +
         " } " +
         //URL des Moduls
         " OPTIONAL { <" +
