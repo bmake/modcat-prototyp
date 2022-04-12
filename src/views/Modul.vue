@@ -7,7 +7,8 @@
           <b>Modulbeschreibung: </b><router-link :to="{ name: 'modul', params: { code: $route.params.code }}">{{ info[0].label.value }}</router-link>
         </h3>
         <h3>
-          <b>Studiengang: </b><router-link to="/#" v-for="(stud, id) in info" :key="id">{{ info[id].studyProgramName.value }} </router-link>       
+          <div></div>
+          <b>Studiengang: </b><router-link to="/#"  v-if="Object.keys(this.info[0]).includes('studyPs')">{{ info[0].studyPs.value }} </router-link>       
           <b>Fachbereich: </b><router-link to="/#">{{ info[0].FBcode.value }}</router-link>
 
         </h3>
@@ -76,7 +77,7 @@ export default {
         "PREFIX fbt: <https://www.th-brandenburg.de/mitarbeiterseiten/fbt/> " +
         "PREFIX schema: <https://schema.org/> " +
   
-        "SELECT DISTINCT ?url ?label ?studyProgramName ?FBcode" +
+        "SELECT DISTINCT ?url ?label ?studyPs ?FBcode" +
         " WHERE { " +
 	      //Modul
   	    '?url  schema:courseCode ' + modifiedCode + ' . ' +
@@ -87,12 +88,21 @@ export default {
         'FILTER(lang(?label) = "de") ' +
 
         //Studiengang
-        "?studyProgram a module:StudyProgram ; " +
-        "  schema:name ?studyProgramName . " +
-        'FILTER(lang(?studyProgramName) = "de") ' +
+        
+
+        "OPTIONAL { " +
+        '  SELECT (GROUP_CONCAT(?studyProgramName; separator=", ") as ?studyPs) ' +
+        "    WHERE { " +
+        '      ?url  schema:courseCode ' + modifiedCode + ' ;' +
+        "            schema:isPartOf ?studyProgram ." +
+        "      ?studyProgram a module:StudyProgram ." +
+        "  ?studyProgram schema:name ?studyProgramName ." +
+        '      FILTER(lang(?studyProgramName) = "de")' +
+        "    }" +
+        "} " +
 
         //Fachbereich
-        "?studyProgram schema:provider ?department ." +
+        "?studyProgram schema:provider ?department . " +
         "?department rdfs:label ?FBcode ;" + //Kürzel wie FBW
         "        rdfs:name ?name." + //vollständiger Name
         "}";
