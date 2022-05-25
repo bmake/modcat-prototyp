@@ -18,7 +18,7 @@
 
 <template>
   <div class="wrapper">
-    <div class="header-filter" style="background-color: #FF8F00;">
+    <div class="header-filter" style="background-color: #cc0a2f;">
       <div class="md-layout">
         <div class="md-layout-item">
           <div>
@@ -102,7 +102,7 @@ import {selectQueries} from "./queries";
 
 export default {
   components: {
-    
+
   },
   name: "index",
   bodyClass: "index-page",
@@ -121,7 +121,7 @@ export default {
          lecturers: false,
          courses: false
 
-      
+
     };
   },
   methods: {
@@ -282,7 +282,7 @@ export default {
   }
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .faded {
   opacity: 0.2 !important;
   transition: 0.3s opacity !important;

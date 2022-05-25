@@ -1,18 +1,17 @@
 <template>
   <div class="wrapper">
-    <div class="header-filter" style="background-color: #FF8F00;">
+    <div class="header-filter" style="background-color: #cc0a2f; text-align: center">
       <div class="md-layout">
         <div class="md-layout-item">
-          <div>
+          <div class="index-page">
             <div class="brand">
               <img
                 src="../../img/logo.svg"
                 class="img"
-                width="10%"
+                width="9%"
                 height="auto"
               />
               <h1>Modulkatalog @THB</h1>
-              <h3>Fachbereich Wirtschaft</h3>
               <div>
                 <Select
                   @module="getModule"
@@ -112,7 +111,7 @@
                   </p>
                   <md-button
                     @click="generatePDF"
-                    class="md-warning md-lg"
+                    class="md-info md-lg"
                     :disabled="selectedModule == ''"
                     >Modulbeschreibung herunterladen</md-button
                   >
@@ -342,6 +341,7 @@ export default {
   },
 };
 </script>
+<!--src="vue-multiselect/dist/vue-multiselect.min.css"-->
 <style src="vue-multiselect/dist/vue-multiselect.min.css">
 .faded {
   opacity: 0.2 !important;
@@ -370,10 +370,35 @@ g.selected rect {
 
 .header-filter {
   padding: 5%;
+  max-height: 10% !important;
 }
 
 .brand h3 {
   margin-top: 0 !important;
+}
+
+.select {
+  /*padding: 1em;*/
+  /*padding-bottom: 20px !important;*/
+}
+
+.select .md-field.md-theme-default label {
+  color: #e3f2fd !important;
+  font-size: large;
+}
+
+.select .md-field.md-theme-default .md-menu.md-select input {
+  -webkit-text-fill-color: white !important;
+  font-weight: bold !important;
+  font-size: large !important;
+  margin-top: 5px;
+}
+
+.select .md-field.md-autocomplete.md-theme-default .md-menu input {
+  -webkit-text-fill-color: white !important;
+  font-weight: bold !important;
+  font-size: large !important;
+  margin-top: 5px;
 }
 
 @media all and (min-width: 991px) {
@@ -410,30 +435,6 @@ g.selected rect {
   .brand2 h2 {
     font-size: xx-large !important;
   }
-}
-
-.select {
-  padding: 5em;
-}
-
-.select .md-field.md-theme-default label {
-  color: #2e2e2e !important;
-  font-size: large;
-  top: -0.8rem !important;
-}
-
-.select .md-field.md-theme-default .md-menu.md-select input {
-  -webkit-text-fill-color: white !important;
-  font-weight: bold !important;
-  font-size: large !important;
-  margin-top: 5px;
-}
-
-.select .md-field.md-autocomplete.md-theme-default .md-menu input {
-  -webkit-text-fill-color: white !important;
-  font-weight: bold !important;
-  font-size: large !important;
-  margin-top: 5px;
 }
 
 .md-menu-content {

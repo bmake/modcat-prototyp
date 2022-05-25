@@ -1,9 +1,6 @@
 <template>
   <div class="wrapper">
-    <div
-      class="header-filter"
-      style="background-color: #FF8F00; text-align: center"
-    >
+    <div class="header-filter" style="background-color: #cc0a2f; text-align: center; padding: 10%">
       <div class="md-layout">
         <div class="md-layout-item">
           <div class="index-page">
@@ -28,16 +25,14 @@
           <div class="container-fluid text-center">
             <div class="md-layout">
               <div class="cards">
-                <div class="columns md-layout-item">
-                  <ul class="topic">
+                <div class="columns md-layout-item" style="height: 100%">
+                  <ul class="topic" style="height: 90%">
                     <li class="header">
                       <b>{{ browsen }}</b>
                     </li>
                     <li class="description">
-                      <b
-                        >Suchen und finden Sie beliebige Daten und Auswertungen
-                        zu unseren Modulen – ganz ohne Anmeldung.</b
-                      >
+                      <b>Suchen und finden Sie beliebige Daten und Auswertungen
+                        zu unseren Modulen – ganz ohne Anmeldung.</b>
                     </li>
                     <li class="description">
                       <router-link :to="{ name: 'browsing'}"><b>Anschauen</b></router-link>
@@ -45,8 +40,8 @@
                   </ul>
                 </div>
                 <!--to activate the linking fnuction of the card, change '<div>' to '<router-link>'-->
-                <div class="columns md-layout-item">
-                  <ul class="topic">
+                <div class="columns md-layout-item" style="height: 100%">
+                  <ul class="topic" style="height: 90%">
                     <li class="header">
                       <b>{{ dokumentieren }}</b>
                     </li>
@@ -62,8 +57,8 @@
                   </ul>
                 </div>
 
-                <div class="columns md-layout-item">
-                  <ul class="topic">
+                <div class="columns md-layout-item" style="height: 100%">
+                  <ul class="topic" style="height: 90%">
                     <li class="header">
                       <b>{{ editieren }}</b>
                     </li>
@@ -129,7 +124,7 @@ export default {
 
 .topic {
   list-style-type: none;
-  border: 3px solid rgb(255, 161, 74);
+  border: 3px solid lightcoral;
   border-radius: 10px;
   margin: 25px;
   padding: 0;
@@ -154,10 +149,12 @@ export default {
 
 .topic .description {
   font-size: 20px;
+  color: #323232;
 }
 
 .header-filter {
-  padding: 12% !important;
+  padding: 5%;
+  max-height: 20% !important;
 }
 
 .brand h3 {
@@ -218,29 +215,6 @@ export default {
   }
 }
 
-.select {
-  padding: 5em;
-}
-
-.select .md-field.md-theme-default label {
-  color: #2e2e2e !important;
-  font-size: large;
-}
-
-.select .md-field.md-theme-default .md-menu.md-select input {
-  -webkit-text-fill-color: white !important;
-  font-weight: bold !important;
-  font-size: large !important;
-  margin-top: 5px;
-}
-
-.select .md-field.md-autocomplete.md-theme-default .md-menu input {
-  -webkit-text-fill-color: white !important;
-  font-weight: bold !important;
-  font-size: large !important;
-  margin-top: 5px;
-}
-
 .md-menu-content {
   max-width: 400px !important;
 }
@@ -267,6 +241,30 @@ span.md-highlight-text-match {
   font-size: small !important;
 }
 
+.select {
+  /*padding: 1em;*/
+  /*padding-bottom: 20px !important;*/
+}
+
+.select .md-field.md-theme-default label {
+  color: #e3f2fd !important;
+  font-size: large;
+}
+
+.select .md-field.md-theme-default .md-menu.md-select input {
+  -webkit-text-fill-color: white !important;
+  font-weight: bold !important;
+  font-size: large !important;
+  margin-top: 5px;
+}
+
+.select .md-field.md-autocomplete.md-theme-default .md-menu input {
+  -webkit-text-fill-color: white !important;
+  font-weight: bold !important;
+  font-size: large !important;
+  margin-top: 5px;
+}
+
 @media all and (max-width: 700px) {
   .md-menu-content {
     max-width: 200px !important;
@@ -275,14 +273,10 @@ span.md-highlight-text-match {
     margin-left: 5px !important;
     font-size: small !important;
   }
-  .select {
+  /*.select {
     padding: 3em;
     margin-bottom: 3em;
-  }
-  .select .md-layout-item.md-size-25 {
-    min-width: 100%;
-    max-width: 100%;
-  }
+  }*/
   .md-autocomplete + strong {
     margin-top: 36px;
     display: block;

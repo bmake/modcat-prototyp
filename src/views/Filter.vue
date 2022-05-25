@@ -35,6 +35,7 @@
               name="studyProgram"
               id="studyProgram"
             >
+              <md-option value="">- - - - - Auswahl löschen - - - - -</md-option>
               <md-option
                 v-for="(sp, index) in studyProgramList"
                 :value="sp.studyprogramID.value"
@@ -189,7 +190,7 @@
               </md-table-row>
             </md-table>
             <pagination
-              type="warning"
+              type="primary"
               v-model="colorPagination"
               :page-count="pageCount"
               style="padding-top: 10px; padding-bottom: 10px; padding-left: 40%"
@@ -252,10 +253,10 @@ export default {
       studyProgramList: [],
       lecturers: [],
       lecturerLabels: [],
-      department: "",
+      department: [],
       selectedLecturer: "",
       selectedStudyProgram: "",
-      moduleType: "",
+      moduleType: [],
       language: [],
       learnTypes: [],
       exams: [],
@@ -272,7 +273,7 @@ export default {
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  " +
         "PREFIX module: <https://bmake.th-brandenburg.de/module/>   " +
         "PREFIX schema: <https://schema.org/>   " +
-        "SELECT DISTINCT ?moduleID ?label ?studyprogramLabel ?departmentLabel ?lecturerLabel " +
+        "SELECT DISTINCT ?moduleID ?label ?studyprogramLabel ?departmentLabel (SAMPLE(?lecturerLabelSample) as ?lecturerLabel) " +
         "WHERE {   " +
         "  ?moduleID a module:Module ;   " +
         "            schema:isPartOf ?studyprogram ;   " +
@@ -282,7 +283,7 @@ export default {
         "            module:about_LResults ?LResultsCode ; " +
         "            schema:name ?label .   " +
         '  FILTER(lang(?label) = "de")   ' +
-        "  ?lecturer rdfs:label ?lecturerLabel .   " +
+        "  ?lecturer rdfs:label ?lecturerLabelSample .   " +
         "  ?studyprogram schema:name ?studyprogramLabel .   " +
         '  FILTER(lang(?studyprogramLabel) = "de")   ' +
         "  ?studyprogram  schema:provider  ?department . " +
@@ -293,7 +294,7 @@ export default {
         "  ?languageValue schema:value ?language . " +
         "  ?LResultsCode schema:itemListElement ?LResultList . " +
         "  ?LResultList schema:additionalType ?competence . ",
-      moduleQuery2: " } ORDER BY ?label ",
+      moduleQuery2: " } GROUP BY ?moduleID ?label ?studyprogramLabel ?departmentLabel   ORDER BY ?label ",
       competenceBloom: [],
       filters: [null, null, null, null, null, null, null]
     };
@@ -333,8 +334,8 @@ export default {
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
         "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
         "PREFIX thbfbwm: <https://www.th-brandenburg.de/mitarbeiterseiten/fbw/> " +
-        "SELECT DISTINCT ?lecturer ?lecturerLabel " +
-        "WHERE {?lecturer a module:Lecturer; rdfs:label ?lecturerLabel.} ORDER BY ?lecturer";
+        "SELECT DISTINCT ?lecturer (SAMPLE(?lecturerLabelSample) as ?lecturerLabel) " +
+        "WHERE {?lecturer a module:Lecturer; rdfs:label ?lecturerLabelSample.}  GROUP BY ?lecturer  ORDER BY ?lecturer";
       axios
         .post(
           "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
@@ -367,9 +368,14 @@ export default {
         '  FILTER(lang(?studyProgramName) = "de") ' +
         "  BIND(STR(?studyProgram) AS ?studyprogramID) ";
 
-      if (this.department != "" && this.department != null) {
+      if (this.department.length > 0) {
+        let arr = [];
+        for (let a = 0; a < this.department.length; a++) {
+          arr[a] = ' STR(?department) ="'+ this.department[a] +'" '
+        }
+        let filStr = ' FILTER (' + arr.join(' || ') + ')  ';
         query1 =
-          query1 + '  FILTER(STR(?department) = "' + this.department + '")  ';
+          query1 + filStr;
       }
 
       let query2 = "} ORDER BY ?studyProgramName";
@@ -427,9 +433,15 @@ export default {
     department(v) {
       this.selectedStudyProgram = "";
       this.queryStudyProgram();
-      if(v != "" && v != null) {
+
+      if(v.length > 0) {
+        let arr = [];
+        for (let a = 0; a < v.length; a++) {
+          arr[a] = ' STR(?department) ="'+ v[a] +'" '
+        }
+        let filStr = ' FILTER (' + arr.join(' || ') + ')  ';
         //let query = this.moduleQuery1 + ' FILTER(STR(?department) = "' + v + '") ' + this.moduleQuery2;
-        this.filters.splice(0, 1, ' FILTER(STR(?department) = "' + v + '")  ');
+        this.filters.splice(0, 1, filStr);
         // [0] = ' FILTER(STR(?department) = "' + v + '")  ';
         //this.queryModuleList(query)
       } else {
@@ -444,8 +456,13 @@ export default {
       }
     },
     moduleType(v) {
-      if(v != "" && v != null) {
-        this.filters.splice(2, 1, ' FILTER REGEX(?moduleType, "' + v + '")  ');
+      if(v.length > 0) {
+        let arr = [];
+        for (let a = 0; a < v.length; a++) {
+          arr[a] = ' REGEX(?moduleType, "'+ v[a] +'") '
+        }
+        let filStr = ' FILTER (' + arr.join(' || ') + ')  ';
+        this.filters.splice(2, 1, filStr);
       } else {
         this.filters.splice(2, 1, null);
       }
