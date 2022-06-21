@@ -11,23 +11,8 @@
       @submit.prevent="validateInput"
       style="padding-right: 2em"
     >
-      <!--<div class="md-layout-item md-size-33">
-        <md-field>
-          <label>Modulkürzel</label>
-          <md-input
-            v-if="modBasis.length > 0"
-            v-model="modBasis[0].code.value"
-            name="modKuerzel"
-            id="modKuerzel"
-            md-dense
-            disabled
-          />
-          <md-input v-else disabled />
-        </md-field>
-      </div>-->
-
       <!--      SPO unabhängige Eigenschaften-->
-      <div class="md-layout-item md-size-70">
+      <div class="md-layout-item md-size-60">
         <md-field :class="getValidationClass('label')">
           <label>Modulbezeichnung*</label>
           <md-input
@@ -44,10 +29,10 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item md-size-30">
-        <md-field class="xs" :class="getValidationClass('accPerson')">
-          <label>Modulverantwortliche/r*</label>
-          <md-select
+      <div class="md-layout-item md-size-40">
+        <!--<md-field class="xs" :class="getValidationClass('accPerson')">
+          <label>Modulverantwortliche/r*</label>-->
+        <!--<md-select
             v-if="modBasisOrigin[0].accPerson"
             v-model="modBasis.accPerson.value"
             @md-selected="countLecturer++"
@@ -63,14 +48,34 @@
               {{ lecturer.lecturerLabel.value }}
             </md-option>
           </md-select>
-          <md-select v-else md-dense disabled />
+          <md-select v-else md-dense disabled />-->
+        <md-autocomplete
+          v-model="modBasis.accPersonLabel.value"
+          :md-options="lecturerLabels"
+          :disabled="role != 2"
+          @md-changed="addChanged('accPerson')"
+          class="xs"
+          :class="getValidationClass('accPerson')"
+        >
+          <label>Modulverantwortliche/r*</label>
+          <div slot="md-autocomplete-item" slot-scope="{ item, term }">
+            <md-highlight-text :md-term="term">{{ item }}</md-highlight-text>
+          </div>
+
+          <!--<div slot="md-autocomplete-empty" slot-scope="{ term }" v-if="showList">
+              <a @click="$emit('showPopUp'), (showList = false)"
+              >Nichts unter "{{ term }}" gefunden. <br />
+                Legen Sie ein neues Modul an</a
+              >-->
+          <!--</div>-->
           <span
             style="margin-bottom: 20px"
             class="md-error"
             v-if="!$v.modBasis.accPerson.value.required"
             >Pflichtfeld</span
           >
-        </md-field>
+        </md-autocomplete>
+        <!--</md-field>-->
       </div>
 
       <div class="md-layout-item md-size-25">
@@ -280,7 +285,8 @@
 
       <div class="md-layout-item md-size-100">
         <md-field>
-          <label>SPO-relevante Vorraussetzungen</label>
+          <label>Voraussetzungen (mit / getrennt)</label>
+          <!--<label v-else>Vorraussetzungen (laut SPO)</label>-->
           <md-textarea
             v-if="modBasisOrigin[0].pre"
             v-model="modBasis.pre.value"
@@ -289,6 +295,36 @@
             md-autogrow
           />
           <md-input v-else />
+        </md-field>
+      </div>
+
+      <!--alternative Eigenschaften-->
+      <!--<div v-if="checkInfoStudyPro" class="md-layout-item md-size-100">
+        <md-field>
+          <label>Empfohlene Voraussetzungen</label>
+          <md-textarea
+            v-model="modBasis.eduLevel.value"
+            @change="addChanged('eduLevel')"
+            :disabled="role != 2"
+            md-autogrow
+          />
+        </md-field>
+      </div>-->
+      <div v-if="checkInfoStudyPro" class="chips md-layout-item md-size-100">
+        <md-field class="md-field xs md-theme-default md-has-value">
+          <label>Basiert auf</label>
+          <multiselect
+            v-if="modBasis.basedOnModuls"
+            style="margin-top: 2px"
+            v-model="selectedBased"
+            :options="moduleList"
+            :multiple="true"
+            track-by="uri"
+            :custom-label="customLabel"
+            :disabled="role != 2"
+            @input="addChanged('basedOnModuls')"
+          >
+          </multiselect>
         </md-field>
       </div>
 
@@ -319,11 +355,11 @@
           <md-input v-else :disabled="role != 2" />
         </md-field>
       </div>
-      <div v-if="!checkInfoStudyPro" class="md-layout-item md-size-100">
-        <md-field v-if="!checkInfoStudyPro">
-          <label>Beschreibung und Kommentare zum Modul</label>
+      <div class="md-layout-item md-size-100">
+        <md-field>
+          <label>Weitere Kommentare</label>
           <md-textarea
-            v-if="modBasisOrigin[0].comment"
+            v-if="modBasis.comment"
             v-model="modBasis.comment.value"
             @change="addChanged('comment')"
             :disabled="role != 2"
@@ -358,6 +394,14 @@
             Änderungen gespeichert!
           </div>
         </transition>
+        <!--<p>{{ modBasis.basedOnModuls.value }}</p>
+        <p>{{ selectedBased }}</p>
+        <p>changed Array: {{ changedArray }}</p>
+        <p>deleteArray: {{ this.delete }}</p>
+        <p>insertArray: {{ this.insert }}</p>
+        <p>where: {{ this.where }}</p>
+        <p>modBasis: {{ modBasis }}</p>
+        <p>update: {{ updateQuery }}</p>-->
       </div>
     </form>
   </div>
@@ -370,6 +414,7 @@ import lodash from "lodash";
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
 import requiredIf from "vuelidate/lib/validators/requiredIf";
+import Multiselect from "vue-multiselect";
 
 export default {
   props: [
@@ -382,16 +427,22 @@ export default {
   ],
   name: "basisData",
   mixins: [validationMixin],
+  components: {
+    Multiselect
+  },
   data() {
     return {
+      selectedBased: [],
+      moduleList: [],
       countModType: 0,
       countCourseMode: 0,
-      countLecturer: 0,
+      /*countLecturer: 0,*/
       countCheckboxValidation: 0,
       checkboxChanged: true,
-      infoStudyProgram: ["BIFK", "BACS", "BMZK"],
+      infoStudyProgram: [],
       checkInfoStudyPro: false,
       lecturers: [],
+      lecturerLabels: [],
       modBasis: {
         label: null,
         accPerson: null,
@@ -415,38 +466,13 @@ export default {
       template: [],
       delete: [],
       insert: [],
-      where: [],
-      whereStr:
-        " schema:courseCode ?code ; " +
-        "    schema:name ?label; " +
-        "    schema:educationalCredentialAwarded ?ects ; " +
-        "    schema:hasCourseInstance ?semester ; " +
-        "    schema:accountablePerson ?accPerson ; " +
-        "    schema:coursePrerequisites ?pre ; " +
-        "    schema:interactivityType ?learnTypes ."
+      where: []
     };
   },
   mounted() {
-    let query =
-      "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
-      "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
-      "PREFIX thbfbwm: <https://www.th-brandenburg.de/mitarbeiterseiten/fbw/> " +
-      "SELECT DISTINCT ?lecturer ?lecturerLabel " +
-      "WHERE {?lecturer a module:Lecturer; rdfs:label ?lecturerLabel.}";
-    axios
-      .post(
-        "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query",
-        query,
-        {
-          headers: { "Content-Type": "application/sparql-query" }
-        }
-      )
-      .then(response => {
-        this.lecturers = response.data.results.bindings;
-      })
-      .catch(e => {
-        this.errors.push(e);
-      });
+    this.queryInfoStudyProgram();
+    this.queryLecturer();
+    this.queryModuleList();
   },
   validations: {
     modBasis: {
@@ -522,6 +548,102 @@ export default {
     }
   },
   methods: {
+    queryInfoStudyProgram() {
+      let query =
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+        "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+        "PREFIX schema: <https://schema.org/> " +
+        "SELECT DISTINCT ?studyprogramID " +
+        "WHERE { " +
+        "  ?studyProgram a module:StudyProgram ; " +
+        "          schema:provider module:THB_FBI .  " +
+        "  BIND(SUBSTR(STR(?studyProgram), 40) AS ?studyprogramID) " +
+        "} ORDER BY ?studyProgramName";
+      axios
+        .post(
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
+          query,
+          {
+            headers: { "Content-Type": "application/sparql-query" }
+          }
+        )
+        .then(response => {
+          let spList = response.data.results.bindings;
+          for (let a = 0; a < spList.length; a++) {
+            this.infoStudyProgram.push(spList[a].studyprogramID.value);
+          }
+        })
+        .catch(e => {
+          this.errors.push(e);
+        });
+    },
+    queryLecturer() {
+      let query =
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+        "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+        "PREFIX thbfbwm: <https://www.th-brandenburg.de/mitarbeiterseiten/fbw/> " +
+        "SELECT DISTINCT ?lecturer ?lecturerLabel " +
+        "WHERE {?lecturer a module:Lecturer; rdfs:label ?lecturerLabel.} ORDER BY ?lecturer";
+      axios
+        .post(
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
+          query,
+          {
+            headers: { "Content-Type": "application/sparql-query" }
+          }
+        )
+        .then(response => {
+          let lecs = response.data.results.bindings;
+          for (let a = 0; a < lecs.length; a++) {
+            this.lecturers.push(lecs[a].lecturer.value);
+            this.lecturerLabels.push(lecs[a].lecturerLabel.value);
+          }
+        })
+        .catch(e => {
+          this.errors.push(e);
+        });
+    },
+    queryModuleList() {
+      let query =
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+        "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+        "PREFIX schema: <https://schema.org/> " +
+        "SELECT DISTINCT ?module ?label ?studyprogramLabel " +
+        "WHERE { " +
+        "  ?module a module:Module ; " +
+        "  schema:isPartOf ?studyprogram ; " +
+        "          schema:name ?label . " +
+        '     FILTER(lang(?label) = "de")' +
+        "  ?studyprogram  schema:provider  ?department  " +
+        "  BIND(SUBSTR(STR(?department), 44) AS ?studyprogramLabel)   " +
+        " } ORDER BY ?label";
+
+      axios
+        .post(
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
+          query,
+          {
+            headers: { "Content-Type": "application/sparql-query" }
+          }
+        )
+        .then(response => {
+          let list = response.data.results.bindings;
+          for (let a = 0; a < list.length; a++) {
+            let obj = {
+              uri: list[a].module.value,
+              label: list[a].label.value,
+              studyprogram: list[a].studyprogramLabel.value
+            };
+            this.moduleList.push(obj);
+          }
+        })
+        .catch(e => {
+          this.errors.push(e);
+        });
+    },
+    customLabel(option) {
+      return `${option.label} — ${option.studyprogram}`;
+    },
     validateInput() {
       this.$v.$touch();
       if (
@@ -548,15 +670,34 @@ export default {
     addChanged(item) {
       if (item == "learnTypes") {
         let learnTypes = this.modBasis.learnTypes.value;
-        this.modBasis.learnTypes.value = learnTypes.split("@de ,");
+        this.modBasis.learnTypes.value = learnTypes.split(",");
       }
       if (this.changedArray.indexOf(item) === -1) {
-        this.changedArray.push(item);
+        if (item == "accPerson") {
+          let a = this.lecturerLabels.indexOf(
+            this.modBasis["accPersonLabel"].value
+          );
+          if (
+            this.modBasis["accPersonLabel"].value != "" &&
+            this.lecturers[a] != this.modBasis["accPerson"].value
+          ) {
+            this.changedArray.push(item);
+          }
+        } else {
+          this.changedArray.push(item);
+        }
       } else {
         let i = this.changedArray.indexOf(item);
-        if (!this.newBoolean) {
+        if (!this.newBoolean && item != "basedOnModuls") {
           let arr = this.insert[i];
-          arr.splice(3, 1, this.modBasis[item].value);
+          if (item == "accPerson") {
+            let a = this.lecturerLabels.indexOf(
+              this.modBasis["accPersonLabel"].value
+            );
+            arr.splice(3, 1, this.lecturers[a]);
+          } else {
+            arr.splice(3, 1, this.modBasis[item].value);
+          }
           this.insert.splice(i, 1, arr);
         }
       }
@@ -565,6 +706,9 @@ export default {
       let delArray = [];
       let insArray = [];
       if (i == "accPerson") {
+        let a = this.lecturerLabels.indexOf(
+          this.modBasis["accPersonLabel"].value
+        );
         delArray.push(
           this.template[i].s,
           this.template[i].p,
@@ -575,17 +719,23 @@ export default {
           this.template[i].s,
           this.template[i].p,
           " <",
-          this.modBasis[i].value,
+          this.lecturers[a],
           ">. "
         );
       } else {
-        delArray.push(
-          this.template[i].s,
-          this.template[i].p,
-          this.template[i].o,
-          ". "
-        );
-        if (i == "pre" || i == "eduUse" || i == "learnTypes") {
+        if (
+          i != "comment" ||
+          Object.keys(this.modBasisOrigin[0]).includes("comment")
+        ) {
+          delArray.push(
+            this.template[i].s,
+            this.template[i].p,
+            this.template[i].o,
+            ". "
+          );
+        }
+        if (i == "eduUse" /*||
+          i == "eduLevel"*/) {
           insArray.push(
             this.template[i].s,
             this.template[i].p,
@@ -593,50 +743,100 @@ export default {
             this.modBasis[i].value,
             '"@de . '
           );
-        } else {
+        } else if (i == "pre") {
+          let str = this.modBasis.pre.value.split("/");
           insArray.push(
             this.template[i].s,
             this.template[i].p,
             ' "',
-            this.modBasis[i].value,
-            '". '
+            str.join('"@de , "'),
+            '"@de . '
           );
+        } else if (i == "learnTypes") {
+          insArray.push(
+            this.template[i].s,
+            this.template[i].p,
+            ' "',
+            this.modBasis.learnTypes.value.join('"@de , "'),
+            '"@de . '
+          );
+        } else {
+          if (i != "basedOnModuls") {
+            insArray.push(
+              this.template[i].s,
+              this.template[i].p,
+              ' "',
+              this.modBasis[i].value,
+              '". '
+            );
+          }
         }
       }
 
-      this.delete.push(delArray);
-      this.insert.push(insArray);
-      this.where.push(delArray);
+      if (insArray.length > 0) {
+        this.insert.push(insArray);
+      }
+      if (delArray.length > 0) {
+        this.delete.push(delArray);
+        this.where.push(delArray);
+      }
+      if (i == "courseMode") {
+        this.where.push(
+          " <" + this.moduleUri + "> ",
+          " schema:hasCourseInstance ",
+          " ?semester . "
+        );
+      }
     },
     updateData() {
       let query = this.prefixes;
       if (!this.newBoolean) {
-        /*if (this.changedArray.includes("duration")) {
-            let i = this.changedArray.indexOf("duration");
-            let d = this.insert[i][3];
-            d = d.replace("1 Semester", "P0.5Y").replace("2 Semester", "P1Y");
-            this.insert[i][3] = d;
-          }*/
+        if (this.changedArray.indexOf("basedOnModuls") > -1) {
+          let insArray = [];
+          let uris = "";
+          let list = this.selectedBased;
+          for (let a = 0; a < list.length; a++) {
+            if (a == list.length - 1) {
+              uris += " <" + list[a]["uri"] + "> . ";
+            } else {
+              uris += " <" + list[a]["uri"] + "> , ";
+            }
+          }
+          if (uris != "") {
+            /* uris += ' "" . ';*/
+            insArray.push(
+              this.template["basedOnModuls"].s,
+              this.template["basedOnModuls"].p,
+              uris
+            );
+            this.insert.push(insArray);
+          }
+        }
+        query += " DELETE { ";
         if (this.delete.length > 0) {
-          query += " DELETE { ";
           this.delete.forEach(function(itemArr) {
+            for (let a = 0; a < itemArr.length; a++) {
+              query += itemArr[a];
+            }
+          });
+        }
+        query += " } ";
+
+        if (this.insert.length > 0) {
+          query += " INSERT { ";
+          this.insert.forEach(function(itemArr) {
+            if (Array.isArray(itemArr[3])) {
+              let str = itemArr[3].join('", "');
+              itemArr[3] = str;
+            }
             for (let a = 0; a < itemArr.length; a++) {
               query += itemArr[a];
             }
           });
           query += " } ";
         }
-        query += " INSERT { ";
-        this.insert.forEach(function(itemArr) {
-          if (Array.isArray(itemArr[3])) {
-            let str = itemArr[3].join('", "');
-            itemArr[3] = str;
-          }
-          for (let a = 0; a < itemArr.length; a++) {
-            query += itemArr[a];
-          }
-        });
-        query += " } WHERE { ";
+
+        query += "  WHERE { ";
         if (this.where.length > 0) {
           this.where.forEach(function(itemArr) {
             for (let a = 0; a < itemArr.length; a++) {
@@ -658,10 +858,10 @@ export default {
           '" ; ';
         //query += ' schema:name "' + this.modBasis.label.value + '" ;';
         //accountable person
-        query +=
-          " schema:accountablePerson  <" +
-          this.modBasis.accPerson.value +
-          "> ; ";
+        let a = this.lecturerLabels.indexOf(
+          this.modBasis["accPersonLabel"].value
+        );
+        query += " schema:accountablePerson  <" + this.lecturers[a] + "> ; ";
         //module type
         let moduleTypeCourse = "module:ModuleType_" + this.code;
         query += " module:progrSpecProp_ModuleType " + moduleTypeCourse + " ; ";
@@ -712,6 +912,30 @@ export default {
             this.modBasis.pre.value +
             '"@de ; ';
         }
+
+        if (this.checkInfoStudyPro) {
+          //empfohlene Voraussetzungen
+          /*if (this.modBasis.eduLevel.value != "") {
+            query +=
+              ' schema:educationalLevel  "' +
+              this.modBasis.eduLevel.value +
+              '"@de ; ';
+          }*/
+          //basiert auf Module
+          if (this.selectedBased.length > 0) {
+            let uris = "";
+            let list = this.selectedBased;
+            for (let a = 0; a < list.length; a++) {
+              if (a == list.length - 1) {
+                uris += " <" + list[a]["uri"] + "> ; ";
+              } else {
+                uris += " <" + list[a]["uri"] + "> , ";
+              }
+            }
+            query += " schema:isBasedOn  " + uris;
+          }
+        }
+
         if (!this.checkInfoStudyPro) {
           //Notengewichtung
           gradeCourse = "module:GradingRatio_" + this.code;
@@ -727,28 +951,16 @@ export default {
           if (this.modBasis.url.value != "") {
             query += ' schema:url  "' + this.modBasis.url.value + '" ; ';
           }
-          //comment
-          if (this.modBasis.comment.value != "") {
-            query +=
-              ' schema:comment  "' + this.modBasis.comment.value + '" ; ';
-          }
         }
+
+        //comment
+        if (this.modBasis.comment.value != "") {
+          query += ' schema:comment  "' + this.modBasis.comment.value + '" ; ';
+        }
+
         query +=
           ' schema:timeRequired  "' + this.modBasis.duration.value + '" ; ';
         query += " schema:isPartOf  module:" + this.studyProgram + " . ";
-
-        /*//Curr Zuordnung
-          query +=
-            curr +
-            ' a  schema:AlignmentObject ;  schema:alignmentType  "Zuordnung zum Curriculum" ; schema:targetName  "' +
-            this.curriculum[this.studyProgram][0] +
-            '" ; schema:targetDescription  "' +
-            this.curriculum[this.studyProgram][1] +
-            '" ; schema:educationalFramework  "' +
-            this.spo[this.studyProgram][0] +
-            '" ; schema:targetURL  "' +
-            this.spo[this.studyProgram][1] +
-            '" . ';*/
 
         //module Type
         let moduleTypeProgCourse =
@@ -887,7 +1099,7 @@ export default {
 
       axios
         .post(
-          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/update",
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/update",
           query,
           {
             headers: { "Content-Type": "application/sparql-update" }
@@ -913,7 +1125,7 @@ export default {
     clearCache() {
       this.countModType = 0;
       this.countCourseMode = 0;
-      this.countLecturer = 0;
+      /*this.countLecturer = 0;*/
       this.countCheckboxValidation = 0;
       this.checkboxChanged = true;
       this.changedArray = [];
@@ -928,7 +1140,7 @@ export default {
     initialState() {
       this.countModType = 0;
       this.countCourseMode = 0;
-      this.countLecturer = 0;
+      /*this.countLecturer = 0;*/
       this.countCheckboxValidation = 0;
       this.checkboxChanged = true;
       this.changedArray = [];
@@ -991,6 +1203,16 @@ export default {
           p: " schema:coursePrerequisites ",
           o: " ?pre "
         },
+        /*eduLevel: {
+          s: " <" + this.moduleUri + "> ",
+          p: " schema:educationalLevel ",
+          o: " ?eduLevel "
+        },*/
+        basedOnModuls: {
+          s: " <" + this.moduleUri + "> ",
+          p: " schema:isBasedOn ",
+          o: " ?basedOnModuls "
+        },
         url: {
           s: " <" + this.moduleUri + "> ",
           p: " schema:url ",
@@ -1013,12 +1235,30 @@ export default {
         }
       };
       this.modBasis = _.cloneDeep(this.modBasisOrigin);
+      /*this.accPersonValue = {
+        "lecturer": { "type": "uri" , "value": this.modBasis[0]["accPerson"] } ,
+        "lecturerLabel": { "type": "literal" , "value": this.modBasis[0]["accPersonLabel"] }
+      }*/
       if (!Object.keys(this.modBasisOrigin[0]).includes("pre")) {
         this.modBasis[0]["pre"] = { value: "" };
       }
+      /*if (!Object.keys(this.modBasisOrigin[0]).includes("eduLevel")) {
+        this.modBasis[0]["eduLevel"] = { value: "" };
+      }*/
+      if (!Object.keys(this.modBasisOrigin[0]).includes("comment")) {
+        this.modBasis[0]["comment"] = { value: "" };
+      }
+
+      if (
+        !Object.keys(this.modBasisOrigin[0]).includes("basedOnModuls") ||
+        !this.modBasisOrigin[0].basedOnModuls.value.length > 0
+      ) {
+        this.modBasis[0]["basedOnModuls"] = { value: [] };
+      }
       this.modBasis = this.modBasis[0];
-    },
-    generatePDF() {
+      this.selectedBased = this.modBasis.basedOnModuls.value;
+    }
+    /*generatePDF() {
       const doc = new jsPDF();
       let pdfHead = [];
       let pdfBody = [];
@@ -1077,7 +1317,7 @@ export default {
         " }";
 
       axios
-        .post("http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query", q, {
+        .post("http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query", q, {
           headers: { "Content-Type": "application/sparql-query" }
         })
         .then(response => {
@@ -1120,13 +1360,13 @@ export default {
         .catch(e => {
           this.errors.push(e);
         });
-    }
+    }*/
   },
   watch: {
     modBasisOrigin(v) {
       this.initialState();
       this.$v.$reset();
-      this.countLecturer = 0;
+      /*this.countLecturer = 0;*/
     },
     studyProgram(v) {
       if (this.infoStudyProgram.includes(v)) {
@@ -1152,9 +1392,7 @@ export default {
         let i = this.changedArray.indexOf("modType_name");
         if (!this.newBoolean) {
           let arr = this.insert[i];
-          let v = this.modBasis.modType_name.value;
-          arr.splice(3, 1, this.template.modType_name[v][0]);
-          arr.splice(7, 1, this.template.modType_name[v][1]);
+          arr.splice(3, 1, this.modBasis.modType_name.value);
           this.insert.splice(i, 1, arr);
         }
       }
@@ -1181,7 +1419,7 @@ export default {
         }
       }
     },
-    countLecturer(v) {
+    /*countLecturer(v) {
       if (v <= 2) {
         if (
           this.modBasis.accPerson.value !=
@@ -1202,7 +1440,7 @@ export default {
           this.insert.splice(i, 1, arr);
         }
       }
-    },
+    },*/
     changedArray(v) {
       if (v.length > 0 && !this.newBoolean) {
         let item = v[v.length - 1];

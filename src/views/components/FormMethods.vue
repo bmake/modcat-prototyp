@@ -277,8 +277,8 @@ export default {
       this.addChanged("inputs1", oldIndex + 1);
     },
     reorder2({ oldIndex, newIndex }) {
-      const movedItem = this.inputs2.splice(oldIndex - 1, 1)[0];
-      this.inputs2.splice(newIndex - 1, 0, movedItem);
+      const movedItem = this.inputs2.splice((oldIndex - 1), 1)[0];
+      this.inputs2.splice((newIndex - 1), 0, movedItem);
       this.addChanged("inputs2", newIndex);
       this.addChanged("inputs2", oldIndex);
     },
@@ -461,16 +461,12 @@ export default {
 
         query += " } ";
       }
-      
-      //Log
-      //console.log("FormMethods");
-      //console.log(query);
 
       this.updateQuery = query;
 
       axios
         .post(
-          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/update",
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/update",
           query,
           {
             headers: { "Content-Type": "application/sparql-update" }
@@ -501,7 +497,7 @@ export default {
         '> schema:name ?label . FILTER(lang(?label) = "de") } ';
       axios
         .post(
-          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query",
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
           query,
           {
             headers: { "Content-Type": "application/sparql-query" }
@@ -602,7 +598,7 @@ export default {
 
       axios
         .post(
-          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query",
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
           q,
           {
             headers: { "Content-Type": "application/sparql-query" }

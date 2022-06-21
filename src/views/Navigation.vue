@@ -1,9 +1,12 @@
 <template>
   <div class="wrapper">
-    <div class="header-filter" style="background-color: #FF8F00; text-align: center">
+    <div
+      class="header-filter"
+      style="background-color: #FF8F00; text-align: center"
+    >
       <div class="md-layout">
         <div class="md-layout-item">
-          <div>
+          <div class="index-page">
             <div class="brand">
               <img
                 src="../../img/logo.svg"
@@ -12,105 +15,111 @@
                 height="auto"
               />
               <h1 style="color: white">Modulkatalog @THB</h1>
-              <h3 style="color: white; margin-bottom: 70px">Fachbereich Wirtschaft</h3>
             </div>
           </div>
         </div>
       </div>
-      
     </div>
-  <div class="main main-raised">
-      <div style="text-align: center; margin-top:10px; margin-bottom: 0px; padding-top: 0em">
-          <div class="section section-examples">
-        <div class="container-fluid text-center">
-          <div class="md-layout">
+    <div class="main main-raised">
+      <div
+        style="text-align: center; margin-top:10px; margin-bottom: 0px; padding-top: 0em"
+      >
+        <div class="section section-examples">
+          <div class="container-fluid text-center">
+            <div class="md-layout">
+              <div class="cards">
+                <div class="columns md-layout-item">
+                  <ul class="topic">
+                    <li class="header">
+                      <b>{{ browsen }}</b>
+                    </li>
+                    <li class="description">
+                      <b
+                        >Suchen und finden Sie beliebige Daten und Auswertungen
+                        zu unseren Modulen – ganz ohne Anmeldung.</b
+                      >
+                    </li>
+                    <li class="description">
+                      <router-link :to="{ name: 'browsing'}"><b>Anschauen</b></router-link>
+                    </li>
+                  </ul>
+                </div>
+                <!--to activate the linking fnuction of the card, change '<div>' to '<router-link>'-->
+                <div class="columns md-layout-item">
+                  <ul class="topic">
+                    <li class="header">
+                      <b>{{ dokumentieren }}</b>
+                    </li>
+                    <li class="description">
+                      <b
+                        >Dokumentieren Sie die Ihnen zugeordneten Module –
+                        melden Sie sich dafür mit Ihrem THB-Account an.</b
+                      >
+                    </li>
+                    <li class="description">
+                      <router-link :to="{ name: 'dokumentieren'}"><b>Anschauen</b></router-link>
+                    </li>
+                  </ul>
+                </div>
 
-<!----
-                          <div class="box md-layout-item">
-                              <h2 class="header" style="background-color:#4CAF50"><b>{{ browsen }}</b></h2>
-                              <h4>Suchen und finden Sie beliebige Daten und Auswertungen zu unseren Modulen – ganz ohne Anmeldung.</h4>
-                          </div>
-
-                          <div class="box md-layout-item">
-                              <h2 class="header" style="background-color:#4CAF50"><b>{{ dokumentieren }}</b></h2>
-                              <a>Dokumentieren Sie die Ihnen zugeordneten Module – melden Sie sich dafür mit Ihrem THB-Account an.</a>                              
-                          </div>
-
-                          <div class="box md-layout-item">
-                              <h2 class="header" style="background-color:#4CAF50"><b>{{ editieren }}</b></h2>
-                              <a>Aktualisieren Sie die von Ihnen verantworteten Module. Dafür benötigen Sie zusätzliche Schreibrechte.</a>                              
-
-                          </div> ---->
-<div class="cards">
-<div class="columns md-layout-item">
-      <ul class="topic">
-    <li class="header"><b>{{ browsen }}</b></li>
-    <li class="description"><b>Suchen und finden Sie beliebige Daten und Auswertungen zu unseren Modulen – ganz ohne Anmeldung.</b></li>
-    <li class="description"><router-link to="/Browsing"><b>Anschauen</b></router-link></li>
-
-  </ul>
-  </div>
-
-  <div class="columns md-layout-item">
-      <ul class="topic">
-    <li class="header"><b>{{ dokumentieren }}</b></li>
-    <li class="description"><b>Dokumentieren Sie die Ihnen zugeordneten Module – melden Sie sich dafür mit Ihrem THB-Account an.</b></li>
-    <li class="description"><a href="Starter" class="button"><b>Anschauen</b></a></li>
-
-  </ul>
-  </div>
-
-  <div class="columns md-layout-item">
-      <ul class="topic">
-    <li class="header"><b>{{ editieren }}</b></li>
-    <li class="description"><b>Aktualisieren Sie die von Ihnen verantworteten Module – dafür benötigen Sie zusätzliche Schreibrechte.</b></li>
-    <li class="description"> <router-link to="/Starter"><b>Anschauen</b></router-link></li>
-
-  </ul>
-  </div>
-                          
-      </div></div></div></div></div>
-  </div>
+                <div class="columns md-layout-item">
+                  <ul class="topic">
+                    <li class="header">
+                      <b>{{ editieren }}</b>
+                    </li>
+                    <li class="description">
+                      <b
+                        >Aktualisieren Sie die von Ihnen verantworteten Module –
+                        dafür benötigen Sie zusätzliche Schreibrechte.</b
+                      >
+                    </li>
+                    <li class="description">
+                      <router-link :to="{ name: 'starter'}"><b>Anschauen</b></router-link>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import Starter from "./Starter";
 import Browsing from "./Browsing";
+import Dokumentieren from "./Dokumentieren";
 
-
-  export default {
-
-    routes: [
+export default {
+  routes: [
     {
-      path: '/Starter',
-      name: 'Starter',
-      component: Starter,
+      path: "/Starter",
+      name: "Starter",
+      component: Starter
     }
   ],
 
-    data () {
-      return {
-        browsen: 'Whatsup!',
-        dokumentieren: 'Whatsup!',
-        editieren: 'Whatsup!'
-
-      }
-    },
-    created () {
-      this.browsen = 'Browsen'
-      this.dokumentieren = 'Dokumentieren'
-      this.editieren = 'Editieren'
-    }
+  data() {
+    return {
+      browsen: "Whatsup!",
+      dokumentieren: "Whatsup!",
+      editieren: "Whatsup!"
+    };
+  },
+  created() {
+    this.browsen = "Browsen";
+    this.dokumentieren = "Dokumentieren";
+    this.editieren = "Editieren";
   }
+};
 </script>
 <style lang="scss">
-
 .cards {
   margin-left: 8%;
   margin-right: 8%;
-    margin-top: -161px;
-
+  margin-top: -161px;
 }
 
 .columns {
@@ -129,7 +138,7 @@ import Browsing from "./Browsing";
 }
 
 .topic:hover {
-  box-shadow: 0 8px 12px 0 rgba(0,0,0,0.2);
+  box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.2);
 }
 
 .topic .header {
@@ -147,25 +156,18 @@ import Browsing from "./Browsing";
   font-size: 20px;
 }
 
+.header-filter {
+  padding: 12% !important;
+}
+
+.brand h3 {
+  margin-top: 0 !important;
+}
 
 @media only screen and (max-width: 600px) {
   .columns {
     width: 100%;
   }
-}
-
-
-.faded {
-  opacity: 0.2 !important;
-  transition: 0.3s opacity !important;
-}
-.highlight {
-  opacity: 1 !important;
-}
-
-g.selected rect {
-  stroke: #ffc107 !important;
-  stroke-width: 2px !important;
 }
 
 .md-button.choosed {
@@ -178,14 +180,6 @@ g.selected rect {
 #download:hover {
   background-color: #fcdd86 !important;
   background-color: #ea80fc;
-}
-
-.header-filter {
-  padding: 5%;
-}
-
-.brand h3 {
-  margin-top: 0 !important;
 }
 
 @media all and (min-width: 991px) {

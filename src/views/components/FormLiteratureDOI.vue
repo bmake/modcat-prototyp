@@ -232,6 +232,7 @@ export default {
   },
   data() {
     return {
+      // test value: https://doi.org/10.1257/jep.29.2.213
       doi: "",
       prefixes:
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
@@ -243,6 +244,7 @@ export default {
       showPopUp: false,
       authorIndexPopUp: 0,
       existingAuthors: [],
+      updateQuery:""
     };
   },
   computed: {
@@ -377,7 +379,7 @@ export default {
       // Daten vom Fuseki abrufen
       axios
         .post(
-          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query",
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
           queryAutor,
           {
             headers: { "Content-Type": "application/sparql-query" },
