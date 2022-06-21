@@ -271,7 +271,7 @@ export default {
       // Daten vom Fuseki abrufen
       axios
         .post(
-          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query",
+          "http://fbw-sgmwi.th-brandenburg.de:3030/modcat/query",
           queryAutor,
           {
             headers: { "Content-Type": "application/sparql-query" },

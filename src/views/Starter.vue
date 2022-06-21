@@ -96,7 +96,8 @@
               <div
                 v-if="role == 1 || role == 2"
                 style="text-align: right; padding: 1em"
-              ></div>
+              >
+              </div>
               <div
                 v-else
                 class="md-layout md-gutter md-alignment-center-center"
@@ -240,7 +241,7 @@ export default {
       );
       axios
         .post(
-          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query",
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
           query,
           {
             headers: { "Content-Type": "application/sparql-query" },
@@ -341,7 +342,7 @@ export default {
   },
 };
 </script>
-<style lang="scss">
+<style src="vue-multiselect/dist/vue-multiselect.min.css">
 .faded {
   opacity: 0.2 !important;
   transition: 0.3s opacity !important;
@@ -418,6 +419,7 @@ g.selected rect {
 .select .md-field.md-theme-default label {
   color: #2e2e2e !important;
   font-size: large;
+  top: -0.8rem !important;
 }
 
 .select .md-field.md-theme-default .md-menu.md-select input {
@@ -455,9 +457,15 @@ span.md-highlight-text-match {
   color: #2e2e2e !important;
 }
 
+.chips button.md-button.md-icon-button.md-dense.md-input-action.md-clear.md-theme-default {
+  max-height: 1.2em;
+  max-width: 1.2em;
+}
+
 .md-list.md-dense .md-list-item-text {
   margin-left: 20px !important;
   font-size: small !important;
+  position: relative !important;
 }
 
 @media all and (max-width: 700px) {

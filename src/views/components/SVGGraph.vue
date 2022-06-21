@@ -96,6 +96,7 @@ export default {
           if (_this.role > 0) {
             //set as default
             _this.upG();
+
             //remove all graph element effects of last click
             const g = d3.select("#nodes").selectAll("g");
             g.classed("selected", false);
@@ -260,7 +261,7 @@ export default {
     queryModuleInfo(q) {
       axios
         .post(
-          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query",
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
           q,
           {
             headers: { "Content-Type": "application/sparql-query" }
@@ -273,9 +274,6 @@ export default {
         .catch(e => {
           this.errors.push(e);
         });
-      //SPARQL-Abfrage Log-Ausgabe
-      //console.log("SVGGraph - queryModule");
-      //console.log(q);
     },
     updateGraphText() {
       let module = d3.select("#textModulkuerzel").select("tspan");
@@ -394,6 +392,16 @@ export default {
           let strArrLan = newData[0].languages.value.split(" | ");
           newData[0].languages.value = strArrLan;
           this.$emit("modBasicData", newData);
+          if(newData[0].basedOnModuls && newData[0].basedOnModuls.value != "") {
+            let strBasedModuls = newData[0].basedOnModuls.value.split(" | ");
+            let basedModuls = [];
+            for (let a = 0; a < strBasedModuls.length; a++) {
+              let itemModul = strBasedModuls[a].split(" @ ")
+              let obj = { uri: itemModul[0], label: itemModul[1], studyprogram: itemModul[2] }
+              basedModuls.push(obj);
+            }
+            newData[0].basedOnModuls.value = basedModuls;
+          }
         }
       }
     },
@@ -428,8 +436,6 @@ export default {
           newData[0].workloadDetails.value = workloadDetails;
         }
         this.$emit("modMethods", newData);
-        //Log
-        //console.log(newData);
       }
     },
     modLiterature: {
@@ -437,8 +443,6 @@ export default {
         if (this.modLiterature.length > 0) {
           this.$emit("modLiterature", v);
         }
-        //Log
-        //console.log(v);
       }
     },
     modTeachers: {

@@ -754,7 +754,7 @@ export default {
 
       axios
         .post(
-          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/update",
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/update",
           query,
           {
             headers: { "Content-Type": "application/sparql-update" }
@@ -788,7 +788,7 @@ export default {
         '> schema:name ?label . FILTER(lang(?label) = "de") } ';
       axios
         .post(
-          "http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query",
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
           query,
           {
             headers: { "Content-Type": "application/sparql-query" }
@@ -918,7 +918,7 @@ export default {
         "}";
 
       axios
-        .post("http://fbwsvcdev.fh-brandenburg.de:8080/fuseki/modcat/query", q, {
+        .post("http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query", q, {
           headers: { "Content-Type": "application/sparql-query" }
         })
         .then(response => {
