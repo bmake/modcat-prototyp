@@ -154,7 +154,7 @@ import FormMethods from "./components/FormMethods";
 import FormOutcomes from "./components/FormOutcomes";
 import FormLiterature from "./components/FormLiterature";
 import FormTeachers from "./components/FormTeachers";
-import FormDynamic from "./components/FormDynamic";
+//import FormDynamic from "./components/FormDynamic";
 import NewModulePopUp from "./components/NewModulePopUp";
 import { selectQueries } from "./queries";
 
@@ -167,7 +167,7 @@ export default {
     Outcomes: FormOutcomes,
     Literature: FormLiterature,
     Teachers: FormTeachers,
-    Dynamic: FormDynamic,
+    //Dynamic: FormDynamic,
     NewModulePopUp,
   },
   name: "index",

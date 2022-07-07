@@ -30,7 +30,7 @@
           </div>
         </div>
 
-        <!-- Gelber Rahmen -->
+        <!-- Grauer Rahmen -->
         <div
           class="md-layout md-gutter"
           style="border-color:#a8a8a8; border-width: 3px; border-style: solid; border-radius: 10px; margin:3px;"
@@ -336,6 +336,8 @@
                   Änderungen gespeichert!
                 </div>
               </transition>
+              <p>{{ modLiteratureOrigin }}</p>
+              <p>{{ modLiterature }}</p>
             </div>
           </div>
         </div>
