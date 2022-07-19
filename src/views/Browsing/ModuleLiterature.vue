@@ -26,11 +26,21 @@
               <span class="font-semibold text-xl">{{ obj.titel.value }}</span>
             </template>
             <template v-slot:content>
-              <p>
+              <div>
                 <b>Autor:</b> {{ obj.autorVorname.value }} {{ obj.autorNachname.value }}<br>
                 <b>Titel:</b> {{ obj.titel.value }}<br>
+                <div v-if="(Object.keys(obj).includes('pageStart') && Object.keys(obj).includes('pageEnd'))">
+                  <b>Seiten:</b> {{obj.pageStart.value}} - {{obj.pageEnd.value}}<br>
+                </div>
                 <b>Verlag:</b> {{ obj.publisherName.value }} ({{ obj.datePublished.value }}) <br>
-              </p>
+                <br>
+                <div v-if="(Object.keys(obj).includes('auflage') && obj.auflage.value != '')"><b>Auflage:</b> {{ obj.auflage.value }}<br></div>
+                <div v-if="(Object.keys(obj).includes('autorProfilLink') && obj.autorProfilLink.value != '')"><b>Link zum Autor:</b> {{ obj.autorProfilLink.value }}<br></div>
+                <b>autorUri</b><br>
+                <div v-if="(Object.keys(obj).includes('isbn') && obj.isbn.value != '')"><b>ISBN:</b> {{ obj.isbn.value }}<br></div>
+                <b>literaturUri</b><br>
+                <b>pubishlerUri</b><br>
+              </div>
             </template>
           </Accordion>            
         </p>
