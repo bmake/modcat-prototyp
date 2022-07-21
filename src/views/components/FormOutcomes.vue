@@ -31,7 +31,7 @@
 
         <div
           class="md-layout md-gutter list"
-          style="border-color:#fcdd86; border-width: 3px; border-style: solid; border-radius: 10px; margin: 3px;"
+          style="border-color:#a8a8a8; border-width: 3px; border-style: solid; border-radius: 10px; margin: 3px;"
           v-sortable="{ onEnd: reorder1, handle: '.handle' }"
         >
           <div
@@ -145,7 +145,7 @@
 
         <div
           class="md-layout md-gutter"
-          style="border-color:#fcdd86; border-width: 3px; border-style: solid; border-radius: 10px; margin:3px;"
+          style="border-color:#a8a8a8; border-width: 3px; border-style: solid; border-radius: 10px; margin:3px;"
           v-sortable="{ onEnd: reorder2, handle: '.handle' }"
         >
           <div
@@ -189,7 +189,7 @@
 
         <div
           class="md-layout md-gutter"
-          style="border-color:#fcdd86; border-width: 3px; border-style: solid; border-radius: 10px; margin:3px;"
+          style="border-color:#a8a8a8; border-width: 3px; border-style: solid; border-radius: 10px; margin:3px;"
           v-sortable="{ onEnd: reorder4, handle: '.handle' }"
         >
           <div
