@@ -4,7 +4,12 @@
       <md-field>
         <label>Studiengang</label>
         <md-select v-model="studyProgram" name="studyProgram" id="studyProgram">
-          <md-option v-for="(sp, index) in studyProgramList" :value="sp.studyprogramID.value" v-bind:key="index">{{ sp.studyProgramName.value }}</md-option>
+          <md-option
+            v-for="(sp, index) in studyProgramList"
+            :value="sp.studyprogramID.value"
+            v-bind:key="index"
+            >{{ sp.studyProgramName.value }}</md-option
+          >
         </md-select>
       </md-field>
     </div>

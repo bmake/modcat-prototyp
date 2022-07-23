@@ -13,10 +13,7 @@
         <h3 style="color: #a5a5a5"><b>Literatur</b></h3>
         <!-- Je Zeile der Antwort wird einmal iteriert. Vielleicht entsteht hier ein Problem für Literatur mit
         mehreren Autoren. -->
-        <p
-          v-for="(obj,index) in resultLiterature"
-          :key="index"
-        >
+        <p v-for="(obj, index) in resultLiterature" :key="index">
           <!-- Diese Komponente generiert einen Button mit dem Titel der Literatur, welcher bei Anklicken die
           einfachen Daten anzeigt oder versteckt. Es ist (noch) kein Indikator (toogle-Dreieck) vorhanden, der
           dies anzeigt.
@@ -27,22 +24,51 @@
             </template>
             <template v-slot:content>
               <div>
-                <b>Autor:</b> {{ obj.autorVorname.value }} {{ obj.autorNachname.value }}<br>
-                <b>Titel:</b> {{ obj.titel.value }}<br>
-                <div v-if="(Object.keys(obj).includes('pageStart') && Object.keys(obj).includes('pageEnd'))">
-                  <b>Seiten:</b> {{obj.pageStart.value}} - {{obj.pageEnd.value}}<br>
+                <b>Autor:</b> {{ obj.autorVorname.value }}
+                {{ obj.autorNachname.value }}<br />
+                <b>Titel:</b> {{ obj.titel.value }}<br />
+                <div
+                  v-if="
+                    Object.keys(obj).includes('pageStart') &&
+                      Object.keys(obj).includes('pageEnd')
+                  "
+                >
+                  <b>Seiten:</b> {{ obj.pageStart.value }} -
+                  {{ obj.pageEnd.value }}<br />
                 </div>
-                <b>Verlag:</b> {{ obj.publisherName.value }} ({{ obj.datePublished.value }}) <br>
-                <br>
-                <div v-if="(Object.keys(obj).includes('auflage') && obj.auflage.value != '')"><b>Auflage:</b> {{ obj.auflage.value }}<br></div>
-                <div v-if="(Object.keys(obj).includes('autorProfilLink') && obj.autorProfilLink.value != '')"><b>Link zum Autor:</b> {{ obj.autorProfilLink.value }}<br></div>
-                <b>autorUri</b><br>
-                <div v-if="(Object.keys(obj).includes('isbn') && obj.isbn.value != '')"><b>ISBN:</b> {{ obj.isbn.value }}<br></div>
-                <b>literaturUri</b><br>
-                <b>pubishlerUri</b><br>
+                <b>Verlag:</b> {{ obj.publisherName.value }} ({{
+                  obj.datePublished.value
+                }}) <br />
+                <br />
+                <div
+                  v-if="
+                    Object.keys(obj).includes('auflage') &&
+                      obj.auflage.value != ''
+                  "
+                >
+                  <b>Auflage:</b> {{ obj.auflage.value }}<br />
+                </div>
+                <div
+                  v-if="
+                    Object.keys(obj).includes('autorProfilLink') &&
+                      obj.autorProfilLink.value != ''
+                  "
+                >
+                  <b>Link zum Autor:</b> {{ obj.autorProfilLink.value }}<br />
+                </div>
+                <b>autorUri</b><br />
+                <div
+                  v-if="
+                    Object.keys(obj).includes('isbn') && obj.isbn.value != ''
+                  "
+                >
+                  <b>ISBN:</b> {{ obj.isbn.value }}<br />
+                </div>
+                <b>literaturUri</b><br />
+                <b>pubishlerUri</b><br />
               </div>
             </template>
-          </Accordion>            
+          </Accordion>
         </p>
       </div>
     </md-content>
@@ -99,13 +125,17 @@ export default {
         "?autorProfilLink ?datePublished ?isbn ?litIdentifier ?pageStart ?pageEnd ?publisherUri ?publisherName " +
         "WHERE { " +
         //"module:GPMO " + //Nur zum Test
-        'module:' + code + ' ' +
+        "module:" +
+        code +
+        " " +
         "schema:courseCode ?code ; " +
         "         schema:name ?label .  " +
         'FILTER(lang(?label) = "de") ' +
         "OPTIONAL { " +
         //"module:GPMO " + //Nur zum Test
-        'module:' + code + ' ' +
+        "module:" +
+        code +
+        " " +
         "schema:citation ?literaturUri. " +
         "?literaturUri schema:headline ?titel. " +
         "OPTIONAL { ?literaturUri schema:datePublished ?datePublished. } " +
@@ -145,7 +175,6 @@ export default {
     }
   }
 };
-
 </script>
 
 <style lang="scss" scoped>
