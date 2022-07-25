@@ -18,7 +18,7 @@
             <!-- ToDo Eingabe übergeben, enter=absenden, escapen? -->
             <md-icon>search</md-icon>
           </md-field>
-          <md-button class="md-raised red" :to="{ name: 'search'}">
+          <md-button class="md-raised red" :to="{ name: 'search' }">
             Suche
           </md-button>
         </md-list-item>
@@ -28,7 +28,7 @@
             <img src="../assets/img/filterIcon.svg" />
           </md-avatar>
           Nach Fachbereichen, Studiengängen, Lehrpersonen, etc. filtern
-          <md-button class="md-raised red" :to="{ name: 'filter'}">
+          <md-button class="md-raised red" :to="{ name: 'filter' }">
             Filtern
           </md-button>
         </md-list-item>
@@ -38,7 +38,7 @@
             <img src="../assets/img/graphIcon.svg" />
           </md-avatar>
           Über den Wissensgraphen frei navigieren
-          <md-button class="md-raised red" :to="{ name: 'navgraph'}">
+          <md-button class="md-raised red" :to="{ name: 'navgraph' }">
             Navigation
           </md-button>
         </md-list-item>
@@ -48,7 +48,7 @@
             <img src="../assets/img/reportIcon.svg" />
           </md-avatar>
           Berichte und Übersichten konfigurieren und ausgeben
-          <md-button class="md-raised red" :to="{ name: 'report'}">
+          <md-button class="md-raised red" :to="{ name: 'report' }">
             Report
           </md-button>
         </md-list-item>

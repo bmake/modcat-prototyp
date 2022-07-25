@@ -3,31 +3,61 @@
     <md-content style="border-color: #0070c0">
       <div style="width: 100%">
         <h4>Aktuelle Studien- und Prüfungsordnung (SPO)</h4>
-        <div v-if="Object.keys(this.resultBase[0]).includes('spolink') && Object.keys(this.resultBase[0]).includes('sponame')"><a :href="resultBase[0].spolink.value" target="_blank">
-          {{ resultBase[0].sponame.value }}
-        </a> <br></div>
+        <div
+          v-if="
+            Object.keys(this.resultBase[0]).includes('spolink') &&
+              Object.keys(this.resultBase[0]).includes('sponame')
+          "
+        >
+          <a :href="resultBase[0].spolink.value" target="_blank">
+            {{ resultBase[0].sponame.value }}
+          </a>
+          <br />
+        </div>
+
         <md-divider
-            style="height:2px; border-width:0; color: #92d050; background-color: #0070c0"
-          />
+          style="height:2px; border-width:0; color: #92d050; background-color: #0070c0"
+        />
 
         <h4>SPO-relevante Daten</h4>
-        <b>Typ:</b> {{ resultBase[0].modType_name.value }} <br>
-        <b>Rhythmus:</b> {{ resultBase[0].courseMode.value }} <br>
-        <b>Dauer:</b> {{ resultBase[0].duration.value }} <br>
-        <div v-if="Object.keys(this.resultBase[0]).includes('studysem')"><b>Semester:</b> {{ resultBase[0].studysem.value }} <br></div>
-        <b>ECTS:</b> {{ resultBase[0].ects.value }} <br>
-        <b>SWS:</b> {{ resultBase[0].swsSum.value }} <br>
-        <div v-if="(Object.keys(this.resultBase[0]).includes('eduUse') && resultBase[0].eduUse.value != '')"><b>Zweck:</b> {{ resultBase[0].eduUse.value }} <br></div>
-        <div v-if="Object.keys(this.resultBase[0]).includes('pre') && resultBase[0].pre.value != ''"><b>Vorraussetzung:</b> {{ resultBase[0].pre.value }} <br></div>
-        <div v-if="Object.keys(this.resultBase[0]).includes('basedOnModulLabel') && Object.keys(this.resultBase[0]).includes('basedOn')">
+        <b>Typ:</b> {{ resultBase[0].modType_name.value }} <br />
+        <b>Rhythmus:</b> {{ resultBase[0].courseMode.value }} <br />
+        <b>Dauer:</b> {{ resultBase[0].duration.value }} <br />
+        <div v-if="Object.keys(this.resultBase[0]).includes('studysem')">
+          <b>Semester:</b> {{ resultBase[0].studysem.value }} <br />
+        </div>
+        <b>ECTS:</b> {{ resultBase[0].ects.value }} <br />
+        <b>SWS:</b> {{ resultBase[0].swsSum.value }} <br />
+        <div
+          v-if="
+            Object.keys(this.resultBase[0]).includes('eduUse') &&
+              resultBase[0].eduUse.value != ''
+          "
+        >
+          <b>Zweck:</b> {{ resultBase[0].eduUse.value }} <br />
+        </div>
+        <div
+          v-if="
+            Object.keys(this.resultBase[0]).includes('pre') &&
+              resultBase[0].pre.value != ''
+          "
+        >
+          <b>Vorraussetzung:</b> {{ resultBase[0].pre.value }} <br />
+        </div>
+        <div
+          v-if="
+            Object.keys(this.resultBase[0]).includes('basedOnModulLabel') &&
+              Object.keys(this.resultBase[0]).includes('basedOn')
+          "
+        >
           <b>Voraussetzung:</b>
           <router-link :to="resultBase[0].basedUrl.value">
             {{ resultBase[0].basedOnModulLabel.value }}
           </router-link>
         </div>
         <md-divider
-            style="height:2px; border-width:0; color: #92d050; background-color: #0070c0"
-          />
+          style="height:2px; border-width:0; color: #92d050; background-color: #0070c0"
+        />
 
         <h4>Modulverantwortliche und Lehrende</h4>
         <b>Verantwortlich: </b>
@@ -35,19 +65,34 @@
           {{ resultBase[0].accPersonLabel.value }}
         </a>
         <md-divider
-            style="height:2px; border-width:0; color: #92d050; background-color: #0070c0"
-          />
+          style="height:2px; border-width:0; color: #92d050; background-color: #0070c0"
+        />
 
         <h4>Weitere Informationen</h4>
-        <div v-if="Object.keys(this.resultBase[0]).includes('learnTypes')"><b>Lehrveranstaltungen:</b> {{ resultBase[0].learnTypes.value }} <br></div>
-        <div v-if="(Object.keys(this.resultBase[0]).includes('comment') && resultBase[0].comment.value != '')"><b>Kommentar:</b> {{ resultBase[0].comment.value }} <br></div>
-        <div v-if="Object.keys(this.resultBase[0]).includes('languages')"><b>Sprache(n):</b> {{ resultBase[0].languages.value }} <br></div>
-        <div v-if="Object.keys(this.resultBase[0]).includes('grade_name')"><b>Notenanteil:</b> {{ resultBase[0].grade_name.value }} <br></div>
+        <div v-if="Object.keys(this.resultBase[0]).includes('learnTypes')">
+          <b>Lehrveranstaltungen:</b> {{ resultBase[0].learnTypes.value }}
+          <br />
+        </div>
+        <div
+          v-if="
+            Object.keys(this.resultBase[0]).includes('comment') &&
+              resultBase[0].comment.value != ''
+          "
+        >
+          <b>Kommentar:</b> {{ resultBase[0].comment.value }} <br />
+        </div>
+        <div v-if="Object.keys(this.resultBase[0]).includes('languages')">
+          <b>Sprache(n):</b> {{ resultBase[0].languages.value }} <br />
+        </div>
+        <div v-if="Object.keys(this.resultBase[0]).includes('grade_name')">
+          <b>Notenanteil:</b> {{ resultBase[0].grade_name.value }} <br />
+        </div>
         <div v-if="Object.keys(this.resultBase[0]).includes('url')">
           <b>Website:</b>
           <a :href="resultBase[0].url.value" target="_blank">
             {{ resultBase[0].url.value }}
-          </a> <br>
+          </a>
+          <br />
         </div>
       </div>
     </md-content>
@@ -65,9 +110,9 @@ export default {
       loading: true,
       errored: false,
       code: this.$route.params.code,
-      moduleUri: '',
-      studyProgram: ''
-    }
+      moduleUri: "",
+      studyProgram: ""
+    };
   },
   mounted() {
     //also initates query for base-data
@@ -95,10 +140,8 @@ export default {
         .catch(e => {
           this.errored = true;
           console.log(error);
-          
         })
-        .finally(() => this.loading = false)
-        ;
+        .finally(() => (this.loading = false));
     },
     queryForParams(code) {
       let subQ1 =
@@ -107,7 +150,9 @@ export default {
         "PREFIX schema: <https://schema.org/> " +
         "SELECT DISTINCT ?uri ?label ?studyProgram ?FBcode " +
         "WHERE { " +
-        '  ?uri schema:courseCode "' + code + '" ; ' +
+        '  ?uri schema:courseCode "' +
+        code +
+        '" ; ' +
         "    schema:name ?label ;" +
         "      schema:isPartOf ?studyProgram." +
         '    FILTER(lang(?label) = "de")' +
@@ -122,7 +167,7 @@ export default {
     queryBase(code, moduleUri, studyProgram) {
       //cut prefix
       studyProgram = studyProgram.slice(39);
-      
+
       let query =
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  " +
         "PREFIX module: <https://bmake.th-brandenburg.de/module/>  " +
@@ -131,37 +176,37 @@ export default {
         " WHERE {  " +
         "<" +
         moduleUri +
-          // Modulkürzel
+        // Modulkürzel
         ">  schema:courseCode ?code ;  " +
-          // Modulbezeichung
+        // Modulbezeichung
         "         schema:name ?label ;  " +
-          // ECTS
+        // ECTS
         "         schema:numberOfCredits ?ects ;  " +
-          // Dauer: z.B. 1 Semester...
+        // Dauer: z.B. 1 Semester...
         "         schema:timeRequired ?duration ;  " +
-          // Kurs Instanz (URI)
+        // Kurs Instanz (URI)
         "         schema:hasCourseInstance ?semester ;  " +
-          // Modulverantwortliche (URI)
+        // Modulverantwortliche (URI)
         "         schema:accountablePerson ?accPerson . " +
-          // Modulverantwortliche Label (Prof. Dr....)
+        // Modulverantwortliche Label (Prof. Dr....)
         "   ?accPerson rdfs:label ?accPersonLabel .  " +
-          // Deutsche Modulbezeichnungen,
+        // Deutsche Modulbezeichnungen,
         ' FILTER(lang(?label) = "de") ' +
-          // Modultyp (Wahlpflicht, Pflicht)
+        // Modultyp (Wahlpflicht, Pflicht)
         "   module:ModuleType_" +
         studyProgram +
         "_" +
         code +
         " schema:value ?modType_name . " +
-          // SWS
+        // SWS
         "   module:SWS_" +
         studyProgram +
         "_" +
         code +
         " schema:value ?swsSum . " +
-          // Häufigkeit (jedes Wintersemester, jedes Sommersemester ...)
+        // Häufigkeit (jedes Wintersemester, jedes Sommersemester ...)
         "   ?semester schema:courseMode ?courseMode .  " +
-          // Alle Vorraussetzungen in einem String zu fügen, getrennt durch '/'
+        // Alle Vorraussetzungen in einem String zu fügen, getrennt durch '/'
         " OPTIONAL { " +
         '  SELECT (GROUP_CONCAT(?cpre; separator="/") as ?pre) ' +
         "  WHERE { <" +
@@ -170,7 +215,7 @@ export default {
         ' FILTER(lang(?cpre) != "en") ' +
         "  } " +
         "} " +
-          // Alle Lehrformen in einem String zu fügen, getrennt durch ' , '
+        // Alle Lehrformen in einem String zu fügen, getrennt durch ' , '
         " OPTIONAL { " +
         '  SELECT (GROUP_CONCAT(?learnType; separator=", ") as ?learnTypes) ' +
         "  WHERE { <" +
@@ -179,7 +224,7 @@ export default {
         ' FILTER(lang(?learnType) = "de") ' +
         "  } " +
         "} " +
-          // Alle Sprachen in einem String zu fügen, getrennt durch ' , '
+        // Alle Sprachen in einem String zu fügen, getrennt durch ' , '
         " OPTIONAL { " +
         '  SELECT (GROUP_CONCAT(?lan; separator=", ") as ?languages) ' +
         "    WHERE { " +
@@ -190,13 +235,13 @@ export default {
         "      schema:value ?lan . " +
         "    }" +
         "  } " +
-          //Verwendbarkeit auf Deutsch abzufragen
+        //Verwendbarkeit auf Deutsch abzufragen
         " OPTIONAL { <" +
         moduleUri +
         ">  schema:educationalUse ?eduUse . " +
         ' FILTER(lang(?eduUse) = "de") ' +
         " } " +
-          // Alle Module (URI) bei "basiert auf", getrennt durch ' | '
+        // Alle Module (URI) bei "basiert auf", getrennt durch ' | '
         " OPTIONAL { " +
         // Vorausgesetztes Modul
         "<" +
@@ -212,12 +257,12 @@ export default {
         moduleUri +
         ">  schema:url ?url . " +
         " } " +
-          //Kommentar für Modul
+        //Kommentar für Modul
         " OPTIONAL { <" +
         moduleUri +
         ">  schema:comment ?comment . " +
         " } " +
-          // Notengewichtung
+        // Notengewichtung
         " OPTIONAL { " +
         " module:GradingRatio_" +
         studyProgram +
@@ -237,14 +282,13 @@ export default {
         "  module:" +
         studyProgram +
         " schema:subjectOf ?spocode ." +
-  	    "  ?spocode schema:url ?spolink;" +
+        "  ?spocode schema:url ?spolink;" +
         "   	   schema:name ?sponame." +
         "}" +
         " } ";
 
       //console.log(query);
 
-      
       axios
         .post(
           "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
