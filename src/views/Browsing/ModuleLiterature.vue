@@ -24,8 +24,7 @@
             </template>
             <template v-slot:content>
               <div>
-                <b>Autor:</b> {{ obj.autorVorname.value }}
-                {{ obj.autorNachname.value }}<br />
+                <b>Autor(en):</b> {{ obj.authors.value }}<br />
                 <b>Titel:</b> {{ obj.titel.value }}<br />
                 <div
                   v-if="
@@ -121,56 +120,60 @@ export default {
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
         "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
         "PREFIX schema: <https://schema.org/> " +
-        "SELECT ?code ?label ?literaturUri ?titel ?auflage ?autorUri ?autorLabel ?autorVorname ?autorNachname " +
-        "?autorProfilLink ?datePublished ?isbn ?litIdentifier ?pageStart ?pageEnd ?publisherUri ?publisherName " +
-        "WHERE { " +
+        'SELECT ?code ?label ?literaturUri ?titel ?auflage (GROUP_CONCAT(?autorFullname; separator=", ") as ?authors)' +
+        " ?datePublished ?isbn ?litIdentifier ?pageStart ?pageEnd ?publisherUri ?publisherName " +
+        "WHERE {" +
+        "  module:AlgoDat schema:courseCode ?code ;" +
+        "                schema:name ?label ." +
+        '  FILTER(lang(?label) = "de")' +
+        "  OPTIONAL {" +
         //"module:GPMO " + //Nur zum Test
         "module:" +
         code +
-        " " +
-        "schema:courseCode ?code ; " +
-        "         schema:name ?label .  " +
-        'FILTER(lang(?label) = "de") ' +
-        "OPTIONAL { " +
-        //"module:GPMO " + //Nur zum Test
-        "module:" +
-        code +
-        " " +
-        "schema:citation ?literaturUri. " +
-        "?literaturUri schema:headline ?titel. " +
-        "OPTIONAL { ?literaturUri schema:datePublished ?datePublished. } " +
-        //Optionale Angaben Autor
-        "OPTIONAL { " +
-        "   ?literaturUri schema:author ?autorUri. " +
-        "   OPTIONAL { ?autorUri  schema:givenName ?autorVorname. } " +
-        "   OPTIONAL { ?autorUri  schema:familyName ?autorNachname. } " +
-        "   OPTIONAL { ?autorUri  schema:sameAs ?autorProfilLink. } " +
-        "} " +
-        //Optionale Angaben Book
-        "OPTIONAL { " +
-        "   ?literaturUri a schema:Book. " +
-        "   OPTIONAL { ?literaturUri schema:bookEdition ?auflage. } " +
-        "   OPTIONAL { ?literaturUri schema:isbn ?isbn. } " +
-        "} " +
-        // Optionale Angaben Book-Identifier (DOI)
-        "OPTIONAL { ?literaturUri schema:identifier ?litIdentifier. } " +
-        //Optionale Angaben Article
-        "OPTIONAL { " +
-        "   ?literaturUri a schema:Article. " +
-        "   OPTIONAL { ?literaturUri schema:pageStart ?pageStart;  " +
-        "                            schema:pageEnd ?pageEnd. } " +
-        "} " +
-        //Optionale Angaben DigitalDocument - Keine expliziten Angaben
-        //"OPTIONAL { ?literaturUri a schema:DigitalDocument; "} " +
-
-        //Optionale Angaben zum Herausgeber (für Book + DigitalDocument)
-        "OPTIONAL { " +
-        "   ?literaturUri schema:publisher ?publisherUri. " +
-        "   OPTIONAL { ?publisherUri schema:legalName ?publisherName .} " +
-        "} " +
-        "} " + //Schließende Klammer 1. Optional
-        "}"; //Schließende Klammer vom WHERE
-      //debug: console.log(query);
+        " schema:citation ?literaturUri." +
+        "    ?literaturUri schema:headline ?titel." +
+        "    OPTIONAL {" +
+        "      ?literaturUri schema:datePublished ?datePublished." +
+        "    }" +
+        "    OPTIONAL {" +
+        //Autoren
+        "        ?literaturUri schema:author ?autorUri." +
+        "        OPTIONAL {" +
+        "          ?autorUri  schema:givenName ?autorVorname." +
+        "        }" +
+        "        OPTIONAL {" +
+        "            ?autorUri  schema:familyName ?autorNachname." +
+        "        }" +
+        '        BIND((CONCAT(STR( ?autorVorname ), " ", STR( ?autorNachname)) ) AS ?autorFullname ) .' +
+        "    }" +
+        "    OPTIONAL {" +
+        "      ?literaturUri a schema:Book." +
+        "      OPTIONAL {" +
+        "        ?literaturUri schema:bookEdition ?auflage." +
+        "      }" +
+        "      OPTIONAL {" +
+        "        ?literaturUri schema:isbn ?isbn." +
+        "      }" +
+        "    }" +
+        "    OPTIONAL {" +
+        "      ?literaturUri schema:identifier ?litIdentifier." +
+        "    }" +
+        "    OPTIONAL {" +
+        "      ?literaturUri a schema:Article." +
+        "      OPTIONAL {" +
+        "        ?literaturUri schema:pageStart ?pageStart;" +
+        "                      schema:pageEnd ?pageEnd." +
+        "      }" +
+        "    }" +
+        "    OPTIONAL {" +
+        "      ?literaturUri schema:publisher ?publisherUri." +
+        "      OPTIONAL {" +
+        "        ?publisherUri schema:legalName ?publisherName ." +
+        "      }" +
+        "    }" +
+        "  }" +
+        "} group by ?code ?label ?literaturUri ?titel ?auflage ?datePublished ?isbn ?litIdentifier ?pageStart ?pageEnd ?publisherUri ?publisherName";
+      console.log(query);
       this.querySparql(query);
     }
   }
