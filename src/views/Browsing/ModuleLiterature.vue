@@ -1,65 +1,53 @@
 <template>
   <!-- Das Feature Literatur(abfragen) ist nur durch ein studentisches Projekt erkundet wurden und
     nicht vollständig/in einem extrem frühen Status. Auch die Datenbasis ist unzuverlässig strukturiert.
-    Bis auf der Datenebene weitergearbeitet wurde, soll hier nicht weiterentwickelt werden.
-    
-    Diese Seite ist nur grob vorgestaltet, um die Abfrage von Literaturdaten zu zeigen. Wegen der
-    uneinheitlichen Informationen werden (bisher) nur die scheinbar einfachen Dinge (Autor, Titel,
-    Verlag) angezeigt, aber in Abfrage und Antwort sind häufig noch weitere Daten (isbn, autorProfilLink,
-    pageStart, pageEnd) enthalten. Bei mehreren Autoren kommt es scheinbar zu Dopplungen. -->
+    Bis auf der Datenebene weitergearbeitet wurde, soll hier nicht weiterentwickelt werden. -->
   <div class="wrapper">
     <md-content style="border-color: #a5a5a5">
       <div>
         <h3 style="color: #a5a5a5"><b>Literatur</b></h3>
-        <!-- Je Zeile der Antwort wird einmal iteriert. Vielleicht entsteht hier ein Problem für Literatur mit
-        mehreren Autoren. -->
-        <p v-for="(obj, index) in resultLiterature" :key="index">
-          <!-- Diese Komponente generiert einen Button mit dem Titel der Literatur, welcher bei Anklicken die
-          einfachen Daten anzeigt oder versteckt. Es ist (noch) kein Indikator (toogle-Dreieck) vorhanden, der
-          dies anzeigt.
-          Conditional Rendering könnte ein Lösungsansatz für unvollständige Daten sein.-->
-          <Accordion class="mb-4">
-            <template v-slot:title>
-              <span class="font-semibold text-xl">{{ obj.titel.value }}</span>
-            </template>
-            <template v-slot:content>
-              <div>
-                <b>Autor(en):</b> {{ displayAuthors(obj.authors.value) }}<br />
-                <b>Titel:</b> {{ obj.titel.value }}<br />
-                <div
-                  v-if="
-                    Object.keys(obj).includes('pageStart') &&
-                      Object.keys(obj).includes('pageEnd')
-                  "
-                >
-                  <b>Seiten:</b> {{ obj.pageStart.value }} -
-                  {{ obj.pageEnd.value }}<br />
-                </div>
-                <b>Verlag:</b> {{ obj.publisherName.value }} ({{
-                  obj.datePublished.value
-                }}) <br />
-                <br />
-                <div
-                  v-if="
-                    Object.keys(obj).includes('auflage') &&
-                      obj.auflage.value != ''
-                  "
-                >
-                  <b>Auflage:</b> {{ obj.auflage.value }}<br />
-                </div>
-                <div
-                  v-if="
-                    Object.keys(obj).includes('isbn') && obj.isbn.value != ''
-                  "
-                >
-                  <b>ISBN:</b> {{ obj.isbn.value }}<br />
-                </div>
-                <b>literaturUri</b><br />
-                <b>pubishlerUri</b><br />
+        <!-- Je Zeile der Antwort wird einmal iteriert. 
+        genutzt wird: https://github.com/tkhquang/vue-simple-accordion-->
+        <vsa-list>
+          <vsa-item v-for="(obj, index) in resultLiterature" :key="index">
+            <vsa-heading>
+              {{ obj.titel.value }}
+            </vsa-heading>
+
+            <vsa-content>
+              <b>Autor(en):</b> {{ displayAuthors(obj.authors.value) }}<br />
+              <b>Titel:</b> {{ obj.titel.value }}<br />
+              <div
+                v-if="
+                  Object.keys(obj).includes('pageStart') &&
+                    Object.keys(obj).includes('pageEnd')
+                "
+              >
+                <b>Seiten:</b> {{ obj.pageStart.value }} - {{ obj.pageEnd.value
+                }}<br />
               </div>
-            </template>
-          </Accordion>
-        </p>
+              <b>Verlag:</b> {{ obj.publisherName.value }} ({{
+                obj.datePublished.value
+              }}) <br />
+              <br />
+              <div
+                v-if="
+                  Object.keys(obj).includes('auflage') &&
+                    obj.auflage.value != ''
+                "
+              >
+                <b>Auflage:</b> {{ obj.auflage.value }}<br />
+              </div>
+              <div
+                v-if="Object.keys(obj).includes('isbn') && obj.isbn.value != ''"
+              >
+                <b>ISBN:</b> {{ obj.isbn.value }}<br />
+              </div>
+              <b>literaturUri</b><br />
+              <b>pubishlerUri</b><br />
+            </vsa-content>
+          </vsa-item>
+        </vsa-list>
       </div>
     </md-content>
   </div>
@@ -67,11 +55,21 @@
 
 <script>
 import axios from "axios";
-import Accordion from "@/views/Browsing/Accordion.vue";
+import {
+  VsaList,
+  VsaItem,
+  VsaHeading,
+  VsaContent,
+  VsaIcon
+} from "vue-simple-accordion";
+import "vue-simple-accordion/dist/vue-simple-accordion.css";
 
 export default {
   components: {
-    Accordion
+    VsaList,
+    VsaItem,
+    VsaHeading,
+    VsaContent
   },
   data() {
     return {
