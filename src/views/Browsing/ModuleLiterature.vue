@@ -24,7 +24,7 @@
             </template>
             <template v-slot:content>
               <div>
-                <b>Autor(en):</b> {{ obj.authors.value }}<br />
+                <b>Autor(en):</b> {{ displayAuthors(obj.authors.value) }}<br />
                 <b>Titel:</b> {{ obj.titel.value }}<br />
                 <div
                   v-if="
@@ -47,15 +47,6 @@
                 >
                   <b>Auflage:</b> {{ obj.auflage.value }}<br />
                 </div>
-                <div
-                  v-if="
-                    Object.keys(obj).includes('autorProfilLink') &&
-                      obj.autorProfilLink.value != ''
-                  "
-                >
-                  <b>Link zum Autor:</b> {{ obj.autorProfilLink.value }}<br />
-                </div>
-                <b>autorUri</b><br />
                 <div
                   v-if="
                     Object.keys(obj).includes('isbn') && obj.isbn.value != ''
@@ -173,8 +164,32 @@ export default {
         "    }" +
         "  }" +
         "} group by ?code ?label ?literaturUri ?titel ?auflage ?datePublished ?isbn ?litIdentifier ?pageStart ?pageEnd ?publisherUri ?publisherName";
-      console.log(query);
+      //console.log(query);
       this.querySparql(query);
+    },
+    displayAuthors(authorsInput) {
+      this.authorsArray = [];
+      //Eingabe zu Liste einzelner Autoren
+      this.authorsArray = authorsInput.split(", ");
+      this.authorsString = "";
+      //Zahl der Autoren auswerten
+      if (this.authorsArray.length < 4) {
+        //alle anzeigen
+        this.authorsArray.forEach(element => {
+          this.authorsString += element + ", ";
+        });
+        //extra ", " abschneiden
+        this.authorsString = this.authorsString.slice(0, -2);
+      } else {
+        //et al.
+        for (let i = 0; i < 3; i++) {
+          this.authorsString += this.authorsArray[i] + ", ";
+        }
+        //extra ", " abschneiden
+        this.authorsString = this.authorsString.slice(0, -2);
+        this.authorsString += " et al.";
+      }
+      return this.authorsString;
     }
   }
 };
