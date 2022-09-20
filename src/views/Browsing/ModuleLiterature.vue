@@ -11,6 +11,7 @@
         <vsa-list>
           <vsa-item v-for="(obj, index) in resultLiterature" :key="index">
             <vsa-heading>
+              [Icon hier]
               {{ obj.titel.value }}
             </vsa-heading>
 
@@ -112,7 +113,9 @@ export default {
         'SELECT ?code ?label ?literaturUri ?titel ?auflage (GROUP_CONCAT(?autorFullname; separator=", ") as ?authors)' +
         " ?datePublished ?isbn ?litIdentifier ?pageStart ?pageEnd ?publisherUri ?publisherName " +
         "WHERE {" +
-        "  module:AlgoDat schema:courseCode ?code ;" +
+        "module:" +
+        code +
+        " schema:courseCode ?code ;" +
         "                schema:name ?label ." +
         '  FILTER(lang(?label) = "de")' +
         "  OPTIONAL {" +
