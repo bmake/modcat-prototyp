@@ -14,11 +14,14 @@
             <img src="../assets/img/searchIcon.svg" />
           </md-avatar>
           <md-field style="max-width: 25em">
-            <md-input placeholder="Suchbegriff(e) eingeben"></md-input>
-            <!-- ToDo Eingabe übergeben, enter=absenden, escapen? -->
+            <md-input
+              v-model="searchedFor"
+              placeholder="Suchbegriff(e) eingeben"
+            ></md-input>
+            <!-- ToDo Eingabe übergeben, enter=absenden, escapen? alt :to="{ name: 'search' }"-->
             <md-icon>search</md-icon>
           </md-field>
-          <md-button class="md-raised red" :to="{ name: 'search' }">
+          <md-button class="md-raised red" @click="navigateToSearch">
             Suche
           </md-button>
         </md-list-item>
@@ -63,6 +66,21 @@ import BrowsingHeader from "@/views/components/BrowsingHeader.vue";
 export default {
   components: {
     BrowsingHeader
+  },
+  data() {
+    return {
+      searchedFor: ""
+    };
+  },
+  methods: {
+    navigateToSearch() {
+      //navigiert zur Suchkomponente und gibt Suchbegriff weiter
+      console.log("testig");
+      this.$router.push({
+        name: "search",
+        params: { lookFor: this.searchedFor }
+      });
+    }
   }
 };
 </script>
