@@ -17,7 +17,6 @@ import ModuleMethod from "./views/Browsing/ModuleMethod";
 import ModuleLiterature from "./views/Browsing/ModuleLiterature";
 import NotFound from "./views/Browsing/NotFound";
 
-
 Vue.use(Router);
 
 export default new Router({
@@ -25,7 +24,7 @@ export default new Router({
     {
       path: "/",
       name: "index",
-      components: { default: Navigation, header: '', footer: MainFooter },
+      components: { default: Navigation, header: "", footer: MainFooter },
       props: {
         header: { colorOnScroll: 400 },
         footer: { backgroundColor: "black" }
@@ -34,7 +33,7 @@ export default new Router({
     {
       path: "/starter",
       name: "starter",
-      components: { default: Starter, header:  '', footer: MainFooter },
+      components: { default: Starter, header: "", footer: MainFooter },
       props: {
         header: { colorOnScroll: 400 },
         footer: { backgroundColor: "black" }
@@ -43,7 +42,7 @@ export default new Router({
     {
       path: "/dokumentieren",
       name: "dokumentieren",
-      components: { default: Dokumentieren, header:  '', footer: MainFooter },
+      components: { default: Dokumentieren, header: "", footer: MainFooter },
       props: {
         header: { colorOnScroll: 400 },
         footer: { backgroundColor: "black" }
@@ -52,7 +51,7 @@ export default new Router({
     {
       path: "/browsing",
       name: "browsing",
-      components: { default: Browsing, header:  '', footer: MainFooter },
+      components: { default: Browsing, header: "", footer: MainFooter },
       props: {
         header: { colorOnScroll: 400 },
         footer: { backgroundColor: "black" }
@@ -61,7 +60,7 @@ export default new Router({
     {
       path: "/browsing/search",
       name: "search",
-      components: { default: Search, header:  '', footer: MainFooter },
+      components: { default: Search, header: "", footer: MainFooter },
       props: {
         header: { colorOnScroll: 400 },
         footer: { backgroundColor: "black" }
@@ -70,7 +69,7 @@ export default new Router({
     {
       path: "/browsing/filter",
       name: "filter",
-      components: { default: Filter, header:  '', footer: MainFooter },
+      components: { default: Filter, header: "", footer: MainFooter },
       props: {
         header: { colorOnScroll: 400 },
         footer: { backgroundColor: "black" }
@@ -79,7 +78,7 @@ export default new Router({
     {
       path: "/browsing/navgraph",
       name: "navgraph",
-      components: { default: NavGraph, header:  '', footer: MainFooter },
+      components: { default: NavGraph, header: "", footer: MainFooter },
       props: {
         header: { colorOnScroll: 400 },
         footer: { backgroundColor: "black" }
@@ -88,7 +87,7 @@ export default new Router({
     {
       path: "/browsing/report",
       name: "report",
-      components: { default: Report, header:  '', footer: MainFooter },
+      components: { default: Report, header: "", footer: MainFooter },
       props: {
         header: { colorOnScroll: 400 },
         footer: { backgroundColor: "black" }
@@ -96,36 +95,36 @@ export default new Router({
     },
     {
       path: "/browsing/modul/:code",
-      components: { default: Modul, header:  '', footer: MainFooter },
+      components: { default: Modul, header: "", footer: MainFooter },
       //nested routes
       children: [
         {
           // ModuleOverview will be rendered inside User's <router-view>
           // when /browsing/:code is matched
-          path: '',
-          name: 'modul',
+          path: "",
+          name: "modul",
           component: ModuleOverview
         },
         {
-          path: 'Rahmendaten',
-          name: 'base',
+          path: "Rahmendaten",
+          name: "base",
           component: ModuleBase
         },
         {
           // ModuleOutcome will be rendered inside User's <router-view>
           // when /browsing/:code/didaktik is matched
-          path: 'didaktik',
-          name: 'outcome',
+          path: "didaktik",
+          name: "outcome",
           component: ModuleOutcome
         },
         {
-          path: 'methodik',
-          name: 'method',
+          path: "methodik",
+          name: "method",
           component: ModuleMethod
         },
         {
-          path: 'literatur',
-          name: 'literature',
+          path: "literatur",
+          name: "literature",
           component: ModuleLiterature
         }
       ],
@@ -137,7 +136,7 @@ export default new Router({
     {
       path: "/:pathMatch(.*)*",
       name: "NotFound",
-      components: { default: NotFound, header:  '', footer: MainFooter }
+      components: { default: NotFound, header: "", footer: MainFooter }
     }
   ],
   scrollBehavior: to => {
