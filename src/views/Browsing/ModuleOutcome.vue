@@ -1,42 +1,34 @@
 <template>
   <div class="wrapper">
     <md-content style="border-color: #92d050">
-      
       <div>
         <h3 style="color: #92d050;"><b>Didaktik</b></h3>
-        
+
         <div class="goals">
           <h4>Lernziele</h4>
-          <h5 v-if="(resultCompetenceSubjectmatter  != 0)">Fachkompetenz</h5>
-            <ul id="goalsAndBlooms">
-              <li
-                v-for="(blooms, index) in resultCompetenceSubjectmatter"
-                :key="index"
-              >
-                <b>{{ blooms.bname.value }}</b> - {{ blooms.learnResult.value }}
-              </li>
-            </ul>
+          <h5 v-if="resultCompetenceSubjectmatter != 0">Fachkompetenz</h5>
+          <ul id="goalsAndBlooms">
+            <li
+              v-for="(blooms, index) in resultCompetenceSubjectmatter"
+              :key="index"
+            >
+              <b>{{ blooms.bname.value }}</b> - {{ blooms.learnResult.value }}
+            </li>
+          </ul>
 
-          <h5 v-if="(resultCompetenceSelf.length != 0)">Persönliche Kompetenz</h5>
-            <ul id="goalsSelf">
-              <li
-                v-for="(blooms, index) in resultCompetenceSelf"
-                :key="index"
-              >
-                {{ blooms.learnResult.value }}
-              </li>
-            </ul>
+          <h5 v-if="resultCompetenceSelf.length != 0">Persönliche Kompetenz</h5>
+          <ul id="goalsSelf">
+            <li v-for="(blooms, index) in resultCompetenceSelf" :key="index">
+              {{ blooms.learnResult.value }}
+            </li>
+          </ul>
 
-          <h5 v-if="(resultCompetenceSocial  != 0)">Sozialkompetenz</h5>
-            <ul id="goalsSocial">
-              <li
-                v-for="(blooms, index) in resultCompetenceSocial"
-                :key="index"
-              >
-                {{ blooms.learnResult.value }}
-              </li>
-            </ul>
-          
+          <h5 v-if="resultCompetenceSocial != 0">Sozialkompetenz</h5>
+          <ul id="goalsSocial">
+            <li v-for="(blooms, index) in resultCompetenceSocial" :key="index">
+              {{ blooms.learnResult.value }}
+            </li>
+          </ul>
         </div>
 
         <md-divider
@@ -58,7 +50,7 @@
         <md-divider
           style="height:2px; border-width:0; color: #92d050; background-color: #92d050"
         />
-        
+
         <div class="exams">
           <h4>Prüfungsleistungen</h4>
           <ul id="exams">
@@ -67,7 +59,6 @@
             </li>
           </ul>
         </div>
-        
       </div>
     </md-content>
   </div>
@@ -125,7 +116,6 @@ export default {
         " schema:courseCode ?code ;" +
         "    schema:name ?label ." +
         'FILTER(lang(?label) = "de") ' +
-        
         // Prüfungsleistungen
         "OPTIONAL { " +
         '  SELECT (GROUP_CONCAT(?examName; separator=" | ") as ?exams) ' +
@@ -165,15 +155,14 @@ export default {
         "PREFIX schema: <https://schema.org/> " +
         "SELECT DISTINCT ?code ?bname ?addList ?learnResult " +
         "WHERE { " +
-        '  module:' +
+        "  module:" +
         code +
-         ' schema:courseCode ?code ; ' +
+        " schema:courseCode ?code ; " +
         "    schema:name ?label ." +
         '    FILTER(lang(?label) = "de")' +
-          
-        '  module:LResults_' +
+        "  module:LResults_" +
         code +
-        ' schema:itemListElement ?resList .' +
+        " schema:itemListElement ?resList ." +
         "                  ?resList schema:description ?learnResult ;" +
         "                      schema:position ?position ." +
         "                  ?resList schema:additionalType ?addList ;" +
@@ -204,23 +193,22 @@ export default {
         "PREFIX schema: <https://schema.org/> " +
         "SELECT DISTINCT ?code ?bname ?addList ?learnResult " +
         "WHERE { " +
-        '  module:' +
+        "  module:" +
         code +
-         ' schema:courseCode ?code ; ' +
+        " schema:courseCode ?code ; " +
         "    schema:name ?label ." +
         '    FILTER(lang(?label) = "de")' +
-          
-        '  module:LResults_' +
+        "  module:LResults_" +
         code +
-        ' schema:itemListElement ?resList .' +
+        " schema:itemListElement ?resList ." +
         "                  ?resList schema:description ?learnResult ;" +
         "                      schema:position ?position ." +
         "                  ?resList schema:additionalType ?addList ;" +
         "                          schema:additionalType module:SelfCompetence." +
         "            ?addList schema:name ?bname." +
-        '    FILTER(lang(?bname) = "de") ' +     
+        '    FILTER(lang(?bname) = "de") ' +
         "}";
-      
+
       axios
         .post(
           "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
@@ -230,7 +218,7 @@ export default {
           }
         )
         .then(response => {
-          this.resultCompetenceSelf= response.data.results.bindings;
+          this.resultCompetenceSelf = response.data.results.bindings;
         })
         .catch(e => {
           this.errors.push(e);
@@ -243,21 +231,20 @@ export default {
         "PREFIX schema: <https://schema.org/> " +
         "SELECT DISTINCT ?code ?bname ?addList ?learnResult " +
         "WHERE { " +
-        '  module:' +
+        "  module:" +
         code +
-         ' schema:courseCode ?code ; ' +
+        " schema:courseCode ?code ; " +
         "    schema:name ?label ." +
         '    FILTER(lang(?label) = "de")' +
-          
-        '  module:LResults_' +
+        "  module:LResults_" +
         code +
-        ' schema:itemListElement ?resList .' +
+        " schema:itemListElement ?resList ." +
         "                  ?resList schema:description ?learnResult ;" +
         "                      schema:position ?position ." +
         "                  ?resList schema:additionalType ?addList ;" +
         "                          schema:additionalType module:SocialCompetence." +
         "            ?addList schema:name ?bname." +
-        '    FILTER(lang(?bname) = "de") ' +     
+        '    FILTER(lang(?bname) = "de") ' +
         "}";
 
       axios

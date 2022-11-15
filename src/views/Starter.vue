@@ -1,6 +1,9 @@
 <template>
   <div class="wrapper">
-    <div class="header-filter" style="background-color: #cc0a2f; text-align: center">
+    <div
+      class="header-filter"
+      style="background-color: #cc0a2f; text-align: center"
+    >
       <div class="md-layout">
         <div class="md-layout-item">
           <div class="index-page">
@@ -95,8 +98,7 @@
               <div
                 v-if="role == 1 || role == 2"
                 style="text-align: right; padding: 1em"
-              >
-              </div>
+              ></div>
               <div
                 v-else
                 class="md-layout md-gutter md-alignment-center-center"
@@ -168,7 +170,7 @@ export default {
     Literature: FormLiterature,
     Teachers: FormTeachers,
     //Dynamic: FormDynamic,
-    NewModulePopUp,
+    NewModulePopUp
   },
   name: "index",
   bodyClass: "index-page",
@@ -190,7 +192,7 @@ export default {
       style1: false,
       style2: false,
       style3: false,
-      showPopUp: false,
+      showPopUp: false
     };
   },
   methods: {
@@ -243,10 +245,10 @@ export default {
           "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
           query,
           {
-            headers: { "Content-Type": "application/sparql-query" },
+            headers: { "Content-Type": "application/sparql-query" }
           }
         )
-        .then((response) => {
+        .then(response => {
           const res = response.data.results.bindings;
           let pdfHead = [];
           let pdfBody = [];
@@ -255,23 +257,23 @@ export default {
           pdfBody.push(["Modulbezeichnung", res[0].label.value]);
           pdfBody.push([
             "Aufteilung in Lehrveranstaltungen",
-            res[0].learnTypes.value,
+            res[0].learnTypes.value
           ]);
           pdfBody.push(["Dauer des Moduls", res[0].duration.value]);
           pdfBody.push([
             "Zuordnung zum Curriculum",
-            res[0].programName.value + ", " + res[0].modType_name.value,
+            res[0].programName.value + ", " + res[0].modType_name.value
           ]);
           pdfBody.push([
             "Häufigkeit des Angebots von Modulen",
-            res[0].courseMode.value,
+            res[0].courseMode.value
           ]);
           pdfBody.push(["Modulverantwortlicher", res[0].accPersonLabel.value]);
           pdfBody.push(["Dozent/in", res[0].instructorLabel.value]);
           pdfBody.push(["Lehrsprache", res[0].languages.value]);
           pdfBody.push([
             "Voraussetzungen",
-            res[0].pre.value,
+            res[0].pre.value
           ]); /*+ "basiert auf folgende Module: " + res[0].basedOns.value*/
           pdfBody.push(["ECTS-Credits", res[0].ects.value]);
           pdfBody.push([
@@ -280,7 +282,7 @@ export default {
               res[0].workloadSum.value +
               " Stunden, davon: " +
               "\n" +
-              res[0].workloadDetails.value,
+              res[0].workloadDetails.value
           ]);
           pdfBody.push(["Lehrform/SWS", res[0].swsSum.value]);
           pdfBody.push(["Studien-/Prüfungsleistungen", res[0].exams.value]);
@@ -291,7 +293,7 @@ export default {
           if (res[0].grade_name) {
             pdfBody.push([
               "Gewichtung der Note in der Gesamtnote",
-              res[0].grade_name.value,
+              res[0].grade_name.value
             ]);
           }
           if (res[0].eduUse) {
@@ -312,11 +314,11 @@ export default {
             styles: { overflow: "linebreak" },
             columnStyles: {
               0: { cellWidth: 50 },
-              1: { cellWidth: 130 },
+              1: { cellWidth: 130 }
             },
             head: pdfHead,
             body: pdfBody,
-            didDrawCell: (data) => {
+            didDrawCell: data => {
               if (
                 data.section === "body" &&
                 data.column.index === 1 &&
@@ -330,15 +332,15 @@ export default {
                   { url: res[0].url.value }
                 );
               }
-            },
+            }
           });
           doc.save(code + ".pdf");
         })
-        .catch((e) => {
+        .catch(e => {
           this.errors.push(e);
         });
-    },
-  },
+    }
+  }
 };
 </script>
 <!--src="vue-multiselect/dist/vue-multiselect.min.css"-->
@@ -458,7 +460,8 @@ span.md-highlight-text-match {
   color: #2e2e2e !important;
 }
 
-.chips button.md-button.md-icon-button.md-dense.md-input-action.md-clear.md-theme-default {
+.chips
+  button.md-button.md-icon-button.md-dense.md-input-action.md-clear.md-theme-default {
   max-height: 1.2em;
   max-width: 1.2em;
 }

@@ -36,57 +36,60 @@
         </div>
       </div>
     </div>
-    <div class="main main-raised">      
+    <div class="main main-raised">
       <div class="section section-examples">
         <div class="container-fluid text-center">
-          
           <div class="container">
-        <div class="md-layout">
-          <div
-            class="md-layout-item md-size-33 md-small-size-66 md-xsmall-size-100 md-medium-size-40 mx-auto"
-          >
-            <login-card header-color="green">
-              <h4 slot="title" class="card-title">Login</h4>
-              <md-button
-                slot="buttons"
-                href="javascript:void(0)"
-                class="md-just-icon md-simple md-white"
+            <div class="md-layout">
+              <div
+                class="md-layout-item md-size-33 md-small-size-66 md-xsmall-size-100 md-medium-size-40 mx-auto"
               >
-                <i class="fab fa-facebook-square"></i>
-              </md-button>
-              <md-button
-                slot="buttons"
-                href="javascript:void(0)"
-                class="md-just-icon md-simple md-white"
-              >
-                <i class="fab fa-twitter"></i>
-              </md-button>
-              <md-button
-                slot="buttons"
-                href="javascript:void(0)"
-                class="md-just-icon md-simple md-white"
-              >
-                <i class="fab fa-google-plus-g"></i>
-              </md-button>
-              <p slot="description" class="description"><b>Melden Sie sich mit Ihren Hochschulzugangsdaten an, damit Sie die Services nutzen können.</b></p>
-              <md-field class="md-form-group" slot="inputs">
-                <md-icon>face</md-icon>
-                <label>Name</label>
-                <md-input v-model="firstname"></md-input>
-              </md-field>
-              <md-field class="md-form-group" slot="inputs">
-                <md-icon>lock_outline</md-icon>
-                <label>Passwort</label>
-                <md-input v-model="password"></md-input>
-              </md-field>
-              <md-button slot="footer" class="md-simple md-success md-lg">
-                Get Started
-              </md-button>
-            </login-card>
+                <login-card header-color="green">
+                  <h4 slot="title" class="card-title">Login</h4>
+                  <md-button
+                    slot="buttons"
+                    href="javascript:void(0)"
+                    class="md-just-icon md-simple md-white"
+                  >
+                    <i class="fab fa-facebook-square"></i>
+                  </md-button>
+                  <md-button
+                    slot="buttons"
+                    href="javascript:void(0)"
+                    class="md-just-icon md-simple md-white"
+                  >
+                    <i class="fab fa-twitter"></i>
+                  </md-button>
+                  <md-button
+                    slot="buttons"
+                    href="javascript:void(0)"
+                    class="md-just-icon md-simple md-white"
+                  >
+                    <i class="fab fa-google-plus-g"></i>
+                  </md-button>
+                  <p slot="description" class="description">
+                    <b
+                      >Melden Sie sich mit Ihren Hochschulzugangsdaten an, damit
+                      Sie die Services nutzen können.</b
+                    >
+                  </p>
+                  <md-field class="md-form-group" slot="inputs">
+                    <md-icon>face</md-icon>
+                    <label>Name</label>
+                    <md-input v-model="firstname"></md-input>
+                  </md-field>
+                  <md-field class="md-form-group" slot="inputs">
+                    <md-icon>lock_outline</md-icon>
+                    <label>Passwort</label>
+                    <md-input v-model="password"></md-input>
+                  </md-field>
+                  <md-button slot="footer" class="md-simple md-success md-lg">
+                    Get Started
+                  </md-button>
+                </login-card>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-
         </div>
       </div>
     </div>
@@ -98,50 +101,45 @@ import axios from "axios";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
-import {selectQueries} from "./queries";
+import { selectQueries } from "./queries";
 
 export default {
-  components: {
-
-  },
+  components: {},
   name: "index",
   bodyClass: "index-page",
   props: {},
   data() {
-
     return {
-
-       modules: [{
-                studiengang: '',
-                art: '',
-                modul: '',
-                dozentinnen: '',
-                aktion: ''
-            }],
-         lecturers: false,
-         courses: false
-
-
+      modules: [
+        {
+          studiengang: "",
+          art: "",
+          modul: "",
+          dozentinnen: "",
+          aktion: ""
+        }
+      ],
+      lecturers: false,
+      courses: false
     };
   },
   methods: {
     deleteRow(index, module) {
-            var idx = this.modules.indexOf(module);
-            if (idx > -1) {
-                this.modules.splice(idx, 1);
-            }
-            this.calculateTotal();
-        },
-        addNewRow() {
-            this.modules.push({
-                product_no: '',
-                product_name: '',
-                product_price: '',
-                product_qty: '',
-                line_total: 0
-            });
-        },
-
+      var idx = this.modules.indexOf(module);
+      if (idx > -1) {
+        this.modules.splice(idx, 1);
+      }
+      this.calculateTotal();
+    },
+    addNewRow() {
+      this.modules.push({
+        product_no: "",
+        product_name: "",
+        product_price: "",
+        product_qty: "",
+        line_total: 0
+      });
+    },
 
     changeShowPopUp(value) {
       this.showPopUp = value;
@@ -160,7 +158,7 @@ export default {
       this.newBoolean = value;
     },
     changeBasicFill(value) {
-      this.basicFilled= value;
+      this.basicFilled = value;
     },
     getModBasicData(value) {
       this.modBasis = value;
@@ -182,11 +180,19 @@ export default {
       this.form = value;
     },
     generatePDF() {
-      let query = selectQueries.selectQueries("PDF", this.selectedModule, this.studyProgram)
+      let query = selectQueries.selectQueries(
+        "PDF",
+        this.selectedModule,
+        this.studyProgram
+      );
       axios
-        .post("http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query", query, {
-          headers: { "Content-Type": "application/sparql-query" }
-        })
+        .post(
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
+          query,
+          {
+            headers: { "Content-Type": "application/sparql-query" }
+          }
+        )
         .then(response => {
           const res = response.data.results.bindings;
           let pdfHead = [];
@@ -213,7 +219,7 @@ export default {
           pdfBody.push([
             "Voraussetzungen",
             res[0].pre.value
-          ]);/*+ "basiert auf folgende Module: " + res[0].basedOns.value*/
+          ]); /*+ "basiert auf folgende Module: " + res[0].basedOns.value*/
           pdfBody.push(["ECTS-Credits", res[0].ects.value]);
           pdfBody.push([
             "Gesamtworkload und ihre Zusammensetzung",
@@ -229,19 +235,19 @@ export default {
           pdfBody.push(["Inhalte", res[0].contents.value]);
           pdfBody.push(["Lehr- und Lernmethoden", res[0].interTypes.value]);
           pdfBody.push(["Literatur", res[0].citations.value]);
-          if(res[0].grade_name) {
+          if (res[0].grade_name) {
             pdfBody.push([
               "Gewichtung der Note in der Gesamtnote",
               res[0].grade_name.value
             ]);
           }
-          if(res[0].eduUse) {
+          if (res[0].eduUse) {
             pdfBody.push(["Verwendbarkeit des Moduls", res[0].eduUse.value]);
           }
-          if(res[0].comment) {
+          if (res[0].comment) {
             pdfBody.push(["Besonderes", res[0].comment.value]);
           }
-          if(res[0].url) {
+          if (res[0].url) {
             pdfBody.push(["URL", res[0].url.value]);
           }
 
@@ -429,14 +435,19 @@ span.md-highlight-text-match {
   width: 93%;
 }
 
-#mods td, #mods th {
+#mods td,
+#mods th {
   border: 1px solid #ddd;
   padding: 8px;
 }
 
-#mods tr:nth-child(even){background-color: #f2f2f2;}
+#mods tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
 
-#mods tr:hover {background-color: #ddd;}
+#mods tr:hover {
+  background-color: #ddd;
+}
 
 #mods th {
   padding-top: 12px;

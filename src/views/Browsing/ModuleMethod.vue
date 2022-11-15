@@ -5,16 +5,22 @@
         <h3 style="color: #92d050"><b>Methodik</b></h3>
         <b>Lehr- und Lernformen:</b>
         <ul id="forms">
-          <li v-for="forms in (resultMethod[0].interTypes.value.split('|'))" :key="forms">
+          <li
+            v-for="forms in resultMethod[0].interTypes.value.split('|')"
+            :key="forms"
+          >
             {{ forms }}
           </li>
         </ul>
-        <md-divider/>
-        <b>Workload:</b> {{ resultMethod[0].workloadSum.value }} Stunden<br/>
-        <md-divider/>
-        <b>Aufteilung der Workload:</b><br/>
+        <md-divider />
+        <b>Workload:</b> {{ resultMethod[0].workloadSum.value }} Stunden<br />
+        <md-divider />
+        <b>Aufteilung der Workload:</b><br />
         <ul id="workload">
-          <li v-for="workload in (resultMethod[0].workloadDetails.value.split('|'))" :key="workload">
+          <li
+            v-for="workload in resultMethod[0].workloadDetails.value.split('|')"
+            :key="workload"
+          >
             {{ workload }}
           </li>
         </ul>
@@ -33,7 +39,7 @@ export default {
       loading: true,
       errored: false,
       code: this.$route.params.code
-    }
+    };
   },
   mounted() {
     this.queryMethod(this.code);
@@ -56,10 +62,8 @@ export default {
           this.errored = true;
           this.errors.push(e);
           console.log(error);
-          
         })
-        .finally(() => this.loading = false)
-        ;
+        .finally(() => (this.loading = false));
     },
     queryMethod(code) {
       let query =
@@ -73,7 +77,7 @@ export default {
         " schema:courseCode ?code ; " +
         "         schema:name ?label .  " +
         'FILTER(lang(?label) = "de")' +
-          // Lehr- und Lernmethode
+        // Lehr- und Lernmethode
         "  OPTIONAL { " +
         '    SELECT (GROUP_CONCAT(?teachingFormName; separator=" | ") as ?interTypes) ' +
         "    WHERE { " +
@@ -85,7 +89,7 @@ export default {
         "    } ORDER BY ?teachingFormPos " +
         "  } " +
         "  OPTIONAL { " +
-          // Gesamtworkload, Workload-Komponente in Stunden
+        // Gesamtworkload, Workload-Komponente in Stunden
         'SELECT (SUM(?workloadValue) as ?workloadSum) (GROUP_CONCAT(?workloadDetail; separator=" | ") as ?workloadDetails) ' +
         "WHERE { " +
         "  SELECT DISTINCT * " +

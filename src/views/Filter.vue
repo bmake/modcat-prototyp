@@ -35,7 +35,9 @@
               name="studyProgram"
               id="studyProgram"
             >
-              <md-option value="">- - - - - Auswahl löschen - - - - -</md-option>
+              <md-option value=""
+                >- - - - - Auswahl löschen - - - - -</md-option
+              >
               <md-option
                 v-for="(sp, index) in studyProgramList"
                 :value="sp.studyprogramID.value"
@@ -46,7 +48,9 @@
           </md-field>
 
           <h4><b>Modultyp</b></h4>
-          <md-checkbox v-model="moduleType" value="Pflichtmodul">Pflicht</md-checkbox>
+          <md-checkbox v-model="moduleType" value="Pflichtmodul"
+            >Pflicht</md-checkbox
+          >
           <md-checkbox v-model="moduleType" value="Wahlpflichtmodul"
             >Wahlpflicht</md-checkbox
           >
@@ -167,7 +171,13 @@
                   md-label="Modultitel"
                   md-sort-by="label.value"
                   style="width: 38%"
-                  ><router-link :to="{ name: 'modul', params: { code: item.moduleID.value.substring(39) }}">{{ item.label.value }}</router-link></md-table-cell
+                  ><router-link
+                    :to="{
+                      name: 'modul',
+                      params: { code: item.moduleID.value.substring(39) }
+                    }"
+                    >{{ item.label.value }}</router-link
+                  ></md-table-cell
                 >
                 <md-table-cell
                   md-label="Studiengang"
@@ -294,7 +304,8 @@ export default {
         "  ?languageValue schema:value ?language . " +
         "  ?LResultsCode schema:itemListElement ?LResultList . " +
         "  ?LResultList schema:additionalType ?competence . ",
-      moduleQuery2: " } GROUP BY ?moduleID ?label ?studyprogramLabel ?departmentLabel   ORDER BY ?label ",
+      moduleQuery2:
+        " } GROUP BY ?moduleID ?label ?studyprogramLabel ?departmentLabel   ORDER BY ?label ",
       competenceBloom: [],
       filters: [null, null, null, null, null, null, null]
     };
@@ -302,8 +313,8 @@ export default {
 
   methods: {
     getURL(i) {
-    let url = "/browsing/modul/" + i.substring(38);
-     return url
+      let url = "/browsing/modul/" + i.substring(38);
+      return url;
     },
     /*getPagination(value) {
       this.toBeSearched = value.pageItems
@@ -371,11 +382,10 @@ export default {
       if (this.department.length > 0) {
         let arr = [];
         for (let a = 0; a < this.department.length; a++) {
-          arr[a] = ' STR(?department) ="'+ this.department[a] +'" '
+          arr[a] = ' STR(?department) ="' + this.department[a] + '" ';
         }
-        let filStr = ' FILTER (' + arr.join(' || ') + ')  ';
-        query1 =
-          query1 + filStr;
+        let filStr = " FILTER (" + arr.join(" || ") + ")  ";
+        query1 = query1 + filStr;
       }
 
       let query2 = "} ORDER BY ?studyProgramName";
@@ -434,12 +444,12 @@ export default {
       this.selectedStudyProgram = "";
       this.queryStudyProgram();
 
-      if(v.length > 0) {
+      if (v.length > 0) {
         let arr = [];
         for (let a = 0; a < v.length; a++) {
-          arr[a] = ' STR(?department) ="'+ v[a] +'" '
+          arr[a] = ' STR(?department) ="' + v[a] + '" ';
         }
-        let filStr = ' FILTER (' + arr.join(' || ') + ')  ';
+        let filStr = " FILTER (" + arr.join(" || ") + ")  ";
         //let query = this.moduleQuery1 + ' FILTER(STR(?department) = "' + v + '") ' + this.moduleQuery2;
         this.filters.splice(0, 1, filStr);
         // [0] = ' FILTER(STR(?department) = "' + v + '")  ';
@@ -449,103 +459,123 @@ export default {
       }
     },
     selectedStudyProgram(v) {
-      if(v != "" && v != null) {
-        this.filters.splice(1, 1, ' FILTER(STR(?studyprogram) = "' + v + '")  ');
+      if (v != "" && v != null) {
+        this.filters.splice(
+          1,
+          1,
+          ' FILTER(STR(?studyprogram) = "' + v + '")  '
+        );
       } else {
         this.filters.splice(1, 1, null);
       }
     },
     moduleType(v) {
-      if(v.length > 0) {
+      if (v.length > 0) {
         let arr = [];
         for (let a = 0; a < v.length; a++) {
-          arr[a] = ' REGEX(?moduleType, "'+ v[a] +'") '
+          arr[a] = ' REGEX(?moduleType, "' + v[a] + '") ';
         }
-        let filStr = ' FILTER (' + arr.join(' || ') + ')  ';
+        let filStr = " FILTER (" + arr.join(" || ") + ")  ";
         this.filters.splice(2, 1, filStr);
       } else {
         this.filters.splice(2, 1, null);
       }
     },
     selectedLecturer(v) {
-      if(v != "" && v != null) {
+      if (v != "" && v != null) {
         let i = this.lecturerLabels.indexOf(v);
-        if(i > 0) {
+        if (i > 0) {
           let value = this.lecturers[i];
-          this.filters.splice(3, 1, ' FILTER(STR(?lecturer) = "' + value + '")  ');
+          this.filters.splice(
+            3,
+            1,
+            ' FILTER(STR(?lecturer) = "' + value + '")  '
+          );
         }
       } else {
         this.filters.splice(3, 1, null);
       }
     },
     language(v) {
-      if(v.length > 0) {
+      if (v.length > 0) {
         let arr = [];
         for (let a = 0; a < v.length; a++) {
           if (v[a] == "andere") {
             arr[a] = ' (?language != "de" && ?language != "en") ';
           } else {
-            arr[a] = ' (?language = "'+ v[a] +'") '
+            arr[a] = ' (?language = "' + v[a] + '") ';
           }
         }
-        let filStr = ' FILTER (' + arr.join(' || ') + ')  ';
+        let filStr = " FILTER (" + arr.join(" || ") + ")  ";
         this.filters.splice(4, 1, filStr);
       } else {
         this.filters.splice(4, 1, null);
       }
     },
     competence(v) {
-      if(v.length > 0) {
-        this.competenceBloom = new Set()
+      if (v.length > 0) {
+        this.competenceBloom = new Set();
         for (let a = 0; a < v.length; a++) {
           this.competenceBloom.add(v[a]);
         }
-        if(this.bloomTax.length > 0 && v.includes("SubjectMatterCompetence")) {
+        if (this.bloomTax.length > 0 && v.includes("SubjectMatterCompetence")) {
           for (let b = 0; b < this.bloomTax.length; b++) {
             this.competenceBloom.add(this.bloomTax[b]);
           }
         }
-        if(this.bloomTax.length > 0 && v.includes("SubjectMatterCompetence")) {
-          this.competenceBloom.delete("SubjectMatterCompetence")
+        if (this.bloomTax.length > 0 && v.includes("SubjectMatterCompetence")) {
+          this.competenceBloom.delete("SubjectMatterCompetence");
         }
         let arr = [];
-        this.competenceBloom.forEach (function(value) {
-          arr.push(' STR(?competence) = "https://bmake.th-brandenburg.de/module/' + value + '" ' )
-        })
-        let filStr = ' FILTER (' + arr.join(' || ') + ')  ';
+        this.competenceBloom.forEach(function(value) {
+          arr.push(
+            ' STR(?competence) = "https://bmake.th-brandenburg.de/module/' +
+              value +
+              '" '
+          );
+        });
+        let filStr = " FILTER (" + arr.join(" || ") + ")  ";
         this.filters.splice(5, 1, filStr);
       } else {
         this.filters.splice(5, 1, null);
       }
     },
     bloomTax(v) {
-      if(v.length > 0 ) {
-        this.competenceBloom = new Set()
+      if (v.length > 0) {
+        this.competenceBloom = new Set();
         for (let a = 0; a < v.length; a++) {
           this.competenceBloom.add(v[a]);
         }
         for (let b = 0; b < this.competence.length; b++) {
           this.competenceBloom.add(this.competence[b]);
         }
-        if(this.competenceBloom.has("SubjectMatterCompetence")) {
-          this.competenceBloom.delete("SubjectMatterCompetence")
+        if (this.competenceBloom.has("SubjectMatterCompetence")) {
+          this.competenceBloom.delete("SubjectMatterCompetence");
         }
         let arr = [];
-        this.competenceBloom.forEach (function(value) {
-          arr.push(' STR(?competence) = "https://bmake.th-brandenburg.de/module/' + value + '" ' )
-        })
-        let filStr = ' FILTER (' + arr.join(' || ') + ')  ';
+        this.competenceBloom.forEach(function(value) {
+          arr.push(
+            ' STR(?competence) = "https://bmake.th-brandenburg.de/module/' +
+              value +
+              '" '
+          );
+        });
+        let filStr = " FILTER (" + arr.join(" || ") + ")  ";
         this.filters.splice(5, 1, filStr);
       } else if (this.competence.length > 0) {
-        this.competenceBloom = new Set()
+        this.competenceBloom = new Set();
         for (let a = 0; a < this.competence.length; a++) {
           this.competenceBloom.add(this.competence[a]);
         }
         let arr = [];
-        this.competenceBloom.forEach (function(value) {
-          arr.push(' STR(?competence) = "https://bmake.th-brandenburg.de/module/' + value + '" ' )
-        })
-        let filStr = ' FILTER (' + arr.join(' || ') + ')  ';
+        this.competenceBloom.forEach(function(value) {
+          arr.push(
+            ' STR(?competence) = "https://bmake.th-brandenburg.de/module/' +
+              value +
+              '" '
+          );
+        });
+        let filStr = " FILTER (" + arr.join(" || ") + ")  ";
         this.filters.splice(5, 1, filStr);
       } else {
         this.filters.splice(5, 1, null);
@@ -559,7 +589,7 @@ export default {
         }
       }
       let query = this.moduleQuery1 + filStr + this.moduleQuery2;
-      this.queryModuleList(query)
+      this.queryModuleList(query);
     }
     /*search(v){
       if (v == null || v == "") {
@@ -577,5 +607,4 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

@@ -75,7 +75,6 @@ export default {
   methods: {
     navigateToSearch() {
       //navigiert zur Suchkomponente und gibt Suchbegriff weiter
-      console.log("testig");
       this.$router.push({
         name: "search",
         params: { lookFor: this.searchedFor }

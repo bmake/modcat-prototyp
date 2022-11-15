@@ -8,26 +8,33 @@
             <p>
               <a :href="result[0].spolink.value" target="_blank">
                 Aktuelle Studien- und Prüfungsordnung (SPO)
-              </a> <br>
-              SPO-relevanten Daten <br>
-              <b>ECTS:</b> {{ result[0].ects.value }} <br>
+              </a>
+              <br />
+              SPO-relevanten Daten <br />
+              <b>ECTS:</b> {{ result[0].ects.value }} <br />
               <b>Verantwortlich: </b>
               <a :href="result[0].accPerson.value" target="_blank">
                 {{ result[0].accPersonLabel.value }}
               </a>
             </p>
-            <router-link :to="{ name: 'base', params: { code: $route.params.code }}"><b>Anschauen</b></router-link>
+            <router-link
+              :to="{ name: 'base', params: { code: $route.params.code } }"
+              ><b>Anschauen</b></router-link
+            >
           </div>
         </md-content>
         <md-content style="border-color: #92d050">
           <div>
             <h4 style="color: #92d050;"><b>Didaktik</b></h4>
             <p>
-              Lernziele nach Kompetenzarten und -stufen<br/>
-              Strukturierte Lerninhalte<br/>
-              <b>Prüfungsleistungen:</b> {{ result[0].exams.value }}<br/>
+              Lernziele nach Kompetenzarten und -stufen<br />
+              Strukturierte Lerninhalte<br />
+              <b>Prüfungsleistungen:</b> {{ result[0].exams.value }}<br />
             </p>
-            <router-link :to="{ name: 'outcome', params: { code: $route.params.code }}"><b>Anschauen</b></router-link>
+            <router-link
+              :to="{ name: 'outcome', params: { code: $route.params.code } }"
+              ><b>Anschauen</b></router-link
+            >
           </div>
         </md-content>
       </div>
@@ -36,21 +43,29 @@
           <div>
             <h4 style="color: #92d050"><b>Methodik</b></h4>
             <p>
-              <b>Lehr- und Lernformen:</b> {{ result[0].interTypes.value }}<br/>
-              <b>Aufteilung der Workload:</b> {{ result[0].workloadDetails.value }}<br/>
+              <b>Lehr- und Lernformen:</b> {{ result[0].interTypes.value
+              }}<br />
+              <b>Aufteilung der Workload:</b>
+              {{ result[0].workloadDetails.value }}<br />
             </p>
-            <router-link :to="{ name: 'method', params: { code: $route.params.code }}"><b>Anschauen</b></router-link>
+            <router-link
+              :to="{ name: 'method', params: { code: $route.params.code } }"
+              ><b>Anschauen</b></router-link
+            >
           </div>
         </md-content>
         <md-content style="border-color: #a5a5a5">
           <div>
             <h4 style="color: #a5a5a5"><b>Literatur</b></h4>
             <p>
-              Empfohlene Literatur und sonstige Quellen<br/>
-              Links (DOIs und URLs) elektronischer Ressourcen<br/>
-              Web-IDs von Autor*innen und Verlagen<br/>
+              Empfohlene Literatur und sonstige Quellen<br />
+              Links (DOIs und URLs) elektronischer Ressourcen<br />
+              Web-IDs von Autor*innen und Verlagen<br />
             </p>
-            <router-link :to="{ name: 'literature', params: { code: $route.params.code }}"><b>Anschauen</b></router-link>
+            <router-link
+              :to="{ name: 'literature', params: { code: $route.params.code } }"
+              ><b>Anschauen</b></router-link
+            >
           </div>
         </md-content>
       </div>
@@ -68,7 +83,7 @@ export default {
       loading: true,
       errored: false,
       code: this.$route.params.code
-    }
+    };
   },
   mounted() {
     this.queryMethod(this.code);
@@ -90,10 +105,8 @@ export default {
         .catch(e => {
           this.errored = true;
           console.log(error);
-          
         })
-        .finally(() => this.loading = false)
-        ;
+        .finally(() => (this.loading = false));
     },
     queryMethod(code) {
       let query =
@@ -107,11 +120,11 @@ export default {
         " schema:courseCode ?code ; " +
         "         schema:name ?label ;  " +
         "      schema:isPartOf ?studyProgram ; " +
-          // ECTS
+        // ECTS
         "         schema:numberOfCredits ?ects ;  " +
-          // Modulverantwortliche (URI)
+        // Modulverantwortliche (URI)
         "         schema:accountablePerson ?accPerson . " +
-          // Modulverantwortliche Label (Prof. Dr....)
+        // Modulverantwortliche Label (Prof. Dr....)
         "   ?accPerson rdfs:label ?accPersonLabel .  " +
         'FILTER(lang(?label) = "de")' +
         // Prüfungsleistungen
@@ -125,7 +138,7 @@ export default {
         "          schema:position ?examPos ." +
         "    } ORDER BY ?examPos" +
         "} " +
-          // Lehr- und Lernmethode
+        // Lehr- und Lernmethode
         "  OPTIONAL { " +
         '    SELECT (GROUP_CONCAT(?teachingFormName; separator=", ") as ?interTypes) ' +
         "    WHERE { " +
@@ -145,10 +158,10 @@ export default {
         //Studienordnung (SPO) Name und Link
         "  ?studyProgram" +
         " schema:subjectOf ?spocode ." +
-  	    "  ?spocode schema:url ?spolink." +
+        "  ?spocode schema:url ?spolink." +
         "}" +
         "  OPTIONAL { " +
-          // Gesamtworkload, Workload-Komponente in Stunden
+        // Gesamtworkload, Workload-Komponente in Stunden
         'SELECT (SUM(?workloadValue) as ?workloadSum) (GROUP_CONCAT(?workloadDetail; separator=", ") as ?workloadDetails) ' +
         "WHERE { " +
         "  SELECT DISTINCT * " +
@@ -163,7 +176,7 @@ export default {
         "}" +
         "  } " +
         "}";
-        //console.log(query);
+      //console.log(query);
       this.querySparql(query);
     }
   }
@@ -328,14 +341,19 @@ span.md-highlight-text-match {
   width: 93%;
 }
 
-#mods td, #mods th {
+#mods td,
+#mods th {
   border: 1px solid #ddd;
   padding: 8px;
 }
 
-#mods tr:nth-child(even){background-color: #f2f2f2;}
+#mods tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
 
-#mods tr:hover {background-color: #ddd;}
+#mods tr:hover {
+  background-color: #ddd;
+}
 
 #mods th {
   padding-top: 12px;

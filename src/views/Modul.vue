@@ -4,13 +4,22 @@
     <div class="main main-raised">
       <div style="text-align: center; margin-bottom:10px; padding-top: 3em">
         <h3>
-          <b>Modulbeschreibung: </b><router-link :to="{ name: 'modul', params: { code: $route.params.code }}">{{ info[0].label.value }}</router-link>
+          <b>Modulbeschreibung: </b
+          ><router-link
+            :to="{ name: 'modul', params: { code: $route.params.code } }"
+            >{{ info[0].label.value }}</router-link
+          >
         </h3>
         <h3>
           <div></div>
-          <b>Studiengang: </b><router-link to="/#"  v-if="Object.keys(this.info[0]).includes('studyPs')">{{ info[0].studyPs.value }} </router-link>       
-          <b>Fachbereich: </b><router-link to="/#">{{ info[0].FBcode.value }}</router-link>
-
+          <b>Studiengang: </b
+          ><router-link
+            to="/#"
+            v-if="Object.keys(this.info[0]).includes('studyPs')"
+            >{{ info[0].studyPs.value }}
+          </router-link>
+          <b>Fachbereich: </b
+          ><router-link to="/#">{{ info[0].FBcode.value }}</router-link>
         </h3>
       </div>
       <!-- nested routing -->
@@ -33,7 +42,7 @@ export default {
       loading: true,
       errored: false,
       code: this.$route.params.code
-    }
+    };
   },
   mounted() {
     this.queryModul(this.code);
@@ -54,61 +63,58 @@ export default {
 
           //redirect to 404, if no module for :code
           if (this.info.length < 1) {
-            this.$router.push({ name: 'NotFound' });
+            this.$router.push({ name: "NotFound" });
           }
         })
         .catch(e => {
           this.errored = true;
-          
         })
-        .finally(() => this.loading = false)
-        ;
-        
+        .finally(() => (this.loading = false));
     },
     queryModul(code) {
       //aus Modulkürzel den Titel, Studiengang und Fachbereich
       let modifiedCode = '"' + code + '"';
 
       let query =
-        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " + 
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
         "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
         "PREFIX fbw: <https://www.th-brandenburg.de/mitarbeiterseiten/fbw/> " +
         "PREFIX fbi: <https://www.th-brandenburg.de/mitarbeiterseiten/fbi/> " +
         "PREFIX fbt: <https://www.th-brandenburg.de/mitarbeiterseiten/fbt/> " +
         "PREFIX schema: <https://schema.org/> " +
-  
         "SELECT DISTINCT ?url ?label ?studyPs ?FBcode" +
         " WHERE { " +
-	      //Modul
-  	    '?url  schema:courseCode ' + modifiedCode + ' . ' +
+        //Modul
+        "?url  schema:courseCode " +
+        modifiedCode +
+        " . " +
         "?url a module:Module ; " +
         //Modultitel
         "    schema:name ?label; " +
         "  schema:isPartOf ?studyProgram . " +
         'FILTER(lang(?label) = "de") ' +
-
         //Studiengang
-        
 
         "OPTIONAL { " +
         '  SELECT (GROUP_CONCAT(?studyProgramName; separator=", ") as ?studyPs) ' +
         "    WHERE { " +
-        '      ?url  schema:courseCode ' + modifiedCode + ' ;' +
+        "      ?url  schema:courseCode " +
+        modifiedCode +
+        " ;" +
         "            schema:isPartOf ?studyProgram ." +
         "      ?studyProgram a module:StudyProgram ." +
         "  ?studyProgram schema:name ?studyProgramName ." +
         '      FILTER(lang(?studyProgramName) = "de")' +
         "    }" +
         "} " +
-
         //Fachbereich
         "?studyProgram schema:provider ?department . " +
         "?department rdfs:label ?FBcode ;" + //Kürzel wie FBW
         "        rdfs:name ?name." + //vollständiger Name
         "}";
 
-        //console.log(query);
-        
+      //console.log(query);
+
       this.querySparql(query);
     }
   }
@@ -273,14 +279,19 @@ span.md-highlight-text-match {
   width: 93%;
 }
 
-#mods td, #mods th {
+#mods td,
+#mods th {
   border: 1px solid #ddd;
   padding: 8px;
 }
 
-#mods tr:nth-child(even){background-color: #f2f2f2;}
+#mods tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
 
-#mods tr:hover {background-color: #ddd;}
+#mods tr:hover {
+  background-color: #ddd;
+}
 
 #mods th {
   padding-top: 12px;
