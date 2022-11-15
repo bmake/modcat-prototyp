@@ -17,6 +17,7 @@
             <md-input
               v-model="searchedFor"
               placeholder="Suchbegriff(e) eingeben"
+              v-on:keyup.enter="navigateToSearch"
             ></md-input>
             <!-- ToDo Eingabe übergeben, enter=absenden, escapen? alt :to="{ name: 'search' }"-->
             <md-icon>search</md-icon>
