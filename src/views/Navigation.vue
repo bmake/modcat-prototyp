@@ -1,6 +1,9 @@
 <template>
   <div class="wrapper">
-    <div class="header-filter" style="background-color: #cc0a2f; text-align: center; padding: 10%">
+    <div
+      class="header-filter"
+      style="background-color: #cc0a2f; text-align: center; padding: 10%"
+    >
       <div class="md-layout">
         <div class="md-layout-item">
           <div class="index-page">
@@ -31,11 +34,15 @@
                       <b>{{ browsen }}</b>
                     </li>
                     <li class="description">
-                      <b>Suchen und finden Sie beliebige Daten und Auswertungen
-                        zu unseren Modulen – ganz ohne Anmeldung.</b>
+                      <b
+                        >Suchen und finden Sie beliebige Daten und Auswertungen
+                        zu unseren Modulen – ganz ohne Anmeldung.</b
+                      >
                     </li>
                     <li class="description">
-                      <router-link :to="{ name: 'browsing'}"><b>Anschauen</b></router-link>
+                      <router-link :to="{ name: 'browsing' }"
+                        ><b>Anschauen</b></router-link
+                      >
                     </li>
                   </ul>
                 </div>
@@ -52,7 +59,9 @@
                       >
                     </li>
                     <li class="description">
-                      <router-link :to="{ name: 'dokumentieren'}"><b>Anschauen</b></router-link>
+                      <router-link :to="{ name: 'dokumentieren' }"
+                        ><b>Anschauen</b></router-link
+                      >
                     </li>
                   </ul>
                 </div>
@@ -69,7 +78,9 @@
                       >
                     </li>
                     <li class="description">
-                      <router-link :to="{ name: 'starter'}"><b>Anschauen</b></router-link>
+                      <router-link :to="{ name: 'starter' }"
+                        ><b>Anschauen</b></router-link
+                      >
                     </li>
                   </ul>
                 </div>
@@ -239,11 +250,6 @@ span.md-highlight-text-match {
 .md-list.md-dense .md-list-item-text {
   margin-left: 20px !important;
   font-size: small !important;
-}
-
-.select {
-  /*padding: 1em;*/
-  /*padding-bottom: 20px !important;*/
 }
 
 .select .md-field.md-theme-default label {

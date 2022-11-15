@@ -379,11 +379,6 @@ g.selected rect {
   margin-top: 0 !important;
 }
 
-.select {
-  /*padding: 1em;*/
-  /*padding-bottom: 20px !important;*/
-}
-
 .select .md-field.md-theme-default label {
   color: #e3f2fd !important;
   font-size: large;
