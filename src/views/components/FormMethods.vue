@@ -277,8 +277,8 @@ export default {
       this.addChanged("inputs1", oldIndex + 1);
     },
     reorder2({ oldIndex, newIndex }) {
-      const movedItem = this.inputs2.splice((oldIndex - 1), 1)[0];
-      this.inputs2.splice((newIndex - 1), 0, movedItem);
+      const movedItem = this.inputs2.splice(oldIndex - 1, 1)[0];
+      this.inputs2.splice(newIndex - 1, 0, movedItem);
       this.addChanged("inputs2", newIndex);
       this.addChanged("inputs2", oldIndex);
     },

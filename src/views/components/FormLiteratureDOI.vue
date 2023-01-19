@@ -228,7 +228,7 @@ export default {
   props: ["moduleUri"],
   name: "literatureDOI",
   components: {
-    AutorSelectionPopUp,
+    AutorSelectionPopUp
   },
   data() {
     return {
@@ -244,7 +244,7 @@ export default {
       showPopUp: false,
       authorIndexPopUp: 0,
       existingAuthors: [],
-      updateQuery:""
+      updateQuery: ""
     };
   },
   computed: {
@@ -261,19 +261,19 @@ export default {
           publishDate: "",
           pageStart: "",
           pageEnd: "",
-          literaturContainerUri: "",
+          literaturContainerUri: ""
         },
         book: {
           isbn: "",
           publisher: "",
           publishDate: "",
-          volume: "",
+          volume: ""
         },
         authors: [],
         url: "",
         uri: "",
         literaturUri: "",
-        publisherUri: "",
+        publisherUri: ""
       };
       if (this.rawDoiData.length < 1) return filteredResponse;
       // Map values
@@ -328,12 +328,12 @@ export default {
           family: author.family,
           given: author.given,
           url: "",
-          authorUri: "",
+          authorUri: ""
         });
       }
 
       return filteredResponse;
-    },
+    }
   },
   methods: {
     addAutor() {
@@ -382,10 +382,10 @@ export default {
           "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
           queryAutor,
           {
-            headers: { "Content-Type": "application/sparql-query" },
+            headers: { "Content-Type": "application/sparql-query" }
           }
         )
-        .then((response) => {
+        .then(response => {
           // JSON responses are automatically parsed.
           let result = response.data.results.bindings;
           let formattedResult = [];
@@ -394,13 +394,13 @@ export default {
               given: entry.autorVorname.value,
               family: entry.autorNachname.value,
               url: entry.autorProfilLink.value,
-              uri: entry.autorUri.value,
+              uri: entry.autorUri.value
             });
           }
           this.existingAuthors = formattedResult;
           this.authorIndexPopUp = index;
         })
-        .catch((e) => {
+        .catch(e => {
           this.errors.push(e);
         });
     },
@@ -411,16 +411,16 @@ export default {
       axios
         .get(this.doi, {
           headers: {
-            Accept: "application/vnd.citationstyles.csl+json",
+            Accept: "application/vnd.citationstyles.csl+json"
           },
-          crossdomain: true,
+          crossdomain: true
         })
-        .then((response) => {
+        .then(response => {
           this.rawDoiData = response.data;
           this.generateQuery();
           this.loading = false;
         })
-        .catch((e) => {
+        .catch(e => {
           if (e.toString().includes("504")) {
             this.apiError = "Error: API antwortet nicht. (Code 504)";
           } else if (e.toString().includes("404")) {
@@ -517,7 +517,7 @@ export default {
             query += 'schema:identifier "' + this.cleanedDoiData.uri + '"; ';
           }
           //Referenz zu den Autoren in Lit erzeugen
-          if (this.authors.every((author) => author.family.length > 0)) {
+          if (this.authors.every(author => author.family.length > 0)) {
             query += "schema:author ";
             for (let author of this.authors) {
               query += author.authorUri + " , ";
@@ -593,7 +593,7 @@ export default {
           //Referenz zu den Autoren in Lit erzeugen
           if (
             this.cleanedDoiData.authors.every(
-              (author) => author.family.length > 0
+              author => author.family.length > 0
             )
           ) {
             query += "schema:author ";
@@ -610,9 +610,7 @@ export default {
 
         //Autoren/innen
         if (
-          this.cleanedDoiData.authors.every(
-            (author) => author.family.length > 0
-          )
+          this.cleanedDoiData.authors.every(author => author.family.length > 0)
         ) {
           for (let author of this.cleanedDoiData.authors) {
             query += author.authorUri + " a module:Author ; ";
@@ -651,7 +649,7 @@ export default {
 
       // Let Literature.vue know of changes
       this.$emit("queryChanged", query);
-    },
+    }
   },
   watch: {
     existingAuthors() {
@@ -667,11 +665,11 @@ export default {
         axios
           .get("https://opac.th-brandenburg.de/search?isbn=" + data.book.isbn, {
             headers: {
-              Accept: "text/html",
+              Accept: "text/html"
             },
-            crossdomain: true,
+            crossdomain: true
           })
-          .then((response) => {
+          .then(response => {
             if (response.data.includes("in die Merkliste")) {
               data.url =
                 "https://opac.th-brandenburg.de/search?isbn=" + data.book.isbn;
@@ -680,10 +678,10 @@ export default {
               this.generateQuery();
             }
           })
-          .catch((e) => {});
+          .catch(e => {});
       }
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped>

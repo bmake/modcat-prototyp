@@ -359,7 +359,7 @@ export default {
   components: {
     FormLiteratureDOI,
     FormLiteratureISBN,
-    FormLiteratureManual,
+    FormLiteratureManual
   },
   props: [
     "modLiteratureOrigin",
@@ -367,7 +367,7 @@ export default {
     "role",
     "newBoolean",
     "code",
-    "basicFilled",
+    "basicFilled"
   ],
   name: "literature",
   mixins: [validationMixin],
@@ -375,8 +375,8 @@ export default {
     sortable: {
       inserted: function(el, binding) {
         new Sortable(el, binding.value || {});
-      },
-    },
+      }
+    }
   },
   data() {
     return {
@@ -410,7 +410,7 @@ export default {
       for (let entry of this.modLiteratureOrigin) {
         // Get index of entry in cleanedLiterature array
         let indexInResult = cleanedLiterature
-          .map((e) => e.literaturUri.value)
+          .map(e => e.literaturUri.value)
           .indexOf(entry.literaturUri.value);
 
         // index = -1 -> doesn't exist
@@ -428,7 +428,7 @@ export default {
             autorVorname: newEntry.autorVorname,
             autorNachname: newEntry.autorNachname,
             autorProfilLink: newEntry.autorProfilLink,
-            autorUri: newEntry.autorUri,
+            autorUri: newEntry.autorUri
           };
 
           // Restructure author part
@@ -448,7 +448,7 @@ export default {
             autorVorname: entry.autorVorname,
             autorNachname: entry.autorNachname,
             autorProfilLink: entry.autorProfilLink,
-            autorUri: entry.autorUri,
+            autorUri: entry.autorUri
           };
           // Add next author to literature object
           cleanedLiterature[indexInResult].autoren.push(newAutor);
@@ -456,14 +456,14 @@ export default {
       }
 
       // Attach summary and isHidden property
-      cleanedLiterature.forEach((entry) => {
+      cleanedLiterature.forEach(entry => {
         entry.summary = {};
         entry.summary.type = "literal";
         entry.summary.value = this.getLiteratureHeading(entry);
         entry.isHidden = true;
       });
       return cleanedLiterature;
-    },
+    }
   },
   mounted() {
     this.initialState();
@@ -500,7 +500,7 @@ export default {
       } else {
         autoren = literatureData.autoren
           .map(
-            (autor) =>
+            autor =>
               autor.autorNachname.value +
               ", " +
               autor.autorVorname.value.charAt(0) +
@@ -574,7 +574,7 @@ export default {
       query += " WHERE { ";
       query += " } "; // WHERE Ende
 
-      this.updateQuery = query
+      this.updateQuery = query;
 
       // für SPARQL-DataUpdate
       axios
@@ -582,10 +582,10 @@ export default {
           "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/update",
           query,
           {
-            headers: { "Content-Type": "application/sparql-update" },
+            headers: { "Content-Type": "application/sparql-update" }
           }
         )
-        .then((response) => {
+        .then(response => {
           let status = response.status;
           if (status == 204) {
             this.notification = true;
@@ -595,16 +595,16 @@ export default {
           }
           this.clearCache();
         })
-        .catch((e) => {
+        .catch(e => {
           this.errors.push(e);
         });
-    },
+    }
   },
   watch: {
     modLiteratureOrigin(v) {
       this.initialState();
-    },
-  },
+    }
+  }
 };
 </script>
 

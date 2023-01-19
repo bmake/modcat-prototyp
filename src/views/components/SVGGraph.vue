@@ -346,7 +346,7 @@ export default {
     moduleUri: {
       // if module choosed, the query for basic data will be sent to fuseki, BasicData-Component as default
       handler(uri) {
-        this.upG()
+        this.upG();
         d3.select("#nodes")
           .selectAll("g")
           .classed("selected", false);
@@ -392,12 +392,19 @@ export default {
           let strArrLan = newData[0].languages.value.split(" | ");
           newData[0].languages.value = strArrLan;
           this.$emit("modBasicData", newData);
-          if(newData[0].basedOnModuls && newData[0].basedOnModuls.value != "") {
+          if (
+            newData[0].basedOnModuls &&
+            newData[0].basedOnModuls.value != ""
+          ) {
             let strBasedModuls = newData[0].basedOnModuls.value.split(" | ");
             let basedModuls = [];
             for (let a = 0; a < strBasedModuls.length; a++) {
-              let itemModul = strBasedModuls[a].split(" @ ")
-              let obj = { uri: itemModul[0], label: itemModul[1], studyprogram: itemModul[2] }
+              let itemModul = strBasedModuls[a].split(" @ ");
+              let obj = {
+                uri: itemModul[0],
+                label: itemModul[1],
+                studyprogram: itemModul[2]
+              };
               basedModuls.push(obj);
             }
             newData[0].basedOnModuls.value = basedModuls;

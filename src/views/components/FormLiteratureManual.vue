@@ -182,7 +182,7 @@ export default {
   props: ["moduleUri"],
   name: "literatureManual",
   components: {
-    AutorSelectionPopUp,
+    AutorSelectionPopUp
   },
   data() {
     return {
@@ -209,7 +209,7 @@ export default {
         seitenBisInBandNeu: [],
         literaturUri: [],
         literaturJournalUri: [],
-        publisherUri: [],
+        publisherUri: []
       },
       authorIndexPopUp: 0,
       autoren: [
@@ -217,12 +217,12 @@ export default {
           autorUri: [],
           autorNachnameNeu: [],
           autorVornameNeu: [],
-          autorProfilLinkNeu: [],
-        },
+          autorProfilLinkNeu: []
+        }
       ],
       loading: false,
       existingAuthors: [],
-      showPopUp: false,
+      showPopUp: false
     };
   },
   methods: {
@@ -274,10 +274,10 @@ export default {
           "http://fbw-sgmwi.th-brandenburg.de:3030/modcat/query",
           queryAutor,
           {
-            headers: { "Content-Type": "application/sparql-query" },
+            headers: { "Content-Type": "application/sparql-query" }
           }
         )
-        .then((response) => {
+        .then(response => {
           // JSON responses are automatically parsed.
           let result = response.data.results.bindings;
           let formattedResult = [];
@@ -287,13 +287,13 @@ export default {
               given: entry.autorVorname.value,
               family: entry.autorNachname.value,
               url: entry.autorProfilLink.value,
-              uri: entry.autorUri.value,
+              uri: entry.autorUri.value
             });
           }
           this.existingAuthors = formattedResult;
           this.authorIndexPopUp = index;
         })
-        .catch((e) => {
+        .catch(e => {
           this.errors.push(e);
         });
     },
@@ -306,12 +306,12 @@ export default {
           "https://opac.th-brandenburg.de/search?isbn=" + this.inputs.isbnNeu,
           {
             headers: {
-              Accept: "text/html",
+              Accept: "text/html"
             },
-            crossdomain: true,
+            crossdomain: true
           }
         )
-        .then((response) => {
+        .then(response => {
           if (response.data.includes("in die Merkliste")) {
             this.inputs.urlLinkNeu =
               "https://opac.th-brandenburg.de/search?isbn=" +
@@ -319,7 +319,7 @@ export default {
           }
           this.loading = false;
         })
-        .catch((e) => {
+        .catch(e => {
           this.loading = false;
         });
     },
@@ -389,9 +389,7 @@ export default {
             query += 'schema:identifier "' + this.inputs.doiLinkNeu + '"; ';
           }
           //Referenz zu den Autoren in Lit erzeugen
-          if (
-            this.autoren.every((autor) => autor.autorNachnameNeu.length > 0)
-          ) {
+          if (this.autoren.every(autor => autor.autorNachnameNeu.length > 0)) {
             query += "schema:author ";
             for (let autor of this.autoren) {
               query += autor.autorUri + " , ";
@@ -446,9 +444,7 @@ export default {
             query += 'schema:url "' + this.inputs.urlLinkNeu + '"; ';
           }
           //Referenz zu den Autoren in Lit erzeugen
-          if (
-            this.autoren.every((autor) => autor.autorNachnameNeu.length > 0)
-          ) {
+          if (this.autoren.every(autor => autor.autorNachnameNeu.length > 0)) {
             query += "schema:author ";
             for (let autor of this.autoren) {
               query += autor.autorUri + " , ";
@@ -470,9 +466,7 @@ export default {
             query += 'schema:url "' + this.inputs.urlLinkNeu + '"; ';
           }
           //Referenz zu den Autoren in Lit erzeugen
-          if (
-            this.autoren.every((autor) => autor.autorNachnameNeu.length > 0)
-          ) {
+          if (this.autoren.every(autor => autor.autorNachnameNeu.length > 0)) {
             query += "schema:author ";
             for (let autor of this.autoren) {
               query += autor.autorUri + " , ";
@@ -485,7 +479,7 @@ export default {
         query += 'schema:headline "' + this.inputs.titelNeu + '". ';
 
         //Autoren/innen
-        if (this.autoren.every((autor) => autor.autorNachnameNeu.length > 0)) {
+        if (this.autoren.every(autor => autor.autorNachnameNeu.length > 0)) {
           for (let autor of this.autoren) {
             query += autor.autorUri + " a module:Author ; ";
 
@@ -512,13 +506,13 @@ export default {
 
       // Let Literature.vue know of changes
       this.$emit("queryChanged", query);
-    },
+    }
   },
   watch: {
     existingAuthors() {
       if (this.existingAuthors.length < 1) return;
       this.showPopUp = true;
-    },
-  },
+    }
+  }
 };
 </script>

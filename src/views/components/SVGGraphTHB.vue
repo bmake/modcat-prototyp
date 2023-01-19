@@ -10,7 +10,7 @@
 
 <script>
 import axios from "axios";
-import {selectQueries} from "../queries";
+import { selectQueries } from "../queries";
 
 export default {
   name: "SvgGraphTHB",
@@ -176,7 +176,11 @@ export default {
                 .selectAll("path.groupC")
                 .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
               if (_this.modMethods.length == 0 && !_this.newBoolean) {
-                let queryMethod = selectQueries.selectQueries("SVGqueryMethod", _this.moduleUri, _this.studyProgram)
+                let queryMethod = selectQueries.selectQueries(
+                  "SVGqueryMethod",
+                  _this.moduleUri,
+                  _this.studyProgram
+                );
                 _this.queryModuleInfo(queryMethod);
               }
             } else if (id == "nodeDidaktik") {
@@ -193,7 +197,11 @@ export default {
                 .selectAll("path.groupB")
                 .attr("transform", "scale(0.3) rotate(180) translate(12.5,0)");
               if (_this.modOutcomes.length == 0 && !_this.newBoolean) {
-                let queryOutcome = selectQueries.selectQueries("SVGqueryOutcome", _this.moduleUri, _this.studyProgram)
+                let queryOutcome = selectQueries.selectQueries(
+                  "SVGqueryOutcome",
+                  _this.moduleUri,
+                  _this.studyProgram
+                );
                 _this.queryModuleInfo(queryOutcome);
               }
             } else if (id == "nodeLiteratur") {
@@ -322,7 +330,11 @@ export default {
         this.form = "BasicData";
 
         if (uri != null) {
-          let queryBase = selectQueries.selectQueries("SVGqueryBase", uri, this.studyProgram)
+          let queryBase = selectQueries.selectQueries(
+            "SVGqueryBase",
+            uri,
+            this.studyProgram
+          );
           this.queryModuleInfo(queryBase);
         }
         this.modOutcomes = [];

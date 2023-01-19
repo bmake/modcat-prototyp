@@ -918,9 +918,13 @@ export default {
         "}";
 
       axios
-        .post("http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query", q, {
-          headers: { "Content-Type": "application/sparql-query" }
-        })
+        .post(
+          "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
+          q,
+          {
+            headers: { "Content-Type": "application/sparql-query" }
+          }
+        )
         .then(response => {
           let res = response.data.results.bindings;
           pdfHead.push(["Modul-Kurzkennzeichen", res[0].code.value]);

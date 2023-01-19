@@ -69,8 +69,8 @@ export default {
       selection: -1,
       result: {
         autor: null,
-        index: this.autorIndex,
-      },
+        index: this.autorIndex
+      }
     };
   },
   methods: {
@@ -82,8 +82,8 @@ export default {
     emitNoResult() {
       this.$emit("duplicateChecked", this.result);
       this.$emit("close");
-    },
-  },
+    }
+  }
 };
 </script>
 

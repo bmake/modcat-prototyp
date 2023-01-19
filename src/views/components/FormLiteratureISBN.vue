@@ -145,7 +145,7 @@ export default {
   props: ["moduleUri"],
   name: "literatureISBN",
   components: {
-    AutorSelectionPopUp,
+    AutorSelectionPopUp
   },
   data() {
     return {
@@ -161,7 +161,7 @@ export default {
       opacLink: "",
       showPopUp: false,
       authorIndexPopUp: 0,
-      existingAuthors: [],
+      existingAuthors: []
     };
   },
   computed: {
@@ -198,7 +198,7 @@ export default {
       cleanedData = data.items[0].volumeInfo;
 
       return cleanedData;
-    },
+    }
   },
   methods: {
     addAutor() {
@@ -253,10 +253,10 @@ export default {
           "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
           queryAutor,
           {
-            headers: { "Content-Type": "application/sparql-query" },
+            headers: { "Content-Type": "application/sparql-query" }
           }
         )
-        .then((response) => {
+        .then(response => {
           // JSON responses are automatically parsed.
           let result = response.data.results.bindings;
           let formattedResult = [];
@@ -265,13 +265,13 @@ export default {
               given: entry.autorVorname.value,
               family: entry.autorNachname.value,
               url: entry.autorProfilLink.value,
-              uri: entry.autorUri.value,
+              uri: entry.autorUri.value
             });
           }
           this.existingAuthors = formattedResult;
           this.authorIndexPopUp = index;
         })
-        .catch((e) => {
+        .catch(e => {
           this.errors.push(e);
         });
     },
@@ -282,16 +282,16 @@ export default {
       axios
         .get("https://www.googleapis.com/books/v1/volumes?q=" + this.isbn, {
           headers: {
-            Accept: "application/json",
+            Accept: "application/json"
           },
-          crossdomain: true,
+          crossdomain: true
         })
-        .then((response) => {
+        .then(response => {
           this.rawISBNData = response.data;
           this.loading = false;
           this.generateQuery();
         })
-        .catch((e) => {
+        .catch(e => {
           if (e.toString().includes("504")) {
             this.apiError = "Error: API antwortet nicht. (Code 504)";
           } else if (e.toString().includes("404")) {
@@ -364,7 +364,7 @@ export default {
         }
         //Referenz zu den Autoren in Lit erzeugen
         if (
-          this.cleanedISBNData.authors.every((autor) => autor.family.length > 0)
+          this.cleanedISBNData.authors.every(autor => autor.family.length > 0)
         ) {
           query += "schema:author ";
           for (let autor of this.cleanedISBNData.authors) {
@@ -379,7 +379,7 @@ export default {
 
         //Autoren/innen
         if (
-          this.cleanedISBNData.authors.every((autor) => autor.family.length > 0)
+          this.cleanedISBNData.authors.every(autor => autor.family.length > 0)
         ) {
           for (let autor of this.cleanedISBNData.authors) {
             query += autor.uri + " a module:Author ; ";
@@ -409,7 +409,7 @@ export default {
 
       // Let Literature.vue know of changes
       this.$emit("queryChanged", query);
-    },
+    }
   },
   watch: {
     existingAuthors() {
@@ -425,11 +425,11 @@ export default {
         axios
           .get("https://opac.th-brandenburg.de/search?isbn=" + this.isbn, {
             headers: {
-              Accept: "text/html",
+              Accept: "text/html"
             },
-            crossdomain: true,
+            crossdomain: true
           })
-          .then((response) => {
+          .then(response => {
             if (response.data.includes("in die Merkliste")) {
               data.infoLink =
                 "https://opac.th-brandenburg.de/search?isbn=" + this.isbn;
@@ -439,11 +439,11 @@ export default {
               this.generateQuery();
             }
           })
-          .catch((e) => {});
+          .catch(e => {});
       } else {
       }
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped>
