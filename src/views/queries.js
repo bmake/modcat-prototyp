@@ -12,37 +12,37 @@ export const selectQueries = {
         " WHERE {  " +
         "<" +
         moduleUri +
-          // Modulkürzel
+        // Modulkürzel
         ">  schema:courseCode ?code ;  " +
-          // Modulbezeichung
+        // Modulbezeichung
         "         schema:name ?label ;  " +
-          // ECTS
+        // ECTS
         "         schema:numberOfCredits ?ects ;  " +
-          // Dauer: z.B. 1 Semester...
+        // Dauer: z.B. 1 Semester...
         "         schema:timeRequired ?duration ;  " +
-          // Kurs Instanz (URI)
+        // Kurs Instanz (URI)
         "         schema:hasCourseInstance ?semester ;  " +
-          // Modulverantwortliche (URI)
+        // Modulverantwortliche (URI)
         "         schema:accountablePerson ?accPerson . " +
-          // Modulverantwortliche Label (Prof. Dr....)
+        // Modulverantwortliche Label (Prof. Dr....)
         "   ?accPerson rdfs:label ?accPersonLabel .  " +
-          // Deutsche Modulbezeichnungen,
+        // Deutsche Modulbezeichnungen,
         ' FILTER(lang(?label) = "de") ' +
-          // Modultyp (Wahlpflicht, Pflicht)
+        // Modultyp (Wahlpflicht, Pflicht)
         "   module:ModuleType_" +
         studyProgram +
         "_" +
         code +
         " schema:value ?modType_name . " +
-          // SWS
+        // SWS
         "   module:SWS_" +
         studyProgram +
         "_" +
         code +
         " schema:value ?swsSum . " +
-          // Häufigkeit (jedes Wintersemester, jedes Sommersemester ...)
+        // Häufigkeit (jedes Wintersemester, jedes Sommersemester ...)
         "   ?semester schema:courseMode ?courseMode .  " +
-          // Alle Vorraussetzungen in einem String zu fügen, getrennt durch '/'
+        // Alle Vorraussetzungen in einem String zu fügen, getrennt durch '/'
         " OPTIONAL { " +
         '  SELECT (GROUP_CONCAT(?cpre; separator="/") as ?pre) ' +
         "  WHERE { <" +
@@ -51,7 +51,7 @@ export const selectQueries = {
         ' FILTER(lang(?cpre) != "en") ' +
         "  } " +
         "} " +
-          // Alle Lehrformen in einem String zu fügen, getrennt durch ' | '
+        // Alle Lehrformen in einem String zu fügen, getrennt durch ' | '
         " OPTIONAL { " +
         '  SELECT (GROUP_CONCAT(?learnType; separator=" | ") as ?learnTypes) ' +
         "  WHERE { <" +
@@ -60,7 +60,7 @@ export const selectQueries = {
         ' FILTER(lang(?learnType) = "de") ' +
         "  } " +
         "} " +
-          // Alle Sprachen in einem String zu fügen, getrennt durch ' | '
+        // Alle Sprachen in einem String zu fügen, getrennt durch ' | '
         " OPTIONAL { " +
         '  SELECT (GROUP_CONCAT(?lan; separator=" | ") as ?languages) ' +
         "    WHERE { " +
@@ -71,20 +71,20 @@ export const selectQueries = {
         "      schema:value ?lan . " +
         "    }" +
         "  } " +
-          //Verwendbarkeit auf Deutsch abzufragen
+        //Verwendbarkeit auf Deutsch abzufragen
         " OPTIONAL { <" +
         moduleUri +
         ">  schema:educationalUse ?eduUse . " +
         ' FILTER(lang(?eduUse) = "de") ' +
         " } " +
-          // Alle Module (URI) bei "basiert auf", getrennt durch ' | '
+        // Alle Module (URI) bei "basiert auf", getrennt durch ' | '
         " OPTIONAL { " +
         ' SELECT (GROUP_CONCAT(DISTINCT ?basedOnModul; separator=" | ") as ?basedOnModuls) ' +
         "    WHERE { " +
         "<" +
         moduleUri +
         ">  schema:isBasedOn ?basedOn . " +
-          // Abhängigkeit zwischen Modulen und Fachbereichen abzufragen
+        // Abhängigkeit zwischen Modulen und Fachbereichen abzufragen
         " ?basedOn schema:name ?basedOnModulLabel ;   " +
         "          schema:isPartOf ?studyprogram .   " +
         "  ?studyprogram  schema:provider  ?department  " +
@@ -102,12 +102,12 @@ export const selectQueries = {
         moduleUri +
         ">  schema:url ?url . " +
         " } " +
-          //Kommentar für Modul
+        //Kommentar für Modul
         " OPTIONAL { <" +
         moduleUri +
         ">  schema:comment ?comment . " +
         " } " +
-          // Notengewichtung
+        // Notengewichtung
         " OPTIONAL { " +
         " module:GradingRatio_" +
         studyProgram +
@@ -139,7 +139,7 @@ export const selectQueries = {
         "> schema:courseCode ?code ; " +
         "         schema:name ?label .  " +
         'FILTER(lang(?label) = "de")' +
-          // Lernergebnisse, Kompetenzen, Bloomsche Taxonomie
+        // Lernergebnisse, Kompetenzen, Bloomsche Taxonomie
         "  OPTIONAL { " +
         '   SELECT (GROUP_CONCAT(?comNames; separator=" | ") as ?learnBlooms)  ' +
         "   WHERE {  " +
@@ -160,7 +160,7 @@ export const selectQueries = {
         "   } " +
         "  } " +
         " } " +
-          // Prüfungsleistungen
+        // Prüfungsleistungen
         "  OPTIONAL { " +
         '    SELECT (GROUP_CONCAT(?examName; separator=" | ") as ?exams) ' +
         "    WHERE { " +
@@ -171,7 +171,7 @@ export const selectQueries = {
         "       schema:position ?examPos . " +
         "    } ORDER BY ?examPos " +
         "  } " +
-          // Inhaltselemente
+        // Inhaltselemente
         "  OPTIONAL { " +
         '    SELECT (GROUP_CONCAT(?contentName; separator=" | ") as ?contents) ' +
         "    WHERE { " +
@@ -199,7 +199,7 @@ export const selectQueries = {
         "> schema:courseCode ?code ; " +
         "         schema:name ?label .  " +
         'FILTER(lang(?label) = "de")' +
-          // Lehr- und Lernmethode
+        // Lehr- und Lernmethode
         "  OPTIONAL { " +
         '    SELECT (GROUP_CONCAT(?teachingFormName; separator=" | ") as ?interTypes) ' +
         "    WHERE { " +
@@ -211,7 +211,7 @@ export const selectQueries = {
         "    } ORDER BY ?teachingFormPos " +
         "  } " +
         "  OPTIONAL { " +
-          // Gesamtworkload, Workload-Komponente in Stunden
+        // Gesamtworkload, Workload-Komponente in Stunden
         'SELECT (SUM(?workloadValue) as ?workloadSum) (GROUP_CONCAT(?workloadDetail; separator=" | ") as ?workloadDetails) ' +
         "WHERE { " +
         "  SELECT DISTINCT * " +
@@ -227,6 +227,49 @@ export const selectQueries = {
         "  } " +
         "}";
       return SVGqueryMethod;
+    }
+
+    // für Methodik auf Moduldetailseite Browsing (ModuleMethod.vue)
+    if (param == "MMqueryMethod") {
+      let MMqueryMethod =
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+        "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+        "PREFIX schema: <https://schema.org/> " +
+        "SELECT DISTINCT ?code ?label ?interTypes ?workloadSum ?workloadDetails " +
+        "WHERE { " +
+        "  module:" +
+        code +
+        " schema:courseCode ?code ; " +
+        "         schema:name ?label .  " +
+        'FILTER(lang(?label) = "de")' +
+        // Lehr- und Lernmethode
+        "  OPTIONAL { " +
+        '    SELECT (GROUP_CONCAT(?teachingFormName; separator=" | ") as ?interTypes) ' +
+        "    WHERE { " +
+        " module:TeachingForms_" +
+        code +
+        "      schema:itemListElement ?teachingForm . " +
+        " ?teachingForm schema:name ?teachingFormName ; " +
+        "       schema:position ?teachingFormPos . " +
+        "    } ORDER BY ?teachingFormPos " +
+        "  } " +
+        "  OPTIONAL { " +
+        // Gesamtworkload, Workload-Komponente in Stunden
+        'SELECT (SUM(?workloadValue) as ?workloadSum) (GROUP_CONCAT(?workloadDetail; separator=" | ") as ?workloadDetails) ' +
+        "WHERE { " +
+        "  SELECT DISTINCT * " +
+        "  WHERE { " +
+        " module:CompWL_" +
+        code +
+        "      schema:valueReference ?workload . " +
+        "      ?workload schema:name ?workloadName ; " +
+        "                schema:value ?workloadValue . " +
+        '      BIND(CONCAT(?workloadName, ": ", STR(?workloadValue), " Stunden") as ?workloadDetail) ' +
+        "    } ORDER BY ?workload " +
+        "}" +
+        "  } " +
+        "}";
+      return MMqueryMethod;
     }
 
     //SPARQL-Abfrage für Literatur

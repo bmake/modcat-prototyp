@@ -31,6 +31,7 @@
 
 <script>
 import axios from "axios";
+import { selectQueries } from "../queries";
 
 export default {
   data() {
@@ -38,11 +39,13 @@ export default {
       resultMethod: null,
       loading: true,
       errored: false,
-      code: this.$route.params.code
+      code: this.$route.params.code,
+      studyProgram: this.$parent.studyProgram,
+      moduleUri: this.$parent.moduleUri
     };
   },
   mounted() {
-    this.queryMethod(this.code);
+    this.getQueryMethod(this.code);
   },
   methods: {
     querySparql(query) {
@@ -65,46 +68,17 @@ export default {
         })
         .finally(() => (this.loading = false));
     },
-    queryMethod(code) {
-      let query =
-        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
-        "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
-        "PREFIX schema: <https://schema.org/> " +
-        "SELECT DISTINCT ?code ?label ?interTypes ?workloadSum ?workloadDetails " +
-        "WHERE { " +
-        "  module:" +
-        code +
-        " schema:courseCode ?code ; " +
-        "         schema:name ?label .  " +
-        'FILTER(lang(?label) = "de")' +
-        // Lehr- und Lernmethode
-        "  OPTIONAL { " +
-        '    SELECT (GROUP_CONCAT(?teachingFormName; separator=" | ") as ?interTypes) ' +
-        "    WHERE { " +
-        " module:TeachingForms_" +
-        code +
-        "      schema:itemListElement ?teachingForm . " +
-        " ?teachingForm schema:name ?teachingFormName ; " +
-        "       schema:position ?teachingFormPos . " +
-        "    } ORDER BY ?teachingFormPos " +
-        "  } " +
-        "  OPTIONAL { " +
-        // Gesamtworkload, Workload-Komponente in Stunden
-        'SELECT (SUM(?workloadValue) as ?workloadSum) (GROUP_CONCAT(?workloadDetail; separator=" | ") as ?workloadDetails) ' +
-        "WHERE { " +
-        "  SELECT DISTINCT * " +
-        "  WHERE { " +
-        " module:CompWL_" +
-        code +
-        "      schema:valueReference ?workload . " +
-        "      ?workload schema:name ?workloadName ; " +
-        "                schema:value ?workloadValue . " +
-        '      BIND(CONCAT(?workloadName, ": ", STR(?workloadValue), " Stunden") as ?workloadDetail) ' +
-        "    } ORDER BY ?workload " +
-        "}" +
-        "  } " +
-        "}";
-      this.querySparql(query);
+    getQueryMethod() {
+      console.log("ping1");
+      //get query from queries.js
+      let queryMethod = selectQueries.selectQueries(
+        "MMqueryMethod",
+        this.moduleUri, //"https://bmake.th-brandenburg.de/module/ADIK",
+        this.studyProgram //"Angewandte Informatik (B.Sc.)"
+      );
+
+      //Server anfragen
+      this.querySparql(queryMethod);
     }
   }
 };

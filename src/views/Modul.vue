@@ -41,7 +41,10 @@ export default {
       info: null,
       loading: true,
       errored: false,
-      code: this.$route.params.code
+      code: this.$route.params.code,
+      studyProgram: "",
+      departmentCode: "",
+      moduleUri: ""
     };
   },
   mounted() {
@@ -65,6 +68,11 @@ export default {
           if (this.info.length < 1) {
             this.$router.push({ name: "NotFound" });
           }
+
+          //set data
+          this.studyProgram = this.info[0].studyPs.value;
+          this.departmentCode = this.info[0].FBcode.value;
+          this.moduleUri = this.info[0].url.value;
         })
         .catch(e => {
           this.errored = true;
