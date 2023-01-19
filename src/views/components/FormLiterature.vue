@@ -336,8 +336,8 @@
                   Änderungen gespeichert!
                 </div>
               </transition>
-              <p>{{ modLiteratureOrigin }}</p>
-              <p>{{ modLiterature }}</p>
+              <!--<p>{{ modLiteratureOrigin }}</p>
+              <p>{{ modLiterature }}</p>-->
             </div>
           </div>
         </div>

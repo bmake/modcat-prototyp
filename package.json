@@ -9,7 +9,7 @@
     "build": "vue-cli-service build && gulp licenses",
     "lint": "vue-cli-service lint",
     "dev": "npm run serve",
-    "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm run dev"
+    "install:clean": "rm -rf node_modules/ && rm -rf ../../../Desktop/Neuer Ordner/package-lock.json && npm install && npm run dev"
   },
   "dependencies": {
     "@vue/composition-api": "^1.0.0-rc.1",

@@ -1,6 +1,6 @@
 .DS_Store
 node_modules/
-package-lock.json
+../../../Desktop/Neuer Ordner/package-lock.json
 /dist
 /docs
 # local env files

@@ -27,7 +27,7 @@
                 <b>Seiten:</b> {{ obj.pageStart.value }} - {{ obj.pageEnd.value
                 }}<br />
               </div>
-              <b>Verlag:</b> {{ obj.publisherName.value }} ({{
+              <b>Verlag:</b> {{ obj.publisher.value }} ({{
                 obj.datePublished.value
               }}) <br />
               <br />
@@ -45,7 +45,6 @@
                 <b>ISBN:</b> {{ obj.isbn.value }}<br />
               </div>
               <b>literaturUri</b><br />
-              <b>pubishlerUri</b><br />
             </vsa-content>
           </vsa-item>
         </vsa-list>
@@ -100,7 +99,7 @@ export default {
         .catch(e => {
           this.errored = true;
           this.errors.push(e);
-          console.log(error);
+          //console.log(error);
         })
         .finally(() => (this.loading = false));
     },
@@ -111,7 +110,7 @@ export default {
         "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
         "PREFIX schema: <https://schema.org/> " +
         'SELECT ?code ?label ?literaturUri ?titel ?auflage (GROUP_CONCAT(?autorFullname; separator=", ") as ?authors)' +
-        " ?datePublished ?isbn ?litIdentifier ?pageStart ?pageEnd ?publisherUri ?publisherName " +
+        " ?datePublished ?isbn ?litIdentifier ?pageStart ?pageEnd ?publisher " +
         "WHERE {" +
         "module:" +
         code +
@@ -158,13 +157,10 @@ export default {
         "      }" +
         "    }" +
         "    OPTIONAL {" +
-        "      ?literaturUri schema:publisher ?publisherUri." +
-        "      OPTIONAL {" +
-        "        ?publisherUri schema:legalName ?publisherName ." +
-        "      }" +
+        "      ?literaturUri schema:publisher ?publisher." +
         "    }" +
         "  }" +
-        "} group by ?code ?label ?literaturUri ?titel ?auflage ?datePublished ?isbn ?litIdentifier ?pageStart ?pageEnd ?publisherUri ?publisherName";
+        "} group by ?code ?label ?literaturUri ?titel ?auflage ?datePublished ?isbn ?litIdentifier ?pageStart ?pageEnd ?publisher";
       //console.log(query);
       this.querySparql(query);
     },
