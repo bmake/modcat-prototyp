@@ -272,6 +272,69 @@ export const selectQueries = {
       return MMqueryMethod;
     }
 
+    // für Literatur auf Moduldetailseite Browsing (ModuleLiterature.vue)
+    if (param == "MLqueryLiterature") {
+      let MLqueryLiterature =
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+        "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+        "PREFIX schema: <https://schema.org/> " +
+        "PREFIX dc: <http://purl.org/dc/elements/1.1/> " +
+        'SELECT ?code ?label ?literaturUri ?titel ?auflage (GROUP_CONCAT(?autorFullname; separator=", ") as ?authors)' +
+        " ?datePublished ?isbn ?litIdentifier ?pageStart ?pageEnd ?publisher " +
+        "WHERE {" +
+        "module:" +
+        code +
+        " schema:courseCode ?code ;" +
+        "                schema:name ?label ." +
+        '  FILTER(lang(?label) = "de")' +
+        "  OPTIONAL {" +
+        //"module:GPMO " + //Nur zum Test
+        "module:" +
+        code +
+        " schema:citation ?literaturUri." +
+        "    ?literaturUri schema:headline ?titel." +
+        "    OPTIONAL {" +
+        "      ?literaturUri schema:datePublished ?datePublished." +
+        "    }" +
+        "    OPTIONAL {" +
+        //Autoren
+        "   ?literaturUri schema:itemListElement ?autorList . " +
+        "   ?autorList schema:identifier ?autorUri . " +
+        "        OPTIONAL {" +
+        "          ?autorUri  schema:givenName ?autorVorname." +
+        "        }" +
+        "        OPTIONAL {" +
+        "            ?autorUri  schema:familyName ?autorNachname." +
+        "        }" +
+        '        BIND((CONCAT(STR( ?autorVorname ), " ", STR( ?autorNachname)) ) AS ?autorFullname ) .' +
+        "    }" +
+        "    OPTIONAL {" +
+        "      ?literaturUri a schema:Book." +
+        "      OPTIONAL {" +
+        "        ?literaturUri schema:bookEdition ?auflage." +
+        "      }" +
+        "      OPTIONAL {" +
+        "        ?literaturUri schema:isbn ?isbn." +
+        "      }" +
+        "    }" +
+        "    OPTIONAL {" +
+        "      ?literaturUri schema:identifier ?litIdentifier." +
+        "    }" +
+        "    OPTIONAL {" +
+        "      ?literaturUri a schema:Article." +
+        "      OPTIONAL {" +
+        "        ?literaturUri schema:pageStart ?pageStart;" +
+        "                      schema:pageEnd ?pageEnd." +
+        "      }" +
+        "    }" +
+        "    OPTIONAL {" +
+        "      ?literaturUri dc:publisher ?publisher." +
+        "    }" +
+        "  }" +
+        "} group by ?code ?label ?literaturUri ?titel ?auflage ?datePublished ?isbn ?litIdentifier ?pageStart ?pageEnd ?publisher";
+      return MLqueryLiterature;
+    }
+
     //SPARQL-Abfrage für Literatur
     if (param == "SVGqueryLiteratur") {
       let SVGqueryLiteratur =

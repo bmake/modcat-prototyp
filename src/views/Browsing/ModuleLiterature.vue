@@ -63,6 +63,7 @@ import {
   VsaIcon
 } from "vue-simple-accordion";
 import "vue-simple-accordion/dist/vue-simple-accordion.css";
+import { selectQueries } from "../queries";
 
 export default {
   components: {
@@ -76,11 +77,13 @@ export default {
       resultLiterature: null,
       loading: true,
       errored: false,
-      code: this.$route.params.code
+      code: this.$route.params.code,
+      studyProgram: this.$parent.studyProgram,
+      moduleUri: this.$parent.moduleUri
     };
   },
   mounted() {
-    this.queryLiterature(this.code);
+    this.getQueryLiterature(this.code);
   },
   methods: {
     querySparql(query) {
@@ -102,69 +105,6 @@ export default {
           //console.log(error);
         })
         .finally(() => (this.loading = false));
-    },
-    queryLiterature(code) {
-      //angepasst aus queries.js
-      let query =
-        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
-        "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
-        "PREFIX schema: <https://schema.org/> " +
-        "PREFIX dc: <http://purl.org/dc/elements/1.1/> " +
-        'SELECT ?code ?label ?literaturUri ?titel ?auflage (GROUP_CONCAT(?autorFullname; separator=", ") as ?authors)' +
-        " ?datePublished ?isbn ?litIdentifier ?pageStart ?pageEnd ?publisher " +
-        "WHERE {" +
-        "module:" +
-        code +
-        " schema:courseCode ?code ;" +
-        "                schema:name ?label ." +
-        '  FILTER(lang(?label) = "de")' +
-        "  OPTIONAL {" +
-        //"module:GPMO " + //Nur zum Test
-        "module:" +
-        code +
-        " schema:citation ?literaturUri." +
-        "    ?literaturUri schema:headline ?titel." +
-        "    OPTIONAL {" +
-        "      ?literaturUri schema:datePublished ?datePublished." +
-        "    }" +
-        "    OPTIONAL {" +
-        //Autoren
-        "   ?literaturUri schema:itemListElement ?autorList . " +
-        "   ?autorList schema:identifier ?autorUri . " +
-        "        OPTIONAL {" +
-        "          ?autorUri  schema:givenName ?autorVorname." +
-        "        }" +
-        "        OPTIONAL {" +
-        "            ?autorUri  schema:familyName ?autorNachname." +
-        "        }" +
-        '        BIND((CONCAT(STR( ?autorVorname ), " ", STR( ?autorNachname)) ) AS ?autorFullname ) .' +
-        "    }" +
-        "    OPTIONAL {" +
-        "      ?literaturUri a schema:Book." +
-        "      OPTIONAL {" +
-        "        ?literaturUri schema:bookEdition ?auflage." +
-        "      }" +
-        "      OPTIONAL {" +
-        "        ?literaturUri schema:isbn ?isbn." +
-        "      }" +
-        "    }" +
-        "    OPTIONAL {" +
-        "      ?literaturUri schema:identifier ?litIdentifier." +
-        "    }" +
-        "    OPTIONAL {" +
-        "      ?literaturUri a schema:Article." +
-        "      OPTIONAL {" +
-        "        ?literaturUri schema:pageStart ?pageStart;" +
-        "                      schema:pageEnd ?pageEnd." +
-        "      }" +
-        "    }" +
-        "    OPTIONAL {" +
-        "      ?literaturUri dc:publisher ?publisher." +
-        "    }" +
-        "  }" +
-        "} group by ?code ?label ?literaturUri ?titel ?auflage ?datePublished ?isbn ?litIdentifier ?pageStart ?pageEnd ?publisher";
-      console.log(query);
-      this.querySparql(query);
     },
     displayAuthors(authorsInput) {
       this.authorsArray = [];
@@ -189,6 +129,17 @@ export default {
         this.authorsString += " et al.";
       }
       return this.authorsString;
+    },
+    getQueryLiterature() {
+      //get query from queries.js
+      let queryLiterature = selectQueries.selectQueries(
+        "MLqueryLiterature",
+        this.moduleUri,
+        this.studyProgram
+      );
+
+      //Server anfragen
+      this.querySparql(queryLiterature);
     }
   }
 };
