@@ -109,6 +109,7 @@ export default {
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
         "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
         "PREFIX schema: <https://schema.org/> " +
+        "PREFIX dc: <http://purl.org/dc/elements/1.1/> " +
         'SELECT ?code ?label ?literaturUri ?titel ?auflage (GROUP_CONCAT(?autorFullname; separator=", ") as ?authors)' +
         " ?datePublished ?isbn ?litIdentifier ?pageStart ?pageEnd ?publisher " +
         "WHERE {" +
@@ -157,7 +158,7 @@ export default {
         "      }" +
         "    }" +
         "    OPTIONAL {" +
-        "      ?literaturUri schema:publisher ?publisher." +
+        "      ?literaturUri dc:publisher ?publisher." +
         "    }" +
         "  }" +
         "} group by ?code ?label ?literaturUri ?titel ?auflage ?datePublished ?isbn ?litIdentifier ?pageStart ?pageEnd ?publisher";
