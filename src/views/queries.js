@@ -298,7 +298,8 @@ export const selectQueries = {
         "OPTIONAL { ?literaturUri schema:datePublished ?datePublished. } " +
         //Optionale Angaben Autor
         "OPTIONAL { " +
-        "   ?literaturUri schema:author ?autorUri. " +
+        "   ?literaturUri schema:itemListElement ?autorList . " +
+        " ?autorList schema:identifier ?autorUri . " +
         "   OPTIONAL { ?autorUri  schema:givenName ?autorVorname. } " +
         "   OPTIONAL { ?autorUri  schema:familyName ?autorNachname. } " +
         "   OPTIONAL { ?autorUri  schema:sameAs ?autorProfilLink. } " +
@@ -322,8 +323,7 @@ export const selectQueries = {
 
         //Optionale Angaben zum Herausgeber (für Book + DigitalDocument)
         "OPTIONAL { " +
-        "   ?literaturUri schema:publisher ?publisherUri. " +
-        "   OPTIONAL { ?publisherUri schema:legalName ?publisherName .} " +
+        "   ?literaturUri dc:publisher ?publisherName. " +
         "} " +
         "} " + //Schließende Klammer 1. Optional
         "}"; //Schließende Klammer vom WHERE

@@ -129,7 +129,8 @@ export default {
         "    }" +
         "    OPTIONAL {" +
         //Autoren
-        "        ?literaturUri schema:author ?autorUri." +
+        "   ?literaturUri schema:itemListElement ?autorList . " +
+        "   ?autorList schema:identifier ?autorUri . " +
         "        OPTIONAL {" +
         "          ?autorUri  schema:givenName ?autorVorname." +
         "        }" +
@@ -162,7 +163,7 @@ export default {
         "    }" +
         "  }" +
         "} group by ?code ?label ?literaturUri ?titel ?auflage ?datePublished ?isbn ?litIdentifier ?pageStart ?pageEnd ?publisher";
-      //console.log(query);
+      console.log(query);
       this.querySparql(query);
     },
     displayAuthors(authorsInput) {
