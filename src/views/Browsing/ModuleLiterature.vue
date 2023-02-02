@@ -83,7 +83,7 @@ export default {
     };
   },
   mounted() {
-    this.getQueryLiterature(this.code);
+    this.getLiteratureData(this.code);
   },
   methods: {
     querySparql(query) {
@@ -137,9 +137,11 @@ export default {
         this.moduleUri,
         this.studyProgram
       );
-
-      //Server anfragen
-      this.querySparql(queryLiterature);
+      return queryLiterature;
+    },
+    getLiteratureData() {
+      //Server mit query anfragen
+      this.querySparql(this.getQueryLiterature());
     }
   }
 };
