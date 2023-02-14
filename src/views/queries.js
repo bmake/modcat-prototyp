@@ -126,6 +126,129 @@ export const selectQueries = {
       return SVGqueryBase;
     }
 
+    // für Rahmendaten auf Moduldetailseite Browsing (ModuleBase.vue)
+    if (param == "MBqueryBase") {
+      let MBqueryBase =
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  " +
+        "PREFIX module: <https://bmake.th-brandenburg.de/module/>  " +
+        "PREFIX schema: <https://schema.org/>  " +
+        "SELECT DISTINCT ?code ?label ?accPerson ?accPersonLabel ?duration ?semester ?modType_name ?grade_name ?learnTypes ?eduUse ?swsSum ?ects ?studysem ?courseMode ?pre ?basedOn ?basedOnModulLabel ?basedCode ?basedUrl ?url ?comment ?languages ?sponame ?spolink" +
+        " WHERE {  " +
+        "<" +
+        moduleUri +
+        // Modulkürzel
+        ">  schema:courseCode ?code ;  " +
+        // Modulbezeichung
+        "         schema:name ?label ;  " +
+        // ECTS
+        "         schema:numberOfCredits ?ects ;  " +
+        // Dauer: z.B. 1 Semester...
+        "         schema:timeRequired ?duration ;  " +
+        // Kurs Instanz (URI)
+        "         schema:hasCourseInstance ?semester ;  " +
+        // Modulverantwortliche (URI)
+        "         schema:accountablePerson ?accPerson . " +
+        // Modulverantwortliche Label (Prof. Dr....)
+        "   ?accPerson rdfs:label ?accPersonLabel .  " +
+        // Deutsche Modulbezeichnungen,
+        ' FILTER(lang(?label) = "de") ' +
+        // Modultyp (Wahlpflicht, Pflicht)
+        "   module:ModuleType_" +
+        studyProgram +
+        "_" +
+        code +
+        " schema:value ?modType_name . " +
+        // SWS
+        "   module:SWS_" +
+        studyProgram +
+        "_" +
+        code +
+        " schema:value ?swsSum . " +
+        // Häufigkeit (jedes Wintersemester, jedes Sommersemester ...)
+        "   ?semester schema:courseMode ?courseMode .  " +
+        // Alle Vorraussetzungen in einem String zu fügen, getrennt durch '/'
+        " OPTIONAL { " +
+        '  SELECT (GROUP_CONCAT(?cpre; separator="/") as ?pre) ' +
+        "  WHERE { <" +
+        moduleUri +
+        "> schema:coursePrerequisites ?cpre . " +
+        ' FILTER(lang(?cpre) != "en") ' +
+        "  } " +
+        "} " +
+        // Alle Lehrformen in einem String zu fügen, getrennt durch ' , '
+        " OPTIONAL { " +
+        '  SELECT (GROUP_CONCAT(?learnType; separator=", ") as ?learnTypes) ' +
+        "  WHERE { <" +
+        moduleUri +
+        "> schema:interactivityType ?learnType . " +
+        ' FILTER(lang(?learnType) = "de") ' +
+        "  } " +
+        "} " +
+        // Alle Sprachen in einem String zu fügen, getrennt durch ' , '
+        " OPTIONAL { " +
+        '  SELECT (GROUP_CONCAT(?lan; separator=", ") as ?languages) ' +
+        "    WHERE { " +
+        "      module:Language_" +
+        studyProgram +
+        "_" +
+        code +
+        "      schema:value ?lan . " +
+        "    }" +
+        "  } " +
+        //Verwendbarkeit auf Deutsch abzufragen
+        " OPTIONAL { <" +
+        moduleUri +
+        ">  schema:educationalUse ?eduUse . " +
+        ' FILTER(lang(?eduUse) = "de") ' +
+        " } " +
+        // Alle Module (URI) bei "basiert auf", getrennt durch ' | '
+        " OPTIONAL { " +
+        // Vorausgesetztes Modul
+        "<" +
+        moduleUri +
+        ">  schema:isBasedOn ?basedOn . " +
+        " ?basedOn schema:name ?basedOnModulLabel . " +
+        ' FILTER(lang(?basedOnModulLabel) = "de") ' +
+        'BIND(replace(str(?basedOn), str(module:), "") as ?basedCode) ' +
+        'BIND(concat("/browsing/modul/", replace(str(?basedOn), str(module:), "")) as ?basedUrl) ' +
+        " } " +
+        //URL des Moduls
+        " OPTIONAL { <" +
+        moduleUri +
+        ">  schema:url ?url . " +
+        " } " +
+        //Kommentar für Modul
+        " OPTIONAL { <" +
+        moduleUri +
+        ">  schema:comment ?comment . " +
+        " } " +
+        // Notengewichtung
+        " OPTIONAL { " +
+        " module:GradingRatio_" +
+        studyProgram +
+        "_" +
+        code +
+        " schema:value ?grade_name . " +
+        "  } " +
+        " OPTIONAL { " +
+        " module:StudySem_" +
+        studyProgram +
+        "_" +
+        code +
+        " schema:value ?studysem . " +
+        "  } " +
+        "OPTIONAL { " +
+        //Studienordnung (SPO) Name und Link
+        "  module:" +
+        studyProgram +
+        " schema:subjectOf ?spocode ." +
+        "  ?spocode schema:url ?spolink;" +
+        "   	   schema:name ?sponame." +
+        "}" +
+        " } ";
+      return MBqueryBase;
+    }
+
     // Für Didaktik
     if (param == "SVGqueryOutcome") {
       let SVGqueryOutcome =

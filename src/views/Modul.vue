@@ -43,6 +43,7 @@ export default {
       errored: false,
       code: this.$route.params.code,
       studyProgram: "",
+      studyProgramCode: "",
       departmentCode: "",
       moduleUri: ""
     };
@@ -71,6 +72,7 @@ export default {
 
           //set data
           this.studyProgram = this.info[0].studyPs.value;
+          this.studyProgramCode = this.info[0].studyProgram.value;
           this.departmentCode = this.info[0].FBcode.value;
           this.moduleUri = this.info[0].url.value;
         })
@@ -90,7 +92,7 @@ export default {
         "PREFIX fbi: <https://www.th-brandenburg.de/mitarbeiterseiten/fbi/> " +
         "PREFIX fbt: <https://www.th-brandenburg.de/mitarbeiterseiten/fbt/> " +
         "PREFIX schema: <https://schema.org/> " +
-        "SELECT DISTINCT ?url ?label ?studyPs ?FBcode" +
+        "SELECT DISTINCT ?url ?label ?studyPs ?studyProgram ?FBcode" +
         " WHERE { " +
         //Modul
         "?url  schema:courseCode " +
