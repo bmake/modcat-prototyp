@@ -66,6 +66,7 @@
 
 <script>
 import axios from "axios";
+import { selectQueries } from "../queries";
 
 export default {
   data() {
@@ -74,13 +75,15 @@ export default {
       loading: true,
       errored: false,
       code: this.$route.params.code,
+      moduleUri: this.$parent.moduleUri,
+      studyProgram: this.$parent.studyProgram,
       resultCompetenceSubjectmatter: null,
       resultCompetenceSelf: null,
       resultCompetenceSocial: null
     };
   },
   mounted() {
-    this.queryOutcome(this.code);
+    this.getOutcomeData();
     this.queryGoals();
   },
   methods: {
@@ -103,44 +106,6 @@ export default {
           console.log(error);
         })
         .finally(() => (this.loading = false));
-    },
-    queryOutcome(code) {
-      let query =
-        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
-        "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
-        "PREFIX schema: <https://schema.org/> " +
-        "SELECT DISTINCT ?code ?learnBlooms ?contents ?exams" +
-        " WHERE {  " +
-        "  module:" +
-        code +
-        " schema:courseCode ?code ;" +
-        "    schema:name ?label ." +
-        'FILTER(lang(?label) = "de") ' +
-        // Prüfungsleistungen
-        "OPTIONAL { " +
-        '  SELECT (GROUP_CONCAT(?examName; separator=" | ") as ?exams) ' +
-        "    WHERE {" +
-        "      module:Exam_" +
-        code +
-        " schema:itemListElement ?exam ." +
-        "      ?exam schema:name ?examName ;" +
-        "          schema:position ?examPos ." +
-        "    } ORDER BY ?examPos" +
-        "} " +
-        // Inhaltselemente
-        "OPTIONAL { " +
-        '    SELECT (GROUP_CONCAT(?contentName; separator=" | ") as ?contents)' +
-        "    WHERE {" +
-        "      module:Content_" +
-        code +
-        " schema:itemListElement ?content ." +
-        "      ?content schema:name ?contentName ;" +
-        "            schema:position ?contentPos ." +
-        "    } ORDER BY ?contentPos" +
-        "} " +
-        "}";
-      //console.log(query);
-      this.querySparql(query);
     },
     queryGoals() {
       this.queryGoalsSubjectmatter(this.code);
@@ -261,6 +226,18 @@ export default {
         .catch(e => {
           this.errors.push(e);
         });
+    },
+    getQueryOutcome() {
+      //get query from queries.js
+      let queryOutcome = selectQueries.selectQueries(
+        "MOqueryOutcome",
+        this.moduleUri,
+        this.studyProgram
+      );
+      return queryOutcome;
+    },
+    getOutcomeData() {
+      this.querySparql(this.getQueryOutcome());
     }
   }
 };

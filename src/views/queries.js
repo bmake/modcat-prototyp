@@ -309,6 +309,45 @@ export const selectQueries = {
       return SVGqueryOutcome;
     }
 
+    // für Didakdik auf Moduldetailseite Browsing (ModuleOutcome.vue)
+    if (param == "MOqueryOutcome") {
+      let MOqueryOutcome =
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+        "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+        "PREFIX schema: <https://schema.org/> " +
+        "SELECT DISTINCT ?code ?learnBlooms ?contents ?exams" +
+        " WHERE {  " +
+        "  module:" +
+        code +
+        " schema:courseCode ?code ;" +
+        "    schema:name ?label ." +
+        'FILTER(lang(?label) = "de") ' +
+        // Prüfungsleistungen
+        "OPTIONAL { " +
+        '  SELECT (GROUP_CONCAT(?examName; separator=" | ") as ?exams) ' +
+        "    WHERE {" +
+        "      module:Exam_" +
+        code +
+        " schema:itemListElement ?exam ." +
+        "      ?exam schema:name ?examName ;" +
+        "          schema:position ?examPos ." +
+        "    } ORDER BY ?examPos" +
+        "} " +
+        // Inhaltselemente
+        "OPTIONAL { " +
+        '    SELECT (GROUP_CONCAT(?contentName; separator=" | ") as ?contents)' +
+        "    WHERE {" +
+        "      module:Content_" +
+        code +
+        " schema:itemListElement ?content ." +
+        "      ?content schema:name ?contentName ;" +
+        "            schema:position ?contentPos ." +
+        "    } ORDER BY ?contentPos" +
+        "} " +
+        "}";
+      return MOqueryOutcome;
+    }
+
     // für Methodik
     if (param == "SVGqueryMethod") {
       let SVGqueryMethod =
