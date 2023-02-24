@@ -434,6 +434,78 @@ export const selectQueries = {
       return MMqueryMethod;
     }
 
+    // für Methodik auf Modulübersichtsseite Browsing (ModuleOverview.vue)
+    if (param == "MOVqueryMethod") {
+      let MOVqueryMethod =
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+        "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
+        "PREFIX schema: <https://schema.org/> " +
+        "SELECT DISTINCT ?code ?label ?exams ?interTypes ?workloadSum ?workloadDetails ?studyProgram ?spolink ?accPerson ?accPersonLabel ?ects ?url " +
+        "WHERE { " +
+        "  module:" +
+        code +
+        " schema:courseCode ?code ; " +
+        "         schema:name ?label ;  " +
+        "      schema:isPartOf ?studyProgram ; " +
+        // ECTS
+        "         schema:numberOfCredits ?ects ;  " +
+        // Modulverantwortliche (URI)
+        "         schema:accountablePerson ?accPerson . " +
+        // Modulverantwortliche Label (Prof. Dr....)
+        "   ?accPerson rdfs:label ?accPersonLabel .  " +
+        'FILTER(lang(?label) = "de")' +
+        // Prüfungsleistungen
+        "OPTIONAL { " +
+        '  SELECT (GROUP_CONCAT(?examName; separator=", ") as ?exams) ' +
+        "    WHERE {" +
+        "      module:Exam_" +
+        code +
+        " schema:itemListElement ?exam ." +
+        "      ?exam schema:name ?examName ;" +
+        "          schema:position ?examPos ." +
+        "    } ORDER BY ?examPos" +
+        "} " +
+        // Lehr- und Lernmethode
+        "  OPTIONAL { " +
+        '    SELECT (GROUP_CONCAT(?teachingFormName; separator=", ") as ?interTypes) ' +
+        "    WHERE { " +
+        " module:TeachingForms_" +
+        code +
+        "      schema:itemListElement ?teachingForm . " +
+        " ?teachingForm schema:name ?teachingFormName ; " +
+        "       schema:position ?teachingFormPos . " +
+        "    } ORDER BY ?teachingFormPos " +
+        "  } " +
+        //URL des Moduls
+        " OPTIONAL { <" +
+        code +
+        ">  schema:url ?url . " +
+        " } " +
+        "OPTIONAL { " +
+        //Studienordnung (SPO) Name und Link
+        "  ?studyProgram" +
+        " schema:subjectOf ?spocode ." +
+        "  ?spocode schema:url ?spolink." +
+        "}" +
+        "  OPTIONAL { " +
+        // Gesamtworkload, Workload-Komponente in Stunden
+        'SELECT (SUM(?workloadValue) as ?workloadSum) (GROUP_CONCAT(?workloadDetail; separator=", ") as ?workloadDetails) ' +
+        "WHERE { " +
+        "  SELECT DISTINCT * " +
+        "  WHERE { " +
+        " module:CompWL_" +
+        code +
+        "      schema:valueReference ?workload . " +
+        "      ?workload schema:name ?workloadName ; " +
+        "                schema:value ?workloadValue . " +
+        '      BIND(CONCAT(?workloadName, " ", STR(?workloadValue)," h") as ?workloadDetail) ' +
+        "    } ORDER BY ?workload " +
+        "}" +
+        "  } " +
+        "}";
+      return MOVqueryMethod;
+    }
+
     // für Literatur auf Moduldetailseite Browsing (ModuleLiterature.vue)
     if (param == "MLqueryLiterature") {
       let MLqueryLiterature =

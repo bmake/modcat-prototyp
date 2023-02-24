@@ -75,6 +75,7 @@
 
 <script>
 import axios from "axios";
+import { selectQueries } from "../queries";
 
 export default {
   data() {
@@ -82,11 +83,13 @@ export default {
       result: null,
       loading: true,
       errored: false,
-      code: this.$route.params.code
+      code: this.$route.params.code,
+      moduleUri: this.$parent.moduleUri,
+      studyProgram: this.$parent.studyProgram
     };
   },
   mounted() {
-    this.queryMethod(this.code);
+    this.getMethodData();
   },
   methods: {
     querySparql(query) {
@@ -104,7 +107,7 @@ export default {
         })
         .catch(e => {
           this.errored = true;
-          console.log(error);
+          console.log(e);
         })
         .finally(() => (this.loading = false));
     },
@@ -176,8 +179,20 @@ export default {
         "}" +
         "  } " +
         "}";
-      //console.log(query);
+      console.log(query);
       this.querySparql(query);
+    },
+    getQueryMethod() {
+      //get query from queries.js
+      let queryMethod = selectQueries.selectQueries(
+        "MOVqueryMethod",
+        this.moduleUri,
+        this.studyProgram
+      );
+      return queryMethod;
+    },
+    getMethodData() {
+      this.querySparql(this.getQueryMethod());
     }
   }
 };
