@@ -112,34 +112,12 @@ export default {
       this.queryGoalsSelf(this.code);
       this.queryGoalsSocial(this.code);
     },
-    //3 very similar methods, can be optimised
+    //3 similar methods, can be optimised, just different string for goal and prop for result
     queryGoalsSubjectmatter(code) {
-      let query =
-        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
-        "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
-        "PREFIX schema: <https://schema.org/> " +
-        "SELECT DISTINCT ?code ?bname ?addList ?learnResult " +
-        "WHERE { " +
-        "  module:" +
-        code +
-        " schema:courseCode ?code ; " +
-        "    schema:name ?label ." +
-        '    FILTER(lang(?label) = "de")' +
-        "  module:LResults_" +
-        code +
-        " schema:itemListElement ?resList ." +
-        "                  ?resList schema:description ?learnResult ;" +
-        "                      schema:position ?position ." +
-        "                  ?resList schema:additionalType ?addList ;" +
-        "                          schema:additionalType module:SubjectMatterCompetence." +
-        "            ?addList schema:name ?bname." +
-        '    FILTER(lang(?bname) = "de" && STR(?bname) != "Fachkompetenz") ' +
-        "}";
-
       axios
         .post(
           "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
-          query,
+          this.buildGoalQuery("SubjectMatterCompetence"),
           {
             headers: { "Content-Type": "application/sparql-query" }
           }
@@ -152,32 +130,10 @@ export default {
         });
     },
     queryGoalsSelf(code) {
-      let query =
-        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
-        "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
-        "PREFIX schema: <https://schema.org/> " +
-        "SELECT DISTINCT ?code ?bname ?addList ?learnResult " +
-        "WHERE { " +
-        "  module:" +
-        code +
-        " schema:courseCode ?code ; " +
-        "    schema:name ?label ." +
-        '    FILTER(lang(?label) = "de")' +
-        "  module:LResults_" +
-        code +
-        " schema:itemListElement ?resList ." +
-        "                  ?resList schema:description ?learnResult ;" +
-        "                      schema:position ?position ." +
-        "                  ?resList schema:additionalType ?addList ;" +
-        "                          schema:additionalType module:SelfCompetence." +
-        "            ?addList schema:name ?bname." +
-        '    FILTER(lang(?bname) = "de") ' +
-        "}";
-
       axios
         .post(
           "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
-          query,
+          this.buildGoalQuery("SelfCompetence"),
           {
             headers: { "Content-Type": "application/sparql-query" }
           }
@@ -190,32 +146,10 @@ export default {
         });
     },
     queryGoalsSocial(code) {
-      let query =
-        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
-        "PREFIX module: <https://bmake.th-brandenburg.de/module/> " +
-        "PREFIX schema: <https://schema.org/> " +
-        "SELECT DISTINCT ?code ?bname ?addList ?learnResult " +
-        "WHERE { " +
-        "  module:" +
-        code +
-        " schema:courseCode ?code ; " +
-        "    schema:name ?label ." +
-        '    FILTER(lang(?label) = "de")' +
-        "  module:LResults_" +
-        code +
-        " schema:itemListElement ?resList ." +
-        "                  ?resList schema:description ?learnResult ;" +
-        "                      schema:position ?position ." +
-        "                  ?resList schema:additionalType ?addList ;" +
-        "                          schema:additionalType module:SocialCompetence." +
-        "            ?addList schema:name ?bname." +
-        '    FILTER(lang(?bname) = "de") ' +
-        "}";
-
       axios
         .post(
           "http://fbw-sgmwi.th-brandenburg.de:3030/RelaunchJuly20_ModCat/query",
-          query,
+          this.buildGoalQuery("SubjectMatterCompetence"),
           {
             headers: { "Content-Type": "application/sparql-query" }
           }
@@ -238,6 +172,22 @@ export default {
     },
     getOutcomeData() {
       this.querySparql(this.getQueryOutcome());
+    },
+    buildGoalQuery(goal) {
+      let string1 =
+        'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX module: <https://bmake.th-brandenburg.de/module/> PREFIX schema: <https://schema.org/> SELECT DISTINCT ?code ?bname ?addList ?learnResult WHERE { module:BB170 schema:courseCode ?code ; schema:name ?label . FILTER(lang(?label) = "de") module:LResults_BB170 schema:itemListElement ?resList . ?resList schema:description ?learnResult ; schema:position ?position . ?resList schema:additionalType ?addList ; schema:additionalType module:';
+      let string2 = goal; //SubjectMatterCompetence, SelfCompetence oder SocialCompetence
+      let string3 = '. ?addList schema:name ?bname. FILTER(lang(?bname) = "de"';
+      let string4 = '&& STR(?bname) != "Fachkompetenz"'; //für Fachkompent
+      let stringX = ") }";
+
+      let goalQuery = string1 + string2 + string3;
+      if (goal == "SubjectMatterCompetence") {
+        goalQuery = goalQuery + string4;
+      }
+      goalQuery = goalQuery + stringX;
+      //console.log(goalQuery);
+      return goalQuery;
     }
   }
 };
